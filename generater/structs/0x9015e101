@@ -1,0 +1,21 @@
+    @constructor(0x9015e101, 'update_short_sent_message')
+    def struct_0x9015e101(self):
+        return Struct(
+            'sname' / Computed('update_short_sent_message'),
+            'signature' / Hex(Const(0x9015e101, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_out=2,
+                                has_entities=128,
+                                has_media=512,
+                                has_ttl_period=33554432),
+            'id' / Int32ul,
+            'pts' / Int32ul,
+            'pts_count' / Int32ul,
+            'date' / TTimestamp,
+            'media' / If(this.flags.has_media,
+                         self.message_media_structures('media')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(
+                                self.message_entity_structures('entities'),
+                                'entities')),
+            'ttl_period' / If(this.flags.has_ttl_period, Int32ul))

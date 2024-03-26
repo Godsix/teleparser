@@ -1,0 +1,17 @@
+    @constructor({{struct_index_text}}, '{{struct_name}}')
+    def struct_{{struct_index_text}}(self):
+        return Struct(
+            {% for item in structs %}
+            '{{item[0]}}' / {{item[1]-}}
+            {% if item[0] in flags %}
+            {{-','}}
+            {% for name, value in flags[item[0]].items() %}
+                                {{name}}={{value-}}
+                                {% if not loop.last %}
+                                {{-','}}
+                                {% else %}
+                                {{-')'-}}
+                                {% endif %}
+            {% endfor -%}
+            {% endif %}{{- ',' if not loop.last else ')' }}
+            {% endfor %}

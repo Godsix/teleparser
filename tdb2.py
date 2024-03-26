@@ -31,10 +31,11 @@
 
 import datetime
 import os
-
 import logger
+from database import TelegramDB
+from datatype.utils import search_attribute
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 CSV_SEPARATOR = ','
 TYPE_CHAT_CREATION_DATE = 'chat_creation_date'
@@ -45,7 +46,8 @@ TYPE_MSG_TO_CHANNEL = 'channel'
 TYPE_MSG_TO_USER = 'chat'
 TYPE_USER_STATUS_UPDATE = 'user_status_update'
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 
 def escape_csv_string(instr):
     if instr:
@@ -53,26 +55,21 @@ def escape_csv_string(instr):
         return '"{}"'.format(instr.replace('"', '\''))
     return ''
 
+
 def to_date(epoch):
     if epoch:
         return datetime.datetime.utcfromtimestamp(epoch).isoformat()
     return ''
 
+# ------------------------------------------------------------------------------
 
-media_name = 'media_v4'
-messages_name = 'messages_v2'
 
-#------------------------------------------------------------------------------
+class TDB():
 
-class tdb():
-
-    def __init__(self, outdirectory, blob_parser, sqlite_db_cursor):
+    def __init__(self, outdirectory, db: TelegramDB):
         assert outdirectory
         self._outdirectory = outdirectory
-        assert blob_parser
-        self._blob_parser = blob_parser
-        assert sqlite_db_cursor
-        self._sqlite_db_cursor = sqlite_db_cursor
+        self._db = db
         self._separator = CSV_SEPARATOR
         self._table_chats = {}
         self._table_contacts = {}
@@ -85,89 +82,73 @@ class tdb():
         self._table_user_settings = {}
 
     def __parse_table_chats(self):
-        self._sqlite_db_cursor.execute('SELECT * from chats')
-        entries = self._sqlite_db_cursor.fetchall()
-
+        entries = self._db.get_chats()
         for entry in entries:
-            uid = int(entry['uid'])
+            uid = entry.uid
             assert uid
             assert uid not in self._table_chats
             logger.info('parsing chats, entry uid: %s', uid)
-            blob = self._blob_parser.parse_blob(entry['data'])
-            chat = tchat(uid, entry['name'], blob)
-            self._table_chats[uid] = chat
+            self._table_chats[uid] = TChat(entry)
 
     def __save_table_chats(self, outdir):
-        with open(os.path.join(outdir, 'table_chats.txt'),
-                  mode='w', encoding='utf-8') as fo:
+        with open(os.path.join(outdir, 'table_chats.txt'), mode='w',
+                  encoding='utf-8') as fo:
+            separator = f"{'-' * 80}\n"
             for uid, chat in self._table_chats.items():
-                fo.write('-' * 80)
-                fo.write('\nuid: {} name: {}\n\n'.format(uid, chat.name))
-                fo.write('{}\n\n'.format(chat.blob))
+                fo.write(separator)
+                fo.write(f'uid: {uid} name: {chat.name}\n\n')
+                fo.write(f'{chat.blob}\n\n')
 
     def __parse_table_contacts(self):
-        self._sqlite_db_cursor.execute('SELECT * from contacts')
-        entries = self._sqlite_db_cursor.fetchall()
-
+        entries = self._db.get_contacts()
         for entry in entries:
-            uid = int(entry['uid'])
+            uid = entry.uid
             assert uid
             assert uid not in self._table_contacts
             logger.info('parsing contacts, entry uid: %s', uid)
-            self._table_contacts[uid] = int(entry['mutual'])
+            self._table_contacts[uid] = entry.mutual
 
     def __save_table_contacts(self, outdir):
         with open(os.path.join(outdir, 'table_contacts.txt'),
                   mode='w', encoding='utf-8') as fo:
+            separator = f"{'-' * 80}\n"
             for uid, mutual in self._table_contacts.items():
-                fo.write('-' * 80)
-                fo.write('\nuid: {} mutual: {}\n'.format(uid, mutual))
+                fo.write(separator)
+                fo.write(f'uid: {uid} mutual: {mutual}\n')
                 if uid in self._table_users:
-                    fo.write('From [users] -> {}\n'.format(
-                        self._table_users[uid].full_text_id))
+                    user = self._table_users[uid]
+                    fo.write(f'From [users] -> {user.full_text_id}\n')
                 else:
                     fo.write('User uid missing in [users]\n')
 
     def __parse_table_dialogs(self):
-        self._sqlite_db_cursor.execute('SELECT * from dialogs')
-        entries = self._sqlite_db_cursor.fetchall()
-
+        entries = self._db.get_dialogs()
         for entry in entries:
-            did = int(entry['did'])
+            did = entry.did
             assert did
             assert did not in self._table_dialogs
             logger.info('parsing dialogs, entry did: %s', did)
-            dialog = tdialog(
-                did, entry['date'], entry['unread_count'], entry['last_mid'],
-                entry['inbox_max'], entry['outbox_max'], entry['last_mid_i'],
-                entry['unread_count_i'], entry['pts'], entry['date_i'],
-                entry['pinned'], entry['flags'])
+            dialog = TDialog(entry)
             self._table_dialogs[did] = dialog
 
     def __save_table_dialogs(self, outdir):
         with open(os.path.join(outdir, 'table_dialogs.txt'),
                   mode='w', encoding='utf-8') as fo:
+            separator = f"{'-' * 80}\n"
             for did, dialog in self._table_dialogs.items():
-                fo.write('-' * 80)
+                fo.write(separator)
                 date_string = to_date(dialog.date)
                 fo.write(
-                    '\ndid: {}, date: {} [{}]\n'
-                    'unread_count: {}, last_mid: {}, inbox_max: {}, '
-                    'outbox_max: {}, last_mid_i: {}\n'
-                    'unread_count_i: {}, pts: {}, date_i: {}, pinned: {}, '
-                    'flags: {}\n\n'.format(
-                        did, dialog.date, date_string,
-                        dialog.unread_count, dialog.last_mid, dialog.inbox_max,
-                        dialog.outbox_max, dialog.last_mid_i,
-                        dialog.unread_count_i, dialog.pts, dialog.date_i,
-                        dialog.pinned, dialog.flags))
+                    f'did: {did}, date: {dialog.date} [{date_string}]\n'
+                    f'unread_count: {dialog.unread_count}, last_mid: {dialog.last_mid}, inbox_max: {dialog.inbox_max}, '
+                    f'outbox_max: {dialog.outbox_max}, last_mid_i: {dialog.last_mid_i}\n'
+                    f'unread_count_i: {dialog.unread_count_i}, pts: {dialog.pts}, date_i: {dialog.date_i}, pinned: {dialog.pinned}, '
+                    f'flags: {dialog.flags}\n\n')
 
     def __parse_table_enc_chats(self):
-        self._sqlite_db_cursor.execute('SELECT * from enc_chats')
-        entries = self._sqlite_db_cursor.fetchall()
-
+        entries = self._db.get_enc_chats()
         for entry in entries:
-            uid = int(entry['uid'])
+            uid = entry.uid
             assert uid
             assert uid not in self._table_enc_chats
             logger.info('parsing enc_chats, entry uid: %s', uid)
@@ -181,29 +162,24 @@ class tdb():
 
             admin_id = getattr(blob, 'admin_id', None)
             if admin_id:
-                assert entry['admin_id'] == admin_id
+                assert entry.admin_id == admin_id
             participant_id = getattr(blob, 'participant_id', None)
             if participant_id:
-                if entry['user'] != entry['admin_id']:
-                    assert entry['user'] == participant_id
+                if not entry.user == entry.admin_id:
+                    assert entry.user == participant_id
 
-            tec = techat(entry['uid'], entry['user'], entry['name'], blob,
-                         entry['g'], entry['authkey'], entry['ttl'],
-                         entry['layer'], entry['seq_in'], entry['seq_out'],
-                         entry['use_count'], entry['exchange_id'],
-                         entry['key_date'], entry['fprint'],
-                         entry['fauthkey'], entry['khash'], entry['in_seq_no'],
-                         entry['admin_id'], entry['mtproto_seq'])
+            tec = TEchat(entry)
             self._table_enc_chats[uid] = tec
 
     def __save_table_enc_chats(self, outdir):
         with open(os.path.join(outdir, 'table_enc_chats.txt'),
                   mode='w', encoding='utf-8') as fo:
+            separator = f"{'-' * 80}\n"
             for uid, tec in self._table_enc_chats.items():
                 assert uid == tec.uid
-                fo.write('-' * 80)
+                fo.write(separator)
                 fo.write(
-                    '\nuid: {} user: {} name: {}\n\ng: {}\nauthkey: {}\n'
+                    'uid: {} user: {} name: {}\n\ng: {}\nauthkey: {}\n'
                     'ttl: {} layer: {} seq_in: {} seq_out: {} use_count: {}\n'
                     'exchange_id: {} key_date: {} fprint: {}\n'
                     'fauthkey: {}\nkhash: {}\nin_seq_no: {} admin_id: {} '
@@ -215,31 +191,26 @@ class tdb():
                         tec.admin_id, tec.mtproto_seq))
                 fo.write('\n{}\n\n'.format(tec.blob))
 
-    def __parse_table_media_v2(self):
-        self._sqlite_db_cursor.execute(f'SELECT * from {media_name}')
-        entries = self._sqlite_db_cursor.fetchall()
-
+    def __parse_table_media(self):
+        entries = self._db.get_media()
         for entry in entries:
-            mid = int(entry['mid'])
+            mid = entry.mid
             assert mid
-            # print(self._table_media)
-            # assert mid not in self._table_media, mid
             logger.info('parsing media_v2, entry mid: %s', mid)
-            blob = self._blob_parser.parse_blob(entry['data'])
-            media = tmedia(mid, entry['uid'], entry['date'],
-                           entry['type'], blob)
+            media = TMedia(entry)
             self._table_media[mid] = media
 
-    def __save_table_media_v2(self, outdir):
-        with open(os.path.join(outdir, 'table_media_v2.txt'),
+    def __save_table_media(self, outdir):
+        with open(os.path.join(outdir, 'table_media.txt'),
                   mode='w', encoding='utf-8') as fo:
+            separator = f"{'-' * 80}\n"
             for mid, media in self._table_media.items():
-                fo.write('-' * 80)
+                fo.write(separator)
                 date_string = to_date(media.date)
                 fo.write(
-                    '\nmid: {} uid: {} date: {} [{}] type: {}\n'.format(
+                    'mid: {} uid: {} date: {} [{}] type: {}\n'.format(
                         mid, media.uid, media.date, date_string,
-                        media.ttype))
+                        media.type))
                 if media.uid in self._table_users:
                     fo.write(
                         'From [users] -> {}\n\n'.format(
@@ -249,27 +220,19 @@ class tdb():
                 fo.write('{}\n\n'.format(media.blob))
 
     def __parse_table_messages(self):
-        self._sqlite_db_cursor.execute(f'SELECT * from {messages_name}')
-        entries = self._sqlite_db_cursor.fetchall()
-
+        entries = self._db.get_messages()
         for entry in entries:
-            mid = int(entry['mid'])
+            mid = entry.mid
             assert mid
             # assert mid not in self._table_messages
             logger.info('parsing messages, entry mid: %s', mid)
-            blob = self._blob_parser.parse_blob(entry['data'])
-            replyblob = None
-            if entry['replydata']:
-                replyblob = self._blob_parser.parse_blob(entry['replydata'])
+            replyblob = entry.replydata_blob
 
-            message = tmessage(mid, entry['uid'], entry['read_state'],
-                               entry['send_state'], entry['date'], blob,
-                               entry['out'], entry['ttl'], entry['media'],
-                               replyblob, entry['imp'], entry['mention'])
+            message = TMessage(entry)
 
             # The difference should be less than 5 seconds.
             date_from_blob = message.message_date_from_blob
-            if date_from_blob and date_from_blob != entry['date']:
+            if date_from_blob and date_from_blob != entry.date:
                 if message.date and date_from_blob > message.date:
                     assert (date_from_blob - message.message_date_from_blob) < 5
                 else:
@@ -280,10 +243,11 @@ class tdb():
     def __save_table_messages(self, outdir):
         with open(os.path.join(outdir, 'table_messages.txt'),
                   mode='w', encoding='utf-8') as fo:
+            separator = f"{'-' * 80}\n"
             for mid, tmsg in self._table_messages.items():
-                fo.write('-' * 80)
+                fo.write(separator)
                 fo.write(
-                    '\nmid: {} uid: {} read_state: {} send_state: {} '
+                    'mid: {} uid: {} read_state: {} send_state: {} '
                     'date: {} out: {} ttl: {} media: {} imp: {} '
                     'mention: {}\n'.format(
                         mid, tmsg.uid, tmsg.read_state, tmsg.send_state,
@@ -302,45 +266,36 @@ class tdb():
                             tmsg.blob_reply))
                 fo.write('\n')
 
-    def __parse_table_sent_files_v2(self):
-        self._sqlite_db_cursor.execute('SELECT * from sent_files_v2')
-        entries = self._sqlite_db_cursor.fetchall()
-
+    def __parse_table_sent_files(self):
+        entries = self._db.get_sent_files()
         for entry in entries:
-            uid = entry['uid']
+            uid = entry.uid
             assert uid
             assert uid not in self._table_sent_files
-            logger.info('parsing sent_files_v2, entry uid: %s', uid)
-            blob = self._blob_parser.parse_blob(entry['data'])
+            logger.info('parsing sent_files, entry uid: %s', uid)
             # Some old telegram versions have not 'type' / 'parent'.
-            entry_type = getattr(entry, 'type', None)
-            entry_parent = getattr(entry, 'parent', None)
-            sentfile = tsentfile(uid, entry_type, entry_parent, blob)
+            sentfile = TSentFile(entry)
             self._table_sent_files[uid] = sentfile
 
-    def __save_table_sent_files_v2(self, outdir):
-        with open(os.path.join(outdir, 'table_sent_files_v2.txt'),
+    def __save_table_sent_files(self, outdir):
+        with open(os.path.join(outdir, 'table_sent_files.txt'),
                   mode='w', encoding='utf-8') as fo:
+            separator = f"{'-' * 80}\n"
             for uid, sentfile in self._table_sent_files.items():
                 assert uid == sentfile.uid
-                fo.write('-' * 80)
-                fo.write(
-                    '\nuid: {} type: {} parent: {}\n\n'.format(
-                        sentfile.uid, sentfile.ttype, sentfile.parent))
-                fo.write('{}\n\n'.format(sentfile.blob))
+                fo.write(separator)
+                fo.write(f'uid: {uid} type: {sentfile.type} parent: {sentfile.parent}\n\n')
+                fo.write(f'{sentfile.blob}\n\n')
 
     def __parse_table_users(self):
-        self._sqlite_db_cursor.execute('SELECT * from users')
-        entries = self._sqlite_db_cursor.fetchall()
-
+        entries = self._db.get_users()
         user_self_set = False
         for entry in entries:
-            uid = int(entry['uid'])
+            uid = entry.uid
             assert uid
             assert uid not in self._table_users
             logger.info('parsing users, entry uid: %s', uid)
-            blob = self._blob_parser.parse_blob(entry['data'])
-            user = tuser(uid, entry['name'], entry['status'], blob)
+            user = TUser(entry)
 
             if user.is_self:
                 assert not user_self_set
@@ -352,61 +307,53 @@ class tdb():
     def __save_table_users(self, outdir):
         with open(os.path.join(outdir, 'table_users.txt'),
                   mode='w', encoding='utf-8') as fo:
+            separator = f"{'-' * 80}\n"
             for uid, user in self._table_users.items():
                 assert uid == user.uid
-                fo.write('-' * 80)
+                fo.write(separator)
                 # It seems status is the last update timestamp of the status,
                 # but only if the number is greater than 0.
                 if user.status > 0:
                     status = to_date(user.status)
                 else:
                     status = user.status
-                fo.write(
-                    '\nuid: {} name: {} status: {}\n'.format(
-                        user.uid, user.name, status))
-                fo.write('{}\n\n'.format(user.full_text_id))
-                fo.write('{}\n\n'.format(user.blob))
+                fo.write(f'uid: {user.uid} name: {user.name} status: {status}\n')
+                fo.write(f'{user.full_text_id}\n\n')
+                fo.write(f'{user.blob}\n\n')
 
     def __parse_table_user_settings(self):
-        try:
-            self._sqlite_db_cursor.execute('SELECT * from user_settings')
-            entries = self._sqlite_db_cursor.fetchall()
-        except Exception as ee:
-            logger.error('Exception accessing user_settings table. %s', str(ee))
-            return
-
+        entries = self._db.get_user_settings()
         for entry in entries:
-            uid = int(entry['uid'])
+            uid = entry.uid
             assert uid
             assert uid not in self._table_user_settings
             logger.info('parsing user_settings, entry uid: %s', uid)
-            blob = self._blob_parser.parse_blob(entry['info'])
-            tus = tuser_settings(uid, blob, entry['pinned'])
+            tus = TUserSettings(entry)
             self._table_user_settings[uid] = tus
 
     def __save_table_user_settings(self, outdir):
         with open(os.path.join(outdir, 'table_user_settings.txt'),
                   mode='w', encoding='utf-8') as fo:
+            separator = f"{'-' * 80}\n"
             for uid, tus in self._table_user_settings.items():
-                fo.write('-' * 80)
-                fo.write('\nuid: {} pinned: {}'.format(uid, tus.pinned))
+                fo.write(separator)
+                fo.write(f'uid: {uid} pinned: {tus.pinned}\n')
                 if uid in self._table_users:
-                    fo.write(
-                        '\nFrom [users] -> {}\n\n'.format(
-                            self._table_users[uid].full_text_id))
+                    tid = self._table_users[uid].full_text_id
+                    fo.write(f'From [users] -> {tid}\n\n')
                 else:
-                    fo.write('\nUser uid missing in [users]\n\n')
-                fo.write('{}\n\n'.format(tus.blob))
+                    fo.write('User uid missing in [users]\n\n')
+                fo.write(f'{tus.blob}\n\n')
 
     def parse(self):
-        # TODO check new 6.3.0 tables
+        # TODO check new 9.2.0 tables
         self.__parse_table_chats()
         self.__parse_table_contacts()
         self.__parse_table_dialogs()
         self.__parse_table_enc_chats()
-        self.__parse_table_media_v2()
+        self.__parse_table_media()
         self.__parse_table_messages()
-        self.__parse_table_sent_files_v2()
+        self.__parse_table_sent_files()
         self.__parse_table_users()
         self.__parse_table_user_settings()
 
@@ -415,21 +362,21 @@ class tdb():
         self.__save_table_contacts(self._outdirectory)
         self.__save_table_dialogs(self._outdirectory)
         self.__save_table_enc_chats(self._outdirectory)
-        self.__save_table_media_v2(self._outdirectory)
+        self.__save_table_media(self._outdirectory)
         self.__save_table_messages(self._outdirectory)
-        self.__save_table_sent_files_v2(self._outdirectory)
+        self.__save_table_sent_files(self._outdirectory)
         self.__save_table_users(self._outdirectory)
         self.__save_table_user_settings(self._outdirectory)
 
     def __chats_to_timeline(self):
         for uid, chat in self._table_chats.items():
-            row = trow()
+            row = TRow()
             row.source = 'chats'
             row.id = uid
             row.dialog = chat.shortest_id
             row.dialog_type = chat.chat_type
             row.content = '{} {}'.format(
-                chat.blob.sname, trow.dict_to_string(chat.dict_id))
+                chat.blob.sname, TRow.dict_to_string(chat.dict_id))
 
             if chat.creation_date:
                 row.timestamp = to_date(chat.creation_date)
@@ -450,7 +397,7 @@ class tdb():
                     df['megagroup'] = 'true'
                 if getattr(flags, 'has_participants_count', None):
                     df['members'] = chat.blob.participants_count
-                row.content += ' {}'.format(trow.dict_to_string(df))
+                row.content += ' {}'.format(TRow.dict_to_string(df))
 
             if chat.photo_info:
                 row.media = chat.photo_info
@@ -458,7 +405,7 @@ class tdb():
 
     def __dialogs_to_timeline(self):
         for did, dialog in self._table_dialogs.items():
-            row = trow()
+            row = TRow()
             row.source = 'dialogs'
             row.id = did
 
@@ -491,7 +438,7 @@ class tdb():
 
     def __enc_chats_to_timeline(self):
         for uid, echat in self._table_enc_chats.items():
-            row = trow()
+            row = TRow()
             row.source = 'enc_chats'
             row.id = uid
             row.dialog = echat.shortest_id
@@ -514,7 +461,7 @@ class tdb():
 
             echat_sname = getattr(echat.blob, 'sname', '')
             row.content = '{} {}'.format(
-                echat_sname, trow.dict_to_string(echat.dict_id))
+                echat_sname, TRow.dict_to_string(echat.dict_id))
 
             if echat.creation_date:
                 row.timestamp = to_date(echat.creation_date)
@@ -592,7 +539,7 @@ class tdb():
     def __messages_to_timeline(self):
         # pylint: disable=R0912,R0915
         for mid, msg in self._table_messages.items():
-            row = trow()
+            row = TRow()
             row.source = 'messages'
             row.id = mid
 
@@ -669,7 +616,7 @@ class tdb():
 
     def __users_to_timeline(self):
         for uid, user in self._table_users.items():
-            row = trow()
+            row = TRow()
             row.source = 'users'
             row.id = uid
             row.from_who = user.shortest_id
@@ -679,7 +626,7 @@ class tdb():
                 row.type = TYPE_USER_STATUS_UPDATE
                 row.timestamp = to_date(user.status)
 
-            row.content = '{}'.format(trow.dict_to_string(user.dict_id))
+            row.content = '{}'.format(TRow.dict_to_string(user.dict_id))
             ui_dict = {}
             flags = getattr(user.blob, 'flags', None)
             if flags:
@@ -692,7 +639,7 @@ class tdb():
                 elif user.blob.flags.is_contact:
                     ui_dict['contact'] = 'true'
             if ui_dict:
-                row.content += ' {}'.format(trow.dict_to_string(ui_dict))
+                row.content += ' {}'.format(TRow.dict_to_string(ui_dict))
 
             if user.photo_info:
                 row.media = user.photo_info
@@ -701,7 +648,7 @@ class tdb():
     def create_timeline(self):
         with open(os.path.join(self._outdirectory, 'timeline.csv'),
                   mode='w', encoding='utf-8') as fo:
-            fo.write('{}\n'.format(self._separator.join(trow.fieldsnames())))
+            fo.write('{}\n'.format(self._separator.join(TRow.fieldsnames())))
 
             for row in self.__chats_to_timeline():
                 fo.write('{}\n'.format(row.to_row_string(self._separator)))
@@ -718,24 +665,42 @@ class tdb():
             for row in self.__messages_to_timeline():
                 fo.write('{}\n'.format(row.to_row_string(self._separator)))
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-class trow():
 
-    def __init__(self):
-        self._timestamp = ''
-        self._source = ''
-        self._id = ''
-        self._type = ''
-        self._from_who = ''
-        self._from_id = ''
-        self._to_who = ''
-        self._to_id = ''
-        self._dialog = ''
-        self._dialog_type = ''
-        self._content = ''
-        self._media = ''
-        self._extra = {}
+class TBase:
+
+    def __init__(self, model):
+        self.model = model
+
+
+class TUIDModel(TBase):
+
+    @property
+    def blob(self):
+        return self.model.blob
+
+    @property
+    def uid(self):
+        return self.model.uid
+
+
+class TRow():
+
+    # def __init__(self):
+    #     self._timestamp = ''
+    #     self._source = ''
+    #     self._id = ''
+    #     self._type = ''
+    #     self._from_who = ''
+    #     self._from_id = ''
+    #     self._to_who = ''
+    #     self._to_id = ''
+    #     self._dialog = ''
+    #     self._dialog_type = ''
+    #     self._content = ''
+    #     self._media = ''
+    #     self._extra = {}
 
     def fieldsnames():
         # pylint: disable=E0211,R0201
@@ -763,172 +728,159 @@ class trow():
             self._dialog_type, separator,
             escape_csv_string(self._content), separator,
             self._media, separator,
-            escape_csv_string(trow.dict_to_string(self._extra)))
+            escape_csv_string(TRow.dict_to_string(self._extra)))
 
     @property
     def timestamp(self):
-        return self._timestamp
+        return self.model.timestamp
 
     @timestamp.setter
     def timestamp(self, value):
-        self._timestamp = value
+        self.model.timestamp = value
 
     @property
     def source(self):
-        return self._source
+        return self.model.source
 
     @source.setter
     def source(self, value):
-        self._source = value
+        self.model.source = value
 
     @property
     def id(self):
-        return self._id
+        return self.model.id
 
     @id.setter
     def id(self, value):
-        self._id = value
+        self.model.id = value
 
     @property
     def type(self):
-        return self._type
+        return self.model.type
 
     @type.setter
     def type(self, value):
-        self._type = value
+        self.model.type = value
 
     @property
     def from_who(self):
-        return self._from_who
+        return self.model.from_who
 
     @from_who.setter
     def from_who(self, value):
-        self._from_who = value
+        self.model.from_who = value
 
     @property
     def from_id(self):
-        return self._from_id
+        return self.model.from_id
 
     @from_id.setter
     def from_id(self, value):
-        self._from_id = value
+        self.model.from_id = value
 
     @property
     def to_who(self):
-        return self._to_who
+        return self.model.to_who
 
     @to_who.setter
     def to_who(self, value):
-        self._to_who = value
+        self.model.to_who = value
 
     @property
     def to_id(self):
-        return self._to_id
+        return self.model.to_id
 
     @to_id.setter
     def to_id(self, value):
-        self._to_id = value
+        self.model.to_id = value
 
     @property
     def dialog(self):
-        return self._dialog
+        return self.model.dialog
 
     @dialog.setter
     def dialog(self, value):
-        self._dialog = value
+        self.model.dialog = value
 
     @property
     def dialog_type(self):
-        return self._dialog_type
+        return self.model.dialog_type
 
     @dialog_type.setter
     def dialog_type(self, value):
-        self._dialog_type = value
+        self.model.dialog_type = value
 
     @property
     def content(self):
-        return self._content
+        return self.model.content
 
     @content.setter
     def content(self, value):
-        self._content = value
+        self.model.content = value
 
     @property
     def media(self):
-        return self._media
+        return self.model.media
 
     @media.setter
     def media(self, value):
-        self._media = value
+        self.model.media = value
 
     @property
     def extra(self):
-        return self._extra
+        return self.model.extra
 
     @extra.setter
     def extra(self, value):
         pass
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-class tchat():
 
-    def __init__(self, uid, name, blob):
-        self._uid = int(uid)
-        self._name = name
-        self._blob = blob
-
-    @property
-    def blob(self):
-        return self._blob
-
-    @property
-    def uid(self):
-        return self._uid
+class TChat(TUIDModel):
 
     @property
     def name(self):
-        return self._name
+        return self.model.name
 
     @property
     def dict_id(self):
-        dictid = {'title': self.blob.title.string}
-        flags = getattr(self.blob, 'flags', None)
-        has_username = getattr(flags, 'has_username', None)
+        dictid = {}
+        dictid['title'] = search_attribute(self.blob, 'title.string')
+        has_username = search_attribute(self.blob, 'flags.has_username')
         if has_username:
-            dictid['username'] = self.blob.username.string
+            dictid['username'] = search_attribute(self.blob, 'username.string')
         return dictid
 
     @property
     def chat_type(self):
         ct = ''
-        flags = getattr(self.blob, 'flags', None)
-        if flags:
-            left = getattr(flags, 'left', None)
-            has_username = getattr(flags, 'has_username', None)
-            broadcast = getattr(flags, 'broadcast', None)
-            megagroup = getattr(flags, 'megagroup', None)
-            if broadcast:
-                assert not megagroup
-                ct = '1-N'
-            elif megagroup:
-                assert not broadcast
-                ct = 'N-N'
-            else:
-                ct = '?-?'
-            if has_username:
-                ct += ' pub'
-            else:
-                ct += ' prv'
-            if left:
-                ct += ' left'
+        if not hasattr(self.blob, 'flags'):
+            return ct
+        left = search_attribute(self.blob, 'flags.left')
+        has_username = search_attribute(self.blob, 'flags.has_username')
+        broadcast = search_attribute(self.blob, 'flags.broadcast')
+        megagroup = search_attribute(self.blob, 'flags.megagroup')
+        if broadcast:
+            assert not megagroup
+            ct = '1-N'
+        elif megagroup:
+            assert not broadcast
+            ct = 'N-N'
+        else:
+            ct = '?-?'
+        if has_username:
+            ct += ' pub'
+        else:
+            ct += ' prv'
+        if left:
+            ct += ' left'
         return ct
 
     @property
     def shortest_id(self):
         sid = ''
-        flags = getattr(self.blob, 'flags', None)
-        has_username = getattr(flags, 'has_username', None)
+        has_username = search_attribute(self.blob, 'flags.has_username')
         if has_username:
             if self.blob.username.string:
                 sid = '{}'.format(self.blob.username.string)
@@ -940,16 +892,12 @@ class tchat():
 
     @property
     def creation_date(self):
-        date = getattr(self.blob, 'date', None)
-        if date:
-            epoch = getattr(date, 'epoch', None)
-            return epoch
-        return None
+        return search_attribute(self.blob, 'date.epoch')
 
     @property
     def photo_info(self):
         ph_info = ''
-        blob = self._blob
+        blob = self.blob
         photo = getattr(blob, 'photo', None)
         if photo:
             ph_blob = blob.photo.photo
@@ -966,175 +914,131 @@ class tchat():
                 ph_info += ' big: {}'.format(pbf)
         return ph_info
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-class tdialog():
 
-    def __init__(self, did, date, unread_count, last_mid, inbox_max, outbox_max,
-                 last_mid_i, unread_count_i, pts, date_i, pinned, flags):
-        self._did = int(did)
-        self._date = int(date)
-        self._unread_count = int(unread_count)
-        self._last_mid = int(last_mid) if last_mid else 0
-        self._inbox_max = int(inbox_max)
-        self._outbox_max = int(outbox_max)
-        self._last_mid_i = int(last_mid_i)
-        self._unread_count_i = int(unread_count_i)
-        self._pts = int(pts)
-        self._date_i = int(date_i)
-        self._pinned = int(pinned)
-        self._flags = int(flags)
+class TDialog(TBase):
 
     @property
     def did(self):
-        return self._did
+        return self.model.did
 
     @property
     def date(self):
-        return self._date
+        return self.model.date
 
     @property
     def unread_count(self):
-        return self._unread_count
+        return self.model.unread_count
 
     @property
     def last_mid(self):
-        return self._last_mid
+        return self.model.last_mid
 
     @property
     def inbox_max(self):
-        return self._inbox_max
+        return self.model.inbox_max
 
     @property
     def outbox_max(self):
-        return self._outbox_max
+        return self.model.outbox_max
 
     @property
     def last_mid_i(self):
-        return self._last_mid_i
+        return self.model.last_mid_i
 
     @property
     def unread_count_i(self):
-        return self._unread_count_i
+        return self.model.unread_count_i
 
     @property
     def pts(self):
-        return self._pts
+        return self.model.pts
 
     @property
     def date_i(self):
-        return self._date_i
+        return self.model.date_i
 
     @property
     def pinned(self):
-        return self._pinned
+        return self.model.pinned
 
     @property
     def flags(self):
-        return self._flags
+        return self.model.flags
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-class techat():
-    # pylint: disable=R0904
-    def __init__(self, uid, user, name, blob, g, authkey, ttl, layer, seq_in,
-                 seq_out, use_count, exchange_id, key_date, fprint,
-                 fauthkey, khash, in_seq_no, admin_id, mtproto_seq):
-        self._uid = int(uid)
-        self._user = int(user)
-        self._name = name
-        self._blob = blob
-        self._g = g
-        self._authkey = authkey
-        self._ttl = int(ttl)
-        self._layer = int(layer)
-        self._seq_in = int(seq_in)
-        self._seq_out = int(seq_out)
-        self._use_count = int(use_count)
-        self._exchange_id = int(exchange_id)
-        self._key_date = int(key_date)
-        self._fprint = fprint
-        self._fauthkey = fauthkey
-        self._khash = khash
-        self._in_seq_no = int(in_seq_no)
-        self._admin_id = int(admin_id)
-        self._mtproto_seq = int(mtproto_seq)
 
-    @property
-    def uid(self):
-        return self._uid
+class TEchat(TUIDModel):
 
     @property
     def user(self):
-        return self._user
+        return self.model.user
 
     @property
     def name(self):
-        return self._name
-
-    @property
-    def blob(self):
-        return self._blob
+        return self.model.name
 
     @property
     def g(self):
-        return self._g
+        return self.model.g
 
     @property
     def authkey(self):
-        return self._authkey
+        return self.model.authkey
 
     @property
     def ttl(self):
-        return self._ttl
+        return self.model.ttl
 
     @property
     def layer(self):
-        return self._layer
+        return self.model.layer
 
     @property
     def seq_in(self):
-        return self._seq_in
+        return self.model.seq_in
 
     @property
     def seq_out(self):
-        return self._seq_out
+        return self.model.seq_out
 
     @property
     def use_count(self):
-        return self._use_count
+        return self.model.use_count
 
     @property
     def exchange_id(self):
-        return self._exchange_id
+        return self.model.exchange_id
 
     @property
     def key_date(self):
-        return self._key_date
+        return self.model.key_date
 
     @property
     def fprint(self):
-        return self._fprint
+        return self.model.fprint
 
     @property
     def fauthkey(self):
-        return self._fauthkey
+        return self.model.fauthkey
 
     @property
     def khash(self):
-        return self._khash
+        return self.model.khash
 
     @property
     def in_seq_no(self):
-        return self._in_seq_no
+        return self.model.in_seq_no
 
     @property
     def admin_id(self):
-        return self._admin_id
+        return self.model.admin_id
 
     @property
     def mtproto_seq(self):
-        return self._mtproto_seq
+        return self.model.mtproto_seq
 
     @property
     def dict_id(self):
@@ -1170,111 +1074,90 @@ class techat():
         return None
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-class tmedia():
-
-    def __init__(self, mid, uid, date, ttype, blob):
-        self._mid = int(mid)
-        self._uid = int(uid)
-        self._date = date
-        self._ttype = int(ttype)
-        self._blob = blob
+class TMedia(TBase):
 
     @property
     def blob(self):
-        return self._blob
+        return self.model.blob
 
     @property
     def mid(self):
-        return self._mid
+        return self.model.mid
 
     @property
     def uid(self):
-        return self._uid
+        return self.model.uid
 
     @property
     def date(self):
-        return self._date
+        return self.model.date
 
     @property
-    def ttype(self):
-        return self._ttype
+    def type(self):
+        return self.model.type
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-class tmessage():
 
-    def __init__(self, mid, uid, read_state, send_state, date, blob,
-                 out, ttl, media, blob_reply, imp, mention):
-        self._mid = int(mid)
-        self._uid = int(uid)
-        self._read_state = int(read_state)
-        self._send_state = int(send_state)
-        self._date = int(date)
-        self._blob = blob
-        self._out = int(out)
-        self._ttl = int(ttl)
-        self._table_media = int(media)
-        self._blob_reply = blob_reply
-        self._imp = int(imp)
-        self._mention = int(mention)
+class TMessage(TBase):
 
     @property
     def blob(self):
-        return self._blob
+        return self.model.blob
 
     @blob.setter
     def blob(self, value):
-        self._blob = value
+        self.model.blob = value
 
     @property
     def blob_reply(self):
-        return self._blob_reply
+        return self.model.replydata_blob
 
     @blob_reply.setter
     def blob_reply(self, value):
-        self._blob_reply = value
+        self.model.replydata_blob = value
 
     @property
     def mid(self):
-        return self._mid
+        return self.model.mid
 
     @property
     def uid(self):
-        return self._uid
+        return self.model.uid
 
     @property
     def read_state(self):
-        return self._read_state
+        return self.model.read_state
 
     @property
     def send_state(self):
-        return self._send_state
+        return self.model.send_state
 
     @property
     def date(self):
-        return self._date
+        return self.model.date
 
     @property
     def out(self):
-        return self._out
+        return self.model.out
 
     @property
     def ttl(self):
-        return self._ttl
+        return self.model.ttl
 
     @property
     def media(self):
-        return self._table_media
+        return self.model.media
 
     @property
     def imp(self):
-        return self._imp
+        return self.model.imp
 
     @property
     def mention(self):
-        return self._mention
+        return self.model.mention
 
     @property
     def to_id_and_type(self):
@@ -1294,10 +1177,8 @@ class tmessage():
 
     @property
     def message_date_from_blob(self):
-        date = getattr(self.blob, 'date', None)
-        if date:
-            epoch = getattr(date, 'epoch', None)
-            return epoch
+        if hasattr(self.blob, 'date'):
+            return getattr(self.blob.date, 'epoch', None)
         return None
 
     @property
@@ -1333,105 +1214,93 @@ class tmessage():
             return action_copy.sname, action_copy
         return None, None
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-class tsentfile():
 
-    def __init__(self, uid, ttype, parent, blob):
-        self._uid = uid
-        self._ttype = int(ttype) if ttype else 0
-        self._parent = parent
-        self._blob = blob
+class TSentFile(TBase):
 
     @property
     def blob(self):
-        return self._blob
+        return self.model.blob
 
     @property
     def uid(self):
-        return self._uid
+        return self.model.uid
 
     @property
     def ttype(self):
-        return self._ttype
+        return self.model.type
 
     @property
     def parent(self):
-        return self._parent
+        return self.model.parent
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-class tuser_settings():
 
-    def __init__(self, uid, blob, pinned):
-        self._uid = int(uid)
-        self._blob = blob
-        self._pinned = int(pinned)
+class TUserSettings(TBase):
 
     @property
     def uid(self):
-        return self._uid
+        return self.model.uid
 
     @property
     def blob(self):
-        return self._blob
+        return self.model.info_blob
 
     @property
     def pinned(self):
-        return self._pinned
+        return self.model.pinned
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-class tuser():
 
-    def __init__(self, uid, name, status, blob):
-        self._uid = int(uid)
-        self._name = name
-        self._status = int(status)
-        self._blob = blob
-        # Defensive check
-        assert int(uid) == int(blob.id)
+class TUser(TBase):
+
+    def __init__(self, model):
+        super().__init__(model)
+        assert self.uid == self.blob.id
 
     @property
     def uid(self):
-        return self._uid
+        return self.model.uid
 
     @property
     def name(self):
-        return self._name
+        return self.model.name
 
     @property
     def status(self):
-        return self._status
+        return self.model.status
 
     @property
     def blob(self):
-        return self._blob
+        return self.model.blob
 
     # The following are useful fiels extracted from the blob.
 
     @property
     def first_name(self):
-        if self._blob.flags.has_first_name:
-            return self._blob.first_name.string
+        if self.model.blob.flags.has_first_name:
+            return self.model.blob.first_name.string
         return ''
 
     @property
     def last_name(self):
-        if self._blob.flags.has_last_name:
-            return self._blob.last_name.string
+        if self.model.blob.flags.has_last_name:
+            return self.model.blob.last_name.string
         return ''
 
     @property
     def username(self):
-        if self._blob.flags.has_username:
-            return self._blob.username.string
+        if self.model.blob.flags.has_username:
+            return self.model.blob.username.string
         return ''
 
     @property
     def phone(self):
-        if self._blob.flags.has_phone:
-            return self._blob.phone.string
+        if self.model.blob.flags.has_phone:
+            return self.model.blob.phone.string
         return ''
 
     @property
@@ -1474,7 +1343,7 @@ class tuser():
     @property
     def photo_info(self):
         ph_info = ''
-        blob = self._blob
+        blob = self.model.blob
         photo = getattr(blob, 'photo', None)
         if photo:
             ph_blob = blob.photo.photo
@@ -1500,4 +1369,4 @@ class tuser():
                 return flags.is_self
         return False
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------

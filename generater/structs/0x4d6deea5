@@ -1,0 +1,31 @@
+    @constructor(0x4d6deea5, 'update_short_chat_message')
+    def struct_0x4d6deea5(self):
+        return Struct(
+            'sname' / Computed('update_short_sent_message'),
+            'signature' / Hex(Const(0x4d6deea5, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_out=2,
+                                is_mentioned=16,
+                                is_media_unread=32,
+                                is_silent=8192,
+                                has_fwd_from=4,
+                                has_via_bot_id=2048,
+                                has_reply_to=8,
+                                has_entities=128,
+                                has_ttl_period=33554432),
+            'id' / Int32ul,
+            'from_id' / Int64ul,
+            'chat_id' / Int64ul,
+            'message' / TString,
+            'pts' / Int32ul,
+            'pts_count' / Int32ul,
+            'date' / TTimestamp,
+            'fwd_from' / If(this.flags.has_fwd_from,
+                            self.message_fwd_header_structures('fwd_from')),
+            'via_bot_id' / If(this.flags.has_via_bot_id, Int64ul),
+            'reply_to' / If(this.flags.has_reply_to, self.struct_0xa6d57763()),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(
+                                self.message_entity_structures('entities'),
+                                'entities')),
+            'ttl_period' / If(this.flags.has_ttl_period, Int32ul))

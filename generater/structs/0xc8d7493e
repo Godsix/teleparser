@@ -1,0 +1,8 @@
+    @constructor(0xc8d7493e, 'chat_participant_layer131')
+    def struct_0xc8d7493e(self):
+        return Struct(
+            'sname' / Computed('chat_participant_layer131'),
+            'signature' / Computed(Hex(Const(0xc8d7493e, Int32ul))),
+            'user_id' / Int32ul,
+            'inviter_id' / Int32ul,
+            'date' / TTimestamp)

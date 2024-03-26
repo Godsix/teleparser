@@ -1,0 +1,7 @@
+    @constructor(0x9ba2d800, 'chat_empty_layer131')
+    def struct_0x9ba2d800(self):
+        return Struct(
+            'sname' / Computed('chat_empty_layer131'),
+            'signature' / Hex(Const(0x9ba2d800, Int32ul)),
+            'id' / Int32ul,
+            'title' / Computed('DELETED'))

@@ -1,0 +1,16 @@
+    @constructor(0x4bc6589a, 'message_search_global')
+    def struct_0x4bc6589a(self):
+        return Struct(
+            'sname' / Computed('message_search_global'),
+            'signature' / Hex(Const(0x4bc6589a, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_folder_id=1),
+            'folder_id' / If(this.flags.has_folder_id, Int32ul),
+            'q' / TString,
+            'filter' / self.message_filter('filter'),
+            'min_date' / TTimestamp,
+            'max_date' / TTimestamp,
+            'offset_rate' / Int32ul,
+            'offset_peer' / self.input_peer_structures('offset_peer'),
+            'offset_id' / Int32ul,
+            'limit' / Int32ul)

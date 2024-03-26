@@ -1,0 +1,9 @@
+    @constructor(0xd8214d41, 'photo_path_size')
+    def struct_0xd8214d41(self):
+        return Struct(
+            'sname' / Computed('photo_path_size'),
+            'signature' / Hex(Const(0xd8214d41, Int32ul)),
+            'type' / TString,
+            'bytes' / TBytes,
+            'h' / Computed(50),
+            'w' / Computed(50))

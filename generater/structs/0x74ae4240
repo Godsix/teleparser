@@ -1,0 +1,13 @@
+    @constructor(0x74ae4240, 'updates')
+    def struct_0x74ae4240(self):
+        return Struct(
+            'sname' / Computed('updates'),
+            'signature' / Hex(Const(0x74ae4240, Int32ul)),
+            'updates' / self.struct_0x1cb5c415(
+                self.update_structures('updates'), 'updates'),
+            'users' / self.struct_0x1cb5c415(self.user_structures('users'),
+                                             'users'),
+            'chats' / self.struct_0x1cb5c415(self.chat_structures('chats'),
+                                             'chats'),
+            'date' / TTimestamp,
+            'seq' / Int32ul)
