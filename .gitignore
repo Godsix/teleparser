@@ -1,0 +1,5 @@
+*.db
+.idea/
+.gradle/
+.spyproject/
+utils/Telegram
