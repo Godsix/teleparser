@@ -5,12 +5,10 @@ Created on Fri Dec  9 09:12:01 2022
 @author: 皓
 """
 from functools import wraps, lru_cache
-from construct import (Struct, Computed,
-                       Int32ul, Int64ul, Double, Hex, FlagsEnum,
-                       GreedyBytes, Array, IfThenElse, If, Peek, Const,
-                       LazyBound, Switch, Terminated,
-                       setGlobalPrintFullStrings, setGlobalPrintPrivateEntries,
-                       this)
+from construct import (Struct, Computed, Int32ul, Int64ul, Double, Hex,
+                       FlagsEnum, GreedyBytes, Array, IfThenElse, If, Peek,
+                       Const, LazyBound, Switch, this,
+                       setGlobalPrintFullStrings, setGlobalPrintPrivateEntries)
 from .common import TString, TBytes, TBool, TTimestamp
 import logger
 # -----------------------------------------------------------------------------
@@ -38,13 +36,14 @@ def constructor(constructor, name, use_lru=False):
     else:
         return lru_cache()
 
+
 structures = lru_cache()
 
 # -----------------------------------------------------------------------------
 
 
 class TLStruct:  # pylint: disable=C0103
-    LAYER = 149
+    LAYER = 150
 
     def __init__(self):
         setGlobalPrintFullStrings(True)
@@ -625,6 +624,12 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('auth_code_type_missed_call'),
             'signature' / Hex(Const(0xd61ad6ee, Int32ul)))
 
+    @constructor(0x06ed998c, 'auth_code_type_fragment_sms')
+    def struct_0x06ed998c(self):
+        return Struct(
+            'sname' / Computed('auth_code_type_fragment_sms'),
+            'signature' / Hex(Const(0x06ed998c, Int32ul)))
+
     @structures
     def auth_code_type_structures(self, name):
         # pylint: disable=C0301
@@ -632,7 +637,8 @@ class TLStruct:  # pylint: disable=C0103
             0x72a3158c: LazyBound(self.struct_0x72a3158c),
             0x741cd3e3: LazyBound(self.struct_0x741cd3e3),
             0x226ccefb: LazyBound(self.struct_0x226ccefb),
-            0xd61ad6ee: LazyBound(self.struct_0xd61ad6ee)
+            0xd61ad6ee: LazyBound(self.struct_0xd61ad6ee),
+            0x06ed998c: LazyBound(self.struct_0x06ed998c)
         }
         return 'auth_code_type_structures' / Struct(
             '_signature' / Peek(Int32ul),
@@ -736,6 +742,14 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0xc000bba2, Int32ul)),
             'length' / Int32ul)
 
+    @constructor(0xd9565c39, 'auth_sent_code_type_fragment_sms')
+    def struct_0xd9565c39(self):
+        return Struct(
+            'sname' / Computed('auth_sent_code_type_fragment_sms'),
+            'signature' / Hex(Const(0xd9565c39, Int32ul)),
+            'url' / TString,
+            'length' / Int32ul)
+
     @structures
     def auth_sent_code_type_structures(self, name):
         # pylint: disable=C0301
@@ -746,7 +760,8 @@ class TLStruct:  # pylint: disable=C0103
             0xa5491dea: LazyBound(self.struct_0xa5491dea),
             0xab03c6d9: LazyBound(self.struct_0xab03c6d9),
             0x82006484: LazyBound(self.struct_0x82006484),
-            0xc000bba2: LazyBound(self.struct_0xc000bba2)
+            0xc000bba2: LazyBound(self.struct_0xc000bba2),
+            0xd9565c39: LazyBound(self.struct_0xd9565c39)
         }
         return 'auth_sent_code_type_structures' / Struct(
             '_signature' / Peek(Int32ul),
@@ -1532,6 +1547,12 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0xae168909, Int32ul)),
             'topic' / self.forum_topic_structures('topic'))
 
+    @constructor(0x64f36dfc, 'channel_admin_log_event_action_toggle_anti_spam')
+    def struct_0x64f36dfc(self):
+        return Struct(
+            'sname' / Computed('channel_admin_log_event_action_toggle_anti_spam'),
+            'signature' / Hex(Const(0x64f36dfc, Int32ul)),
+            'new_value' / TBool)
     @structures
     def channel_admin_log_event_action_structures(self, name):
         # pylint: disable=C0301
@@ -1577,7 +1598,8 @@ class TLStruct:  # pylint: disable=C0103
             0xcb2ac766: LazyBound(self.struct_0xcb2ac766),
             0xf04fb3a9: LazyBound(self.struct_0xf04fb3a9),
             0x58707d28: LazyBound(self.struct_0x58707d28),
-            0xae168909: LazyBound(self.struct_0xae168909)
+            0xae168909: LazyBound(self.struct_0xae168909),
+            0x64f36dfc: LazyBound(self.struct_0x64f36dfc)
         }
         return 'channel_admin_log_event_action_structures' / Struct(
             '_signature' / Peek(Int32ul),
@@ -5460,11 +5482,35 @@ class TLStruct:  # pylint: disable=C0103
             name / Switch(this._signature, tag_map))
 
     # -------------------------------------------------------------------------
-
-    @constructor(0xa8edd0f5, 'dialog')
-    def struct_0xa8edd0f5(self):
+    @constructor(0xd58a08c6, 'dialog')
+    def struct_0xd58a08c6(self):
         return Struct(
             'sname' / Computed('dialog'),
+            'signature' / Hex(Const(0xd58a08c6, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_pinned=4,
+                                is_unread_mark=8,
+                                has_pts=1,
+                                has_draft=2,
+                                has_folder_id=16,
+                                has_ttl_period=32),
+            'peer' / self.peer_structures('peer'),
+            'top_message' / Int32ul,
+            'read_inbox_max_id' / Int32ul,
+            'read_outbox_max_id' / Int32ul,
+            'unread_count' / Int32ul,
+            'unread_mentions_count' / Int32ul,
+            'unread_reactions_count' / Int32ul,
+            'notify_settings' / self.peer_notify_settings_structures('notify_settings'),
+            'pts' / If(this.flags.has_pts, Int32ul),
+            'draft' / If(this.flags.has_draft, self.draft_message_structures('draft')),
+            'folder_id' / If(this.flags.has_folder_id, Int32ul),
+            'ttl_period' / If(this.flags.has_ttl_period, Int32ul))
+
+    @constructor(0xa8edd0f5, 'dialog_layer149')
+    def struct_0xa8edd0f5(self):
+        return Struct(
+            'sname' / Computed('dialog_layer149'),
             'signature' / Hex(Const(0xa8edd0f5, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 is_pinned=4,
@@ -5505,6 +5551,7 @@ class TLStruct:  # pylint: disable=C0103
     def dialog_structures(self, name):
         # pylint: disable=C0301
         tag_map = {
+            0xd58a08c6: LazyBound(self.struct_0xd58a08c6),
             0xa8edd0f5: LazyBound(self.struct_0xa8edd0f5),
             0x71bd134c: LazyBound(self.struct_0x71bd134c)
         }
@@ -8582,10 +8629,10 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('message_action_user_joined'),
             'signature' / Hex(Const(0x55555550, Int32ul)))
 
-    @constructor(0xb18a431c, 'message_action_topic_edit')
+    @constructor(0xb18a431c, 'message_action_topic_edit_layer149')
     def struct_0xb18a431c(self):
         return Struct(
-            'sname' / Computed('message_action_topic_edit'),
+            'sname' / Computed('message_action_topic_edit_layer149'),
             'signature' / Hex(Const(0xb18a431c, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 has_title=1,
@@ -8594,6 +8641,21 @@ class TLStruct:  # pylint: disable=C0103
             'title' / If(this.flags.has_title, TString),
             'icon_emoji_id' / If(this.flags.has_icon_emoji_id, Int64ul),
             'closed' / If(this.flags.has_closed, TBool))
+
+    @constructor(0xc0944820, 'message_action_topic_edit')
+    def struct_0xc0944820(self):
+        return Struct(
+            'sname' / Computed('message_action_topic_edit'),
+            'signature' / Hex(Const(0xc0944820, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_title=1,
+                                has_icon_emoji_id=2,
+                                has_closed=4,
+                                has_hidden=8),
+            'title' / If(this.flags.has_title, TString),
+            'icon_emoji_id' / If(this.flags.has_icon_emoji_id, Int64ul),
+            'closed' / If(this.flags.has_closed, TBool),
+            'hidden' / If(this.flags.has_hidden, TBool))
 
     @constructor(0x55555551, 'message_action_user_updated_photo')
     def struct_0x55555551(self):
@@ -8615,11 +8677,20 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('message_action_ttl_change'),
             'signature' / Hex(Const(0x55555552, Int32ul)),
             'ttl' / Int32ul)
-
-    @constructor(0xaa1afbfd, 'message_action_set_messages_ttl')
-    def struct_0xaa1afbfd(self):
+    @constructor(0x3c134d7b, 'message_action_set_messages_ttl')
+    def struct_0x3c134d7b(self):
         return Struct(
             'sname' / Computed('message_action_set_messages_ttl'),
+            'signature' / Hex(Const(0x3c134d7b, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_auto_setting_from=1),
+            'period' / Int32ul,
+            'auto_setting_from' / If(this.flags.has_auto_setting_from, Int64ul))
+
+    @constructor(0xaa1afbfd, 'message_action_set_messages_ttl_layer149')
+    def struct_0xaa1afbfd(self):
+        return Struct(
+            'sname' / Computed('message_action_set_messages_ttl_layer149'),
             'signature' / Hex(Const(0xaa1afbfd, Int32ul)),
             'period' / Int32ul)
 
@@ -8831,9 +8902,11 @@ class TLStruct:  # pylint: disable=C0103
             0x55555557: LazyBound(self.struct_0x55555557),
             0x55555550: LazyBound(self.struct_0x55555550),
             0xb18a431c: LazyBound(self.struct_0xb18a431c),
+            0xc0944820: LazyBound(self.struct_0xc0944820),
             0x55555551: LazyBound(self.struct_0x55555551),
             0x5e3cfc4b: LazyBound(self.struct_0x5e3cfc4b),
             0x55555552: LazyBound(self.struct_0x55555552),
+            0x3c134d7b: LazyBound(self.struct_0x3c134d7b),
             0xaa1afbfd: LazyBound(self.struct_0xaa1afbfd),
             0xd95c6154: LazyBound(self.struct_0xd95c6154),
             0x47dd8079: LazyBound(self.struct_0x47dd8079),
@@ -12674,6 +12747,13 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
+    @constructor(0xa2a5371e, 'peer_channel')
+    def struct_0xa2a5371e(self):
+        return Struct(
+            'sname' / Computed('peer_channel'),
+            'signature' / Hex(Const(0xa2a5371e, Int32ul)),
+            'channel_id' / Int64ul)
+
     @constructor(0xbddde532, 'peer_channel_layer131')
     def struct_0xbddde532(self):
         return Struct(
@@ -12688,12 +12768,12 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0x59511722, Int32ul)),
             'user_id' / Int64ul)
 
-    @constructor(0xa2a5371e, 'peer_channel')
-    def struct_0xa2a5371e(self):
+    @constructor(0x9db1bc6d, 'peer_user_layer131')
+    def struct_0x9db1bc6d(self):
         return Struct(
-            'sname' / Computed('peer_channel'),
-            'signature' / Hex(Const(0xa2a5371e, Int32ul)),
-            'channel_id' / Int64ul)
+            'sname' / Computed('peer_user_layer131'),
+            'signature' / Hex(Const(0x9db1bc6d, Int32ul)),
+            'user_id' / Int32ul)
 
     @constructor(0x36c6019a, 'peer_chat')
     def struct_0x36c6019a(self):
@@ -12701,13 +12781,6 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('peer_chat'),
             'signature' / Hex(Const(0x36c6019a, Int32ul)),
             'chat_id' / Int64ul)
-
-    @constructor(0x9db1bc6d, 'peer_user_layer131')
-    def struct_0x9db1bc6d(self):
-        return Struct(
-            'sname' / Computed('peer_user_layer131'),
-            'signature' / Hex(Const(0x9db1bc6d, Int32ul)),
-            'user_id' / Int32ul)
 
     @constructor(0xbad0e5bb, 'peer_chat_layer131')
     def struct_0xbad0e5bb(self):
@@ -12720,11 +12793,11 @@ class TLStruct:  # pylint: disable=C0103
     def peer_structures(self, name):
         # pylint: disable=C0301
         tag_map = {
+            0xa2a5371e: LazyBound(self.struct_0xa2a5371e),
             0xbddde532: LazyBound(self.struct_0xbddde532),
             0x59511722: LazyBound(self.struct_0x59511722),
-            0xa2a5371e: LazyBound(self.struct_0xa2a5371e),
-            0x36c6019a: LazyBound(self.struct_0x36c6019a),
             0x9db1bc6d: LazyBound(self.struct_0x9db1bc6d),
+            0x36c6019a: LazyBound(self.struct_0x36c6019a),
             0xbad0e5bb: LazyBound(self.struct_0xbad0e5bb)
         }
         return 'peer_structures' / Struct(
@@ -13928,6 +14001,19 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('secure_file_empty'),
             'signature' / Hex(Const(0x64199744, Int32ul)))
 
+    @constructor(0x7d09c27e, 'secure_file')
+    def struct_0x7d09c27e(self):
+        return Struct(
+            'sname' / Computed('secure_file'),
+            'signature' / Hex(Const(0x7d09c27e, Int32ul)),
+            'id' / Int64ul,
+            'access_hash' / Int64ul,
+            'size' / Int64ul,
+            'dc_id' / Int32ul,
+            'date' / TTimestamp,
+            'file_hash' / TBytes,
+            'secret' / TBytes)
+
     @constructor(0xe0277a62, 'secure_file_layer142')
     def struct_0xe0277a62(self):
         return Struct(
@@ -13946,6 +14032,7 @@ class TLStruct:  # pylint: disable=C0103
         # pylint: disable=C0301
         tag_map = {
             0x64199744: LazyBound(self.struct_0x64199744),
+            0x7d09c27e: LazyBound(self.struct_0x7d09c27e),
             0xe0277a62: LazyBound(self.struct_0xe0277a62)
         }
         return 'secure_file_structures' / Struct(
@@ -14824,10 +14911,10 @@ class TLStruct:  # pylint: disable=C0103
             'wallpaper' / If(this.flags.has_wallpaper,
                              self.wall_paper_structures('wallpaper')))
 
-    @constructor(0x9c14984a, 'theme_settings')
+    @constructor(0x9c14984a, 'theme_settings_layer131')
     def struct_0x9c14984a(self):
         return Struct(
-            'sname' / Computed('theme_settings'),
+            'sname' / Computed('theme_settings_layer131'),
             'signature' / Hex(Const(0x9c14984a, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 has_top_color=1,
@@ -24305,3 +24392,159 @@ class TLStruct:  # pylint: disable=C0103
                                 is_force=1),
             'channel' / self.input_channel_structures('channel'),
             'order' / self.struct_0x1cb5c415(Int32ul, 'order'))
+
+    @constructor(0xd9565c39, 'auth_sent_code_type_fragment_sms')
+    def struct_0xd9565c39(self):
+        return Struct(
+            'sname' / Computed('auth_sent_code_type_fragment_sms'),
+            'signature' / Hex(Const(0xd9565c39, Int32ul)),
+            'url' / TString,
+            'length' / Int32ul)
+
+    @constructor(0x41bf109b, 'exported_contact_token')
+    def struct_0x41bf109b(self):
+        return Struct(
+            'sname' / Computed('exported_contact_token'),
+            'signature' / Hex(Const(0x41bf109b, Int32ul)),
+            'url' / TString,
+            'expires' / Int32ul)
+
+    @constructor(0xc0944820, 'message_action_topic_edit')
+    def struct_0xc0944820(self):
+        return Struct(
+            'sname' / Computed('message_action_topic_edit'),
+            'signature' / Hex(Const(0xc0944820, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_title=1,
+                                has_icon_emoji_id=2,
+                                has_closed=4,
+                                has_hidden=8),
+            'title' / If(this.flags.has_title, TString),
+            'icon_emoji_id' / If(this.flags.has_icon_emoji_id, Int64ul),
+            'closed' / If(this.flags.has_closed, TBool),
+            'hidden' / If(this.flags.has_hidden, TBool))
+
+    @constructor(0x3c134d7b, 'message_action_set_messages_ttl')
+    def struct_0x3c134d7b(self):
+        return Struct(
+            'sname' / Computed('message_action_set_messages_ttl'),
+            'signature' / Hex(Const(0x3c134d7b, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_auto_setting_from=1),
+            'period' / Int32ul,
+            'auto_setting_from' / If(this.flags.has_auto_setting_from, Int64ul))
+
+    @constructor(0x64f36dfc, 'channel_admin_log_event_action_toggle_anti_spam')
+    def struct_0x64f36dfc(self):
+        return Struct(
+            'sname' / Computed('channel_admin_log_event_action_toggle_anti_spam'),
+            'signature' / Hex(Const(0x64f36dfc, Int32ul)),
+            'new_value' / TBool)
+
+    @constructor(0x06ed998c, 'auth_code_type_fragment_sms')
+    def struct_0x06ed998c(self):
+        return Struct(
+            'sname' / Computed('auth_code_type_fragment_sms'),
+            'signature' / Hex(Const(0x06ed998c, Int32ul)))
+
+    @constructor(0x0034a818, 'messages_create_chat')
+    def struct_0x0034a818(self):
+        return Struct(
+            'sname' / Computed('messages_create_chat'),
+            'signature' / Hex(Const(0x0034a818, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_ttl_period=1),
+            'users' / self.struct_0x1cb5c415(self.input_user_structures('users'), 'users'),
+            'title' / TString,
+            'ttl_period' / If(this.flags.has_ttl_period, Int32ul))
+
+    @constructor(0xd58a08c6, 'dialog')
+    def struct_0xd58a08c6(self):
+        return Struct(
+            'sname' / Computed('dialog'),
+            'signature' / Hex(Const(0xd58a08c6, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_pinned=4,
+                                is_unread_mark=8,
+                                has_pts=1,
+                                has_draft=2,
+                                has_folder_id=16,
+                                has_ttl_period=32),
+            'peer' / self.peer_structures('peer'),
+            'top_message' / Int32ul,
+            'read_inbox_max_id' / Int32ul,
+            'read_outbox_max_id' / Int32ul,
+            'unread_count' / Int32ul,
+            'unread_mentions_count' / Int32ul,
+            'unread_reactions_count' / Int32ul,
+            'notify_settings' / self.peer_notify_settings_structures('notify_settings'),
+            'pts' / If(this.flags.has_pts, Int32ul),
+            'draft' / If(this.flags.has_draft, self.draft_message_structures('draft')),
+            'folder_id' / If(this.flags.has_folder_id, Int32ul),
+            'ttl_period' / If(this.flags.has_ttl_period, Int32ul))
+
+    @constructor(0xf4dfa185, 'channels_edit_forum_topic')
+    def struct_0xf4dfa185(self):
+        return Struct(
+            'sname' / Computed('channels_edit_forum_topic'),
+            'signature' / Hex(Const(0xf4dfa185, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_title=1,
+                                has_icon_emoji_id=2,
+                                has_closed=4,
+                                has_hidden=8),
+            'channel' / self.input_channel_structures('channel'),
+            'topic_id' / Int32ul,
+            'title' / If(this.flags.has_title, TString),
+            'icon_emoji_id' / If(this.flags.has_icon_emoji_id, Int64ul),
+            'closed' / If(this.flags.has_closed, TBool),
+            'hidden' / If(this.flags.has_hidden, TBool))
+
+    @constructor(0x68f3e4eb, 'channels_toggle_anti_spam')
+    def struct_0x68f3e4eb(self):
+        return Struct(
+            'sname' / Computed('channels_toggle_anti_spam'),
+            'signature' / Hex(Const(0x68f3e4eb, Int32ul)),
+            'channel' / self.input_channel_structures('channel'),
+            'enabled' / TBool)
+
+    @constructor(0xa850a693, 'channels_report_anti_spam_false_positive')
+    def struct_0xa850a693(self):
+        return Struct(
+            'sname' / Computed('channels_report_anti_spam_false_positive'),
+            'signature' / Hex(Const(0xa850a693, Int32ul)),
+            'channel' / self.input_channel_structures('channel'),
+            'msg_id' / Int32ul)
+
+    @constructor(0x9eb51445, 'messages_set_default_history_ttl')
+    def struct_0x9eb51445(self):
+        return Struct(
+            'sname' / Computed('messages_set_default_history_ttl'),
+            'signature' / Hex(Const(0x9eb51445, Int32ul)),
+            'period' / Int32ul)
+
+    @constructor(0x658b7188, 'messages_get_default_history_ttl')
+    def struct_0x658b7188(self):
+        return Struct(
+            'sname' / Computed('messages_get_default_history_ttl'),
+            'signature' / Hex(Const(0x658b7188, Int32ul)))
+
+    @constructor(0x43b46b20, 'default_history_ttl')
+    def struct_0x43b46b20(self):
+        return Struct(
+            'sname' / Computed('default_history_ttl'),
+            'signature' / Hex(Const(0x43b46b20, Int32ul)),
+            'period' / Int32ul)
+
+    @constructor(0xf8654027, 'contacts_export_contact_token')
+    def struct_0xf8654027(self):
+        return Struct(
+            'sname' / Computed('contacts_export_contact_token'),
+            'signature' / Hex(Const(0xf8654027, Int32ul)))
+
+    @constructor(0x13005788, 'contacts_import_contact_token')
+    def struct_0x13005788(self):
+        return Struct(
+            'sname' / Computed('contacts_import_contact_token'),
+            'signature' / Hex(Const(0x13005788, Int32ul)),
+            'token' / TString)
