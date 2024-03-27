@@ -839,7 +839,12 @@ class TLRPCParser(BaseParser):
     def merge_tlrpc(self, path, target):
         parse_result = {}
         for k in self.classes:
-            content = self.get_class_struct(k)
+            # print(f'Process {k}')
+            try:
+                content = self.get_class_struct(k)
+            except Exception:
+                print(f'Parse {k} error')
+                continue
             if content is None:
                 print(f'{k} content is null.')
                 continue  # pylint: disable=E275

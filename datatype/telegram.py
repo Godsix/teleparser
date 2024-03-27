@@ -43,7 +43,7 @@ structures = lru_cache()
 
 
 class TLStruct:  # pylint: disable=C0103
-    LAYER = 150
+    LAYER = 151
 
     def __init__(self):
         setGlobalPrintFullStrings(True)
@@ -5110,10 +5110,25 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('decrypted_message_media_empty'),
             'signature' / Hex(Const(0x089f5c4a, Int32ul)))
 
-    @constructor(0x7afe8ae2, 'decrypted_message_media_document')
-    def struct_0x7afe8ae2(self):
+    @constructor(0x6abd9782, 'decrypted_message_media_document')
+    def struct_0x6abd9782(self):
         return Struct(
             'sname' / Computed('decrypted_message_media_document'),
+            'signature' / Hex(Const(0x6abd9782, Int32ul)),
+            'thumb' / TBytes,
+            'thumb_w' / Int32ul,
+            'thumb_h' / Int32ul,
+            'mime_type' / TString,
+            'size' / Int64ul,
+            'key' / TBytes,
+            'iv' / TBytes,
+            'attributes' / self.struct_0x1cb5c415(self.document_attribute_structures('attributes'), 'attributes'),
+            'caption' / TString)
+
+    @constructor(0x7afe8ae2, 'decrypted_message_media_document_layer101')
+    def struct_0x7afe8ae2(self):
+        return Struct(
+            'sname' / Computed('decrypted_message_media_document_layer101'),
             'signature' / Hex(Const(0x7afe8ae2, Int32ul)),
             'thumb' / TBytes,
             'thumb_w' / Int32ul,
@@ -5267,6 +5282,7 @@ class TLStruct:  # pylint: disable=C0103
             0x35480a59: LazyBound(self.struct_0x35480a59),
             0x588a0a97: LazyBound(self.struct_0x588a0a97),
             0x089f5c4a: LazyBound(self.struct_0x089f5c4a),
+            0x6abd9782: LazyBound(self.struct_0x6abd9782),
             0x7afe8ae2: LazyBound(self.struct_0x7afe8ae2),
             0xe50511d8: LazyBound(self.struct_0xe50511d8),
             0xf1fa8d78: LazyBound(self.struct_0xf1fa8d78),
@@ -8716,6 +8732,19 @@ class TLStruct:  # pylint: disable=C0103
             'peer_id' / self.peer_structures('peer_id'),
             'distance' / Int32ul)
 
+    @constructor(0x57de635e, 'message_action_suggest_profile_photo')
+    def struct_0x57de635e(self):
+        return Struct(
+            'sname' / Computed('message_action_suggest_profile_photo'),
+            'signature' / Hex(Const(0x57de635e, Int32ul)),
+            'photo' / self.photo_structures('photo'))
+
+    @constructor(0xe7e75f97, 'message_action_attach_menu_bot_allowed')
+    def struct_0xe7e75f97(self):
+        return Struct(
+            'sname' / Computed('message_action_attach_menu_bot_allowed'),
+            'signature' / Hex(Const(0xe7e75f97, Int32ul)))
+
     @constructor(0x95e3fbef, 'message_action_chat_delete_photo')
     def struct_0x95e3fbef(self):
         return Struct(
@@ -8881,6 +8910,8 @@ class TLStruct:  # pylint: disable=C0103
             0x95d2ac92: LazyBound(self.struct_0x95d2ac92),
             0x94bd38ed: LazyBound(self.struct_0x94bd38ed),
             0x98e0d697: LazyBound(self.struct_0x98e0d697),
+            0x57de635e: LazyBound(self.struct_0x57de635e),
+            0xe7e75f97: LazyBound(self.struct_0xe7e75f97),
             0x95e3fbef: LazyBound(self.struct_0x95e3fbef),
             0x76b9f11a: LazyBound(self.struct_0x76b9f11a),
             0x80e11a7f: LazyBound(self.struct_0x80e11a7f),
@@ -11626,10 +11657,10 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('messages_sponsored_messages_empty'),
             'signature' / Hex(Const(0x1839490f, Int32ul)))
 
-    @constructor(0xc9ee1d87, 'messages_sponsored_messages')
+    @constructor(0xc9ee1d87, 'messages_sponsored_messages_layer147')
     def struct_0xc9ee1d87(self):
         return Struct(
-            'sname' / Computed('messages_sponsored_messages'),
+            'sname' / Computed('messages_sponsored_messages_layer147'),
             'signature' / Hex(Const(0xc9ee1d87, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 has_posts_between=1),
@@ -13504,16 +13535,6 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
-    @constructor(0x6fb250d1, 'reaction_count_deprecated')
-    def struct_0x6fb250d1(self):
-        return Struct(
-            'sname' / Computed('reaction_count_deprecated'),
-            'signature' / Hex(Const(0x6fb250d1, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_chosen=1),
-            'reaction' / TString,
-            'count' / Int32ul)
-
     @constructor(0xa3d1cb80, 'reaction_count')
     def struct_0xa3d1cb80(self):
         return Struct(
@@ -13529,7 +13550,6 @@ class TLStruct:  # pylint: disable=C0103
     def reaction_count_structures(self, name):
         # pylint: disable=C0301
         tag_map = {
-            0x6fb250d1: LazyBound(self.struct_0x6fb250d1),
             0xa3d1cb80: LazyBound(self.struct_0xa3d1cb80)
         }
         return 'reaction_count_structures' / Struct(
@@ -13934,26 +13954,12 @@ class TLStruct:  # pylint: disable=C0103
             'file_hash' / TBytes,
             'secret' / TBytes)
 
-    @constructor(0xe0277a62, 'secure_file_layer142')
-    def struct_0xe0277a62(self):
-        return Struct(
-            'sname' / Computed('secure_file_layer142'),
-            'signature' / Hex(Const(0xe0277a62, Int32ul)),
-            'id' / Int64ul,
-            'access_hash' / Int64ul,
-            'size' / Int32ul,
-            'dc_id' / Int32ul,
-            'date' / TTimestamp,
-            'file_hash' / TBytes,
-            'secret' / TBytes)
-
     @structures
     def secure_file_structures(self, name):
         # pylint: disable=C0301
         tag_map = {
             0x64199744: LazyBound(self.struct_0x64199744),
-            0x7d09c27e: LazyBound(self.struct_0x7d09c27e),
-            0xe0277a62: LazyBound(self.struct_0xe0277a62)
+            0x7d09c27e: LazyBound(self.struct_0x7d09c27e)
         }
         return 'secure_file_structures' / Struct(
             '_signature' / Peek(Int32ul),
@@ -14501,6 +14507,13 @@ class TLStruct:  # pylint: disable=C0103
             self.struct_0x1cb5c415(self.struct_0xfcfeb29c(), 'keywords'),
             'documents' / self.struct_0x1cb5c415(self.document_structures('documents'), 'documents'))
 
+    @constructor(0x77b15d1c, 'sticker_set_no_covered')
+    def struct_0x77b15d1c(self):
+        return Struct(
+            'sname' / Computed('sticker_set_no_covered'),
+            'signature' / Hex(Const(0x77b15d1c, Int32ul)),
+            'set' / self.sticker_set_structures('set'))
+
     @constructor(0x6410a5d2, 'sticker_set_covered')
     def struct_0x6410a5d2(self):
         return Struct(
@@ -14516,6 +14529,7 @@ class TLStruct:  # pylint: disable=C0103
             0x3407e51b: LazyBound(self.struct_0x3407e51b),
             0x1aed5ee5: LazyBound(self.struct_0x1aed5ee5),
             0x40d13c0e: LazyBound(self.struct_0x40d13c0e),
+            0x77b15d1c: LazyBound(self.struct_0x77b15d1c),
             0x6410a5d2: LazyBound(self.struct_0x6410a5d2)
         }
         return 'sticker_set_covered_structures' / Struct(
@@ -15747,6 +15761,13 @@ class TLStruct:  # pylint: disable=C0103
             'photo' / self.user_profile_photo_structures('photo'),
             'previous' / TBool)
 
+    @constructor(0x20529438, 'update_user')
+    def struct_0x20529438(self):
+        return Struct(
+            'sname' / Computed('update_user'),
+            'signature' / Hex(Const(0x20529438, Int32ul)),
+            'user_id' / Int64ul)
+
     @constructor(0x17b7a20b, 'update_attach_menu_bots')
     def struct_0x17b7a20b(self):
         return Struct(
@@ -15982,6 +16003,7 @@ class TLStruct:  # pylint: disable=C0103
             0xd29a27f4: LazyBound(self.struct_0xd29a27f4),
             0xc32d5b12: LazyBound(self.struct_0xc32d5b12),
             0xf227868c: LazyBound(self.struct_0xf227868c),
+            0x20529438: LazyBound(self.struct_0x20529438),
             0x17b7a20b: LazyBound(self.struct_0x17b7a20b),
             0x3504914f: LazyBound(self.struct_0x3504914f),
             0x30f443db: LazyBound(self.struct_0x30f443db),
@@ -16363,10 +16385,98 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
-    @constructor(0xc4b1fc3f, 'user_full')
-    def struct_0xc4b1fc3f(self):
+    @constructor(0xf8d32aed, 'user_full')
+    def struct_0xf8d32aed(self):
         return Struct(
             'sname' / Computed('user_full'),
+            'signature' / Hex(Const(0xf8d32aed, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_blocked=1,
+                                is_phone_calls_available=16,
+                                is_phone_calls_private=32,
+                                is_can_pin_message=128,
+                                has_scheduled=4096,
+                                is_video_calls_available=8192,
+                                is_voice_messages_forbidden=1048576,
+                                has_about=2,
+                                has_personal_photo=2097152,
+                                has_profile_photo=4,
+                                has_fallback_photo=4194304,
+                                has_bot_info=8,
+                                has_pinned_msg_id=64,
+                                has_folder_id=2048,
+                                has_ttl_period=16384,
+                                has_theme_emoticon=32768,
+                                has_private_forward_name=65536,
+                                has_bot_group_admin_rights=131072,
+                                has_bot_broadcast_admin_rights=262144,
+                                has_premium_gifts=524288),
+            'id' / Int64ul,
+            'about' / If(this.flags.has_about, TString),
+            'settings' / self.struct_0xa518110d(),
+            'personal_photo' / If(this.flags.has_personal_photo, self.photo_structures('personal_photo')),
+            'profile_photo' / If(this.flags.has_profile_photo, self.photo_structures('profile_photo')),
+            'fallback_photo' / If(this.flags.has_fallback_photo, self.photo_structures('fallback_photo')),
+            'notify_settings' / self.peer_notify_settings_structures('notify_settings'),
+            'bot_info' / If(this.flags.has_bot_info, self.bot_info_structures('bot_info')),
+            'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
+            'common_chats_count' / Int32ul,
+            'folder_id' / If(this.flags.has_folder_id, Int32ul),
+            'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
+            'theme_emoticon' / If(this.flags.has_theme_emoticon, TString),
+            'private_forward_name' / If(this.flags.has_private_forward_name, TString),
+            'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
+            'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
+            'premium_gifts' / If(this.flags.has_premium_gifts,
+                                 self.struct_0x1cb5c415(self.struct_0x74c34319(), 'premium_gifts')))
+
+    @constructor(0xec6d41e3, 'user_full_layer150_rev2')
+    def struct_0xec6d41e3(self):
+        return Struct(
+            'sname' / Computed('user_full_layer150_rev2'),
+            'signature' / Hex(Const(0xec6d41e3, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_blocked=1,
+                                is_phone_calls_available=16,
+                                is_phone_calls_private=32,
+                                is_can_pin_message=128,
+                                has_scheduled=4096,
+                                is_video_calls_available=8192,
+                                is_voice_messages_forbidden=1048576,
+                                has_about=2,
+                                has_personal_photo=2097152,
+                                has_profile_photo=4,
+                                has_bot_info=8,
+                                has_pinned_msg_id=64,
+                                has_folder_id=2048,
+                                has_ttl_period=16384,
+                                has_theme_emoticon=32768,
+                                has_private_forward_name=65536,
+                                has_bot_group_admin_rights=131072,
+                                has_bot_broadcast_admin_rights=262144,
+                                has_premium_gifts=524288),
+            'id' / Int64ul,
+            'about' / If(this.flags.has_about, TString),
+            'settings' / self.struct_0xa518110d(),
+            'personal_photo' / If(this.flags.has_personal_photo, self.photo_structures('personal_photo')),
+            'profile_photo' / If(this.flags.has_profile_photo, self.photo_structures('profile_photo')),
+            'notify_settings' / self.peer_notify_settings_structures('notify_settings'),
+            'bot_info' / If(this.flags.has_bot_info, self.bot_info_structures('bot_info')),
+            'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
+            'common_chats_count' / Int32ul,
+            'folder_id' / If(this.flags.has_folder_id, Int32ul),
+            'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
+            'theme_emoticon' / If(this.flags.has_theme_emoticon, TString),
+            'private_forward_name' / If(this.flags.has_private_forward_name, TString),
+            'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
+            'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
+            'premium_gifts' / If(this.flags.has_premium_gifts,
+                                 self.struct_0x1cb5c415(self.struct_0x74c34319(), 'premium_gifts')))
+
+    @constructor(0xc4b1fc3f, 'user_full_layer150')
+    def struct_0xc4b1fc3f(self):
+        return Struct(
+            'sname' / Computed('user_full_layer150'),
             'signature' / Hex(Const(0xc4b1fc3f, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 is_blocked=1,
@@ -16638,6 +16748,8 @@ class TLStruct:  # pylint: disable=C0103
     def user_full_structures(self, name):
         # pylint: disable=C0301
         tag_map = {
+            0xf8d32aed: LazyBound(self.struct_0xf8d32aed),
+            0xec6d41e3: LazyBound(self.struct_0xec6d41e3),
             0xc4b1fc3f: LazyBound(self.struct_0xc4b1fc3f),
             0x8c72ea81: LazyBound(self.struct_0x8c72ea81),
             0xcf366521: LazyBound(self.struct_0xcf366521),
@@ -24315,3 +24427,54 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('contacts_import_contact_token'),
             'signature' / Hex(Const(0x13005788, Int32ul)),
             'token' / TString)
+
+    @constructor(0xc8a0ec74, 'messages_get_sticker_set')
+    def struct_0xc8a0ec74(self):
+        return Struct(
+            'sname' / Computed('messages_get_sticker_set'),
+            'signature' / Hex(Const(0xc8a0ec74, Int32ul)),
+            'stickerset' / self.input_sticker_set_structures('stickerset'),
+            'hash' / Int32ul)
+
+    @constructor(0x616f7fe8, 'input_store_payment_gift_premium')
+    def struct_0x616f7fe8(self):
+        return Struct(
+            'sname' / Computed('input_store_payment_gift_premium'),
+            'signature' / Hex(Const(0x616f7fe8, Int32ul)),
+            'user_id' / self.input_user_structures('user_id'),
+            'currency' / TString,
+            'amount' / Int64ul)
+
+    @constructor(0x69f59d69, 'messages_toggle_bot_in_attach_menu')
+    def struct_0x69f59d69(self):
+        return Struct(
+            'sname' / Computed('messages_toggle_bot_in_attach_menu'),
+            'signature' / Hex(Const(0x69f59d69, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_write_allowed=1),
+            'bot' / self.input_user_structures('bot'),
+            'enabled' / TBool)
+
+    @constructor(0x6a6e7854, 'channels_toggle_participants_hidden')
+    def struct_0x6a6e7854(self):
+        return Struct(
+            'sname' / Computed('channels_toggle_participants_hidden'),
+            'signature' / Hex(Const(0x6a6e7854, Int32ul)),
+            'channel' / self.input_channel_structures('channel'),
+            'enabled' / TBool)
+
+    @constructor(0xb91a83bf, 'photos_upload_contact_profile_photo')
+    def struct_0xb91a83bf(self):
+        return Struct(
+            'sname' / Computed('photos_upload_contact_profile_photo'),
+            'signature' / Hex(Const(0xb91a83bf, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_suggest=8,
+                                is_save=16,
+                                has_file=1,
+                                has_video=2,
+                                has_video_start_ts=4),
+            'user_id' / self.input_user_structures('user_id'),
+            'file' / If(this.flags.has_file, self.input_file_structures('file')),
+            'video' / If(this.flags.has_video, self.input_file_structures('video')),
+            'video_start_ts' / If(this.flags.has_video_start_ts, Double))
