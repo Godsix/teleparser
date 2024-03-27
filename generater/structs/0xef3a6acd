@@ -41,10 +41,8 @@
             'read_outbox_max_id' / Int32ul,
             'unread_count' / Int32ul,
             'chat_photo' / self.photo_structures('chat_photo'),
-            'notify_settings' / self.peer_notify_settings_structures(
-                'notify_settings'),
-            'exported_invite' / self.exported_chat_invite_structures(
-                'exported_invite'),
+            'notify_settings' / self.peer_notify_settings_structures('notify_settings'),
+            'exported_invite' / self.exported_chat_invite_structures('exported_invite'),
             'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'),
                                                 'bot_info'),
             'migrated_from_chat_id' / If(this.flags.has_migrated_from_chat_id,
@@ -60,8 +58,7 @@
             'location' / If(this.flags.has_location,
                             self.channel_location_structures('location')),
             'slowmode_seconds' / If(this.flags.has_slowmode_seconds, Int32ul),
-            'slowmode_next_send_date' / If(
-                this.flags.has_slowmode_next_send_date, TTimestamp),
+            'slowmode_next_send_date' / If(this.flags.has_slowmode_next_send_date, TTimestamp),
             'stats_dc' / If(this.flags.has_stats_dc, Int32ul),
             'pts' / Int32ul,
             'call' / If(this.flags.has_call, self.struct_0xd8aa840f()))

@@ -1,4 +1,3 @@
     @constructor(0xe317af7e, 'updates_too_long')
     def struct_0xe317af7e(self):
-        return Struct(
-            'sname' / Computed('updates_too_long'))
+        return Struct('sname' / Computed('updates_too_long'))
