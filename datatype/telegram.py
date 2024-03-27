@@ -142,8 +142,7 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('account_emoji_statuses'),
             'signature' / Hex(Const(0x90c467d1, Int32ul)),
             'hash' / Int64ul,
-            'statuses' / self.struct_0x1cb5c415(
-                self.emoji_status_structures('statuses'), 'statuses'))
+            'statuses' / self.struct_0x1cb5c415(self.emoji_status_structures('statuses'), 'statuses'))
 
     @structures
     def account_emoji_statuses_structures(self, name):
@@ -298,8 +297,7 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('account_saved_ringtones'),
             'signature' / Hex(Const(0xc1e92cc5, Int32ul)),
             'hash' / Int64ul,
-            'ringtones' / self.struct_0x1cb5c415(
-                self.document_structures('ringtones'), 'ringtones'))
+            'ringtones' / self.struct_0x1cb5c415(self.document_structures('ringtones'), 'ringtones'))
 
     @structures
     def account_saved_ringtones_structures(self, name):
@@ -354,8 +352,7 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('account_wall_papers'),
             'signature' / Hex(Const(0xcdc3858c, Int32ul)),
             'hash' / Int64ul,
-            'wallpapers' / self.struct_0x1cb5c415(
-                self.wall_paper_structures('wallpapers'), 'wallpapers'))
+            'wallpapers' / self.struct_0x1cb5c415(self.wall_paper_structures('wallpapers'), 'wallpapers'))
 
     @structures
     def account_wall_papers_structures(self, name):
@@ -392,9 +389,8 @@ class TLStruct:  # pylint: disable=C0103
                                 has_settings=2),
             'bot_id' / Int64ul,
             'short_name' / TString,
-            'peer_types' / self.struct_0x1cb5c415(
-                self.attach_menu_peer_type_structures('peer_types'),
-                'peer_types'),
+            'peer_types' / self.struct_0x1cb5c415(self.attach_menu_peer_type_structures('peer_types'),
+                                                  'peer_types'),
             'icons' / self.struct_0x1cb5c415(self.struct_0xb2a7386b(),
                                              'icons'))
 
@@ -980,8 +976,8 @@ class TLStruct:  # pylint: disable=C0103
                                 has_entities=2,
                                 has_reply_markup=4),
             'message' / TString,
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')))
 
@@ -1033,8 +1029,8 @@ class TLStruct:  # pylint: disable=C0103
                                 has_entities=2,
                                 has_reply_markup=4),
             'message' / TString,
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')))
 
@@ -1553,6 +1549,7 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('channel_admin_log_event_action_toggle_anti_spam'),
             'signature' / Hex(Const(0x64f36dfc, Int32ul)),
             'new_value' / TBool)
+
     @structures
     def channel_admin_log_event_action_structures(self, name):
         # pylint: disable=C0301
@@ -2010,12 +2007,10 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('channels_channel_participants'),
             'signature' / Hex(Const(0x9ab0feaf, Int32ul)),
             'count' / Int32ul,
-            'participants' / self.struct_0x1cb5c415(self.channel_participant_structures(
-                'participants'), 'participants'),
-            'chats' /
-            self.struct_0x1cb5c415(self.chat_structures('chats'), 'chats'),
-            'users' / self.struct_0x1cb5c415(self.user_structures('users'),
-                                             'users'))
+            'participants' / self.struct_0x1cb5c415(self.channel_participant_structures('participants'),
+                                                    'participants'),
+            'chats' / self.struct_0x1cb5c415(self.chat_structures('chats'), 'chats'),
+            'users' / self.struct_0x1cb5c415(self.user_structures('users'), 'users'))
 
     @constructor(0xf0173fe9, 'channels_channel_participants_not_modified')
     def struct_0xf0173fe9(self):
@@ -2064,8 +2059,8 @@ class TLStruct:  # pylint: disable=C0103
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' /
             If(this.flags.has_exported_invite, self.struct_0x0ab4a819()),
-            'bot_info' / If(this.flags.has_bot_info, self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info')),
+            'bot_info' / If(this.flags.has_bot_info,
+                            self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info')),
             'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
             'folder_id' / If(this.flags.has_folder_id, Int32ul),
             'call' / If(this.flags.has_call, self.struct_0xd8aa840f()),
@@ -2134,8 +2129,7 @@ class TLStruct:  # pylint: disable=C0103
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' /
             If(this.flags.has_exported_invite, self.struct_0x0ab4a819()),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int64ul),
             'migrated_from_max_id' /
@@ -2196,8 +2190,8 @@ class TLStruct:  # pylint: disable=C0103
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' /
             If(this.flags.has_exported_invite, self.struct_0x0ab4a819()),
-            'bot_info' / If(this.flags.has_bot_info, self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info')),
+            'bot_info' / If(this.flags.has_bot_info,
+                            self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info')),
             'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
             'folder_id' / If(this.flags.has_folder_id, Int32ul),
             'call' / If(this.flags.has_call, self.struct_0xd8aa840f()),
@@ -2208,7 +2202,8 @@ class TLStruct:  # pylint: disable=C0103
             'requests_pending' / If(this.flags.has_requests_pending, Int32ul),
             'recent_requesters' / If(this.flags.has_requests_pending,
                                      self.struct_0x1cb5c415(Int64ul, 'recent_requesters')),
-            'available_reactions_legacy' / If(this.flags.has_available_reactions_legacy, self.struct_0x1cb5c415(TString, 'available_reactions_legacy')))
+            'available_reactions_legacy' / If(this.flags.has_available_reactions_legacy,
+                                              self.struct_0x1cb5c415(TString, 'available_reactions_legacy')))
 
     @constructor(0xea68a619, 'channel_full_layer144')
     def struct_0xea68a619(self):
@@ -2265,8 +2260,7 @@ class TLStruct:  # pylint: disable=C0103
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' /
             If(this.flags.has_exported_invite, self.struct_0x0ab4a819()),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int64ul),
             'migrated_from_max_id' /
@@ -2296,7 +2290,8 @@ class TLStruct:  # pylint: disable=C0103
                                      self.struct_0x1cb5c415(Int64ul, 'recent_requesters')),
             'default_send_as' / If(this.flags.has_default_send_as,
                                    self.peer_structures('default_send_as')),
-            'available_reactions_legacy' / If(this.flags.has_available_reactions_legacy, self.struct_0x1cb5c415(TString, 'available_reactions_legacy')))
+            'available_reactions_legacy' / If(this.flags.has_available_reactions_legacy,
+                                              self.struct_0x1cb5c415(TString, 'available_reactions_legacy')))
 
     @constructor(0xe13c3d20, 'channel_full_layer139')
     def struct_0xe13c3d20(self):
@@ -2351,8 +2346,7 @@ class TLStruct:  # pylint: disable=C0103
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' /
             If(this.flags.has_exported_invite, self.struct_0x0ab4a819()),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int64ul),
             'migrated_from_max_id' /
@@ -2382,7 +2376,8 @@ class TLStruct:  # pylint: disable=C0103
                                      self.struct_0x1cb5c415(Int64ul, 'recent_requesters')),
             'default_send_as' / If(this.flags.has_default_send_as,
                                    self.peer_structures('default_send_as')),
-            'available_reactions_legacy' / If(this.flags.has_available_reactions_legacy, self.struct_0x1cb5c415(TString, 'available_reactions_legacy')))
+            'available_reactions_legacy' / If(this.flags.has_available_reactions_legacy,
+                                              self.struct_0x1cb5c415(TString, 'available_reactions_legacy')))
 
     @constructor(0x56662e2e, 'channel_full_layer135')
     def struct_0x56662e2e(self):
@@ -2436,8 +2431,7 @@ class TLStruct:  # pylint: disable=C0103
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' /
             If(this.flags.has_exported_invite, self.struct_0x0ab4a819()),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int64ul),
             'migrated_from_max_id' /
@@ -2519,8 +2513,7 @@ class TLStruct:  # pylint: disable=C0103
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' /
             If(this.flags.has_exported_invite, self.struct_0x0ab4a819()),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int64ul),
             'migrated_from_max_id' /
@@ -2546,7 +2539,8 @@ class TLStruct:  # pylint: disable=C0103
                                              self.peer_structures('groupcall_default_join_as')),
             'theme_emoticon' / If(this.flags.has_theme_emoticon, TString),
             'requests_pending' / If(this.flags.has_requests_pending, Int32ul),
-            'recent_requesters' / If(this.flags.has_requests_pending, self.struct_0x1cb5c415(Int64ul, 'recent_requesters')))
+            'recent_requesters' / If(this.flags.has_requests_pending,
+                                     self.struct_0x1cb5c415(Int64ul, 'recent_requesters')))
 
     @constructor(0x1c87a71a, 'channel_full_layer98')
     def struct_0x1c87a71a(self):
@@ -2582,8 +2576,7 @@ class TLStruct:  # pylint: disable=C0103
             'notify_settings' /
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' / self.struct_0x0ab4a819(),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int32ul),
             'migrated_from_max_id' /
@@ -2628,8 +2621,7 @@ class TLStruct:  # pylint: disable=C0103
             'notify_settings' /
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' / self.struct_0x0ab4a819(),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int32ul),
             'migrated_from_max_id' /
@@ -2697,10 +2689,8 @@ class TLStruct:  # pylint: disable=C0103
             'read_outbox_max_id' / Int32ul,
             'unread_count' / Int32ul,
             'chat_photo' / self.photo_structures('chat_photo'),
-            'notify_settings' / self.peer_notify_settings_structures(
-                'notify_settings'),
-            'exported_invite' / self.exported_chat_invite_structures(
-                'exported_invite'),
+            'notify_settings' / self.peer_notify_settings_structures('notify_settings'),
+            'exported_invite' / self.exported_chat_invite_structures('exported_invite'),
             'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'),
                                                 'bot_info'),
             'migrated_from_chat_id' / If(this.flags.has_migrated_from_chat_id,
@@ -2716,8 +2706,7 @@ class TLStruct:  # pylint: disable=C0103
             'location' / If(this.flags.has_location,
                             self.channel_location_structures('location')),
             'slowmode_seconds' / If(this.flags.has_slowmode_seconds, Int32ul),
-            'slowmode_next_send_date' / If(
-                this.flags.has_slowmode_next_send_date, TTimestamp),
+            'slowmode_next_send_date' / If(this.flags.has_slowmode_next_send_date, TTimestamp),
             'stats_dc' / If(this.flags.has_stats_dc, Int32ul),
             'pts' / Int32ul,
             'call' / If(this.flags.has_call, self.struct_0xd8aa840f()))
@@ -2765,8 +2754,7 @@ class TLStruct:  # pylint: disable=C0103
             'notify_settings' /
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' / self.struct_0x0ab4a819(),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int32ul),
             'migrated_from_max_id' /
@@ -2826,8 +2814,7 @@ class TLStruct:  # pylint: disable=C0103
             'notify_settings' /
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' / self.struct_0x0ab4a819(),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int32ul),
             'migrated_from_max_id' /
@@ -2883,8 +2870,7 @@ class TLStruct:  # pylint: disable=C0103
             'notify_settings' /
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' / self.struct_0x0ab4a819(),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int32ul),
             'migrated_from_max_id' /
@@ -2934,8 +2920,7 @@ class TLStruct:  # pylint: disable=C0103
             'notify_settings' /
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' / self.struct_0x0ab4a819(),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int32ul),
             'migrated_from_max_id' /
@@ -2977,8 +2962,7 @@ class TLStruct:  # pylint: disable=C0103
             'notify_settings' /
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' / self.struct_0x0ab4a819(),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int32ul),
             'migrated_from_max_id' /
@@ -3018,8 +3002,7 @@ class TLStruct:  # pylint: disable=C0103
             'notify_settings' /
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' / self.struct_0x0ab4a819(),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int32ul),
             'migrated_from_max_id' /
@@ -3055,8 +3038,7 @@ class TLStruct:  # pylint: disable=C0103
             'notify_settings' /
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' / self.struct_0x0ab4a819(),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int32ul),
             'migrated_from_max_id' /
@@ -3089,8 +3071,7 @@ class TLStruct:  # pylint: disable=C0103
             'notify_settings' /
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' / self.struct_0x0ab4a819(),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int32ul),
             'migrated_from_max_id' /
@@ -3121,8 +3102,7 @@ class TLStruct:  # pylint: disable=C0103
             'notify_settings' /
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' / self.struct_0x0ab4a819(),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int32ul),
             'migrated_from_max_id' / If(this.flags.has_migrated_from_chat_id,
@@ -3146,11 +3126,10 @@ class TLStruct:  # pylint: disable=C0103
             'participants' / self.chat_participants_structures('participants'),
             'chat_photo' / If(this.flags.has_chat_photo,
                               self.photo_structures('chat_photo')),
-            'notify_settings' /
-            self.peer_notify_settings_structures('notify_settings'),
+            'notify_settings' / self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' / self.struct_0x0ab4a819(),
-            'bot_info' / If(this.flags.has_bot_info, self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info')),
+            'bot_info' / If(this.flags.has_bot_info,
+                            self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info')),
             'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
             'folder_id' / If(this.flags.has_folder_id, Int32ul),
             'call' / If(this.flags.has_call, self.struct_0xd8aa840f()))
@@ -3178,8 +3157,8 @@ class TLStruct:  # pylint: disable=C0103
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' /
             If(this.flags.has_exported_invite, self.struct_0x0ab4a819()),
-            'bot_info' / If(this.flags.has_bot_info, self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info')),
+            'bot_info' / If(this.flags.has_bot_info,
+                            self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info')),
             'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
             'folder_id' / If(this.flags.has_folder_id, Int32ul),
             'call' / If(this.flags.has_call, self.struct_0xd8aa840f()))
@@ -3230,8 +3209,7 @@ class TLStruct:  # pylint: disable=C0103
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' /
             If(this.flags.has_exported_invite, self.struct_0x0ab4a819()),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int32ul),
             'migrated_from_max_id' /
@@ -3275,8 +3253,8 @@ class TLStruct:  # pylint: disable=C0103
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' /
             If(this.flags.has_exported_invite, self.struct_0x0ab4a819()),
-            'bot_info' / If(this.flags.has_bot_info, self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info')),
+            'bot_info' / If(this.flags.has_bot_info,
+                            self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info')),
             'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
             'folder_id' / If(this.flags.has_folder_id, Int32ul),
             'call' / If(this.flags.has_call, self.struct_0xd8aa840f()),
@@ -3330,8 +3308,7 @@ class TLStruct:  # pylint: disable=C0103
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' /
             If(this.flags.has_exported_invite, self.struct_0x0ab4a819()),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int32ul),
             'migrated_from_max_id' /
@@ -3351,7 +3328,8 @@ class TLStruct:  # pylint: disable=C0103
             'pts' / Int32ul,
             'call' / If(this.flags.has_call, self.struct_0xd8aa840f()),
             'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
-            'pending_suggestions' / If(this.flags.has_pending_suggestions, self.struct_0x1cb5c415(TString, 'pending_suggestions')))
+            'pending_suggestions' / If(this.flags.has_pending_suggestions,
+                                       self.struct_0x1cb5c415(TString, 'pending_suggestions')))
 
     @constructor(0x8a1e2983, 'chat_full_layer131')
     def struct_0x8a1e2983(self):
@@ -3378,13 +3356,14 @@ class TLStruct:  # pylint: disable=C0103
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' /
             If(this.flags.has_exported_invite, self.struct_0x0ab4a819()),
-            'bot_info' / If(this.flags.has_bot_info, self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info')),
+            'bot_info' / If(this.flags.has_bot_info,
+                            self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info')),
             'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
             'folder_id' / If(this.flags.has_folder_id, Int32ul),
             'call' / If(this.flags.has_call, self.struct_0xd8aa840f()),
             'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
-            'groupcall_default_join_as' / If(this.flags.has_groupcall_default_join_as, self.peer_structures('groupcall_default_join_as')))
+            'groupcall_default_join_as' / If(this.flags.has_groupcall_default_join_as,
+                                             self.peer_structures('groupcall_default_join_as')))
 
     @constructor(0x548c3f93, 'channel_full_layer131')
     def struct_0x548c3f93(self):
@@ -3435,8 +3414,7 @@ class TLStruct:  # pylint: disable=C0103
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' /
             If(this.flags.has_exported_invite, self.struct_0x0ab4a819()),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int64ul),
             'migrated_from_max_id' /
@@ -3458,7 +3436,8 @@ class TLStruct:  # pylint: disable=C0103
             'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
             'pending_suggestions' / If(this.flags.has_pending_suggestions,
                                        self.struct_0x1cb5c415(TString, 'pending_suggestions')),
-            'groupcall_default_join_as' / If(this.flags.has_groupcall_default_join_as, self.peer_structures('groupcall_default_join_as')))
+            'groupcall_default_join_as' / If(this.flags.has_groupcall_default_join_as,
+                                             self.peer_structures('groupcall_default_join_as')))
 
     @constructor(0x49a0a5d9, 'chat_full_layer132')
     def struct_0x49a0a5d9(self):
@@ -3486,8 +3465,8 @@ class TLStruct:  # pylint: disable=C0103
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' /
             If(this.flags.has_exported_invite, self.struct_0x0ab4a819()),
-            'bot_info' / If(this.flags.has_bot_info, self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info')),
+            'bot_info' / If(this.flags.has_bot_info,
+                            self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info')),
             'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
             'folder_id' / If(this.flags.has_folder_id, Int32ul),
             'call' / If(this.flags.has_call, self.struct_0xd8aa840f()),
@@ -3546,8 +3525,7 @@ class TLStruct:  # pylint: disable=C0103
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' /
             If(this.flags.has_exported_invite, self.struct_0x0ab4a819()),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int32ul),
             'migrated_from_max_id' /
@@ -3599,8 +3577,8 @@ class TLStruct:  # pylint: disable=C0103
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' /
             If(this.flags.has_exported_invite, self.struct_0x0ab4a819()),
-            'bot_info' / If(this.flags.has_bot_info, self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info')),
+            'bot_info' / If(this.flags.has_bot_info,
+                            self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info')),
             'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
             'folder_id' / If(this.flags.has_folder_id, Int32ul),
             'call' / If(this.flags.has_call, self.struct_0xd8aa840f()),
@@ -3659,8 +3637,7 @@ class TLStruct:  # pylint: disable=C0103
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' /
             If(this.flags.has_exported_invite, self.struct_0x0ab4a819()),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int64ul),
             'migrated_from_max_id' /
@@ -3706,8 +3683,8 @@ class TLStruct:  # pylint: disable=C0103
             'notify_settings' /
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' / self.struct_0x0ab4a819(),
-            'bot_info' / If(this.flags.has_bot_info, self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info')),
+            'bot_info' / If(this.flags.has_bot_info,
+                            self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info')),
             'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
             'folder_id' / If(this.flags.has_folder_id, Int32ul))
 
@@ -3729,8 +3706,8 @@ class TLStruct:  # pylint: disable=C0103
             'notify_settings' /
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' / self.struct_0x0ab4a819(),
-            'bot_info' / If(this.flags.has_bot_info, self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info')),
+            'bot_info' / If(this.flags.has_bot_info,
+                            self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info')),
             'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul))
 
     @constructor(0xedd2a791, 'chat_full_layer92')
@@ -3749,8 +3726,8 @@ class TLStruct:  # pylint: disable=C0103
             'notify_settings' /
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' / self.struct_0x0ab4a819(),
-            'bot_info' / If(this.flags.has_bot_info, self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info')),
+            'bot_info' / If(this.flags.has_bot_info,
+                            self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info')),
             'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul))
 
     @constructor(0x46a6ffb4, 'chat_full_layer135')
@@ -3780,8 +3757,8 @@ class TLStruct:  # pylint: disable=C0103
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' /
             If(this.flags.has_exported_invite, self.struct_0x0ab4a819()),
-            'bot_info' / If(this.flags.has_bot_info, self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info')),
+            'bot_info' / If(this.flags.has_bot_info,
+                            self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info')),
             'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
             'folder_id' / If(this.flags.has_folder_id, Int32ul),
             'call' / If(this.flags.has_call, self.struct_0xd8aa840f()),
@@ -3790,7 +3767,8 @@ class TLStruct:  # pylint: disable=C0103
                                              self.peer_structures('groupcall_default_join_as')),
             'theme_emoticon' / If(this.flags.has_theme_emoticon, TString),
             'requests_pending' / If(this.flags.has_requests_pending, Int32ul),
-            'recent_requesters' / If(this.flags.has_requests_pending, self.struct_0x1cb5c415(Int64ul, 'recent_requesters')))
+            'recent_requesters' / If(this.flags.has_requests_pending,
+                                     self.struct_0x1cb5c415(Int64ul, 'recent_requesters')))
 
     @constructor(0xfab31aa3, 'channel_full_old')
     def struct_0xfab31aa3(self):
@@ -3843,8 +3821,7 @@ class TLStruct:  # pylint: disable=C0103
             'notify_settings' /
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' / self.struct_0x0ab4a819(),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int32ul),
             'migrated_from_max_id' /
@@ -3883,8 +3860,7 @@ class TLStruct:  # pylint: disable=C0103
             'notify_settings' /
             self.peer_notify_settings_structures('notify_settings'),
             'exported_invite' / self.struct_0x0ab4a819(),
-            'bot_info' / self.struct_0x1cb5c415(
-                self.bot_info_structures('bot_info'), 'bot_info'),
+            'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'), 'bot_info'),
             'migrated_from_chat_id' /
             If(this.flags.has_migrated_from_chat_id, Int32ul),
             'migrated_from_max_id' /
@@ -3961,7 +3937,8 @@ class TLStruct:  # pylint: disable=C0103
             'about' / If(this.flags.is_about, TString),
             'photo' / self.photo_structures('photo'),
             'participants_count' / Int32ul,
-            'participants' / If(this.flags.has_participants, self.struct_0x1cb5c415(self.user_structures('participants'), 'participants')))
+            'participants' / If(this.flags.has_participants,
+                                self.struct_0x1cb5c415(self.user_structures('participants'), 'participants')))
 
     @constructor(0x61695cb0, 'chat_invite_peek')
     def struct_0x61695cb0(self):
@@ -4076,8 +4053,7 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('chat_participants_layer131'),
             'signature' / Hex(Const(0x3f460fed, Int32ul)),
             'chat_id' / Int32ul,
-            'participants' / self.struct_0x1cb5c415(self.chat_participant_structures(
-                'participants'), 'participants'),
+            'participants' / self.struct_0x1cb5c415(self.chat_participant_structures('participants'), 'participants'),
             'version' / Int32ul)
 
     @constructor(0x8763d3e1, 'chat_participants_forbidden')
@@ -4097,8 +4073,7 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('chat_participants'),
             'signature' / Hex(Const(0x3cbc93f8, Int32ul)),
             'chat_id' / Int64ul,
-            'participants' / self.struct_0x1cb5c415(self.chat_participant_structures(
-                'participants'), 'participants'),
+            'participants' / self.struct_0x1cb5c415(self.chat_participant_structures('participants'), 'participants'),
             'version' / Int32ul)
 
     @constructor(0x7841b415, 'chat_participants_old')
@@ -4108,8 +4083,7 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0x7841b415, Int32ul)),
             'chat_id' / Int32ul,
             'admin_id' / Int32ul,
-            'participants' / self.struct_0x1cb5c415(self.chat_participant_structures(
-                'participants'), 'participants'),
+            'participants' / self.struct_0x1cb5c415(self.chat_participant_structures('participants'), 'participants'),
             'version' / Int32ul)
 
     @constructor(0x0fd2bb8a, 'chat_participants_forbidden_old')
@@ -4422,8 +4396,7 @@ class TLStruct:  # pylint: disable=C0103
             'date' / TTimestamp,
             'version' / Int32ul,
             'restriction_reason' / If(this.flags.is_restricted,
-                                      self.struct_0x1cb5c415(
-                self.struct_0xd072acb4(), 'restriction_reason')),
+                                      self.struct_0x1cb5c415(self.struct_0xd072acb4(), 'restriction_reason')),
             'admin_rights' / If(this.flags.has_admin_rights,
                                 self.struct_0x5fb224d5()),
             'banned_rights' / If(this.flags.has_banned_rights,
@@ -4720,8 +4693,7 @@ class TLStruct:  # pylint: disable=C0103
             'photo' / self.chat_photo_structures('photo'),
             'date' / TTimestamp,
             'restriction_reason' / If(this.flags.is_restricted,
-                                      self.struct_0x1cb5c415(
-                self.struct_0xd072acb4(), 'restriction_reason')),
+                                      self.struct_0x1cb5c415(self.struct_0xd072acb4(), 'restriction_reason')),
             'admin_rights' / If(this.flags.has_admin_rights,
                                 self.struct_0x5fb224d5()),
             'banned_rights' / If(this.flags.has_banned_rights,
@@ -4730,7 +4702,8 @@ class TLStruct:  # pylint: disable=C0103
             If(this.flags.has_default_banned_rights, self.struct_0x9f120418()),
             'participants_count' /
             If(this.flags.has_participants_count, Int32ul),
-            'usernames' / If(this.flags2.has_usernames, self.struct_0x1cb5c415(self.struct_0xb4073647(), 'usernames')))
+            'usernames' / If(this.flags2.has_usernames,
+                             self.struct_0x1cb5c415(self.struct_0xb4073647(), 'usernames')))
 
     @constructor(0x8261ac61, 'channel_layer147')
     def struct_0x8261ac61(self):
@@ -4771,8 +4744,7 @@ class TLStruct:  # pylint: disable=C0103
             'photo' / self.chat_photo_structures('photo'),
             'date' / TTimestamp,
             'restriction_reason' / If(this.flags.is_restricted,
-                                      self.struct_0x1cb5c415(
-                self.struct_0xd072acb4(), 'restriction_reason')),
+                                      self.struct_0x1cb5c415(self.struct_0xd072acb4(), 'restriction_reason')),
             'admin_rights' / If(this.flags.has_admin_rights,
                                 self.struct_0x5fb224d5()),
             'banned_rights' / If(this.flags.has_banned_rights,
@@ -5150,8 +5122,7 @@ class TLStruct:  # pylint: disable=C0103
             'size' / Int32ul,
             'key' / TBytes,
             'iv' / TBytes,
-            'attributes' / self.struct_0x1cb5c415(
-                self.document_attribute_structures('attributes'), 'attributes'),
+            'attributes' / self.struct_0x1cb5c415(self.document_attribute_structures('attributes'), 'attributes'),
             'caption' / TString)
 
     @constructor(0xe50511d8, 'decrypted_message_media_web_page')
@@ -5368,8 +5339,8 @@ class TLStruct:  # pylint: disable=C0103
             'message' / TString,
             'media' / If(this.flags.has_media,
                          self.decrypted_message_media_structures('media')),
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'via_bot_name' / If(this.flags.has_via_bot_name, TString),
             'reply_to_random_id' /
             If(this.flags.has_reply_to_random_id, Int64ul),
@@ -5390,8 +5361,8 @@ class TLStruct:  # pylint: disable=C0103
             'message' / TString,
             'media' / If(this.flags.has_media,
                          self.decrypted_message_media_structures('media')),
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'via_bot_name' / If(this.flags.has_via_bot_name, TString),
             'reply_to_random_id' / If(this.flags.has_reply_to_random_id,
                                       Int64ul))
@@ -5437,10 +5408,8 @@ class TLStruct:  # pylint: disable=C0103
             'id' / Int32ul,
             'title' / TString,
             'emoticon' / If(this.flags.has_emoticon, TString),
-            'pinned_peers' / self.struct_0x1cb5c415(self.input_peer_structures(
-                'pinned_peers'), 'pinned_peers'),
-            'include_peers' / self.struct_0x1cb5c415(self.input_peer_structures(
-                'include_peers'), 'include_peers'),
+            'pinned_peers' / self.struct_0x1cb5c415(self.input_peer_structures('pinned_peers'), 'pinned_peers'),
+            'include_peers' / self.struct_0x1cb5c415(self.input_peer_structures('include_peers'), 'include_peers'),
             'exclude_peers' / self.struct_0x1cb5c415(self.input_peer_structures('exclude_peers'), 'exclude_peers'))
 
     @structures
@@ -5722,8 +5691,8 @@ class TLStruct:  # pylint: disable=C0103
             'date' / TTimestamp,
             'mime_type' / TString,
             'size' / Int32ul,
-            'thumbs' / If(this.flags.has_thumbs, self.struct_0x1cb5c415(
-                self.photo_size_structures('thumbs'), 'thumbs')),
+            'thumbs' / If(this.flags.has_thumbs,
+                          self.struct_0x1cb5c415(self.photo_size_structures('thumbs'), 'thumbs')),
             'dc_id' / Int32ul,
             'attributes' / self.struct_0x1cb5c415(self.document_attribute_structures('attributes'), 'attributes'))
 
@@ -5740,9 +5709,8 @@ class TLStruct:  # pylint: disable=C0103
             'size' / Int32ul,
             'thumb' / self.photo_size_structures('thumb'),
             'dc_id' / Int32ul,
-            'attributes' / self.struct_0x1cb5c415(
-                self.document_attribute_structures('attributes'),
-                'attributes'))
+            'attributes' / self.struct_0x1cb5c415(self.document_attribute_structures('attributes'),
+                                                  'attributes'))
 
     @constructor(0x87232bc7, 'document_layer82')
     def struct_0x87232bc7(self):
@@ -5790,11 +5758,10 @@ class TLStruct:  # pylint: disable=C0103
             'date' / TTimestamp,
             'mime_type' / TString,
             'size' / Int64ul,
-            'thumbs' / If(this.flags.has_thumbs, self.struct_0x1cb5c415(
-                self.photo_size_structures('thumbs'), 'thumbs')),
+            'thumbs' / If(this.flags.has_thumbs,
+                          self.struct_0x1cb5c415(self.photo_size_structures('thumbs'), 'thumbs')),
             'video_thumbs' / If(this.flags.has_video_thumbs,
-                                self.struct_0x1cb5c415(
-                self.video_size_structures('video_thumbs'), 'video_thumbs')),
+                                self.struct_0x1cb5c415(self.video_size_structures('video_thumbs'), 'video_thumbs')),
             'dc_id' / Int32ul,
             'attributes' / self.struct_0x1cb5c415(self.document_attribute_structures('attributes'), 'attributes'))
 
@@ -5812,11 +5779,10 @@ class TLStruct:  # pylint: disable=C0103
             'date' / TTimestamp,
             'mime_type' / TString,
             'size' / Int32ul,
-            'thumbs' / If(this.flags.has_thumbs, self.struct_0x1cb5c415(
-                self.photo_size_structures('thumbs'), 'thumbs')),
+            'thumbs' / If(this.flags.has_thumbs,
+                          self.struct_0x1cb5c415(self.photo_size_structures('thumbs'), 'thumbs')),
             'video_thumbs' / If(this.flags.has_video_thumbs,
-                                self.struct_0x1cb5c415(
-                self.video_size_structures('video_thumbs'), 'video_thumbs')),
+                                self.struct_0x1cb5c415(self.video_size_structures('video_thumbs'), 'video_thumbs')),
             'dc_id' / Int32ul,
             'attributes' / self.struct_0x1cb5c415(self.document_attribute_structures('attributes'), 'attributes'))
 
@@ -5854,8 +5820,7 @@ class TLStruct:  # pylint: disable=C0103
             'size' / Int32ul,
             'thumb' / self.photo_size_structures('thumb'),
             'dc_id' / Int32ul,
-            'attributes' / self.struct_0x1cb5c415(
-                self.document_attribute_structures('attributes'), 'attributes'),
+            'attributes' / self.struct_0x1cb5c415(self.document_attribute_structures('attributes'), 'attributes'),
             'key' / TBytes,
             'iv' / TBytes)
 
@@ -5920,8 +5885,8 @@ class TLStruct:  # pylint: disable=C0103
                                 has_entities=8),
             'reply_to_msg_id' / If(this.flags.has_reply_to_msg_id, Int32ul),
             'message' / TString,
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'date' / TTimestamp)
 
     @structures
@@ -6668,8 +6633,7 @@ class TLStruct:  # pylint: disable=C0103
             'id' / Int32ul,
             'version' / TString,
             'text' / TString,
-            'entities' / self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities'),
+            'entities' / self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities'),
             'document' / If(this.flags.has_document,
                             self.document_structures('document')),
             'url' / If(this.flags.has_url, TString),
@@ -6738,7 +6702,8 @@ class TLStruct:  # pylint: disable=C0103
                                 is_update_app=1,
                                 has_entities=2),
             'message' / TString,
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')))
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')))
 
     @structures
     def help_deep_link_info_structures(self, name):
@@ -6858,8 +6823,7 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('help_user_info'),
             'signature' / Hex(Const(0x01eb3758, Int32ul)),
             'message' / TString,
-            'entities' / self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities'),
+            'entities' / self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities'),
             'author' / TString,
             'date' / TTimestamp)
 
@@ -7391,7 +7355,9 @@ class TLStruct:  # pylint: disable=C0103
             'correct_answers' / If(this.flags.has_correct_answers,
                                    self.struct_0x1cb5c415(TBytes, 'correct_answers')),
             'solution' / If(this.flags.has_solution, TString),
-            'solution_entities' / If(this.flags.has_solution, self.struct_0x1cb5c415(self.message_entity_structures('solution_entities'), 'solution_entities')))
+            'solution_entities' / If(this.flags.has_solution,
+                                     self.struct_0x1cb5c415(self.message_entity_structures('solution_entities'),
+                                                            'solution_entities')))
 
     @constructor(0x1e287d04, 'input_media_uploaded_photo')
     def struct_0x1e287d04(self):
@@ -7402,8 +7368,8 @@ class TLStruct:  # pylint: disable=C0103
                                 has_stickers=1,
                                 has_ttl_seconds=2),
             'file' / self.input_file_structures('file'),
-            'stickers' / If(this.flags.has_stickers, self.struct_0x1cb5c415(
-                self.input_document_structures('stickers'), 'stickers')),
+            'stickers' / If(this.flags.has_stickers,
+                            self.struct_0x1cb5c415(self.input_document_structures('stickers'), 'stickers')),
             'ttl_seconds' / If(this.flags.has_ttl_seconds, Int32ul))
 
     @constructor(0xc13d1c11, 'input_media_venue')
@@ -7448,10 +7414,9 @@ class TLStruct:  # pylint: disable=C0103
             'thumb' / If(this.flags.has_thumb,
                          self.input_file_structures('thumb')),
             'mime_type' / TString,
-            'attributes' / self.struct_0x1cb5c415(
-                self.document_attribute_structures('attributes'), 'attributes'),
-            'stickers' / If(this.flags.has_stickers, self.struct_0x1cb5c415(
-                self.input_document_structures('stickers'), 'stickers')),
+            'attributes' / self.struct_0x1cb5c415(self.document_attribute_structures('attributes'), 'attributes'),
+            'stickers' / If(this.flags.has_stickers,
+                            self.struct_0x1cb5c415(self.input_document_structures('stickers'), 'stickers')),
             'ttl_seconds' / If(this.flags.has_ttl_seconds, Int32ul))
 
     @constructor(0xe5bbfe1a, 'input_media_photo_external')
@@ -8470,8 +8435,7 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('message_encrypted_action'),
             'signature' / Hex(Const(0x555555f7, Int32ul)),
-            'encrypted_action' / self.decrypted_message_action_structures(
-                'encrypted_action'))
+            'encrypted_action' / self.decrypted_message_action_structures('encrypted_action'))
 
     @constructor(0xfae69f56, 'message_action_custom_action')
     def struct_0xfae69f56(self):
@@ -8677,6 +8641,7 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('message_action_ttl_change'),
             'signature' / Hex(Const(0x55555552, Int32ul)),
             'ttl' / Int32ul)
+
     @constructor(0x3c134d7b, 'message_action_set_messages_ttl')
     def struct_0x3c134d7b(self):
         return Struct(
@@ -9709,9 +9674,10 @@ class TLStruct:  # pylint: disable=C0103
                                 is_min=1,
                                 is_can_see_list=4,
                                 has_recent_reactions=2),
-            'results' / self.struct_0x1cb5c415(
-                self.reaction_count_structures('results'), 'results'),
-            'recent_reactions' / If(this.flags.has_recent_reactions, self.struct_0x1cb5c415(self.message_peer_reaction_structures('recent_reactions'), 'recent_reactions')))
+            'results' / self.struct_0x1cb5c415(self.reaction_count_structures('results'), 'results'),
+            'recent_reactions' / If(this.flags.has_recent_reactions,
+                                    self.struct_0x1cb5c415(self.message_peer_reaction_structures('recent_reactions'),
+                                                           'recent_reactions')))
 
     @constructor(0x4f2b9479, 'message_reactions')
     def struct_0x4f2b9479(self):
@@ -9722,9 +9688,10 @@ class TLStruct:  # pylint: disable=C0103
                                 is_min=1,
                                 is_can_see_list=4,
                                 has_recent_reactions=2),
-            'results' / self.struct_0x1cb5c415(
-                self.reaction_count_structures('results'), 'results'),
-            'recent_reactions' / If(this.flags.has_recent_reactions, self.struct_0x1cb5c415(self.message_peer_reaction_structures('recent_reactions'), 'recent_reactions')))
+            'results' / self.struct_0x1cb5c415(self.reaction_count_structures('results'), 'results'),
+            'recent_reactions' / If(this.flags.has_recent_reactions,
+                                    self.struct_0x1cb5c415(self.message_peer_reaction_structures('recent_reactions'),
+                                                           'recent_reactions')))
 
     @constructor(0xb87a24d1, 'message_reactions_layer137')
     def struct_0xb87a24d1(self):
@@ -9763,8 +9730,8 @@ class TLStruct:  # pylint: disable=C0103
             'replies' / Int32ul,
             'replies_pts' / Int32ul,
             'recent_repliers' / If(this.flags.has_recent_repliers,
-                                   self.struct_0x1cb5c415(
-                self.peer_structures('recent_repliers'), 'recent_repliers')),
+                                   self.struct_0x1cb5c415(self.peer_structures('recent_repliers'),
+                                                          'recent_repliers')),
             'channel_id' / If(this.flags.has_channel_id, Int32ul),
             'max_id' / If(this.flags.has_max_id, Int32ul),
             'read_max_id' / If(this.flags.has_read_max_id, Int32ul))
@@ -9783,8 +9750,8 @@ class TLStruct:  # pylint: disable=C0103
             'replies' / Int32ul,
             'replies_pts' / Int32ul,
             'recent_repliers' / If(this.flags.has_recent_repliers,
-                                   self.struct_0x1cb5c415(
-                self.peer_structures('recent_repliers'), 'recent_repliers')),
+                                   self.struct_0x1cb5c415(self.peer_structures('recent_repliers'),
+                                                          'recent_repliers')),
             'channel_id' / If(this.flags.has_channel_id, Int64ul),
             'max_id' / If(this.flags.has_max_id, Int32ul),
             'read_max_id' / If(this.flags.has_read_max_id, Int32ul))
@@ -9888,8 +9855,7 @@ class TLStruct:  # pylint: disable=C0103
             'date' / TTimestamp,
             'message' / TString,
             'media' / self.message_media_structures('media'),
-            'entities' / self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities'),
+            'entities' / self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities'),
             'via_bot_name' / If(this.flags.has_via_bot_name,
                                 TString),
             'reply_to_random_id' / If(this.flags.has_reply_to_random_id,
@@ -9917,8 +9883,7 @@ class TLStruct:  # pylint: disable=C0103
             'date' / TTimestamp,
             'message' / TString,
             'media' / self.message_media_structures('media'),
-            'entities' / self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities'),
+            'entities' / self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities'),
             'via_bot_name' / If(this.flags.has_via_bot_name, TString),
             'reply_to_random_id' /
             If(this.flags.has_reply_to_random_id, Int64ul),
@@ -9949,11 +9914,10 @@ class TLStruct:  # pylint: disable=C0103
             'id' / Int32ul,
             'from_id' / If(this.flags.has_from_id, Int32ul),
             'peer_id' / self.peer_structures('peer_id'),
-            'from_id_adjusted' / If(
-                this.from_id == 0,
-                IfThenElse(this.peer_id.user_id != 0,
-                           'from_id_adjusted' / this.peer_id.user_id,
-                           'from_id_adjusted' / this.peer_id.channel_id * -1)),
+            'from_id_adjusted' / If(this.from_id == 0,
+                                    IfThenElse(this.peer_id.user_id != 0,
+                                               'from_id_adjusted' / this.peer_id.user_id,
+                                               'from_id_adjusted' / this.peer_id.channel_id * -1)),
             'fwd_from' / If(this.flags.has_fwd_from,
                             self.message_fwd_header_structures('fwd_from')),
             'via_bot_id' / If(this.flags.has_via_bot_id, Int32ul),
@@ -9967,8 +9931,8 @@ class TLStruct:  # pylint: disable=C0103
             '_media_caption_legacy' / Computed('ignored'),
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'views' / If(this.flags.has_views, Int32ul),
             'edit_date' / If(this.flags.has_edit_date, TTimestamp),
             'post_author' / If(this.flags.has_post_author, TString),
@@ -10000,11 +9964,10 @@ class TLStruct:  # pylint: disable=C0103
             'id' / Int32ul,
             'from_id' / If(this.flags.has_from_id, Int32ul),
             'peer_id' / self.peer_structures('peer_id'),
-            'from_id_adjusted' / If(
-                this.from_id == 0,
-                IfThenElse(this.peer_id.user_id != 0,
-                           'from_id_adjusted' / this.peer_id.user_id,
-                           'from_id_adjusted' / this.peer_id.channel_id * -1)),
+            'from_id_adjusted' / If(this.from_id == 0,
+                                    IfThenElse(this.peer_id.user_id != 0,
+                                               'from_id_adjusted' / this.peer_id.user_id,
+                                               'from_id_adjusted' / this.peer_id.channel_id * -1)),
             'fwd_from' / If(this.flags.has_fwd_from,
                             self.message_fwd_header_structures('fwd_from')),
             'via_bot_id' / If(this.flags.has_via_bot_id, Int32ul),
@@ -10018,8 +9981,8 @@ class TLStruct:  # pylint: disable=C0103
             '_media_caption_legacy' / Computed('ignored'),
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'views' / If(this.flags.has_views, Int32ul),
             'edit_date' / If(this.flags.has_edit_date, TTimestamp),
             'attach_path' / TString,
@@ -10046,11 +10009,10 @@ class TLStruct:  # pylint: disable=C0103
             'id' / Int32ul,
             'from_id' / If(this.flags.has_from_id, Int32ul),
             'peer_id' / self.peer_structures('peer_id'),
-            'from_id_adjusted' / If(
-                this.from_id == 0,
-                IfThenElse(this.peer_id.user_id != 0,
-                           'from_id_adjusted' / this.peer_id.user_id,
-                           'from_id_adjusted' / this.peer_id.channel_id * -1)),
+            'from_id_adjusted' / If(this.from_id == 0,
+                                    IfThenElse(this.peer_id.user_id != 0,
+                                               'from_id_adjusted' / this.peer_id.user_id,
+                                               'from_id_adjusted' / this.peer_id.channel_id * -1)),
             'fwd_from' / If(this.flags.has_fwd_from,
                             self.peer_structures('fwd_from')),
             'fwd_from_date' / If(this.flags.has_fwd_from, TTimestamp),
@@ -10089,11 +10051,10 @@ class TLStruct:  # pylint: disable=C0103
             'id' / Int32ul,
             'from_id' / If(this.flags.has_from_id, Int32ul),
             'peer_id' / self.peer_structures('peer_id'),
-            'from_id_adjusted' / If(
-                this.from_id == 0,
-                IfThenElse(this.peer_id.user_id != 0,
-                           'from_id_adjusted' / this.peer_id.user_id,
-                           'from_id_adjusted' / this.peer_id.channel_id * -1)),
+            'from_id_adjusted' / If(this.from_id == 0,
+                                    IfThenElse(this.peer_id.user_id != 0,
+                                               'from_id_adjusted' / this.peer_id.user_id,
+                                               'from_id_adjusted' / this.peer_id.channel_id * -1)),
             'fwd_from' / If(this.flags.has_fwd_from,
                             self.peer_structures('fwd_from')),
             'fwd_from_date' / If(this.flags.has_date, TTimestamp),
@@ -10105,9 +10066,8 @@ class TLStruct:  # pylint: disable=C0103
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')),
             'entities' / If(this.flags.has_entities,
-                            self.struct_0x1cb5c415(
-                                self.message_entity_structures('entities'),
-                                'entities')),
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'),
+                                                   'entities')),
             'views' / If(this.flags.has_views, Int32ul),
             'attach_path' / TString,
             'UNPARSED' / GreedyBytes)
@@ -10128,11 +10088,10 @@ class TLStruct:  # pylint: disable=C0103
             'id' / Int32ul,
             'from_id' / If(this.flags.has_from_id, Int32ul),
             'peer_id' / self.peer_structures('peer_id'),
-            'from_id_adjusted' / If(
-                this.from_id == 0,
-                IfThenElse(this.peer_id.user_id != 0,
-                           'from_id_adjusted' / this.peer_id.user_id,
-                           'from_id_adjusted' / this.peer_id.channel_id * -1)),
+            'from_id_adjusted' / If(this.from_id == 0,
+                                    IfThenElse(this.peer_id.user_id != 0,
+                                               'from_id_adjusted' / this.peer_id.user_id,
+                                               'from_id_adjusted' / this.peer_id.channel_id * -1)),
             'date' / TTimestamp,
             'action' / self.message_action_structures('action'))
 
@@ -10170,8 +10129,8 @@ class TLStruct:  # pylint: disable=C0103
                          self.message_media_structures('media')),
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'attach_path' / TString,
             'UNPARSED' / GreedyBytes)
 
@@ -10202,11 +10161,10 @@ class TLStruct:  # pylint: disable=C0103
             'id' / Int32ul,
             'from_id' / If(this.flags.has_from_id, Int32ul),
             'peer_id' / self.peer_structures('peer_id'),
-            'from_id_adjusted' / If(
-                this.from_id == 0,
-                IfThenElse(this.peer_id.user_id != 0,
-                           'from_id_adjusted' / this.peer_id.user_id,
-                           'from_id_adjusted' / this.peer_id.channel_id * -1)),
+            'from_id_adjusted' / If(this.from_id == 0,
+                                    IfThenElse(this.peer_id.user_id != 0,
+                                               'from_id_adjusted' / this.peer_id.user_id,
+                                               'from_id_adjusted' / this.peer_id.channel_id * -1)),
             'fwd_from' / If(this.flags.has_fwd_from,
                             self.message_fwd_header_structures('fwd_from')),
             'via_bot_id' / If(this.flags.has_via_bot_id, Int32ul),
@@ -10220,8 +10178,8 @@ class TLStruct:  # pylint: disable=C0103
             '_media_caption_legacy' / Computed('ignored'),
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'views' / If(this.flags.has_views, Int32ul),
             'edit_date' / If(this.flags.has_edit_date, TTimestamp),
             'post_author' / If(this.flags.has_post_author, TString),
@@ -10270,11 +10228,10 @@ class TLStruct:  # pylint: disable=C0103
             'id' / Int32ul,
             'from_id' / If(this.flags.has_from_id, Int32ul),
             'peer_id' / self.peer_structures('peer_id'),
-            'from_id_adjusted' / If(
-                this.from_id == 0,
-                IfThenElse(this.peer_id.user_id != 0,
-                           'from_id_adjusted' / this.peer_id.user_id,
-                           'from_id_adjusted' / this.peer_id.channel_id * -1)),
+            'from_id_adjusted' / If(this.from_id == 0,
+                                    IfThenElse(this.peer_id.user_id != 0,
+                                               'from_id_adjusted' / this.peer_id.user_id,
+                                               'from_id_adjusted' / this.peer_id.channel_id * -1)),
             'fwd_from' / If(this.flags.has_fwd_from,
                             self.message_fwd_header_structures('fwd_from')),
             'via_bot_id' / If(this.flags.has_via_bot_id, Int32ul),
@@ -10287,8 +10244,8 @@ class TLStruct:  # pylint: disable=C0103
             '_media_caption_legacy' / Computed('ignored'),
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'views' / If(this.flags.has_views, Int32ul),
             'edit_date' / If(this.flags.has_edit_date, TTimestamp),
             'post_author' / If(this.flags.has_post_author, TString),
@@ -10434,11 +10391,10 @@ class TLStruct:  # pylint: disable=C0103
             'id' / Int32ul,
             'from_id' / If(this.flags.has_from_id, Int32ul),
             'peer_id' / self.peer_structures('peer_id'),
-            'from_id_adjusted' / If(
-                this.from_id == 0,
-                IfThenElse(this.peer_id.user_id != 0,
-                           'from_id_adjusted' / this.peer_id.user_id,
-                           'from_id_adjusted' / this.peer_id.channel_id * -1)),
+            'from_id_adjusted' / If(this.from_id == 0,
+                                    IfThenElse(this.peer_id.user_id != 0,
+                                               'from_id_adjusted' / this.peer_id.user_id,
+                                               'from_id_adjusted' / this.peer_id.channel_id * -1)),
             'fwd_from' / If(this.flags.has_fwd_from,
                             self.message_fwd_header_structures('fwd_from')),
             'via_bot_id' / If(this.flags.has_via_bot_id, Int32ul),
@@ -10449,18 +10405,17 @@ class TLStruct:  # pylint: disable=C0103
                          self.message_media_structures('media')),
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'views' / If(this.flags.has_views, Int32ul),
             'edit_date' / If(this.flags.has_edit_date, TTimestamp),
             'post_author' / If(this.flags.has_post_author, TString),
             'grouped_id' / If(this.flags.has_grouped_id, Int64ul),
             'reactions' / If(this.flags.has_reactions,
                              self.struct_0x4f2b9479()),
-            'restriction_reason' / If(
-                this.flags.has_restriction_reason,
-                self.struct_0x1cb5c415(self.struct_0xd072acb4(),
-                                       'restriction_reason')),
+            'restriction_reason' / If(this.flags.has_restriction_reason,
+                                      self.struct_0x1cb5c415(self.struct_0xd072acb4(),
+                                                             'restriction_reason')),
             'attach_path' / TString,
             'UNPARSED' / GreedyBytes)
 
@@ -10493,11 +10448,10 @@ class TLStruct:  # pylint: disable=C0103
             'id' / Int32ul,
             'from_id' / If(this.flags.has_from_id, Int32ul),
             'peer_id' / self.peer_structures('peer_id'),
-            'from_id_adjusted' / If(
-                this.from_id == 0,
-                IfThenElse(this.peer_id.user_id != 0,
-                           'from_id_adjusted' / this.peer_id.user_id,
-                           'from_id_adjusted' / this.peer_id.channel_id * -1)),
+            'from_id_adjusted' / If(this.from_id == 0,
+                                    IfThenElse(this.peer_id.user_id != 0,
+                                               'from_id_adjusted' / this.peer_id.user_id,
+                                               'from_id_adjusted' / this.peer_id.channel_id * -1)),
             'fwd_from' / If(this.flags.has_fwd_from,
                             self.message_fwd_header_structures('fwd_from')),
             'via_bot_id' / If(this.flags.has_via_bot_id, Int32ul),
@@ -10508,15 +10462,14 @@ class TLStruct:  # pylint: disable=C0103
                          self.message_media_structures('media')),
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'views' / If(this.flags.has_views, Int32ul),
             'edit_date' / If(this.flags.has_edit_date, TTimestamp),
             'post_author' / If(this.flags.has_post_author, TString),
             'grouped_id' / If(this.flags.has_grouped_id, Int64ul),
             'restriction_reason' / If(this.flags.has_restriction_reason,
-                                      self.struct_0x1cb5c415(
-                self.struct_0xd072acb4(), 'restriction_reason')),
+                                      self.struct_0x1cb5c415(self.struct_0xd072acb4(), 'restriction_reason')),
             'attach_path' / TString,
             'UNPARSED' / GreedyBytes)
 
@@ -10550,11 +10503,10 @@ class TLStruct:  # pylint: disable=C0103
             'id' / Int32ul,
             'from_id' / If(this.flags.has_from_id, Int32ul),
             'peer_id' / self.peer_structures('peer_id'),
-            'from_id_adjusted' / If(
-                this.from_id == 0,
-                IfThenElse(this.peer_id.user_id != 0,
-                           'from_id_adjusted' / this.peer_id.user_id,
-                           'from_id_adjusted' / this.peer_id.channel_id * -1)),
+            'from_id_adjusted' / If(this.from_id == 0,
+                                    IfThenElse(this.peer_id.user_id != 0,
+                                               'from_id_adjusted' / this.peer_id.user_id,
+                                               'from_id_adjusted' / this.peer_id.channel_id * -1)),
             'fwd_from' / If(this.flags.has_fwd_from,
                             self.message_fwd_header_structures('fwd_from')),
             'via_bot_id' / If(this.flags.has_via_bot_id, Int32ul),
@@ -10565,17 +10517,16 @@ class TLStruct:  # pylint: disable=C0103
                          self.message_media_structures('media')),
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'views' / If(this.flags.has_views, Int32ul),
             'forwards' / If(this.flags.has_forwards, Int32ul),
             'edit_date' / If(this.flags.has_edit_date, TTimestamp),
             'post_author' / If(this.flags.has_post_author, TString),
             'grouped_id' / If(this.flags.has_grouped_id, Int64ul),
             'restriction_reason' / If(this.flags.has_restriction_reason,
-                                      self.struct_0x1cb5c415(
-                                          self.struct_0xd072acb4(),
-                                          'restriction_reason')),
+                                      self.struct_0x1cb5c415(self.struct_0xd072acb4(),
+                                                             'restriction_reason')),
             'attach_path' / TString,
             'UNPARSED' / GreedyBytes)
 
@@ -10622,8 +10573,8 @@ class TLStruct:  # pylint: disable=C0103
                          self.message_media_structures('media')),
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'views' / If(this.flags.has_views, Int32ul),
             'forwards' / If(this.flags.has_forwards, Int32ul),
             'replies' / If(this.flags.has_replies,
@@ -10632,9 +10583,8 @@ class TLStruct:  # pylint: disable=C0103
             'post_author' / If(this.flags.has_post_author, TString),
             'grouped_id' / If(this.flags.has_grouped_id, Int64ul),
             'restriction_reason' / If(this.flags.has_restriction_reason,
-                                      self.struct_0x1cb5c415(
-                                          self.struct_0xd072acb4(),
-                                          'restriction_reason')),
+                                      self.struct_0x1cb5c415(self.struct_0xd072acb4(),
+                                                             'restriction_reason')),
             'attach_path' / TString,
             'UNPARSED' / GreedyBytes)
 
@@ -10682,8 +10632,8 @@ class TLStruct:  # pylint: disable=C0103
                          self.message_media_structures('media')),
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'views' / If(this.flags.has_views, Int32ul),
             'forwards' / If(this.flags.has_forwards, Int32ul),
             'replies' / If(this.flags.has_replies,
@@ -10692,9 +10642,8 @@ class TLStruct:  # pylint: disable=C0103
             'post_author' / If(this.flags.has_post_author, TString),
             'grouped_id' / If(this.flags.has_grouped_id, Int64ul),
             'restriction_reason' / If(this.flags.has_restriction_reason,
-                                      self.struct_0x1cb5c415(
-                                          self.struct_0xd072acb4(),
-                                          'restriction_reason')),
+                                      self.struct_0x1cb5c415(self.struct_0xd072acb4(),
+                                                             'restriction_reason')),
             'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
             'attach_path' / TString,
             'UNPARSED' / GreedyBytes)
@@ -10746,8 +10695,8 @@ class TLStruct:  # pylint: disable=C0103
             '_media_caption_legacy' / Computed('ignored'),
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'views' / If(this.flags.has_views, Int32ul),
             'forwards' / If(this.flags.has_views, Int32ul),
             'replies' / If(this.flags.has_replies,
@@ -10756,9 +10705,8 @@ class TLStruct:  # pylint: disable=C0103
             'post_author' / If(this.flags.has_post_author, TString),
             'grouped_id' / If(this.flags.has_grouped_id, Int64ul),
             'restriction_reason' / If(this.flags.has_restriction_reason,
-                                      self.struct_0x1cb5c415(
-                                          self.struct_0xd072acb4(),
-                                          'restriction_reason')),
+                                      self.struct_0x1cb5c415(self.struct_0xd072acb4(),
+                                                             'restriction_reason')),
             'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
             'attach_path' / TString,
             'UNPARSED' / GreedyBytes)
@@ -10810,8 +10758,8 @@ class TLStruct:  # pylint: disable=C0103
                          self.message_media_structures('media')),
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'views' / If(this.flags.has_views, Int32ul),
             'forwards' / If(this.flags.has_forwards, Int32ul),
             'replies' / If(this.flags.has_replies,
@@ -10822,9 +10770,8 @@ class TLStruct:  # pylint: disable=C0103
             'reactions' / If(this.flags.has_reactions,
                              self.struct_0x4f2b9479()),
             'restriction_reason' / If(this.flags.has_restriction_reason,
-                                      self.struct_0x1cb5c415(
-                                          self.struct_0xd072acb4(),
-                                          'restriction_reason')),
+                                      self.struct_0x1cb5c415(self.struct_0xd072acb4(),
+                                                             'restriction_reason')),
             'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
             'attach_path' / TString,
             'UNPARSED' / GreedyBytes)
@@ -10847,11 +10794,10 @@ class TLStruct:  # pylint: disable=C0103
             'id' / Int32ul,
             'from_id' / If(this.flags.has_from_id, Int32ul),
             'peer_id' / self.peer_structures('peer_id'),
-            'from_id_adjusted' / If(
-                this.from_id == 0,
-                IfThenElse(this.peer_id.user_id != 0,
-                           'from_id_adjusted' / this.peer_id.user_id,
-                           'from_id_adjusted' / this.peer_id.channel_id * -1)),
+            'from_id_adjusted' / If(this.from_id == 0,
+                                    IfThenElse(this.peer_id.user_id != 0,
+                                               'from_id_adjusted' / this.peer_id.user_id,
+                                               'from_id_adjusted' / this.peer_id.channel_id * -1)),
             'reply_to_msg_id' / If(this.flags.has_reply_to_msg_id, Int32ul),
             'date' / TTimestamp,
             'action' / self.message_action_structures('action'),
@@ -10936,8 +10882,8 @@ class TLStruct:  # pylint: disable=C0103
             '_media_caption_legacy' / Computed('ignored'),
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'attach_path' / TString,
             'UNPARSED' / GreedyBytes)
 
@@ -11092,8 +11038,7 @@ class TLStruct:  # pylint: disable=C0103
             'next_offset' / If(this.flags.has_next_offset, TString),
             'switch_pm' / If(this.flags.has_switch_pm,
                              self.struct_0x3c20629f()),
-            'results' / self.struct_0x1cb5c415(
-                self.bot_inline_result_structures('results'), 'results'),
+            'results' / self.struct_0x1cb5c415(self.bot_inline_result_structures('results'), 'results'),
             'cache_time' / Int32ul)
 
     @constructor(0x947ca848, 'messages_bot_results')
@@ -11109,8 +11054,7 @@ class TLStruct:  # pylint: disable=C0103
             'next_offset' / If(this.flags.has_next_offset, TString),
             'switch_pm' / If(this.flags.has_switch_pm,
                              self.struct_0x3c20629f()),
-            'results' / self.struct_0x1cb5c415(
-                self.bot_inline_result_structures('results'), 'results'),
+            'results' / self.struct_0x1cb5c415(self.bot_inline_result_structures('results'), 'results'),
             'cache_time' / Int32ul,
             'users' / self.struct_0x1cb5c415(self.user_structures('users'),
                                              'users'))
@@ -11193,10 +11137,8 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('messages_dialogs'),
             'signature' / Hex(Const(0x15ba6c40, Int32ul)),
-            'dialogs' / self.struct_0x1cb5c415(
-                self.dialog_structures('dialogs'), 'dialogs'),
-            'messages' / self.struct_0x1cb5c415(
-                self.message_structures('messages'), 'messages'),
+            'dialogs' / self.struct_0x1cb5c415(self.dialog_structures('dialogs'), 'dialogs'),
+            'messages' / self.struct_0x1cb5c415(self.message_structures('messages'), 'messages'),
             'chats' /
             self.struct_0x1cb5c415(self.chat_structures('chats'), 'chats'),
             'users' / self.struct_0x1cb5c415(self.user_structures('users'),
@@ -11208,10 +11150,8 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('messages_dialogs_slice'),
             'signature' / Hex(Const(0x71e094f3, Int32ul)),
             'count' / Int32ul,
-            'dialogs' / self.struct_0x1cb5c415(
-                self.dialog_structures('dialogs'), 'dialogs'),
-            'messages' / self.struct_0x1cb5c415(
-                self.message_structures('messages'), 'messages'),
+            'dialogs' / self.struct_0x1cb5c415(self.dialog_structures('dialogs'), 'dialogs'),
+            'messages' / self.struct_0x1cb5c415(self.message_structures('messages'), 'messages'),
             'chats' /
             self.struct_0x1cb5c415(self.chat_structures('chats'), 'chats'),
             'users' / self.struct_0x1cb5c415(self.user_structures('users'),
@@ -11308,8 +11248,7 @@ class TLStruct:  # pylint: disable=C0103
                                 is_premium=1),
             'hash' / Int64ul,
             'count' / Int32ul,
-            'sets' / self.struct_0x1cb5c415(
-                self.sticker_set_covered_structures('sets'), 'sets'),
+            'sets' / self.struct_0x1cb5c415(self.sticker_set_covered_structures('sets'), 'sets'),
             'unread' / self.struct_0x1cb5c415(Int64ul, 'unread'))
 
     @constructor(0xc6dc0c66, 'messages_featured_stickers_not_modified')
@@ -11510,8 +11449,7 @@ class TLStruct:  # pylint: disable=C0103
             'count' / Int32ul,
             'next_rate' / If(this.flags.has_next_rate, Int32ul),
             'offset_id_offset' / If(this.flags.has_offset_id_offset, Int32ul),
-            'messages' / self.struct_0x1cb5c415(
-                self.message_structures('messages'), 'messages'),
+            'messages' / self.struct_0x1cb5c415(self.message_structures('messages'), 'messages'),
             'chats' /
             self.struct_0x1cb5c415(self.chat_structures('chats'), 'chats'),
             'users' / self.struct_0x1cb5c415(self.user_structures('users'),
@@ -11522,8 +11460,7 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('messages_messages'),
             'signature' / Hex(Const(0x8c718e87, Int32ul)),
-            'messages' / self.struct_0x1cb5c415(
-                self.message_structures('messages'), 'messages'),
+            'messages' / self.struct_0x1cb5c415(self.message_structures('messages'), 'messages'),
             'chats' /
             self.struct_0x1cb5c415(self.chat_structures('chats'), 'chats'),
             'users' / self.struct_0x1cb5c415(self.user_structures('users'),
@@ -11540,8 +11477,7 @@ class TLStruct:  # pylint: disable=C0103
             'pts' / Int32ul,
             'count' / Int32ul,
             'offset_id_offset' / If(this.flags.has_offset_id_offset, Int32ul),
-            'messages' / self.struct_0x1cb5c415(
-                self.message_structures('messages'), 'messages'),
+            'messages' / self.struct_0x1cb5c415(self.message_structures('messages'), 'messages'),
             'topics' /
             self.struct_0x1cb5c415(self.struct_0x71701da9(), 'topics'),
             'chats' /
@@ -11606,8 +11542,7 @@ class TLStruct:  # pylint: disable=C0103
             'hash' / Int64ul,
             'packs' /
             self.struct_0x1cb5c415(self.struct_0x12b299d4(), 'packs'),
-            'stickers' / self.struct_0x1cb5c415(
-                self.document_structures('stickers'), 'stickers'),
+            'stickers' / self.struct_0x1cb5c415(self.document_structures('stickers'), 'stickers'),
             'dates' / self.struct_0x1cb5c415(Int32ul, 'dates'))
 
     @constructor(0x0b17f890, 'messages_recent_stickers_not_modified')
@@ -11972,8 +11907,7 @@ class TLStruct:  # pylint: disable=C0103
             'author_photo_id' / Int64ul,
             'author' / TString,
             'date' / TTimestamp,
-            'blocks' / self.struct_0x1cb5c415(
-                self.page_block_structures('blocks'), 'blocks'),
+            'blocks' / self.struct_0x1cb5c415(self.page_block_structures('blocks'), 'blocks'),
             'caption' / self.struct_0x6f747657())
 
     @constructor(0x467a0766, 'page_block_paragraph')
@@ -12033,8 +11967,7 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('page_block_slideshow'),
             'signature' / Hex(Const(0x031f9590, Int32ul)),
-            'items' / self.struct_0x1cb5c415(
-                self.page_block_structures('items'), 'items'),
+            'items' / self.struct_0x1cb5c415(self.page_block_structures('items'), 'items'),
             'caption' / self.struct_0x6f747657())
 
     @constructor(0xce0d37b0, 'page_block_anchor')
@@ -12091,8 +12024,7 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('page_block_collage'),
             'signature' / Hex(Const(0x65a0fa4d, Int32ul)),
-            'items' / self.struct_0x1cb5c415(
-                self.page_block_structures('items'), 'items'),
+            'items' / self.struct_0x1cb5c415(self.page_block_structures('items'), 'items'),
             'caption' / self.struct_0x6f747657())
 
     @constructor(0x3d5b64f2, 'page_block_author_date_layer60')
@@ -12136,8 +12068,7 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('page_block_slideshow_layer82'),
             'signature' / Hex(Const(0x130c8963, Int32ul)),
-            'items' / self.struct_0x1cb5c415(
-                self.page_block_structures('items'), 'items'),
+            'items' / self.struct_0x1cb5c415(self.page_block_structures('items'), 'items'),
             'caption_text' / self.rich_text_structures('caption_text'))
 
     @constructor(0x8ffa9a1f, 'page_block_subtitle')
@@ -12162,8 +12093,7 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0x76768bed, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 is_open=1),
-            'blocks' / self.struct_0x1cb5c415(
-                self.page_block_structures('blocks'), 'blocks'),
+            'blocks' / self.struct_0x1cb5c415(self.page_block_structures('blocks'), 'blocks'),
             'title' / self.rich_text_structures('title'))
 
     @constructor(0xef1751b5, 'page_block_channel')
@@ -12252,8 +12182,7 @@ class TLStruct:  # pylint: disable=C0103
             'author_photo_id' / Int64ul,
             'author' / TString,
             'date' / TTimestamp,
-            'blocks' / self.struct_0x1cb5c415(
-                self.page_block_structures('blocks'), 'blocks'),
+            'blocks' / self.struct_0x1cb5c415(self.page_block_structures('blocks'), 'blocks'),
             'caption_text' / self.rich_text_structures('caption_text'))
 
     @constructor(0x08b31c4f, 'page_block_collage_layer82')
@@ -12261,8 +12190,7 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('page_block_collage_layer82'),
             'signature' / Hex(Const(0x08b31c4f, Int32ul)),
-            'items' / self.struct_0x1cb5c415(
-                self.page_block_structures('items'), 'items'),
+            'items' / self.struct_0x1cb5c415(self.page_block_structures('items'), 'items'),
             'caption_text' / self.rich_text_structures('caption_text'))
 
     @constructor(0x31b81a7f, 'page_block_audio_layer82')
@@ -12417,8 +12345,7 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('page_part_layer67'),
             'signature' / Hex(Const(0x8dee6c44, Int32ul)),
-            'blocks' / self.struct_0x1cb5c415(
-                self.page_block_structures('blocks'), 'blocks'),
+            'blocks' / self.struct_0x1cb5c415(self.page_block_structures('blocks'), 'blocks'),
             'photos' /
             self.struct_0x1cb5c415(self.photo_structures('photos'), 'photos'),
             'documents' / self.struct_0x1cb5c415(self.document_structures('documents'), 'documents'))
@@ -12428,8 +12355,7 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('page_part_layer82'),
             'signature' / Hex(Const(0x8e3f9ebe, Int32ul)),
-            'blocks' / self.struct_0x1cb5c415(
-                self.page_block_structures('blocks'), 'blocks'),
+            'blocks' / self.struct_0x1cb5c415(self.page_block_structures('blocks'), 'blocks'),
             'photos' /
             self.struct_0x1cb5c415(self.photo_structures('photos'), 'photos'),
             'documents' / self.struct_0x1cb5c415(self.document_structures('documents'), 'documents'))
@@ -12439,8 +12365,7 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('page_full_layer67'),
             'signature' / Hex(Const(0xd7a19d69, Int32ul)),
-            'blocks' / self.struct_0x1cb5c415(
-                self.page_block_structures('blocks'), 'blocks'),
+            'blocks' / self.struct_0x1cb5c415(self.page_block_structures('blocks'), 'blocks'),
             'photos' /
             self.struct_0x1cb5c415(self.photo_structures('photos'), 'photos'),
             'documents' / self.struct_0x1cb5c415(self.document_structures('documents'), 'documents'))
@@ -12450,8 +12375,7 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('page_full_layer82'),
             'signature' / Hex(Const(0x556ec7aa, Int32ul)),
-            'blocks' / self.struct_0x1cb5c415(
-                self.page_block_structures('blocks'), 'blocks'),
+            'blocks' / self.struct_0x1cb5c415(self.page_block_structures('blocks'), 'blocks'),
             'photos' /
             self.struct_0x1cb5c415(self.photo_structures('photos'), 'photos'),
             'documents' / self.struct_0x1cb5c415(self.document_structures('documents'), 'documents'))
@@ -12465,8 +12389,7 @@ class TLStruct:  # pylint: disable=C0103
                                 is_part=1,
                                 is_rtl=2),
             'url' / TString,
-            'blocks' / self.struct_0x1cb5c415(
-                self.page_block_structures('blocks'), 'blocks'),
+            'blocks' / self.struct_0x1cb5c415(self.page_block_structures('blocks'), 'blocks'),
             'photos' /
             self.struct_0x1cb5c415(self.photo_structures('photos'), 'photos'),
             'documents' / self.struct_0x1cb5c415(self.document_structures('documents'), 'documents'))
@@ -12482,12 +12405,10 @@ class TLStruct:  # pylint: disable=C0103
                                 is_v2=4,
                                 has_views=8),
             'url' / TString,
-            'blocks' / self.struct_0x1cb5c415(
-                self.page_block_structures('blocks'), 'blocks'),
+            'blocks' / self.struct_0x1cb5c415(self.page_block_structures('blocks'), 'blocks'),
             'photos' /
             self.struct_0x1cb5c415(self.photo_structures('photos'), 'photos'),
-            'documents' / self.struct_0x1cb5c415(
-                self.document_structures('documents'), 'documents'),
+            'documents' / self.struct_0x1cb5c415(self.document_structures('documents'), 'documents'),
             'views' / If(this.flags.has_views, Int32ul))
 
     @structures
@@ -12516,8 +12437,7 @@ class TLStruct:  # pylint: disable=C0103
     @constructor(0x3a912d4a, 'password_kdf_algo_sha256sha256pbkdf2hmacsha512iter100000sha256mod_pow')
     def struct_0x3a912d4a(self):
         return Struct(
-            'sname' / Computed(
-                'password_kdf_algo_sha256sha256pbkdf2hmacsha512iter100000sha256mod_pow'),
+            'sname' / Computed('password_kdf_algo_sha256sha256pbkdf2hmacsha512iter100000sha256mod_pow'),
             'signature' / Hex(Const(0x3a912d4a, Int32ul)),
             'salt1' / TBytes,
             'salt2' / TBytes,
@@ -12913,8 +12833,7 @@ class TLStruct:  # pylint: disable=C0103
             'g_a_or_b' / TBytes,
             'key_fingerprint' / Int64ul,
             'protocol' / self.phone_call_protocol_structures('protocol'),
-            'connections' / self.struct_0x1cb5c415(self.phone_connection_structures(
-                'connections'), 'connections'),
+            'connections' / self.struct_0x1cb5c415(self.phone_connection_structures('connections'), 'connections'),
             'start_date' / TTimestamp)
 
     @constructor(0x5366c915, 'phone_call_empty')
@@ -13205,8 +13124,7 @@ class TLStruct:  # pylint: disable=C0103
             'access_hash' / Int64ul,
             'file_reference' / TBytes,
             'date' / TTimestamp,
-            'sizes' / self.struct_0x1cb5c415(
-                self.photo_size_structures('sizes'), 'sizes'),
+            'sizes' / self.struct_0x1cb5c415(self.photo_size_structures('sizes'), 'sizes'),
             'dc_id' / Int32ul)
 
     @constructor(0xfb197a65, 'photo')
@@ -13221,11 +13139,9 @@ class TLStruct:  # pylint: disable=C0103
             'access_hash' / Int64ul,
             'file_reference' / TBytes,
             'date' / TTimestamp,
-            'sizes' / self.struct_0x1cb5c415(
-                self.photo_size_structures('sizes'), 'sizes'),
+            'sizes' / self.struct_0x1cb5c415(self.photo_size_structures('sizes'), 'sizes'),
             'video_sizes' / If(this.flags.has_video_sizes,
-                               self.struct_0x1cb5c415(
-                self.video_size_structures('video_sizes'), 'video_sizes')),
+                               self.struct_0x1cb5c415(self.video_size_structures('video_sizes'), 'video_sizes')),
             'dc_id' / Int32ul)
 
     @constructor(0x9288dd29, 'photo_layer82')
@@ -13338,7 +13254,9 @@ class TLStruct:  # pylint: disable=C0103
             'recent_voters' / If(this.flags.has_recent_voters,
                                  self.struct_0x1cb5c415(Int32ul, 'recent_voters')),
             'solution' / If(this.flags.has_solution, TString),
-            'solution_entities' / If(this.flags.has_solution, self.struct_0x1cb5c415(self.message_entity_structures('solution_entities'), 'solution_entities')))
+            'solution_entities' / If(this.flags.has_solution,
+                                     self.struct_0x1cb5c415(self.message_entity_structures('solution_entities'),
+                                                            'solution_entities')))
 
     @constructor(0xdcb82ea3, 'poll_results')
     def struct_0xdcb82ea3(self):
@@ -13357,7 +13275,9 @@ class TLStruct:  # pylint: disable=C0103
             'recent_voters' / If(this.flags.has_recent_voters,
                                  self.struct_0x1cb5c415(Int64ul, 'recent_voters')),
             'solution' / If(this.flags.has_solution, TString),
-            'solution_entities' / If(this.flags.has_solution, self.struct_0x1cb5c415(self.message_entity_structures('solution_entities'), 'solution_entities')))
+            'solution_entities' / If(this.flags.has_solution,
+                                     self.struct_0x1cb5c415(self.message_entity_structures('solution_entities'),
+                                                            'solution_entities')))
 
     @structures
     def poll_results_structures(self, name):
@@ -14693,8 +14613,8 @@ class TLStruct:  # pylint: disable=C0103
             'access_hash' / Int64ul,
             'title' / TString,
             'short_name' / TString,
-            'thumbs' / If(this.flags.has_thumbs, self.struct_0x1cb5c415(
-                self.photo_size_structures('thumbs'), 'thumbs')),
+            'thumbs' / If(this.flags.has_thumbs,
+                          self.struct_0x1cb5c415(self.photo_size_structures('thumbs'), 'thumbs')),
             'thumb_dc_id' / If(this.flags.has_thumbs, Int32ul),
             'count' / Int32ul,
             'hash' / Int32ul)
@@ -14736,8 +14656,8 @@ class TLStruct:  # pylint: disable=C0103
             'access_hash' / Int64ul,
             'title' / TString,
             'short_name' / TString,
-            'thumbs' / If(this.flags.has_thumbs, self.struct_0x1cb5c415(
-                self.photo_size_structures('thumbs'), 'thumbs')),
+            'thumbs' / If(this.flags.has_thumbs,
+                          self.struct_0x1cb5c415(self.photo_size_structures('thumbs'), 'thumbs')),
             'thumb_dc_id' / If(this.flags.has_thumbs, Int32ul),
             'thumb_version' / If(this.flags.has_thumbs, Int32ul),
             'thumb_document_id' /
@@ -14765,8 +14685,8 @@ class TLStruct:  # pylint: disable=C0103
             'access_hash' / Int64ul,
             'title' / TString,
             'short_name' / TString,
-            'thumbs' / If(this.flags.has_thumbs, self.struct_0x1cb5c415(
-                self.photo_size_structures('thumbs'), 'thumbs')),
+            'thumbs' / If(this.flags.has_thumbs,
+                          self.struct_0x1cb5c415(self.photo_size_structures('thumbs'), 'thumbs')),
             'thumb_dc_id' / If(this.flags.has_thumbs, Int32ul),
             'thumb_version' / If(this.flags.has_thumbs, Int32ul),
             'thumb_document_id' /
@@ -14957,7 +14877,7 @@ class TLStruct:  # pylint: disable=C0103
             'document' / If(this.flags.has_document,
                             self.document_structures('document')),
             'setting' / If(this.flags.has_setting,
-                           self.theme_setting_structures('setting')),
+                           self.theme_settings_structures('setting')),
             'installs_count' / Int32ul)
 
     @constructor(0xf7d90ce0, 'theme_layer106')
@@ -15002,8 +14922,8 @@ class TLStruct:  # pylint: disable=C0103
             'title' / TString,
             'document' / If(this.flags.has_document,
                             self.document_structures('document')),
-            'settings' / If(this.flags.has_settings, self.struct_0x1cb5c415(
-                self.theme_settings_structures('settings'), 'settings')),
+            'settings' / If(this.flags.has_settings,
+                            self.struct_0x1cb5c415(self.theme_settings_structures('settings'), 'settings')),
             'emoticon' / If(this.flags.has_emoticon, TString),
             'installs_count' / If(this.flags.has_installs_count, Int32ul))
 
@@ -15026,7 +14946,7 @@ class TLStruct:  # pylint: disable=C0103
             'document' / If(this.flags.has_document,
                             self.document_structures('document')),
             'setting' / If(this.flags.has_setting,
-                           self.theme_setting_structures('setting')),
+                           self.theme_settings_structures('setting')),
             'installs_count' / If(this.flags.has_installs_count, Int32ul))
 
     @structures
@@ -16108,10 +16028,8 @@ class TLStruct:  # pylint: disable=C0103
                                 has_timeout=2),
             'pts' / Int32ul,
             'timeout' / If(this.flags.has_timeout, Int32ul),
-            'new_messages' / self.struct_0x1cb5c415(self.message_structures(
-                'new_messages'), 'new_messages'),
-            'other_updates' / self.struct_0x1cb5c415(self.update_structures(
-                'other_updates'), 'other_updates'),
+            'new_messages' / self.struct_0x1cb5c415(self.message_structures('new_messages'), 'new_messages'),
+            'other_updates' / self.struct_0x1cb5c415(self.update_structures('other_updates'), 'other_updates'),
             'chats' /
             self.struct_0x1cb5c415(self.chat_structures('chats'), 'chats'),
             'users' / self.struct_0x1cb5c415(self.user_structures('users'),
@@ -16127,8 +16045,7 @@ class TLStruct:  # pylint: disable=C0103
                                 has_timeout=2),
             'timeout' / If(this.flags.has_timeout, Int32ul),
             'dialog' / self.dialog_structures('dialog'),
-            'messages' / self.struct_0x1cb5c415(
-                self.message_structures('messages'), 'messages'),
+            'messages' / self.struct_0x1cb5c415(self.message_structures('messages'), 'messages'),
             'chats' /
             self.struct_0x1cb5c415(self.chat_structures('chats'), 'chats'),
             'users' / self.struct_0x1cb5c415(self.user_structures('users'),
@@ -16153,12 +16070,10 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('updates_difference'),
             'signature' / Hex(Const(0x00f49ca0, Int32ul)),
-            'new_messages' / self.struct_0x1cb5c415(self.message_structures(
-                'new_messages'), 'new_messages'),
-            'new_encrypted_messages' / self.struct_0x1cb5c415(self.encrypted_message_structures(
-                'new_encrypted_messages'), 'new_encrypted_messages'),
-            'other_updates' / self.struct_0x1cb5c415(self.update_structures(
-                'other_updates'), 'other_updates'),
+            'new_messages' / self.struct_0x1cb5c415(self.message_structures('new_messages'), 'new_messages'),
+            'new_encrypted_messages' / self.struct_0x1cb5c415(
+                self.encrypted_message_structures('new_encrypted_messages'), 'new_encrypted_messages'),
+            'other_updates' / self.struct_0x1cb5c415(self.update_structures('other_updates'), 'other_updates'),
             'chats' /
             self.struct_0x1cb5c415(self.chat_structures('chats'), 'chats'),
             'users' /
@@ -16170,12 +16085,10 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('updates_difference_slice'),
             'signature' / Hex(Const(0xa8fb1981, Int32ul)),
-            'new_messages' / self.struct_0x1cb5c415(self.message_structures(
-                'new_messages'), 'new_messages'),
-            'new_encrypted_messages' / self.struct_0x1cb5c415(self.encrypted_message_structures(
-                'new_encrypted_messages'), 'new_encrypted_messages'),
-            'other_updates' / self.struct_0x1cb5c415(self.update_structures(
-                'other_updates'), 'other_updates'),
+            'new_messages' / self.struct_0x1cb5c415(self.message_structures('new_messages'), 'new_messages'),
+            'new_encrypted_messages' / self.struct_0x1cb5c415(
+                self.encrypted_message_structures('new_encrypted_messages'), 'new_encrypted_messages'),
+            'other_updates' / self.struct_0x1cb5c415(self.update_structures('other_updates'), 'other_updates'),
             'chats' /
             self.struct_0x1cb5c415(self.chat_structures('chats'), 'chats'),
             'users' /
@@ -16217,8 +16130,7 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('updates'),
             'signature' / Hex(Const(0x74ae4240, Int32ul)),
-            'updates' / self.struct_0x1cb5c415(
-                self.update_structures('updates'), 'updates'),
+            'updates' / self.struct_0x1cb5c415(self.update_structures('updates'), 'updates'),
             'users' / self.struct_0x1cb5c415(self.user_structures('users'),
                                              'users'),
             'chats' / self.struct_0x1cb5c415(self.chat_structures('chats'),
@@ -16252,9 +16164,8 @@ class TLStruct:  # pylint: disable=C0103
             'via_bot_id' / If(this.flags.has_via_bot_id, Int64ul),
             'reply_to' / If(this.flags.has_reply_to, self.struct_0xa6d57763()),
             'entities' / If(this.flags.has_entities,
-                            self.struct_0x1cb5c415(
-                                self.message_entity_structures('entities'),
-                                'entities')),
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'),
+                                                   'entities')),
             'ttl_period' / If(this.flags.has_ttl_period, Int32ul))
 
     @constructor(0x9015e101, 'update_short_sent_message')
@@ -16274,9 +16185,8 @@ class TLStruct:  # pylint: disable=C0103
             'media' / If(this.flags.has_media,
                          self.message_media_structures('media')),
             'entities' / If(this.flags.has_entities,
-                            self.struct_0x1cb5c415(
-                                self.message_entity_structures('entities'),
-                                'entities')),
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'),
+                                                   'entities')),
             'ttl_period' / If(this.flags.has_ttl_period, Int32ul))
 
     @constructor(0x78d4dec1, 'update_short')
@@ -16284,8 +16194,7 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('update_short'),
             'signature' / Hex(Const(0x78d4dec1, Int32ul)),
-            'updates' / self.struct_0x1cb5c415(
-                self.update_structures('updates'), 'updates'),
+            'updates' / self.struct_0x1cb5c415(self.update_structures('updates'), 'updates'),
             'date' / TTimestamp)
 
     @constructor(0x4d6deea5, 'update_short_chat_message')
@@ -16315,9 +16224,8 @@ class TLStruct:  # pylint: disable=C0103
             'via_bot_id' / If(this.flags.has_via_bot_id, Int64ul),
             'reply_to' / If(this.flags.has_reply_to, self.struct_0xa6d57763()),
             'entities' / If(this.flags.has_entities,
-                            self.struct_0x1cb5c415(
-                                self.message_entity_structures('entities'),
-                                'entities')),
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'),
+                                                   'entities')),
             'ttl_period' / If(this.flags.has_ttl_period, Int32ul))
 
     @constructor(0x725b04c3, 'updates_combined')
@@ -16325,8 +16233,7 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('updates_combined'),
             'signature' / Hex(Const(0x725b04c3, Int32ul)),
-            'updates' / self.struct_0x1cb5c415(
-                self.update_structures('updates'), 'updates'),
+            'updates' / self.struct_0x1cb5c415(self.update_structures('updates'), 'updates'),
             'users' / self.struct_0x1cb5c415(self.user_structures('users'),
                                              'users'),
             'chats' / self.struct_0x1cb5c415(self.chat_structures('chats'),
@@ -16500,7 +16407,8 @@ class TLStruct:  # pylint: disable=C0103
             If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
             'bot_broadcast_admin_rights' /
             If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
-            'premium_gifts' / If(this.flags.has_premium_gifts, self.struct_0x1cb5c415(self.struct_0x74c34319(), 'premium_gifts')))
+            'premium_gifts' / If(this.flags.has_premium_gifts,
+                                 self.struct_0x1cb5c415(self.struct_0x74c34319(), 'premium_gifts')))
 
     @constructor(0x8c72ea81, 'user_full_layer143')
     def struct_0x8c72ea81(self):
@@ -16666,8 +16574,7 @@ class TLStruct:  # pylint: disable=C0103
             'link' / self.struct_0x3ace484c(),
             'profile_photo' / If(this.flags.has_profile_photo,
                                  self.photo_structures('profile_photo')),
-            'notify_settings' / self.peer_notify_settings_structures(
-                'notify_settings'),
+            'notify_settings' / self.peer_notify_settings_structures('notify_settings'),
             'bot_info' / If(this.flags.has_bot_info,
                             self.bot_info_structures('bot_info')),
             'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
@@ -16693,8 +16600,7 @@ class TLStruct:  # pylint: disable=C0103
             'link' / self.struct_0x3ace484c(),
             'profile_photo' / If(this.flags.has_profile_photo,
                                  self.photo_structures('profile_photo')),
-            'notify_settings' / self.peer_notify_settings_structures(
-                'notify_settings'),
+            'notify_settings' / self.peer_notify_settings_structures('notify_settings'),
             'bot_info' / If(this.flags.has_bot_info,
                             self.bot_info_structures('bot_info')),
             'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
@@ -16721,8 +16627,7 @@ class TLStruct:  # pylint: disable=C0103
             'settings' / self.peer_settings_structures('settings'),
             'profile_photo' / If(this.flags.has_profile_photo,
                                  self.photo_structures('profile_photo')),
-            'notify_settings' / self.peer_notify_settings_structures(
-                'notify_settings'),
+            'notify_settings' / self.peer_notify_settings_structures('notify_settings'),
             'bot_info' / If(this.flags.has_bot_info,
                             self.bot_info_structures('bot_info')),
             'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
@@ -16974,8 +16879,7 @@ class TLStruct:  # pylint: disable=C0103
                           self.user_status_structures('status')),
             'bot_info_version' / If(this.flags.is_bot, Int32ul),
             'restriction_reason' / If(this.flags.is_restricted,
-                                      self.struct_0x1cb5c415(
-                self.struct_0xd072acb4(), 'restriction_reason')),
+                                      self.struct_0x1cb5c415(self.struct_0xd072acb4(), 'restriction_reason')),
             'bot_inline_placeholder' /
             If(this.flags.has_bot_inline_placeholder, TString),
             'lang_code' / If(this.flags.has_lang_code, TString),
@@ -17031,8 +16935,7 @@ class TLStruct:  # pylint: disable=C0103
                           self.user_status_structures('status')),
             'bot_info_version' / If(this.flags.is_bot, Int32ul),
             'restriction_reason' / If(this.flags.is_restricted,
-                                      self.struct_0x1cb5c415(
-                self.struct_0xd072acb4(), 'restriction_reason')),
+                                      self.struct_0x1cb5c415(self.struct_0xd072acb4(), 'restriction_reason')),
             'bot_inline_placeholder' /
             If(this.flags.has_bot_inline_placeholder, TString),
             'lang_code' / If(this.flags.has_lang_code, TString),
@@ -17083,8 +16986,7 @@ class TLStruct:  # pylint: disable=C0103
                           self.user_status_structures('status')),
             'bot_info_version' / If(this.flags.is_bot, Int32ul),
             'restriction_reason' / If(this.flags.is_restricted,
-                                      self.struct_0x1cb5c415(
-                self.struct_0xd072acb4(), 'restriction_reason')),
+                                      self.struct_0x1cb5c415(self.struct_0xd072acb4(), 'restriction_reason')),
             'bot_inline_placeholder' / If(this.flags.has_bot_inline_placeholder, TString),
             'lang_code' / If(this.flags.has_lang_code, TString))
 
@@ -17130,8 +17032,7 @@ class TLStruct:  # pylint: disable=C0103
                           self.user_status_structures('status')),
             'bot_info_version' / If(this.flags.is_bot, Int32ul),
             'restriction_reason' / If(this.flags.is_restricted,
-                                      self.struct_0x1cb5c415(
-                self.struct_0xd072acb4(), 'restriction_reason')),
+                                      self.struct_0x1cb5c415(self.struct_0xd072acb4(), 'restriction_reason')),
             'bot_inline_placeholder' /
             If(this.flags.has_bot_inline_placeholder, TString),
             'lang_code' / If(this.flags.has_lang_code, TString))
@@ -17647,9 +17548,8 @@ class TLStruct:  # pylint: disable=C0103
             'access_hash' / Int64ul,
             'slug' / TString,
             'document' / self.document_structures('document'),
-            'settings' / If(
-                this.flags.has_settings,
-                self.wall_paper_settings_structures('settings')))
+            'settings' / If(this.flags.has_settings,
+                            self.wall_paper_settings_structures('settings')))
 
     @constructor(0xf04f91ec, 'wall_paper_layer94')
     def struct_0xf04f91ec(self):
@@ -17723,8 +17623,7 @@ class TLStruct:  # pylint: disable=C0103
             'access_hash' / Int64ul,
             'size' / Int32ul,
             'mime_type' / TString,
-            'attributes' / self.struct_0x1cb5c415(
-                self.document_attribute_structures('attributes'), 'attributes'),
+            'attributes' / self.struct_0x1cb5c415(self.document_attribute_structures('attributes'), 'attributes'),
             '_reserve' / Int32ul)
 
     @constructor(0x1c570ed1, 'web_document')
@@ -17831,9 +17730,8 @@ class TLStruct:  # pylint: disable=C0103
             'document' / If(this.flags.has_document,
                             self.document_structures('document')),
             'attributes' / If(this.flags.has_attributes,
-                              self.struct_0x1cb5c415(
-                                  self.message_entity_structures('attributes'),
-                                  'attributes')),
+                              self.struct_0x1cb5c415(self.message_entity_structures('attributes'),
+                                                     'attributes')),
             'cached_page' / If(this.flags.cached,
                                self.page_structures('cached_page')))
 
@@ -18068,8 +17966,7 @@ class TLStruct:  # pylint: disable=C0103
                                 has_min_age_confirm=2),
             'id' / self.struct_0x7d748d04(),
             'text' / TString,
-            'entities' / self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities'),
+            'entities' / self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities'),
             'min_age_confirm' / If(this.flags.has_min_age_confirm, Int32ul))
 
     @constructor(0x70c4fe03, 'payments_payment_receipt')
@@ -18308,13 +18205,11 @@ class TLStruct:  # pylint: disable=C0103
             'native_params' /
             If(this.flags.has_native_provider, self.struct_0x7d748d04()),
             'additional_methods' / If(this.flags.has_additional_methods,
-                                      self.struct_0x1cb5c415(
-                self.struct_0x88f8f21b(), 'additional_methods')),
+                                      self.struct_0x1cb5c415(self.struct_0x88f8f21b(), 'additional_methods')),
             'saved_info' / If(this.flags.has_saved_info,
                               self.struct_0x909c3f94()),
             'saved_credentials' / If(this.flags.has_saved_credentials,
-                                     self.struct_0x1cb5c415(
-                self.struct_0xcdc27a1f(), 'saved_credentials')),
+                                     self.struct_0x1cb5c415(self.struct_0xcdc27a1f(), 'saved_credentials')),
             'users' / self.struct_0x1cb5c415(self.user_structures('users'),
                                              'users'))
 
@@ -18350,8 +18245,7 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('messages_exported_chat_invites'),
             'signature' / Hex(Const(0xbdc62dcc, Int32ul)),
             'count' / Int32ul,
-            'invites' / self.struct_0x1cb5c415(
-                self.exported_chat_invite_structures('invites'), 'invites'),
+            'invites' / self.struct_0x1cb5c415(self.exported_chat_invite_structures('invites'), 'invites'),
             'users' / self.struct_0x1cb5c415(self.user_structures('users'),
                                              'users'))
 
@@ -18403,19 +18297,6 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0xcb43acde, Int32ul)),
             'current' / Double,
             'previous' / Double)
-
-    @constructor(0x7d09c27e, 'secure_file')
-    def struct_0x7d09c27e(self):
-        return Struct(
-            'sname' / Computed('secure_file'),
-            'signature' / Hex(Const(0x7d09c27e, Int32ul)),
-            'id' / Int64ul,
-            'access_hash' / Int64ul,
-            'size' / Int64ul,
-            'dc_id' / Int32ul,
-            'date' / TTimestamp,
-            'file_hash' / TBytes,
-            'secret' / TBytes)
 
     @constructor(0x84d19185, 'messages_affected_messages')
     def struct_0x84d19185(self):
@@ -18496,8 +18377,7 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('account_privacy_rules'),
             'signature' / Hex(Const(0x50a04e45, Int32ul)),
-            'rules' / self.struct_0x1cb5c415(
-                self.privacy_rule_structures('rules'), 'rules'),
+            'rules' / self.struct_0x1cb5c415(self.privacy_rule_structures('rules'), 'rules'),
             'chats' /
             self.struct_0x1cb5c415(self.chat_structures('chats'), 'chats'),
             'users' / self.struct_0x1cb5c415(self.user_structures('users'),
@@ -18562,29 +18442,6 @@ class TLStruct:  # pylint: disable=C0103
             'date' / TTimestamp,
             'about' / If(this.flags.has_about, TString),
             'approved_by' / If(this.flags.has_approved_by, Int64ul))
-
-    @constructor(0xa518110d, 'peer_settings')
-    def struct_0xa518110d(self):
-        return Struct(
-            'sname' / Computed('peer_settings'),
-            'signature' / Hex(Const(0xa518110d, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_report_spam=1,
-                                is_add_contact=2,
-                                is_block_contact=4,
-                                is_share_contact=8,
-                                is_need_contacts_exception=16,
-                                is_report_geo=32,
-                                is_autoarchived=128,
-                                is_invite_members=256,
-                                is_request_chat_broadcast=1024,
-                                has_geo_distance=64,
-                                has_request_chat_title=512),
-            'geo_distance' / If(this.flags.has_geo_distance, Int32ul),
-            'request_chat_title' /
-            If(this.flags.has_request_chat_title, TString),
-            'request_chat_date' / If(this.flags.has_request_chat_title,
-                                     TTimestamp))
 
     @constructor(0x535f779d, 'stats_group_top_inviter')
     def struct_0x535f779d(self):
@@ -18699,10 +18556,10 @@ class TLStruct:  # pylint: disable=C0103
             'selfie' / If(this.flags.has_selfie,
                           self.input_secure_file_structures('selfie')),
             'translation' / If(this.flags.has_translation,
-                               self.struct_0x1cb5c415(
-                self.input_secure_file_structures('translation'), 'translation')),
-            'files' / If(this.flags.has_files, self.struct_0x1cb5c415(
-                self.input_secure_file_structures('files'), 'files')),
+                               self.struct_0x1cb5c415(self.input_secure_file_structures('translation'),
+                                                      'translation')),
+            'files' / If(this.flags.has_files,
+                         self.struct_0x1cb5c415(self.input_secure_file_structures('files'), 'files')),
             'plain_data' / If(this.flags.has_plain_data,
                               self.secure_plain_data_structures('plain_data')))
 
@@ -18721,12 +18578,11 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('help_premium_promo_layer144'),
             'signature' / Hex(Const(0x8a4f3c29, Int32ul)),
             'status_text' / TString,
-            'status_entities' / self.struct_0x1cb5c415(
-                self.message_entity_structures('status_entities'), 'status_entities'),
+            'status_entities' / self.struct_0x1cb5c415(self.message_entity_structures('status_entities'),
+                                                       'status_entities'),
             'video_sections' /
             self.struct_0x1cb5c415(TString, 'video_sections'),
-            'videos' / self.struct_0x1cb5c415(
-                self.document_structures('videos'), 'videos'),
+            'videos' / self.struct_0x1cb5c415(self.document_structures('videos'), 'videos'),
             'currency' / TString,
             'monthly_amount' / Int64ul,
             'users' / self.struct_0x1cb5c415(self.user_structures('users'),
@@ -18738,12 +18594,11 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('help_premium_promo_layer140'),
             'signature' / Hex(Const(0xe0360f1b, Int32ul)),
             'status_text' / TString,
-            'status_entities' / self.struct_0x1cb5c415(
-                self.message_entity_structures('status_entities'), 'status_entities'),
+            'status_entities' / self.struct_0x1cb5c415(self.message_entity_structures('status_entities'),
+                                                       'status_entities'),
             'video_sections' /
             self.struct_0x1cb5c415(TString, 'video_sections'),
-            'videos' / self.struct_0x1cb5c415(
-                self.document_structures('videos'), 'videos'),
+            'videos' / self.struct_0x1cb5c415(self.document_structures('videos'), 'videos'),
             'currency' / TString,
             'monthly_amount' / Int64ul)
 
@@ -18753,12 +18608,11 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('help_premium_promo'),
             'signature' / Hex(Const(0x5334759c, Int32ul)),
             'status_text' / TString,
-            'status_entities' / self.struct_0x1cb5c415(
-                self.message_entity_structures('status_entities'), 'status_entities'),
+            'status_entities' / self.struct_0x1cb5c415(self.message_entity_structures('status_entities'),
+                                                       'status_entities'),
             'video_sections' /
             self.struct_0x1cb5c415(TString, 'video_sections'),
-            'videos' / self.struct_0x1cb5c415(
-                self.document_structures('videos'), 'videos'),
+            'videos' / self.struct_0x1cb5c415(self.document_structures('videos'), 'videos'),
             'period_options' /
             self.struct_0x1cb5c415(self.struct_0xb6f11ebe(), 'period_options'),
             'users' / self.struct_0x1cb5c415(self.user_structures('users'),
@@ -18822,8 +18676,8 @@ class TLStruct:  # pylint: disable=C0103
             'flags' / FlagsEnum(Int32ul,
                                 has_documents=1,
                                 has_settings=2),
-            'documents' / If(this.flags.has_documents, self.struct_0x1cb5c415(
-                self.document_structures('documents'), 'documents')),
+            'documents' / If(this.flags.has_documents,
+                             self.struct_0x1cb5c415(self.document_structures('documents'), 'documents')),
             'settings' / If(this.flags.has_settings,
                             self.theme_settings_structures('settings')))
 
@@ -18895,8 +18749,7 @@ class TLStruct:  # pylint: disable=C0103
                                 has_max_id=1,
                                 has_read_inbox_max_id=2,
                                 has_read_outbox_max_id=4),
-            'messages' / self.struct_0x1cb5c415(
-                self.message_structures('messages'), 'messages'),
+            'messages' / self.struct_0x1cb5c415(self.message_structures('messages'), 'messages'),
             'max_id' / If(this.flags.has_max_id, Int32ul),
             'read_inbox_max_id' /
             If(this.flags.has_read_inbox_max_id, Int32ul),
@@ -18958,10 +18811,8 @@ class TLStruct:  # pylint: disable=C0103
             'selfie' / If(this.flags.has_selfie,
                           self.secure_file_structures('selfie')),
             'translation' / If(this.flags.has_translation,
-                               self.struct_0x1cb5c415(
-                self.secure_file_structures('translation'), 'translation')),
-            'files' / If(this.flags.has_files, self.struct_0x1cb5c415(
-                self.secure_file_structures('files'), 'files')),
+                               self.struct_0x1cb5c415(self.secure_file_structures('translation'), 'translation')),
+            'files' / If(this.flags.has_files, self.struct_0x1cb5c415(self.secure_file_structures('files'), 'files')),
             'plain_data' / If(this.flags.has_plain_data,
                               self.secure_plain_data_structures('plain_data')),
             'hash' / TBytes)
@@ -19123,9 +18974,8 @@ class TLStruct:  # pylint: disable=C0103
             'prices' /
             self.struct_0x1cb5c415(self.struct_0xcb296bf8(), 'prices'),
             'max_tip_amount' / If(this.flags.has_max_tip_amount, Int64ul),
-            'suggested_tip_amounts' / If(
-                this.flags.has_max_tip_amount,
-                self.struct_0x1cb5c415(Int64ul, 'suggested_tip_amounts')),
+            'suggested_tip_amounts' / If(this.flags.has_max_tip_amount,
+                                         self.struct_0x1cb5c415(Int64ul, 'suggested_tip_amounts')),
             'recurring_terms_url' / If(this.flags.is_recurring, TString))
 
     @constructor(0x9bed434d, 'input_web_document')
@@ -19136,9 +18986,8 @@ class TLStruct:  # pylint: disable=C0103
             'url' / TString,
             'size' / Int32ul,
             'mime_type' / TString,
-            'attributes' / self.struct_0x1cb5c415(
-                self.document_attribute_structures('attributes'),
-                'attributes'))
+            'attributes' / self.struct_0x1cb5c415(self.document_attribute_structures('attributes'),
+                                                  'attributes'))
 
     @constructor(0x5dab1af4, 'exported_message_link')
     def struct_0x5dab1af4(self):
@@ -19186,9 +19035,8 @@ class TLStruct:  # pylint: disable=C0103
                                 has_shipping_options=2),
             'id' / If(this.flags.has_id, TString),
             'shipping_options' / If(this.flags.has_shipping_options,
-                                    self.struct_0x1cb5c415(
-                                        self.struct_0xb6213cdf(),
-                                        'shipping_options')))
+                                    self.struct_0x1cb5c415(self.struct_0xb6213cdf(),
+                                                           'shipping_options')))
 
     @constructor(0xc0de1bd9, 'json_object_value')
     def struct_0xc0de1bd9(self):
@@ -19250,8 +19098,8 @@ class TLStruct:  # pylint: disable=C0103
             'new_followers_by_source_graph' /
             self.stats_graph_structures('new_followers_by_source_graph'),
             'languages_graph' / self.stats_graph_structures('languages_graph'),
-            'recent_message_interactions' / self.struct_0x1cb5c415(
-                self.struct_0xad4fc9bd(), 'recent_message_interactions'))
+            'recent_message_interactions' / self.struct_0x1cb5c415(self.struct_0xad4fc9bd(),
+                                                                   'recent_message_interactions'))
 
     @constructor(0xe8fd8014, 'peer_blocked')
     def struct_0xe8fd8014(self):
@@ -19288,8 +19136,7 @@ class TLStruct:  # pylint: disable=C0103
             'flags' / FlagsEnum(Int32ul,
                                 has_next_offset=1),
             'count' / Int32ul,
-            'votes' / self.struct_0x1cb5c415(
-                self.message_user_vote_structures('votes'), 'votes'),
+            'votes' / self.struct_0x1cb5c415(self.message_user_vote_structures('votes'), 'votes'),
             'users' /
             self.struct_0x1cb5c415(self.user_structures('users'), 'users'),
             'next_offset' / If(this.flags.has_next_offset, TString))
@@ -19367,8 +19214,7 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0x77d01c3b, Int32ul)),
             'imported' /
             self.struct_0x1cb5c415(self.struct_0xc13e3c50(), 'imported'),
-            'popular_invites' / self.struct_0x1cb5c415(
-                self.struct_0x5ce14175(), 'popular_invites'),
+            'popular_invites' / self.struct_0x1cb5c415(self.struct_0x5ce14175(), 'popular_invites'),
             'retry_contacts' /
             self.struct_0x1cb5c415(Int64ul, 'retry_contacts'),
             'users' / self.struct_0x1cb5c415(self.user_structures('users'),
@@ -19624,7 +19470,8 @@ class TLStruct:  # pylint: disable=C0103
             'channel_post' / If(this.flags.has_channel_post, Int32ul),
             'start_param' / If(this.flags.has_start_param, TString),
             'message' / TString,
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')))
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')))
 
     @constructor(0xad2e1cd8, 'account_authorization_form')
     def struct_0xad2e1cd8(self):
@@ -19633,14 +19480,11 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0xad2e1cd8, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 has_privacy_policy_url=1),
-            'required_types' / self.struct_0x1cb5c415(
-                self.secure_required_type_structures('required_types'), 'required_types'),
-            'values' /
-            self.struct_0x1cb5c415(self.struct_0x187fa0ca(), 'values'),
-            'errors' / self.struct_0x1cb5c415(
-                self.secure_value_error_structures('errors'), 'errors'),
-            'users' /
-            self.struct_0x1cb5c415(self.user_structures('users'), 'users'),
+            'required_types' / self.struct_0x1cb5c415(self.secure_required_type_structures('required_types'),
+                                                      'required_types'),
+            'values' / self.struct_0x1cb5c415(self.struct_0x187fa0ca(), 'values'),
+            'errors' / self.struct_0x1cb5c415(self.secure_value_error_structures('errors'), 'errors'),
+            'users' / self.struct_0x1cb5c415(self.user_structures('users'), 'users'),
             'privacy_policy_url' / If(this.flags.has_privacy_policy_url,
                                       TString))
 
@@ -19649,8 +19493,7 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('help_recent_me_urls'),
             'signature' / Hex(Const(0x0e0310d7, Int32ul)),
-            'urls' / self.struct_0x1cb5c415(
-                self.recent_me_url_structures('urls'), 'urls'),
+            'urls' / self.struct_0x1cb5c415(self.recent_me_url_structures('urls'), 'urls'),
             'chats' /
             self.struct_0x1cb5c415(self.chat_structures('chats'), 'chats'),
             'users' / self.struct_0x1cb5c415(self.user_structures('users'),
@@ -19713,7 +19556,8 @@ class TLStruct:  # pylint: disable=C0103
             'media' / self.input_media_structures('media'),
             'random_id' / Int64ul,
             'message' / TString,
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')))
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')))
 
     @constructor(0x1e36fded, 'input_phone_call')
     def struct_0x1e36fded(self):
@@ -19728,8 +19572,7 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('contacts_found'),
             'signature' / Hex(Const(0xb3134d9d, Int32ul)),
-            'my_results' / self.struct_0x1cb5c415(
-                self.peer_structures('my_results'), 'my_results'),
+            'my_results' / self.struct_0x1cb5c415(self.peer_structures('my_results'), 'my_results'),
             'results' /
             self.struct_0x1cb5c415(self.peer_structures('results'), 'results'),
             'chats' /
@@ -19988,8 +19831,7 @@ class TLStruct:  # pylint: disable=C0103
             'flags' / FlagsEnum(Int32ul,
                                 has_next_offset=1),
             'count' / Int32ul,
-            'reactions' / self.struct_0x1cb5c415(
-                self.message_peer_reaction_structures('reactions'), 'reactions'),
+            'reactions' / self.struct_0x1cb5c415(self.message_peer_reaction_structures('reactions'), 'reactions'),
             'chats' /
             self.struct_0x1cb5c415(self.chat_structures('chats'), 'chats'),
             'users' /
@@ -20153,10 +19995,8 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('messages_peer_dialogs'),
             'signature' / Hex(Const(0x3371c354, Int32ul)),
-            'dialogs' / self.struct_0x1cb5c415(
-                self.dialog_structures('dialogs'), 'dialogs'),
-            'messages' / self.struct_0x1cb5c415(
-                self.message_structures('messages'), 'messages'),
+            'dialogs' / self.struct_0x1cb5c415(self.dialog_structures('dialogs'), 'dialogs'),
+            'messages' / self.struct_0x1cb5c415(self.message_structures('messages'), 'messages'),
             'chats' /
             self.struct_0x1cb5c415(self.chat_structures('chats'), 'chats'),
             'users' /
@@ -20845,8 +20685,8 @@ class TLStruct:  # pylint: disable=C0103
             'random_id' / Int64ul,
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'schedule_date' / If(this.flags.has_schedule_date, TTimestamp),
             'send_as' / If(this.flags.has_send_as,
                            self.input_peer_structures('send_as')))
@@ -20876,8 +20716,8 @@ class TLStruct:  # pylint: disable=C0103
             'random_id' / Int64ul,
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'schedule_date' / If(this.flags.has_schedule_date, TTimestamp),
             'send_as' / If(this.flags.has_send_as,
                            self.input_peer_structures('send_as')))
@@ -20984,8 +20824,7 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('messages_create_chat'),
             'signature' / Hex(Const(0x09cb126e, Int32ul)),
-            'users' / self.struct_0x1cb5c415(
-                self.input_user_structures('users'), 'users'),
+            'users' / self.struct_0x1cb5c415(self.input_user_structures('users'), 'users'),
             'title' / TString)
 
     @constructor(0x49f0bde9, 'messages_get_search_results_calendar')
@@ -21667,9 +21506,8 @@ class TLStruct:  # pylint: disable=C0103
                                 has_entities=8),
             'message' / TString,
             'entities' / If(this.flags.has_entities,
-                            self.struct_0x1cb5c415(
-                                self.message_entity_structures('entities'),
-                                'entities')))
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'),
+                                                   'entities')))
 
     @constructor(0xe320c158, 'account_get_authorizations')
     def struct_0xe320c158(self):
@@ -21920,8 +21758,8 @@ class TLStruct:  # pylint: disable=C0103
                          self.input_media_structures('media')),
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(
-                self.message_entity_structures('entities'), 'entities')),
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'schedule_date' / If(this.flags.has_schedule_date, TTimestamp))
 
     @constructor(0x9342ca07, 'messages_get_bot_callback_answer')
@@ -21974,7 +21812,8 @@ class TLStruct:  # pylint: disable=C0103
             'top_msg_id' / If(this.flags.has_top_msg_id, Int32ul),
             'peer' / self.input_peer_structures('peer'),
             'message' / TString,
-            'entities' / If(this.flags.has_entities, self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')))
+            'entities' / If(this.flags.has_entities,
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')))
 
     @constructor(0x6a3f8d65, 'messages_get_all_drafts')
     def struct_0x6a3f8d65(self):
@@ -22417,7 +22256,8 @@ class TLStruct:  # pylint: disable=C0103
                                 has_reaction=1),
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul,
-            'reaction' / If(this.flags.has_reaction, self.struct_0x1cb5c415(self.reaction_structures('reaction'), 'reaction')))
+            'reaction' / If(this.flags.has_reaction,
+                            self.struct_0x1cb5c415(self.reaction_structures('reaction'), 'reaction')))
 
     @constructor(0x4f47a016, 'messages_set_default_reaction')
     def struct_0x4f47a016(self):
@@ -22529,8 +22369,7 @@ class TLStruct:  # pylint: disable=C0103
             'offset_id_offset' / If(this.flags.has_offset_id_offset, Int32ul),
             'periods' /
             self.struct_0x1cb5c415(self.struct_0xc9b0539f(), 'periods'),
-            'messages' / self.struct_0x1cb5c415(
-                self.message_structures('messages'), 'messages'),
+            'messages' / self.struct_0x1cb5c415(self.message_structures('messages'), 'messages'),
             'chats' /
             self.struct_0x1cb5c415(self.chat_structures('chats'), 'chats'),
             'users' / self.struct_0x1cb5c415(self.user_structures('users'),
@@ -23133,8 +22972,8 @@ class TLStruct:  # pylint: disable=C0103
             'q' / TString,
             'events_filter' / If(this.flags.has_events_filter,
                                  self.struct_0xea107ae4()),
-            'admins' / If(this.flags.has_admins, self.struct_0x1cb5c415(
-                self.input_user_structures('admins'), 'admins')),
+            'admins' / If(this.flags.has_admins,
+                          self.struct_0x1cb5c415(self.input_user_structures('admins'), 'admins')),
             'max_id' / Int64ul,
             'min_id' / Int64ul,
             'limit' / Int32ul)
@@ -24247,8 +24086,7 @@ class TLStruct:  # pylint: disable=C0103
             'count' / Int32ul,
             'topics' /
             self.struct_0x1cb5c415(self.struct_0x71701da9(), 'topics'),
-            'messages' / self.struct_0x1cb5c415(
-                self.message_structures('messages'), 'messages'),
+            'messages' / self.struct_0x1cb5c415(self.message_structures('messages'), 'messages'),
             'chats' /
             self.struct_0x1cb5c415(self.chat_structures('chats'), 'chats'),
             'users' /
@@ -24393,14 +24231,6 @@ class TLStruct:  # pylint: disable=C0103
             'channel' / self.input_channel_structures('channel'),
             'order' / self.struct_0x1cb5c415(Int32ul, 'order'))
 
-    @constructor(0xd9565c39, 'auth_sent_code_type_fragment_sms')
-    def struct_0xd9565c39(self):
-        return Struct(
-            'sname' / Computed('auth_sent_code_type_fragment_sms'),
-            'signature' / Hex(Const(0xd9565c39, Int32ul)),
-            'url' / TString,
-            'length' / Int32ul)
-
     @constructor(0x41bf109b, 'exported_contact_token')
     def struct_0x41bf109b(self):
         return Struct(
@@ -24408,44 +24238,6 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0x41bf109b, Int32ul)),
             'url' / TString,
             'expires' / Int32ul)
-
-    @constructor(0xc0944820, 'message_action_topic_edit')
-    def struct_0xc0944820(self):
-        return Struct(
-            'sname' / Computed('message_action_topic_edit'),
-            'signature' / Hex(Const(0xc0944820, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_title=1,
-                                has_icon_emoji_id=2,
-                                has_closed=4,
-                                has_hidden=8),
-            'title' / If(this.flags.has_title, TString),
-            'icon_emoji_id' / If(this.flags.has_icon_emoji_id, Int64ul),
-            'closed' / If(this.flags.has_closed, TBool),
-            'hidden' / If(this.flags.has_hidden, TBool))
-
-    @constructor(0x3c134d7b, 'message_action_set_messages_ttl')
-    def struct_0x3c134d7b(self):
-        return Struct(
-            'sname' / Computed('message_action_set_messages_ttl'),
-            'signature' / Hex(Const(0x3c134d7b, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_auto_setting_from=1),
-            'period' / Int32ul,
-            'auto_setting_from' / If(this.flags.has_auto_setting_from, Int64ul))
-
-    @constructor(0x64f36dfc, 'channel_admin_log_event_action_toggle_anti_spam')
-    def struct_0x64f36dfc(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_toggle_anti_spam'),
-            'signature' / Hex(Const(0x64f36dfc, Int32ul)),
-            'new_value' / TBool)
-
-    @constructor(0x06ed998c, 'auth_code_type_fragment_sms')
-    def struct_0x06ed998c(self):
-        return Struct(
-            'sname' / Computed('auth_code_type_fragment_sms'),
-            'signature' / Hex(Const(0x06ed998c, Int32ul)))
 
     @constructor(0x0034a818, 'messages_create_chat')
     def struct_0x0034a818(self):
@@ -24456,31 +24248,6 @@ class TLStruct:  # pylint: disable=C0103
                                 has_ttl_period=1),
             'users' / self.struct_0x1cb5c415(self.input_user_structures('users'), 'users'),
             'title' / TString,
-            'ttl_period' / If(this.flags.has_ttl_period, Int32ul))
-
-    @constructor(0xd58a08c6, 'dialog')
-    def struct_0xd58a08c6(self):
-        return Struct(
-            'sname' / Computed('dialog'),
-            'signature' / Hex(Const(0xd58a08c6, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_pinned=4,
-                                is_unread_mark=8,
-                                has_pts=1,
-                                has_draft=2,
-                                has_folder_id=16,
-                                has_ttl_period=32),
-            'peer' / self.peer_structures('peer'),
-            'top_message' / Int32ul,
-            'read_inbox_max_id' / Int32ul,
-            'read_outbox_max_id' / Int32ul,
-            'unread_count' / Int32ul,
-            'unread_mentions_count' / Int32ul,
-            'unread_reactions_count' / Int32ul,
-            'notify_settings' / self.peer_notify_settings_structures('notify_settings'),
-            'pts' / If(this.flags.has_pts, Int32ul),
-            'draft' / If(this.flags.has_draft, self.draft_message_structures('draft')),
-            'folder_id' / If(this.flags.has_folder_id, Int32ul),
             'ttl_period' / If(this.flags.has_ttl_period, Int32ul))
 
     @constructor(0xf4dfa185, 'channels_edit_forum_topic')
