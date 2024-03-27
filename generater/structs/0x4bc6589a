@@ -1,7 +1,7 @@
-    @constructor(0x4bc6589a, 'message_search_global')
+    @constructor(0x4bc6589a, '{name}')
     def struct_0x4bc6589a(self):
         return Struct(
-            'sname' / Computed('message_search_global'),
+            'sname' / Computed('{name}'),
             'signature' / Hex(Const(0x4bc6589a, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 has_folder_id=1),

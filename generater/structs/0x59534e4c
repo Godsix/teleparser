@@ -1,7 +1,7 @@
-    @constructor(0x59534e4c, 'document_layer92')
+    @constructor(0x59534e4c, '{name}')
     def struct_0x59534e4c(self):
         return Struct(
-            'sname' / Computed('document_layer92'),
+            'sname' / Computed('{name}'),
             'signature' / Hex(Const(0x59534e4c, Int32ul)),
             'id' / Int64ul,
             'access_hash' / Int64ul,
@@ -11,6 +11,4 @@
             'size' / Int32ul,
             'thumb' / self.photo_size_structures('thumb'),
             'dc_id' / Int32ul,
-            'attributes' / self.struct_0x1cb5c415(
-                self.document_attribute_structures('attributes'),
-                'attributes'))
+            'attributes' / self.struct_0x1cb5c415(self.document_attribute_structures('attributes'), 'attributes'))

@@ -1,7 +1,7 @@
-    @constructor(0x9c14984a, 'theme_settings')
+    @constructor(0x9c14984a, '{name}')
     def struct_0x9c14984a(self):
         return Struct(
-            'sname' / Computed('theme_settings'),
+            'sname' / Computed('{name}'),
             'signature' / Hex(Const(0x9c14984a, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 has_top_color=1,
@@ -10,5 +10,4 @@
             'accent_color' / Int32ul,
             'message_top_color' / If(this.flags.has_top_color, Int32ul),
             'message_bottom_color' / If(this.flags.has_top_color, Int32ul),
-            'wallpaper' / If(this.flags.has_wallpaper,
-                             self.wall_paper_structures('wallpaper')))
+            'wallpaper' / If(this.flags.has_wallpaper, self.wall_paper_structures('wallpaper')))

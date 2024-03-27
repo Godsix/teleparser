@@ -24143,3 +24143,16 @@ class TLStruct:  # pylint: disable=C0103
             'file' / If(this.flags.has_file, self.input_file_structures('file')),
             'video' / If(this.flags.has_video, self.input_file_structures('video')),
             'video_start_ts' / If(this.flags.has_video_start_ts, Double))
+
+    @constructor(0xe0277a62, 'secure_file_layer142')
+    def struct_0xe0277a62(self):
+        return Struct(
+            'sname' / Computed('secure_file_layer142'),
+            'signature' / Hex(Const(0xe0277a62, Int32ul)),
+            'id' / Int64ul,
+            'access_hash' / Int64ul,
+            'size' / Int32ul,
+            'dc_id' / Int32ul,
+            'date' / TTimestamp,
+            'file_hash' / TBytes,
+            'secret' / TBytes)

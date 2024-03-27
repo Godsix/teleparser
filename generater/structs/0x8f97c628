@@ -1,7 +1,7 @@
-    @constructor(0x8f97c628, 'user')
+    @constructor(0x8f97c628, '{name}')
     def struct_0x8f97c628(self):
         return Struct(
-            'sname' / Computed('user'),
+            'sname' / Computed('{name}'),
             'signature' / Hex(Const(0x8f97c628, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 is_self=1024,
@@ -40,19 +40,13 @@
             'last_name' / If(this.flags.has_last_name, TString),
             'username' / If(this.flags.has_username, TString),
             'phone' / If(this.flags.has_phone, TString),
-            'photo' / If(this.flags.has_photo,
-                         self.user_profile_photo_structures('photo')),
-            'status' / If(this.flags.has_status,
-                          self.user_status_structures('status')),
+            'photo' / If(this.flags.has_photo, self.user_profile_photo_structures('photo')),
+            'status' / If(this.flags.has_status, self.user_status_structures('status')),
             'bot_info_version' / If(this.flags.is_bot, Int32ul),
             'restriction_reason' / If(this.flags.is_restricted,
-                                      self.struct_0x1cb5c415(
-                self.struct_0xd072acb4(), 'restriction_reason')),
-            'bot_inline_placeholder' /
-            If(this.flags.has_bot_inline_placeholder, TString),
+                                      self.struct_0x1cb5c415(self.struct_0xd072acb4(), 'restriction_reason')),
+            'bot_inline_placeholder' / If(this.flags.has_bot_inline_placeholder, TString),
             'lang_code' / If(this.flags.has_lang_code, TString),
-            'emoji_status' / If(this.flags.has_emoji_status,
-                                self.emoji_status_structures('emoji_status')),
+            'emoji_status' / If(this.flags.has_emoji_status, self.emoji_status_structures('emoji_status')),
             'usernames' / If(this.flags2.has_usernames,
-                             self.struct_0x1cb5c415(self.struct_0xb4073647(),
-                                                    'usernames')))
+                             self.struct_0x1cb5c415(self.struct_0xb4073647(), 'usernames')))

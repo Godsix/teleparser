@@ -1,7 +1,7 @@
-    @constructor(0xef3a6acd, 'channel_full_layer122')
+    @constructor(0xef3a6acd, '{name}')
     def struct_0xef3a6acd(self):
         return Struct(
-            'sname' / Computed('channel_full_layer122'),
+            'sname' / Computed('{name}'),
             'signature' / Hex(Const(0xef3a6acd, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 is_can_view_participants=8,
@@ -45,10 +45,8 @@
             'exported_invite' / self.exported_chat_invite_structures('exported_invite'),
             'bot_info' / self.struct_0x1cb5c415(self.bot_info_structures('bot_info'),
                                                 'bot_info'),
-            'migrated_from_chat_id' / If(this.flags.has_migrated_from_chat_id,
-                                         Int32ul),
-            'migrated_from_max_id' / If(this.flags.has_migrated_from_max_id,
-                                        Int32ul),
+            'migrated_from_chat_id' / If(this.flags.has_migrated_from_chat_id, Int32ul),
+            'migrated_from_max_id' / If(this.flags.has_migrated_from_max_id, Int32ul),
             'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
             'stickerset' / If(this.flags.has_stickerset,
                               self.sticker_set_structures('stickerset')),

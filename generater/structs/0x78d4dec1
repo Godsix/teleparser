@@ -1,8 +1,7 @@
-    @constructor(0x78d4dec1, 'updates_short')
+    @constructor(0x78d4dec1, '{name}')
     def struct_0x78d4dec1(self):
         return Struct(
-            'sname' / Computed('updates_short'),
+            'sname' / Computed('{name}'),
             'signature' / Hex(Const(0x78d4dec1, Int32ul)),
-            'updates' / self.struct_0x1cb5c415(
-                self.update_structures('updates'), 'updates'),
+            'updates' / self.struct_0x1cb5c415(self.update_structures('updates'), 'updates'),
             'date' / TTimestamp)

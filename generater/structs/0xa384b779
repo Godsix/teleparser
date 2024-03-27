@@ -1,7 +1,7 @@
-    @constructor(0xa384b779, 'received_notify_message')
+    @constructor(0xa384b779, '{name}')
     def struct_0xa384b779(self):
         return Struct(
-            'sname' / Computed('received_notify_message'),
+            'sname' / Computed('{name}'),
             'signature' / Hex(Const(0xa384b779, Int32ul)),
             'id' / Int32ul,
             'flags' / Int32ul)

@@ -1,7 +1,7 @@
-    @constructor(0xe0b0bc2e, 'photo_stripped_size')
+    @constructor(0xe0b0bc2e, '{name}')
     def struct_0xe0b0bc2e(self):
         return Struct(
-            'sname' / Computed('photo_stripped_size'),
+            'sname' / Computed('{name}'),
             'signature' / Hex(Const(0xe0b0bc2e, Int32ul)),
             'type' / TString,
             'bytes' / TBytes,

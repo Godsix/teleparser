@@ -7,16 +7,15 @@ Created on Wed Sep  7 08:42:28 2022
 import os.path as osp
 from sqlalchemy import create_engine, inspect
 try:
-    from sqlalchemy.orm import declarative_base
-    from sqlalchemy.orm import DeclarativeMeta
+    from sqlalchemy.orm import declarative_base, DeclarativeMeta
 except ImportError:
     # SQLAlchemy <= 1.3
-    from sqlalchemy.ext.declarative import declarative_base
-    from sqlalchemy.ext.declarative import DeclarativeMeta
+    from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
 
 from sqlalchemy.orm import sessionmaker, scoped_session
 from .utils import is_builtin_module, name_convert_to_pascal
 from .tools import get_model_content
+
 
 
 Model = declarative_base(name='Model', metaclass=DeclarativeMeta)

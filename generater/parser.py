@@ -19,9 +19,14 @@ from javalang.tree import (FieldDeclaration, ClassDeclaration,
                            BasicType, ReferenceType, BlockStatement,
                            ForControl, BinaryOperation,
                            Cast, MemberReference, Literal)
-from .common import STRUCT_CACHE, HEADER
-from .tools import get_struct_content, get_structures_content
-from .utils import name_convert_to_snake, save_code
+try:
+    from .common import STRUCT_CACHE, HEADER
+    from .tools import get_struct_content, get_structures_content
+    from .utils import name_convert_to_snake, save_code
+except ImportError:
+    from generater.common import STRUCT_CACHE, HEADER
+    from generater.tools import get_struct_content, get_structures_content
+    from generater.utils import name_convert_to_snake, save_code
 
 
 TYPE_INFO = {
@@ -637,14 +642,14 @@ class TLRPCParser(BaseParser):
         with open(value, encoding='utf-8') as f:
             c = f.read()
         self.tree = parse(c)
-        classes = self.tree.children[-1]
-        for item in (x for x in classes if self.is_class(x)):
+        types = self.tree.types
+        assert len(types) > 0
+
+        for item in (x for x in types if self.is_class(x)):
             if item.name == 'TLRPC':
                 self.tlrpc = item
                 break  # pylint: disable=E275
         else:
-            self.tlrpc = None
-        if self.tlrpc is None:
             raise ValueError('Can not find class TLRPC')
         self.classes = {x.name: x for x in self.tlrpc.body if self.is_class(x)}
         self.logger.debug('TLRPC contain class count %d', len(self.classes))
@@ -741,12 +746,8 @@ class TLRPCParser(BaseParser):
         index = inner_class.index
         if index in self.cache:
             res = self.cache[index]
-            ov = PATTERN1.search(res).group(2)
             mv = name_convert_to_snake(inner_class.inner_class_name[3:])
-            if not ov == mv:
-                ret = rename_struct(res, mv)
-            else:
-                ret = res
+            ret = res.format_map({'name': mv})
         else:
             ret = inner_class.generate_inner_class()
         return ret
@@ -842,8 +843,9 @@ class TLRPCParser(BaseParser):
             # print(f'Process {k}')
             try:
                 content = self.get_class_struct(k)
-            except Exception:
+            except Exception as e:
                 print(f'Parse {k} error')
+                # raise e
                 continue
             if content is None:
                 print(f'{k} content is null.')
@@ -921,10 +923,12 @@ class TLRPCParser(BaseParser):
         save_code(target, content_text, pep8=False)
 
 
+
 def test():
-    path = "TLRPC.java"
-    parser = TLRPCParser(path, 'structs', level=logging.INFO, strict=True)
-    parser.generate_tlrpc()
+    # path = r"H:\Project\MIUI\Godsix\teleparser\utils\files\TLRPC-10.9.1-176-d62d2ed5.java"
+    path = r"H:\Project\MIUI\Godsix\teleparser\utils\files\TLRPC-9.3.3-151-1c03d75e.java"
+    parser = TLRPCParser(path, 'structs', level=logging.DEBUG, strict=False)
+    parser.merge_tlrpc(r'H:\Project\MIUI\Godsix\teleparser\datatype\telegram.py', 'new.py')
 
 
 # ------------------------------------------------------------------------------

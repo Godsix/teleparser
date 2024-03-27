@@ -1,7 +1,7 @@
-    @constructor(0xc992e15c, 'message_layer47', 1)
+    @constructor(0xc992e15c, '{name}', 1)
     def struct_0xc992e15c(self):
         return Struct(
-            'sname' / Computed('message_layer47'),
+            'sname' / Computed('{name}'),
             'signature' / Hex(Const(0xc992e15c, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 is_unread=1,
@@ -19,19 +19,16 @@
             'id' / Int32ul,
             'user_id' / If(this.flags.has_user_id, Int32ul),
             'peer_id' / self.peer_structures('peer_id'),
-            'fwd_from' / If(this.flags.has_fwd_from,
-                            self.peer_structures('fwd_from')),
+            'fwd_from' / If(this.flags.has_fwd_from, self.peer_structures('fwd_from')),
             'date' / If(this.flags.has_fwd_from, TTimestamp),
             'via_bot_id' / If(this.flags.has_via_bot_id, Int32ul),
             'reply_to_msg_id' / If(this.flags.has_reply_to_msg_id, Int32ul),
             'date' / TTimestamp,
             'message' / TString,
-            'media' / If(this.flags.has_media,
-                         self.message_media_structures('media')),
+            'media' / If(this.flags.has_media, self.message_media_structures('media')),
             'reply_markup' / If(this.flags.has_reply_markup,
                                 self.reply_markup_structures('reply_markup')),
             'entities' / If(this.flags.has_entities,
-                            self.struct_0x1cb5c415(self.message_entity_structures('entities'),
-                                                   'entities')),
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'views' / If(this.flags.has_views, Int32ul),
             'attach_path' / TString)

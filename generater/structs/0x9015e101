@@ -12,10 +12,7 @@
             'pts' / Int32ul,
             'pts_count' / Int32ul,
             'date' / TTimestamp,
-            'media' / If(this.flags.has_media,
-                         self.message_media_structures('media')),
+            'media' / If(this.flags.has_media, self.message_media_structures('media')),
             'entities' / If(this.flags.has_entities,
-                            self.struct_0x1cb5c415(
-                                self.message_entity_structures('entities'),
-                                'entities')),
+                            self.struct_0x1cb5c415(self.message_entity_structures('entities'), 'entities')),
             'ttl_period' / If(this.flags.has_ttl_period, Int32ul))

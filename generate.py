@@ -9,10 +9,12 @@ from generater.parser import TLRPCParser
 
 
 def main():
-    path = "utils/files/TLRPC-9.3.3-151-1c03d75e.java"
+    # path = r"utils\files\TLRPC-9.4.5-152-810bc4ae.java"
+    path = r"utils\files\TLRPC-9.3.3-151-1c03d75e.java"
     parser = TLRPCParser(path, level=logging.INFO, strict=True)
     # parser.generate_tlrpc('new.py')
-    parser.merge_tlrpc(r'datatype/telegram.py', 'new.py')
+    # print(parser.cache)
+    parser.merge_tlrpc(r'datatype\telegram.py', 'new.py')
 
 
 if __name__ == '__main__':

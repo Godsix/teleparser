@@ -1,7 +1,7 @@
-    @constructor(0x29562865, 'chat_empty')
+    @constructor(0x29562865, '{name}')
     def struct_0x29562865(self):
         return Struct(
-            'sname' / Computed('chat_empty'),
+            'sname' / Computed('{name}'),
             'signature' / Hex(Const(0x29562865, Int32ul)),
             'id' / Int64ul,
             'title' / Computed('DELETED'))
