@@ -159,14 +159,14 @@ class BaseParser:
 
     @classmethod
     def is_literal(cls, obj):
-        return isinstance(obj, Literal), MemberReference, Literal
+        return isinstance(obj, Literal)
 
 
 class InnerClassParser(BaseParser):
     LOG = 'InnerClassParser'
 
     def __init__(self, inner_class, parent_class, level=logging.INFO):
-        super().__init__()
+        super().__init__(level)
         self.parent_class = parent_class
         self.strict = self.parent_class.strict
         self.classes = parent_class.classes
@@ -378,10 +378,9 @@ class InnerClassParser(BaseParser):
                 if member == 'serializeToStream':
                     struct_name = qualifier
                     try:
-                        struct_type, is_array = self.parse_field_type(
-                            struct_name)
+                        struct_type, is_array = self.parse_field_type(struct_name)
                     except Exception as e:
-                        print(statement)
+                        print('Parse statement error', self.inner_class_name, statement, self.inner_class)
                         raise e
                     if '.' in struct_name:
                         struct_name = struct_name.replace('.', '_')
@@ -572,8 +571,21 @@ class InnerClassParser(BaseParser):
                 assert switch_member == 'constructor', 'Switch not constructor'
                 for subitem in item.cases:
                     assert len(subitem.case) == 1
-                    struct_value = subitem.case[0].value
-                    struct_index = int(struct_value, 16)
+                    case_expr = subitem.case[0]
+                    if self.is_literal(case_expr):
+                        struct_value = case_expr.value
+                        struct_index = int(struct_value, 16)
+                    elif self.is_member_reference(case_expr):
+                        case_qualifier = case_expr.qualifier
+                        case_member = case_expr.member
+                        if case_qualifier.startswith('TL_') and case_member == 'constructor':
+                            case_inner_class = InnerClassParser(case_qualifier, self.parent_class, self.logger_level)
+                            struct_index = case_inner_class.index
+                        else:
+                            raise TypeError(f'Case type {type(case_expr)}, {case_expr}')
+                    else:
+                        raise TypeError(f'Case type {type(case_expr)}, {case_expr}')
+                    # struct_index = int(struct_value, 16)
                     struct_text = f'0x{struct_index:08x}'
                     self.structs.append(struct_text)
                 return True
@@ -844,8 +856,8 @@ class TLRPCParser(BaseParser):
             try:
                 content = self.get_class_struct(k)
             except Exception as e:
-                print(f'Parse {k} error')
-                # raise e
+                print(f'Parse {k} error', e)
+                raise e
                 continue
             if content is None:
                 print(f'{k} content is null.')
@@ -895,7 +907,9 @@ class TLRPCParser(BaseParser):
                                 else:
                                     iv = cs[info[i]]
                             else:
-                                iv = parse_result[i]
+                                iv = parse_result.get(i, 'None')
+                                if iv == 'None':
+                                    print('Parse result get {i} is None')
                             if i in append_items:
                                 del append_items[i]
                             result.append(iv)

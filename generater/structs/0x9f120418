@@ -1,0 +1,27 @@
+    @constructor(0x9f120418, '{name}')
+    def struct_0x9f120418(self):
+        return Struct(
+            'sname' / Computed('{name}'),
+            'signature' / Hex(Const(0x9f120418, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_view_messages=1,
+                                is_send_messages=2,
+                                is_send_media=4,
+                                is_send_stickers=8,
+                                is_send_gifs=16,
+                                is_send_games=32,
+                                is_send_inline=64,
+                                is_embed_links=128,
+                                is_send_polls=256,
+                                is_change_info=1024,
+                                is_invite_users=32768,
+                                is_pin_messages=131072,
+                                is_manage_topics=262144,
+                                is_send_photos=524288,
+                                is_send_videos=1048576,
+                                is_send_roundvideos=2097152,
+                                is_send_audios=4194304,
+                                is_send_voices=8388608,
+                                is_send_docs=16777216,
+                                is_send_plain=33554432),
+            'until_date' / TTimestamp)

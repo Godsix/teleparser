@@ -1,0 +1,7 @@
+    @constructor(0xfe77345d, '{name}')
+    def struct_0xfe77345d(self):
+        return Struct(
+            'sname' / Computed('{name}'),
+            'signature' / Hex(Const(0xfe77345d, Int32ul)),
+            'button_id' / Int32ul,
+            'peer' / self.peer_structures('peer'))
