@@ -11451,18 +11451,17 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('messages_sponsored_messages_empty'),
             'signature' / Hex(Const(0x1839490f, Int32ul)))
 
-    @constructor(0xc9ee1d87, 'messages_sponsored_messages_layer147')
+    @constructor(0xc9ee1d87, 'messages_sponsored_messages')
     def struct_0xc9ee1d87(self):
         return Struct(
-            'sname' / Computed('messages_sponsored_messages_layer147'),
+            'sname' / Computed('messages_sponsored_messages'),
             'signature' / Hex(Const(0xc9ee1d87, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 has_posts_between=1),
             'posts_between' / If(this.flags.has_posts_between, Int32ul),
             'messages' / self.struct_0x1cb5c415(self.struct_0x3a836df8(), 'messages'),
             'chats' / self.struct_0x1cb5c415(self.chat_structures('chats'), 'chats'),
-            'users' / self.struct_0x1cb5c415(self.user_structures('users'),
-                                             'users'))
+            'users' / self.struct_0x1cb5c415(self.user_structures('users'), 'users'))
 
     @constructor(0x65a4c7d5, 'messages_sponsored_messages_layer147')
     def struct_0x65a4c7d5(self):
