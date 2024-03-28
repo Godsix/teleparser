@@ -43,6 +43,17 @@ PATTERN1 = re.compile(r"@constructor\((\w+), '(\w+)'(.*)\)")
 PATTERN2 = re.compile(r"'sname'\s*/\s*Computed\(\s*'(\w+)'\s*\)")
 
 
+FAIL_STR = '''    @constructor({code}, '{name}')
+    def struct_{code}(self):
+        #TODO
+        return Struct(
+            'sname' / Computed('{name}'),
+            'signature' / Hex(Const({code}, Int32ul)))'''
+
+
+FUNCTION_PATTERN = re.compile(r"^ +@.+\n +def (\w+)\(.+\)(?s:.+?)\n\n", re.M)
+
+
 def rename_struct(content: str, name):
     def sub_func1(match):
         return f"@constructor({match.group(1)}, '{name}'{match.group(3)})"
@@ -761,7 +772,18 @@ class TLRPCParser(BaseParser):
             mv = name_convert_to_snake(inner_class.inner_class_name[3:])
             ret = res.format_map({'name': mv})
         else:
-            ret = inner_class.generate_inner_class()
+            try:
+                ret = inner_class.generate_inner_class()
+            except Exception as e:
+                print(f'Generate class {name} error', e)
+                if index is not None:
+                    param = {'code': f'0x{index:08x}', 'name': name_convert_to_snake(inner_class.inner_class_name[3:])}
+                    ret = FAIL_STR.format_map(param)
+                    # print('------------------------')
+                    # print(ret)
+                    # print('------------------------')
+                else:
+                    ret = None
         return ret
 
     def parse_tlrpc(self):
@@ -823,7 +845,11 @@ class TLRPCParser(BaseParser):
             subitems = re.findall(r'self\.(struct_0x\w{8})', item_struct)
             for subitem in subitems:
                 sorted_names.append(subitem)
-                item_content_list.append(parse_result[subitem])
+                if subitem in parse_result:
+                    item_content_list.append(parse_result[subitem])
+                else:
+                    text = f'    def {subitem}(self):\n        #TODO\n'
+                    item_content_list.append(text)
             item_content_list.append(item_struct)
             sorted_names.append(item)
             sorted_contents.append(item_content_list)
@@ -841,24 +867,19 @@ class TLRPCParser(BaseParser):
         sorted_text = '\r\n\r\n'.join(sorted_all_contents)
         sorted_name_info = dict.fromkeys(sorted_names)
         left_names = [x for x in parse_result if x not in sorted_name_info]
-        assert (len(left_names) == (len(parse_result) - len(sorted_names)))
+        # assert (len(left_names) == (len(parse_result) - len(sorted_names)))
         left_text = '\r\n\r\n'.join(parse_result[x] for x in left_names)
         result_text = ''
         result_text += header_text
         result_text += sorted_text
         result_text += left_text
-        save_code(target, result_text, pep8=True)
+        save_code(target, result_text, pep8=True, options={'max_line_length': 119})
 
     def merge_tlrpc(self, path, target):
         parse_result = {}
         for k in self.classes:
             # print(f'Process {k}')
-            try:
-                content = self.get_class_struct(k)
-            except Exception as e:
-                print(f'Parse {k} error', e)
-                raise e
-                continue
+            content = self.get_class_struct(k)
             if content is None:
                 print(f'{k} content is null.')
                 continue  # pylint: disable=E275
@@ -909,7 +930,7 @@ class TLRPCParser(BaseParser):
                             else:
                                 iv = parse_result.get(i, 'None')
                                 if iv == 'None':
-                                    print('Parse result get {i} is None')
+                                    print(f'Parse result get {i} is None')
                             if i in append_items:
                                 del append_items[i]
                             result.append(iv)
@@ -936,6 +957,73 @@ class TLRPCParser(BaseParser):
         content_text = '\r\n\r\n'.join(result_list)
         save_code(target, content_text, pep8=False)
 
+    @classmethod
+    def collect_dup(self, path, left, right):
+        with open(path, encoding='utf-8') as f:
+            c = f.read()
+        func_map = {}
+        a_list = []
+        b_list = []
+        for item in FUNCTION_PATTERN.finditer(c):
+            func_name = item.group(1)
+            if func_name not in func_map:
+                func_map[func_name] = item.group(0)
+            else:
+                a_list.append(func_map[func_name])
+                b_list.append(item.group(0))
+        with open(left, 'w+', encoding='utf-8') as f:
+            f.write(''.join(a_list))
+        with open(right, 'w+', encoding='utf-8') as f:
+            f.write(''.join(b_list))
+
+    @classmethod
+    def remove_dup(self, path, target, all_same=True):
+        with open(path, encoding='utf-8') as f:
+            c = f.read()
+        func_map = {}
+        start = 0
+        with open(target, 'w+', encoding='utf-8') as f:
+            for item in FUNCTION_PATTERN.finditer(c):
+                f.write(c[start:item.start()])
+                func_name = item.group(1)
+                if func_name not in func_map:
+                    func_map[func_name] = item.group(0)
+                    f.write(item.group(0))
+                else:
+                    if all_same:
+                        if not func_map[func_name] == item.group(0):
+                            f.write(item.group(0))
+                start = item.end()
+            else:
+                f.write(c[start:])
+
+    @classmethod
+    def format_pycode(self, path, limit=120):
+        with open(path, encoding='utf-8') as f:
+            lines = f.readlines()
+        new_lines = []
+        for line in lines:
+            if len(line) > limit:
+                m = re.search(r'If\([^,]+,', line)
+                if m:
+                    end = m.end()
+                    line1 = f'{line[:end]}\n'
+                    line2 = f'{" " * (m.start() + 3)}{line[end:].lstrip()}'
+                    # print(line)
+                    # print(line1)
+                    # print(line2)
+                    # break
+                    new_lines.append(line1)
+                    new_lines.append(line2)
+                else:
+                    new_lines.append(line)
+            else:
+                new_lines.append(line)
+        content = ''.join(new_lines)
+        import autopep8
+        content = autopep8.fix_code(content, options={'max_line_length': 119})
+        with open(path, 'w+', encoding='utf-8', newline='\n') as f:
+            f.write(content)
 
 
 def test():
