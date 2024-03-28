@@ -1,17 +1,17 @@
+# -*- coding: utf-8 -*-
 """
 Created on Fri Dec  9 09:12:01 2022
 
 @author: 皓
 """
+# pylint: disable=protected-access,too-many-lines,too-many-public-methods
 from functools import wraps, lru_cache
-from construct import (Struct, Computed,
-                       Int32ul, Int64ul, Double, Hex, FlagsEnum,
-                       GreedyBytes, Array, IfThenElse, If, Peek, Const,
-                       LazyBound, Switch, Terminated,
-                       setGlobalPrintFullStrings, setGlobalPrintPrivateEntries,
-                       this)
-from .common import TString, TBytes, TBool, TTimestamp
+from construct import (Struct, Computed, Int32ul, Int64ul, Double, Hex,
+                       FlagsEnum, GreedyBytes, Array, IfThenElse, If, Peek,
+                       Const, LazyBound, Switch, this,
+                       setGlobalPrintFullStrings, setGlobalPrintPrivateEntries)
 import logger
+from .common import TString, TBytes, TBool, TTimestamp
 # -----------------------------------------------------------------------------
 
 
@@ -20,18 +20,19 @@ INFO = {}
 STRUCT_CACHE = {}
 
 
-def constructor(constructor, name, use_lru=False):
-    INFO[constructor] = name
+def constructor(cid, name, use_lru=False):
+    INFO[cid] = name
 
-    if not use_lru:
+    if not use_lru:  # pylint: disable=R1705
         def decorator(func):
             @wraps(func)
             def wrapper(*args, **kwargs):
-                if constructor in STRUCT_CACHE:
-                    return STRUCT_CACHE[constructor]
+                if cid in STRUCT_CACHE:
+                    result = STRUCT_CACHE[cid]
                 else:
                     result = func(*args, **kwargs)
-                    return STRUCT_CACHE.setdefault(constructor, result)
+                    STRUCT_CACHE[cid] = result
+                return result
             return wrapper
         return decorator
     else:
@@ -44,7 +45,7 @@ structures = lru_cache()
 
 
 class TLStruct:  # pylint: disable=C0103
-    LAYER = 149
+    LAYER = 176
 
     def __init__(self):
         setGlobalPrintFullStrings(True)

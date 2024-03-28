@@ -389,9 +389,11 @@ class InnerClassParser(BaseParser):
                 if member == 'serializeToStream':
                     struct_name = qualifier
                     try:
-                        struct_type, is_array = self.parse_field_type(struct_name)
+                        struct_type, is_array = self.parse_field_type(
+                            struct_name)
                     except Exception as e:
-                        print('Parse statement error', self.inner_class_name, statement, self.inner_class)
+                        print('Parse statement error',
+                              self.inner_class_name, statement, self.inner_class)
                         raise e
                     if '.' in struct_name:
                         struct_name = struct_name.replace('.', '_')
@@ -590,12 +592,15 @@ class InnerClassParser(BaseParser):
                         case_qualifier = case_expr.qualifier
                         case_member = case_expr.member
                         if case_qualifier.startswith('TL_') and case_member == 'constructor':
-                            case_inner_class = InnerClassParser(case_qualifier, self.parent_class, self.logger_level)
+                            case_inner_class = InnerClassParser(
+                                case_qualifier, self.parent_class, self.logger_level)
                             struct_index = case_inner_class.index
                         else:
-                            raise TypeError(f'Case type {type(case_expr)}, {case_expr}')
+                            raise TypeError(
+                                f'Case type {type(case_expr)}, {case_expr}')
                     else:
-                        raise TypeError(f'Case type {type(case_expr)}, {case_expr}')
+                        raise TypeError(
+                            f'Case type {type(case_expr)}, {case_expr}')
                     # struct_index = int(struct_value, 16)
                     struct_text = f'0x{struct_index:08x}'
                     self.structs.append(struct_text)
@@ -777,7 +782,8 @@ class TLRPCParser(BaseParser):
             except Exception as e:
                 print(f'Generate class {name} error', e)
                 if index is not None:
-                    param = {'code': f'0x{index:08x}', 'name': name_convert_to_snake(inner_class.inner_class_name[3:])}
+                    param = {'code': f'0x{index:08x}', 'name': name_convert_to_snake(
+                        inner_class.inner_class_name[3:])}
                     ret = FAIL_STR.format_map(param)
                     # print('------------------------')
                     # print(ret)
@@ -873,7 +879,8 @@ class TLRPCParser(BaseParser):
         result_text += header_text
         result_text += sorted_text
         result_text += left_text
-        save_code(target, result_text, pep8=True, options={'max_line_length': 119})
+        save_code(target, result_text, pep8=True,
+                  options={'max_line_length': 119})
 
     def merge_tlrpc(self, path, target):
         parse_result = {}
@@ -937,7 +944,11 @@ class TLRPCParser(BaseParser):
                         replaces[(start, end)] = result
                     cs[index] = v
                 else:
-                    ov = PATTERN1.search(cs[index]).group(2)
+                    try:
+                        ov = PATTERN1.search(cs[index]).group(2)
+                    except Exception as e:
+                        print(cs[index])
+                        raise e
                     mv = PATTERN1.search(v).group(2)
                     if not ov == mv:
                         cs[index] = rename_struct(cs[index], mv)
@@ -958,7 +969,7 @@ class TLRPCParser(BaseParser):
         save_code(target, content_text, pep8=False)
 
     @classmethod
-    def collect_dup(self, path, left, right):
+    def collect_dup(cls, path, left, right):
         with open(path, encoding='utf-8') as f:
             c = f.read()
         func_map = {}
@@ -977,7 +988,7 @@ class TLRPCParser(BaseParser):
             f.write(''.join(b_list))
 
     @classmethod
-    def remove_dup(self, path, target, all_same=True):
+    def remove_dup(cls, path, target, all_same=True):
         with open(path, encoding='utf-8') as f:
             c = f.read()
         func_map = {}
@@ -998,7 +1009,7 @@ class TLRPCParser(BaseParser):
                 f.write(c[start:])
 
     @classmethod
-    def format_pycode(self, path, limit=120):
+    def format_pycode(cls, path, limit=120):
         with open(path, encoding='utf-8') as f:
             lines = f.readlines()
         new_lines = []
@@ -1025,12 +1036,142 @@ class TLRPCParser(BaseParser):
         with open(path, 'w+', encoding='utf-8', newline='\n') as f:
             f.write(content)
 
+    @classmethod
+    def format_pycode2(cls, path, target, limit=120):
+        with open(path, encoding='utf-8') as f:
+            lines = f.readlines()
+        new_lines = []
+        flag = False
+        for line in lines:
+            line_strip = line.rstrip()
+            if line_strip.endswith(')') or line_strip.endswith('),'):
+                if flag:
+                    new_combine_line = f'{
+                        new_lines[-1].rstrip()} {line.lstrip()}'
+                    if len(new_combine_line) <= limit and new_combine_line.count('/') < 2:
+                        new_lines[-1] = new_combine_line
+                        # print(new_combine_line)
+                        continue
+                flag = False
+            elif line_strip.endswith(','):
+                if 'FlagsEnum' not in line_strip and line_strip.count('(') > line_strip.count(')') and not line.lstrip().startswith('#'):
+                    flag = True
+                else:
+                    flag = False
+            else:
+                flag = False
+            new_lines.append(line)
+        content = ''.join(new_lines)
+        import autopep8
+        content = autopep8.fix_code(content, options={'max_line_length': 119})
+        with open(target, 'w+', encoding='utf-8', newline='\n') as f:
+            f.write(content)
+
+    @classmethod
+    def sort_func(cls, path, target):
+        parse_result = {}
+        with open(path, encoding='utf-8') as f:
+            c = f.read()
+        parse_result = {}
+        left = []
+        start = 0
+        for item in FUNCTION_PATTERN.finditer(c):
+            left.append(c[start:item.start()])
+            start = item.start()
+            func_name = item.group(1)
+            if ('structures' in func_name or func_name.startswith('struct_')) and not func_name == 'struct_0x1cb5c415':
+                if func_name not in parse_result:
+                    parse_result[func_name] = item.group(0)
+                    start = item.end()
+                else:
+                    print(f'{func_name} has exists.')
+        # print(''.join(left))
+        # return
+        structures_func_names = [x for x in parse_result if 'structures' in x]
+        structures_func_names = list(sorted(structures_func_names))
+        sorted_names = []
+        sorted_contents = []
+        for item in structures_func_names:
+            item_content_list = []
+            item_struct = parse_result[item]
+            subitems = re.findall(r'self\.(struct_0x\w{8})', item_struct)
+            for subitem in subitems:
+                sorted_names.append(subitem)
+                if subitem in parse_result:
+                    item_content_list.append(parse_result[subitem])
+                else:
+                    text = f'    def {subitem}(self):\n        #TODO\n'
+                    item_content_list.append(text)
+            item_content_list.append(item_struct)
+            sorted_names.append(item)
+            sorted_contents.append(item_content_list)
+            print(item, len(item_content_list))
+        sorted_contents_len = sum(len(x) for x in sorted_contents)
+        assert (len(sorted_names) == sorted_contents_len)
+        sorted_all_contents = []
+        split_line = f'{" " * 4}# {"-" * 73}'
+        sorted_all_contents.append(split_line)
+        for item in sorted_contents:
+            sorted_all_contents.extend(item)
+            sorted_all_contents.append(split_line)
+        with open(HEADER, 'r', encoding='utf-8') as f:
+            header_text = f.read()
+        sorted_text = '\r\n\r\n'.join(sorted_all_contents)
+        sorted_name_info = dict.fromkeys(sorted_names)
+        left_names = [x for x in parse_result if x not in sorted_name_info]
+        assert (len(left_names) == (len(parse_result) - len(sorted_names)))
+        left_text = '\r\n\r\n'.join(parse_result[x] for x in left_names)
+        result_text = ''
+        result_text += ''.join(left)
+        result_text += header_text
+        result_text += sorted_text
+        result_text += left_text
+        save_code(target, result_text, pep8=True,
+                  options={'max_line_length': 119})
+
+    @classmethod
+    def format_cid(cls, value):
+        if isinstance(value, str):
+            return f'0x{int(value, 16):08x}'
+        else:
+            return f'0x{value:08x}'
+
+    @classmethod
+    def remove_dup_func(cls, path, target, javafile):
+        with open(javafile, encoding='utf-8') as f:
+            c = f.read()
+        cid_list = re.findall(r'constructor *= *(0x[\da-f]+);', c, re.I)
+        cid_func = [f'struct_{cls.format_cid(x)}' for x in cid_list]
+        cid_set = set(cid_func)
+        with open(path, encoding='utf-8') as f:
+            c = f.read()
+        func_map = {}
+        start = 0
+        with open(target, 'w+', encoding='utf-8') as f:
+            for item in FUNCTION_PATTERN.finditer(c):
+                f.write(c[start:item.start()])
+                start = item.start()
+                func_name = item.group(1)
+                if func_name.startswith('struct_'):
+                    if func_name in cid_set:
+                        func_map[func_name] = item.group(0)
+                        f.write(item.group(0))
+                        start = item.end()
+                    else:
+                        start = item.end()
+                else:
+                    f.write(item.group(0))
+                    start = item.end()
+            else:
+                f.write(c[start:])
+
 
 def test():
     # path = r"H:\Project\MIUI\Godsix\teleparser\utils\files\TLRPC-10.9.1-176-d62d2ed5.java"
     path = r"H:\Project\MIUI\Godsix\teleparser\utils\files\TLRPC-9.3.3-151-1c03d75e.java"
     parser = TLRPCParser(path, 'structs', level=logging.DEBUG, strict=False)
-    parser.merge_tlrpc(r'H:\Project\MIUI\Godsix\teleparser\datatype\telegram.py', 'new.py')
+    parser.merge_tlrpc(
+        r'H:\Project\MIUI\Godsix\teleparser\datatype\telegram.py', 'new.py')
 
 
 # ------------------------------------------------------------------------------
