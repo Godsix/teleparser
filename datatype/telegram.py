@@ -4,7 +4,7 @@ Created on Fri Dec  9 09:12:01 2022
 
 @author: 皓
 """
-# pylint: disable=protected-access
+# pylint: disable=protected-access,too-many-lines,too-many-public-methods
 from functools import wraps, lru_cache
 from construct import (Struct, Computed, Int32ul, Int64ul, Double, Hex,
                        FlagsEnum, GreedyBytes, Array, IfThenElse, If, Peek,
@@ -20,18 +20,19 @@ INFO = {}
 STRUCT_CACHE = {}
 
 
-def constructor(constructor, name, use_lru=False):
-    INFO[constructor] = name
+def constructor(cid, name, use_lru=False):
+    INFO[cid] = name
 
-    if not use_lru:
+    if not use_lru: # pylint: disable=R1705
         def decorator(func):
             @wraps(func)
             def wrapper(*args, **kwargs):
-                if constructor in STRUCT_CACHE:
-                    return STRUCT_CACHE[constructor]
+                if cid in STRUCT_CACHE:
+                    result = STRUCT_CACHE[cid]
                 else:
                     result = func(*args, **kwargs)
-                    return STRUCT_CACHE.setdefault(constructor, result)
+                    STRUCT_CACHE[cid] = result
+                return result
             return wrapper
         return decorator
     else:
@@ -20547,7 +20548,7 @@ class TLStruct:  # pylint: disable=C0103
                                 has_folder_id=1),
             'folder_id' / If(this.flags.has_folder_id, Int32ul),
             'q' / TString,
-            'filter' / self.message_filter('filter'),
+            'filter' / self.messages_filter_structures('filter'),
             'min_date' / TTimestamp,
             'max_date' / TTimestamp,
             'offset_rate' / Int32ul,
