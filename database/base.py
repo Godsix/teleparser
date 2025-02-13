@@ -6,7 +6,7 @@ Created on Thu Dec  1 15:44:55 2022
 """
 import os.path as osp
 from functools import lru_cache
-from sqlalchemy import create_engine, inspect
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import Column
 from .lazy import lazy_property, lazy_clear
@@ -52,7 +52,18 @@ class BaseDB:
 
     @property
     def user_version(self):
-        return self.session.execute('PRAGMA user_version').fetchall()[0][0]
+        return self.execute('PRAGMA user_version').fetchall()[0][0]
+
+    def execute(self, statement, *args, **kwargs):
+        if isinstance(statement, str):
+            statement = text(statement)
+        return self.session.execute(statement)
+
+    def tables(self):
+        return self.inspect.get_table_names()
+
+    def table_count(self, name):
+        return self.execute(f'SELECT COUNT(*) FROM {name}').scalars().first()
 
     @lru_cache()
     def __get_model(self, table_name, parents=None, attrs=None):
@@ -61,6 +72,8 @@ class BaseDB:
         class_name = name_convert_to_pascal(table_name)
         columns = self.inspect.get_columns(table_name)
         columns_list = [Column(**get_column_param(**x)) for x in columns]
+        if all(x['primary_key'] == 0 for x in columns):
+            columns_list[0].primary_key = True
         return gen_model(class_name, table_name, *columns_list,
                          parents=parents, attrs=attrs)
 

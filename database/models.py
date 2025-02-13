@@ -34,16 +34,23 @@ def parse_structure(data, structure):
     return result.content if result else None
 
 
-def get_data_blob(self):
-    return parse_blob(self.data)
+def get_parser(name):
+    def wrapper(self):
+        data = getattr(self, name)
+        return parse_blob(data)
+    return wrapper
 
 
-def get_info_blob(self):
-    return parse_blob(self.info)
+# def get_data_blob(self):
+#     return parse_blob(self.data)
 
 
-def get_replydata_blob(self):
-    return parse_blob(self.replydata)
+# def get_info_blob(self):
+#     return parse_blob(self.info)
+
+
+# def get_replydata_blob(self):
+#     return parse_blob(self.replydata)
 
 
 class TModel:
@@ -62,16 +69,6 @@ class TModel:
 class UIDModel(Model, TModel):
     __abstract__ = True
     uid = Column(INTEGER, primary_key=True)
-
-    def __repr__(self) -> str:
-        state = inspect(self)
-        if state.transient:
-            pk = f"(transient {id(self)})"
-        elif state.pending:
-            pk = f"(pending {id(self)})"
-        else:
-            pk = ", ".join(map(str, state.identity))
-        return f"<{type(self).__name__} {pk}>"
 
 
 class AnimatedEmoji(Model):

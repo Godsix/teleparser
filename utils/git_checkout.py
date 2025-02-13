@@ -55,7 +55,7 @@ def git_checkout_file(path, outdir=None):
     path = osp.realpath(path)
     outdir = osp.realpath(outdir) if outdir else os.getcwd()
     log_info = get_git_log(path)
-    print(log_info)
+    # print(log_info)
     dirname, basename = osp.split(osp.realpath(path))
     fname, ext = osp.splitext(basename)
     checkout = False

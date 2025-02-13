@@ -6,10 +6,11 @@ Created on Thu Dec  1 15:43:28 2022
 """
 import re
 from functools import lru_cache
+from sqlalchemy import BLOB
 from .base import BaseDB
 from .models import (Chats, Dialogs, EncChats, MediaV4, MessagesV2,
                      SentFilesV2, Users, UserSettings, TModel,
-                     get_data_blob, get_info_blob, get_replydata_blob)
+                     get_parser)
 
 
 class TelegramDB(BaseDB):
@@ -24,15 +25,11 @@ class TelegramDB(BaseDB):
         else:
             return None
         columns = self.inspect.get_columns(table_name)
-        column_info = {x['name']: x for x in columns}
         attrs = {}
-        if 'data' in column_info:
-            attrs['blob'] = property(get_data_blob)
-        if 'info' in column_info:
-            attrs['info_blob'] = property(get_info_blob)
-        if 'replydata' in column_info:
-            attrs['replydata_blob'] = property(get_replydata_blob)
-        # attrs = {'blob': property(get_data_blob)} if blob else None
+        for column in columns:
+            if isinstance(column['type'], BLOB):
+                col_name = column['name']
+                attrs[f'{col_name}_blob'] = property(get_parser(col_name))
         return self.get_model(table_name, parents=[TModel], attrs=attrs)
 
     def get_chats(self) -> list:

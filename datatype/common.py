@@ -4,7 +4,7 @@ Created on Tue Dec  6 00:45:38 2022
 
 @author: 皓
 """
-from datetime import datetime
+from datetime import datetime, UTC
 from construct import (Struct, Computed, Int32ul, Hex, Byte, Bytes,
                        IfThenElse, If, Padding, Peek, this)
 import logger
@@ -60,5 +60,4 @@ TBool = Struct(
 # timestamps.
 TTimestamp = Struct(
     'epoch' / Int32ul,
-    'date' / Computed(lambda ctx: datetime.utcfromtimestamp(
-        ctx.epoch).isoformat()))
+    'date' / Computed(lambda ctx: datetime.fromtimestamp(ctx.epoch, UTC).isoformat()))

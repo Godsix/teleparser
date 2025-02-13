@@ -5,7 +5,7 @@ Created on Wed Sep  7 08:55:54 2022
 @author: 皓
 """
 import re
-from sqlalchemy.orm import mapper, registry
+from sqlalchemy.orm import registry
 from sqlalchemy import Table, MetaData
 
 
@@ -53,5 +53,5 @@ def gen_model(class_name, table_name, *columns, parents=None, attrs=None):
         attributes.update(dict(attrs))
     metaclass = type(class_name, tuple(parent_classes), attributes)
     table = Table(table_name, metadata, *columns)
-    mapper(metaclass, table)
+    registry_.map_imperatively(metaclass, table)
     return metaclass
