@@ -13,8 +13,13 @@ except ImportError:
     from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
 
 from sqlalchemy.orm import sessionmaker, scoped_session
-from .utils import is_builtin_module, name_convert_to_pascal
-from .tools import get_model_content
+try:
+    from .utils import is_builtin_module, name_convert_to_pascal
+    from .tools import get_model_content
+except ImportError:
+    from generater.utils import is_builtin_module, name_convert_to_pascal
+    from generater.tools import get_model_content
+
 
 
 

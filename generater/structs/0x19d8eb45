@@ -1,0 +1,9 @@
+    @constructor(0x19d8eb45, '{name}')
+    def struct_0x19d8eb45(self):
+        return Struct(
+            'sname' / Computed('{name}'),
+            'signature' / Hex(Const(0x19d8eb45, Int32ul)),
+            'peer' / self.input_peer_structures('peer'),
+            'id' / self.vector(Int32ul, 'id'),
+            'option' / TBytes,
+            'message' / TString)

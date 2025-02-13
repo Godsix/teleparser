@@ -1,7 +1,7 @@
-    @constructor({{struct_index_text}}, '{{struct_name}}')
-    def struct_{{struct_index_text}}(self):
+    @constructor({{cid}}, '{{sname}}')
+    def struct_{{cid}}(self):
         return Struct(
-            {% for item in structs %}
+            {% for item in struct %}
             '{{item[0]}}' / {{item[1]-}}
             {% if item[0] in flags %}
             {{-','}}

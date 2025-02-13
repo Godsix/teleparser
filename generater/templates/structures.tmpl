@@ -1,12 +1,12 @@
     @structures
-    def {{struct_name}}_structures(self, name):
+    def {{sname}}_structures(self, name):
         # pylint: disable=C0301
         tag_map = {
-            {% for item in structs %}
+            {% for item in switch %}
             {{item}}: LazyBound(self.struct_{{item}}){{',' if not loop.last else ''}}
             {% endfor %}
         }
-        return '{{struct_name}}_structures' / Struct(
+        return Struct(
             '_signature' / Peek(Int32ul),
             name / Switch(this._signature, tag_map))
 

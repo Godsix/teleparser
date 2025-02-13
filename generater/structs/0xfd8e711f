@@ -1,0 +1,14 @@
+    @constructor(0xfd8e711f, '{name}')
+    def struct_0xfd8e711f(self):
+        return Struct(
+            'sname' / Computed('{name}'),
+            'signature' / Hex(Const(0xfd8e711f, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_no_webpage=2,
+                                has_reply_to_msg_id=1,
+                                has_entities=8),
+            'reply_to_msg_id' / If(this.flags.has_reply_to_msg_id, Int32ul),
+            'message' / TString,
+            'entities' / If(this.flags.has_entities,
+                            self.vector(self.message_entity_structures('entities'), 'entities')),
+            'date' / TTimestamp)

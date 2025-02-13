@@ -4,14 +4,15 @@ Created on Wed Dec  7 08:47:59 2022
 
 @author: 皓
 """
+import os
 import os.path as osp
 from glob import iglob
 import re
 import logging
 from enum import IntEnum
 from javalang.parse import parse
-from javalang.tree import (FieldDeclaration, ClassDeclaration,
-                           MethodDeclaration,
+from javalang.tree import (CompilationUnit, FieldDeclaration,
+                           ClassDeclaration, MethodDeclaration,
                            StatementExpression, LocalVariableDeclaration,
                            ForStatement, SwitchStatement, IfStatement,
                            ReturnStatement,
@@ -37,21 +38,123 @@ TYPE_INFO = {
     'writeByteArray': 'TBytes',
     'writeDouble': 'Double',
     'writeByteBuffer': 'TBytes',
+    'readInt32': 'Int32ul',
+    'readInt64': 'Int64ul',
+    'readBool': 'TBool',
+    'readString': 'TString',
+    'readByteArray': 'TBytes',
+    'readDouble': 'Double',
+    'readByteBuffer': 'TBytes',
 }
 
 PATTERN1 = re.compile(r"@constructor\((\w+), '(\w+)'(.*)\)")
 PATTERN2 = re.compile(r"'sname'\s*/\s*Computed\(\s*'(\w+)'\s*\)")
 
 
-FAIL_STR = '''    @constructor({code}, '{name}')
-    def struct_{code}(self):
-        #TODO
+FAIL_STR = '''    @constructor({cid}, '{sname}')
+    def struct_{cid}(self):
+        # TODO
         return Struct(
-            'sname' / Computed('{name}'),
-            'signature' / Hex(Const({code}, Int32ul)))'''
+            'sname' / Computed('{sname}'),
+            'signature' / Hex(Const({cid}, Int32ul)))'''
+
+TODO_STR = '''    @constructor({cid}, '{sname}')
+    def struct_{cid}(self):
+        # TODO: {todo}
+        return Struct(
+            'sname' / Computed('{sname}'),
+            'signature' / Hex(Const({cid}, Int32ul)))'''
 
 
 FUNCTION_PATTERN = re.compile(r"^ +@.+\n +def (\w+)\(.+\)(?s:.+?)\n\n", re.M)
+
+
+def is_class(obj):
+    '''判断对象是否为类声明'''
+    return isinstance(obj, ClassDeclaration)
+
+
+def get_parent_class(class_decl: ClassDeclaration):
+    if not (extends := class_decl.extends):
+        return None
+    if extends.sub_type:
+        return f'{extends.name}.{extends.sub_type.name}'
+    else:
+        return extends.name
+
+
+class UserClassDeclaration:
+    def __init__(self,
+                 compile_unit: CompilationUnit,
+                 declaration: ClassDeclaration,
+                 outer: 'UserClassDeclaration' = None):
+        self.c_unit = compile_unit
+        self.decl = declaration
+        self.outer = outer
+        self.imports = {}
+        self.outer_imports = {}
+        for item in self.c_unit.imports:
+            item_path = item.path
+            self.imports[item_path.split('.')[-1]] = item_path
+        if self.outer:
+            fqn = self.outer.fqn
+            for item in (x for x in self.outer.decl.body if is_class(x)):
+                item_name = item.name
+                self.outer_imports[item_name] = f'{fqn}.{item_name}'
+
+    @property
+    def name(self):
+        return self.decl.name
+
+    @property
+    def fqn(self):
+        '''类的全限定名(Fully Qualified Name, FQN)'''
+        if self.outer:
+            return f'{self.outer.fqn}.{self.decl.name}'
+        else:
+            return f'{self.c_unit.package.name}.{self.decl.name}'
+
+    @property
+    def extends(self):
+        v = get_parent_class(self.decl)
+        if not v:
+            return None
+        return self.get_fqn(v)
+
+    def get_fqn(self, value: str):
+        if '.' not in value:
+            if value in self.outer_imports:
+                return self.outer_imports[value]
+            if value in self.imports:
+                return self.imports[value]
+        else:
+            c1, c2 = value.split('.')
+            if c1 in self.imports:
+                return f'{self.imports[c1]}.{c2}'
+        return f'{self.c_unit.package.name}.{value}'
+
+JAVA_TYPE = {
+    'int': eval,
+}
+
+
+def get_class_value(cls_: ClassDeclaration, name: str):
+    for field in cls_.fields:
+        declarators = field.declarators
+        type_name = field.type.name
+        for declarator in declarators:
+            if declarator.name == name:
+                name = declarator.name
+                init_value = declarator.initializer.value
+                if (func := JAVA_TYPE.get(type_name)):
+                    return func(init_value)
+                else:
+                    return init_value
+
+def parse_java_file(path) -> CompilationUnit:
+    with open(path, 'rb') as f:
+        c = f.read()
+    return parse(c)
 
 
 def rename_struct(content: str, name):
@@ -98,6 +201,7 @@ class BaseParser:
 
     @classmethod
     def is_class(cls, obj):
+        '''判断对象是否为类声明'''
         return isinstance(obj, ClassDeclaration)
 
     @classmethod
@@ -173,72 +277,98 @@ class BaseParser:
         return isinstance(obj, Literal)
 
 
-class InnerClassParser(BaseParser):
-    LOG = 'InnerClassParser'
+class ClassParser(BaseParser):
+    LOG = 'ClassParser'
 
-    def __init__(self, inner_class, parent_class, level=logging.INFO):
+    def __init__(self, fqn, java_parser, level=logging.INFO):
         super().__init__(level)
-        self.parent_class = parent_class
-        self.strict = self.parent_class.strict
-        self.classes = parent_class.classes
-        self.inner_class = parent_class.get_inner_class(inner_class)
-        self.inner_class_name = self.inner_class.name
-        if not self.parent_class.is_extends_TLObject(self.inner_class):
-            msg = f'Class {self.inner_class_name} is not extends TLObject'
-            if self.strict:
-                raise TypeError(msg)
-            self.logger.debug(msg)
-        self.fields = parent_class.get_fields(self.inner_class)
-        self.methods = parent_class.get_methods(self.inner_class)
+        self.fqn = fqn
+        self.java_parser = java_parser
+        self.user_class = self.get_inner_class(fqn)
+        self.cid = self.cid_info.get(fqn)
+        name = self.user_class.name
+        assert name, f'parse {fqn} name error'
+        self.name = name
+        if name.startswith('TL_'):
+            self.cname = name[3:]
+            self.is_tl = True
+        else:
+            self.cname = name
+            self.is_tl = False
+        fqns = fqn.split('.')
+        if fqns[-2].startswith('TL_'):
+            prefix = fqns[-2][3:]
+            cnamel = self.cname.lower()
+            if prefix.endswith('ies'):
+                prefixs = f'{prefix[:-3]}y'
+            elif prefix.endswith('s'):
+                prefixs = prefix[:-1]
+            else:
+                prefixs = prefix
+            if cnamel.startswith(prefix) or cnamel.startswith(prefixs):
+                self.sname = self.cname
+            else:
+                self.sname = f'{prefix}_{self.cname}'
+        else:
+            self.sname = self.cname
+        self.struct_name = name_convert_to_snake(self.sname)
+        self.fields = self.get_fields(self.user_class)
+        self.methods = self.get_methods(self.user_class, False)
         self.info = {}
-        self.structs = []
-        self.info['structs'] = self.structs
+        self.struct = []
+        self.info['struct'] = self.struct
+        self.switch = []
+        self.info['switch'] = self.switch
         self.content_0x1cb5c415 = []
         self.flags = {}
         self.info['flags'] = self.flags
 
-    @property
-    def index(self):
-        if 'constructor' not in self.fields:
-            return None
-        value = self.fields['constructor'].declarators[0].initializer.value
-        return eval(value)
+    def __getattr__(self, name):
+        if hasattr(self.java_parser, name):
+            return getattr(self.java_parser, name)
+        raise AttributeError(f"'ClassParser' object has no attribute '{name}'")
+    
+    def get_cid(self, fqn):
+        return self.cid_info.get(fqn)
 
-    def parse_inner_class(self):
-        self.logger.debug('Parse inner class %s', self.inner_class_name)
-        if self.inner_class_name.startswith('TL_'):
-            return self.parse_inner_class_tl()
-        else:
-            return self.parse_inner_class_switch()
-
-    def parse_inner_class_tl(self):
-        name = self.inner_class_name
-        struct_name = name_convert_to_snake(name[3:])
-        struct_index = self.index
-        struct_text = f'0x{struct_index:08x}'
-        self.info['struct_name'] = struct_name
-        self.info['struct_index'] = struct_index
-        self.info['struct_index_text'] = struct_text
-        self.structs.append(('sname', f"Computed('{struct_name}')"))
-        if 'serializeToStream' in self.methods:
-            self.parse_serialize()
-        elif 'readParams' in self.methods:
-            msg = f"Class {name} can't parse readParams."
-            if self.strict:
-                raise NotImplementedError(msg)
+    def parse(self):
+        name = self.name
+        struct_name = self.struct_name
+        self.info['sname'] = struct_name
+        self.logger.debug('Parse class %s', name)
+        result = None
+        if self.cid:
+            self.info['cid'] = self.cid
+            if 'serializeToStream' in self.methods:
+                self.struct.append(('sname', f"Computed('{struct_name}')"))
+                self.parse_serialize_to_stream()
+                result = True
+            elif 'readParams' in self.methods:
+                self.struct.append(('sname', f"Computed('{struct_name}')"))
+                self.struct.append(('signature',
+                                    f'Hex(Const({self.cid}, Int32ul))'))
+                self.parse_read_param()
+                result = True
+            elif 'TLdeserialize' in self.methods:
+                pass
             else:
-                self.logger.error(msg)
-                return {}
+                msg = f'Class {name} has no method parsed.'
+                if self.strict:
+                    raise NotImplementedError(msg)
+                else:
+                    self.info['todo'] = 'no method'
+                    self.logger.error(msg)
+        if 'TLdeserialize' in self.methods:
+            self.parse_deserialize()
+            result = True
         else:
-            msg = f'Class {name} has no needed method.'
-            if self.strict:
-                raise NotImplementedError(msg)
-            else:
-                self.logger.error(msg)
-                return {}
-        return self.info
+            if not result:
+                self.logger.warning('Class has not TLdeserialize: %s', name)
+        return result
 
-    def parse_0x1cb5c415(self):
+
+    def parse_vector(self):
+        '''parse 0x1cb5c415'''
         data = self.content_0x1cb5c415[1]
         if self.is_local_variable(data):
             data_name = data.declarators[0].initializer.qualifier
@@ -262,20 +392,22 @@ class InnerClassParser(BaseParser):
         else:
             # raise ValueError(f'data_type: {data_type}')
             pass  # pylint: disable=E275
-        struct_type = f"self.struct_0x1cb5c415({data_type}, '{data_name}')"
+        struct_type = f"self.vector({data_type}, '{data_name}')"
         dname = name_convert_to_snake(data_name)
         return (dname, struct_type)
 
-    def parse_inner_class_type(self, data_name, data_type):
-        data_class = self.classes.get(data_type)
+    def parse_class_type(self, data_name, data_type):
+        fqn = self.user_class.get_fqn(data_type)
+        data_class = self.get_inner_class(fqn)
         if data_class is not None:
-            if data_type.startswith('TL_'):
-                constructor = self.parent_class.get_constructor(data_class)
+            dtype = data_class.name
+            if dtype.startswith('TL_'):
+                constructor = self.java_parser.get_constructor(data_class)
                 if constructor is None:
-                    raise TypeError(f'Class {data_type} has not constructor.')
+                    raise TypeError(f'Class {fqn} has not constructor.')
                 struct_type = f"self.struct_{constructor}()"
             else:
-                sname = name_convert_to_snake(data_type)
+                sname = name_convert_to_snake(dtype)
                 dname = name_convert_to_snake(data_name)
                 struct_type = f"self.{sname}_structures('{dname}')"
         else:
@@ -294,7 +426,8 @@ class InnerClassParser(BaseParser):
         if class_name is None:
             fields = self.fields
         else:
-            fields = self.parent_class.get_fields(class_name)
+            fqn = self.user_class.get_fqn(class_name)
+            fields = self.java_parser.get_fields(fqn)
         if fields is None:
             self.logger.error('get_field_type: fields is None: %s', class_name)
             return None
@@ -320,28 +453,30 @@ class InnerClassParser(BaseParser):
                                       field_name)
                     return None
             data_name = field_name.replace('.', '_')
-            return (self.parse_inner_class_type(data_name, class_name), False)
+            return (self.parse_class_type(data_name, class_name), False)
         else:
             field = self.fields.get(field_name)
             if field is None:
                 self.logger.error('parse_field_type: can not find field %s',
                                   field_name)
                 return None
-            is_array_list = False
+            if (is_array := (field.type.name == 'ArrayList')):
+                field = field.type.arguments[0]
             field_type = field.type.name
-            if field_type == 'ArrayList':
-                is_array_list = True
-                contain_type = field.type.arguments[0].type.name
-                return (self.parse_inner_class_type(field_name, contain_type),
-                        is_array_list)
-            return (self.parse_inner_class_type(field_name, field_type),
-                    is_array_list)
+            full_type = field_type
+            
+            try:
+                if (field_sub_type := field.type.sub_type.name):
+                    full_type = f'{field_type}.{field_sub_type}'
+            except AttributeError:
+                pass
+            return (self.parse_class_type(field_name, full_type), is_array)
 
     @classmethod
     def is_member_reference_or_cast(cls, obj):
         return cls.is_member_reference(obj) or cls.is_cast(obj)
 
-    def parse_statement_expression(self, statement):
+    def parse_statement_expression_w(self, statement):
         expression = statement.expression
         if self.is_method_invocation(expression):
             qualifier = expression.qualifier
@@ -372,7 +507,7 @@ class InnerClassParser(BaseParser):
                     try:
                         argument_value = argument.value
                     except AttributeError as e:
-                        print(self.inner_class_name, argument)
+                        print(self.name, argument)
                         raise e
                     if argument_value == '0x1cb5c415':
                         return Tag.VECTOR_START
@@ -383,21 +518,42 @@ class InnerClassParser(BaseParser):
                         raise ValueError(f'{argument.value}')
                 else:
                     TypeError(type(argument))
+            elif qualifier == 'Vector':
+                argument = arguments[1]
+                data_name = argument.member
+                dname = name_convert_to_snake(data_name)
+                data_type = None
+                if member == 'serialize':
+                    data_type, is_array = self.parse_field_type(data_name)
+                    if is_array is False:
+                        raise TypeError(data_name)
+                    if data_type in ('int', 'str', 'bytes'):
+                        for_item = self.content_0x1cb5c415[-1]
+                        for_member = for_item.body.statements[0].expression.member
+                        data_type = get_stream_type(for_member)
+                    else:
+                        # raise ValueError(f'data_type: {data_type}')
+                        pass  # pylint: disable=E275
+                elif member == 'serializeInt':
+                    data_type = 'Int32ul'
+                elif member == 'serializeLong':
+                    data_type = 'Int64ul'
+                elif member == 'serializeString':
+                    data_type = 'TString'
+                if data_type:
+                    struct_type = f"self.vector({data_type}, '{data_name}')"
+                    return (dname, struct_type)
             elif not qualifier and member == 'writeAttachPath':
                 return ('attach_path', 'TString')
             else:
                 if member == 'serializeToStream':
-                    struct_name = qualifier
                     try:
-                        struct_type, is_array = self.parse_field_type(
-                            struct_name)
+                        struct_type, is_array = self.parse_field_type(qualifier)
                     except Exception as e:
                         print('Parse statement error',
-                              self.inner_class_name, statement, self.inner_class)
+                              self.name, statement, self.user_class)
                         raise e
-                    if '.' in struct_name:
-                        struct_name = struct_name.replace('.', '_')
-                    dname = name_convert_to_snake(struct_name)
+                    dname = name_convert_to_snake(qualifier.replace('.', '_'))
                     return (dname, struct_type)
                 elif member == 'get':
                     struct_name = qualifier
@@ -438,6 +594,56 @@ class InnerClassParser(BaseParser):
             else:
                 raise ValueError(member)
 
+    def parse_statement_expression_r(self, statement):
+        expression = statement.expression
+        if self.is_assignment(expression):
+            memberl = expression.expressionl.member
+            value = expression.value
+            if self.is_method_invocation(value):
+                qualifier = value.qualifier
+                member = value.member
+                if qualifier == 'stream':
+                    struct_name = memberl
+                    data_type = get_stream_type(member, struct_name)
+                    if struct_name in ('flags', 'flags2'):
+                        return (struct_name, f'FlagsEnum({data_type}')
+                    else:
+                        struct_type = data_type
+                        return (struct_name, struct_type)
+                elif qualifier == 'Vector':
+                    struct_name = memberl
+                    struct_type = None
+                    if member == 'deserialize':
+                        stype = value.arguments[1]
+                        argument_member = stype.expression.member
+                        struct_type = self.parse_class_type(struct_name,
+                                                            argument_member)
+                        if not struct_type:
+                            raise ValueError(f'Parse java type error: {argument_member}')
+                    elif member == 'deserializeInt':
+                        struct_type = 'Int32ul'
+                    elif member == 'deserializeLong':
+                        struct_type = 'Int64ul'
+                    elif member == 'deserializeString':
+                        struct_type = 'TString'
+                    if struct_type:
+                        struct_type = f"self.vector({struct_type}, '{struct_name}')"
+                        return (struct_name, struct_type)
+                elif member == 'TLdeserialize':
+                    sname = memberl
+                    stype = name_convert_to_snake(qualifier)
+                    ret = {'name': sname, 'type': stype}
+            elif self.is_binary_operation(value):
+                member = value.operandl.operandl.member
+                mask = value.operandl.operandr.value
+                if member.startswith('is'):
+                    flag_tag = name_convert_to_snake(member)
+                else:
+                    flag_tag = f'is_{member}'
+                self.add_flags(memberl, flag_tag, mask)
+                return Tag.FLAGS_TAG
+
+
     def add_flags(self, tag, name, value, force=False):
         flag_info = self.flags.setdefault(tag, {})
         if force:
@@ -450,7 +656,7 @@ class InnerClassParser(BaseParser):
         else:
             return info[value]
 
-    def parse_if_statement(self, statement):
+    def parse_if_statement_w(self, statement):
         result = []
         condition = statement.condition
         operandl = condition.operandl
@@ -515,12 +721,12 @@ class InnerClassParser(BaseParser):
             except AttributeError as e:
                 if self.strict:
                     self.logger.error('Class %s, statement %s, error %s',
-                                      self.inner_class_name,
+                                      self.name,
                                       statement, e)
                     raise e
                 else:
                     self.logger.error('Class %s, statement %s, error %s',
-                                      self.inner_class_name,
+                                      self.name,
                                       statement, e)
                 return []
         else:
@@ -531,6 +737,24 @@ class InnerClassParser(BaseParser):
             else:
                 self.logger.error(msg)
 
+    def parse_if_statement_r(self, statement):
+        result = []
+        condition = statement.condition
+        operandl = condition.operandl
+        if self.is_binary_operation(operandl):
+            condition_member = operandl.operandl.member
+            condition_value = operandl.operandr.value
+            then_statements = statement.then_statement.statements
+            result_list = self._parse_read_param(then_statements)
+            c_m = condition_member
+            for item in result_list:
+                struct_name, data_type = item
+                f_n = f'has_{struct_name}'
+                fnn = self.add_flags(c_m, f_n, condition_value)
+                struct_type = f'If(this.{c_m}.{fnn}, {data_type})'
+                result.append((struct_name, struct_type))
+            return result
+
     def _parse_serialize(self, statements):
         assert (not self.content_0x1cb5c415)
         result = []
@@ -538,14 +762,14 @@ class InnerClassParser(BaseParser):
             if self.content_0x1cb5c415:
                 self.content_0x1cb5c415.append(item)
                 if self.is_for_statement(item):
-                    res = self.parse_0x1cb5c415()
+                    res = self.parse_vector()
                     if res is None:
                         raise ValueError(repr(item))
                     self.content_0x1cb5c415.clear()
                     result.append(res)
                 continue  # pylint: disable=E275
             if self.is_statement_expression(item):
-                res = self.parse_statement_expression(item)
+                res = self.parse_statement_expression_w(item)
                 if res is None:
                     raise ValueError(repr(item))
                 if res == Tag.VECTOR_START:
@@ -559,22 +783,42 @@ class InnerClassParser(BaseParser):
             elif self.is_for_statement(item):
                 raise TypeError('for_statement')
             elif self.is_if_statement(item):
-                res = self.parse_if_statement(item)
+                res = self.parse_if_statement_w(item)
                 if res is None:
                     raise ValueError(repr(item))
                 result.extend(res)
         return result
 
-    def parse_serialize(self):
+    def _parse_read_param(self, statements):
+        result = []
+        for item in statements:
+            if self.is_statement_expression(item):
+                res = self.parse_statement_expression_r(item)
+                if res is None:
+                    raise ValueError('++++++++++++++++++' + repr(item))
+                if res == Tag.FLAGS_TAG:
+                    continue  # pylint: disable=E275
+                result.append(res)
+            elif self.is_local_variable(item):
+                raise TypeError('local_variable')
+            elif self.is_for_statement(item):
+                raise TypeError('for_statement')
+            elif self.is_if_statement(item):
+                res = self.parse_if_statement_r(item)
+                if res is None:
+                    raise ValueError(repr(item))
+                result.extend(res)
+        return result
+
+    def parse_serialize_to_stream(self):
         method = self.methods['serializeToStream']
-        assert (not self.content_0x1cb5c415)
         result = self._parse_serialize(method.body)
-        self.structs.extend(result)
+        self.struct.extend(result)
 
     def parse_read_param(self):
         method = self.methods['readParams']
-        for item in method.body:
-            pass  # pylint: disable=E275
+        result = self._parse_read_param(method.body)
+        self.struct.extend(result)
 
     def parse_deserialize(self):
         method = self.methods['TLdeserialize']
@@ -583,27 +827,28 @@ class InnerClassParser(BaseParser):
                 switch_member = item.expression.member
                 assert switch_member == 'constructor', 'Switch not constructor'
                 for subitem in item.cases:
-                    assert len(subitem.case) == 1
+                    if len(subitem.case) == 0:
+                        continue
                     case_expr = subitem.case[0]
+                    error = None
                     if self.is_literal(case_expr):
-                        struct_value = case_expr.value
-                        struct_index = int(struct_value, 16)
+                        cid_value = case_expr.value
+                        self.switch.append(f'0x{eval(cid_value):08x}')
                     elif self.is_member_reference(case_expr):
                         case_qualifier = case_expr.qualifier
                         case_member = case_expr.member
-                        if case_qualifier.startswith('TL_') and case_member == 'constructor':
-                            case_inner_class = InnerClassParser(
-                                case_qualifier, self.parent_class, self.logger_level)
-                            struct_index = case_inner_class.index
+                        if case_member == 'constructor':
+                            case_fqn = self.user_class.get_fqn(case_qualifier)
+                            if (case_cid := self.get_cid(case_fqn)):
+                                self.switch.append(case_cid)
+                            else:
+                                error = f'Can not find cid of class {case_qualifier}'
                         else:
-                            raise TypeError(
-                                f'Case type {type(case_expr)}, {case_expr}')
+                            error = f'Case member is not constructor but {case_member}'
                     else:
-                        raise TypeError(
-                            f'Case type {type(case_expr)}, {case_expr}')
-                    # struct_index = int(struct_value, 16)
-                    struct_text = f'0x{struct_index:08x}'
-                    self.structs.append(struct_text)
+                        error = f'case_expr is illigal type: {type(case_expr).__name__}'
+                    if error:
+                        raise TypeError(error)
                 return True
             elif self.is_local_variable(item):
                 continue  # pylint: disable=E275
@@ -611,44 +856,38 @@ class InnerClassParser(BaseParser):
                 continue  # pylint: disable=E275
             elif self.is_if_statement(item):
                 continue  # pylint: disable=E275
+            elif self.is_statement_expression(item):
+                continue  # pylint: disable=E275
             else:
                 raise TypeError(f'Unknow type:{type(item).__name__}')
-        self.logger.error('class %s TLdeserialize contain not switch',
-                          self.inner_class_name)
+        # self.logger.error('class %s TLdeserialize contain not switch',
+        #                   self.name)
         return False
 
-    def parse_inner_class_switch(self):
-        name = self.inner_class_name
-        struct_name = name_convert_to_snake(name)
-        self.info['struct_name'] = struct_name
-        if 'TLdeserialize' in self.methods:
-            self.parse_deserialize()
-            return True
-        else:
-            # Class has not TLdeserialize: Vector
-            self.logger.warning('Class has not TLdeserialize: %s', name)
-            return None
-
-    def generate_inner_class(self):
-        ret = self.parse_inner_class()
+    def generate(self):
+        ret = self.parse()
         if ret is None:
             return None
         if not self.info:
-            self.logger.error('Class %s parse failed', self.inner_class_name)
+            self.logger.error('Class %s parse failed', self.name)
             return None
-        if self.inner_class_name.startswith('TL_'):
-            return get_struct_content(self.info)
-        else:
-            return get_structures_content(self.info)
+        result = []
+        if self.struct:
+            result.append(get_struct_content(self.info))
+        if self.switch:
+            result.append(get_structures_content(self.info))
+        return result
 
 
-class TLRPCParser(BaseParser):
-    LOG = 'TLRPCParser'
 
-    def __init__(self, path, cached=None, level=logging.INFO, strict=False):
+class JavaParser(BaseParser):
+    LOG = 'JavaParser'
+
+    def __init__(self, directory, cached=None, level=logging.INFO, strict=False):
         super().__init__(level)
-        self.path = path
+        self.directory = osp.realpath(directory)
         self.cache = {}
+        self.strict = strict
         if cached and osp.isdir(cached):
             cached_dir = cached
         else:
@@ -659,143 +898,171 @@ class TLRPCParser(BaseParser):
                 with open(path, encoding='utf-8') as f:
                     c = f.read()
                 self.cache[eval(basename)] = c
-        self.strict = strict
+        
 
     @property
-    def path(self):
-        return self._path
+    def directory(self):
+        return self._directory
 
-    @path.setter
-    def path(self, value):
-        with open(value, encoding='utf-8') as f:
-            c = f.read()
-        self.tree = parse(c)
-        types = self.tree.types
-        assert len(types) > 0
+    @directory.setter
+    def directory(self, value):
+        path = osp.join(value, 'TLRPC.java')
+        assert osp.isfile(path), f"Not found TLRPC file in {value}"
+        self.java_info = {}
+        self.class_info = {}
+        self.i_class_info = {}
+        self.ii_class_info = {}
+        self.cid_info = {}
+        self.LAYER = None
+        self.logger.debug("Parsing %s", osp.basename(path))
+        self.tree = parse_java_file(path)
+        self.package = self.tree.package.name  # 获取包名
+        self.java_info[path] = self.tree
+        # 获取包名下的其他文件
+        java_path_regex = re.compile(f'^{self.package}\.(.+)$', re.M)
+        for item in self.tree.imports:
+            java_path = item.path
+            if not (m := java_path_regex.fullmatch(java_path)):
+                continue
+            relpath = m.group(1).replace('.', os.sep)
+            item_path = osp.join(value, f'{relpath}.java')
+            if not osp.isfile(item_path):
+                self.logger.warning("Not found %s", item_path)
+                continue
+            self.logger.debug("Parsing %s", osp.basename(item_path))
+            tree = parse_java_file(item_path)
+            self.java_info[item_path] = tree
 
-        for item in (x for x in types if self.is_class(x)):
-            if item.name == 'TLRPC':
-                self.tlrpc = item
-                break  # pylint: disable=E275
-        else:
-            raise ValueError('Can not find class TLRPC')
-        self.classes = {x.name: x for x in self.tlrpc.body if self.is_class(x)}
-        self.logger.debug('TLRPC contain class count %d', len(self.classes))
-        self._path = value
+        # 获取包名下的所有大类
+        for java_path, java_data in self.java_info.items():
+            for item in (x for x in java_data.types if is_class(x)):
+                obj = UserClassDeclaration(java_data, item)
+                self.class_info[obj.fqn] = obj
 
-    def get_inner_class(self, name: str):
-        class_ = self.classes.get(name) if isinstance(name, str) else name
-        if class_ is None:
-            return None
-        return class_
+        # 解析 LAYER
+        self.main = self.class_info['org.telegram.tgnet.TLRPC']
+        self.LAYER = get_class_value(self.main.decl, 'LAYER')
+        self.logger.debug('%s = %d', 'LAYER', self.LAYER)
 
-    def get_parents(self, name: str):
-        inner_class = self.get_inner_class(name)
-        if inner_class is None:
+        for k, v in self.class_info.items():
+            inner_classes = [x for x in v.decl.body if is_class(x)]
+            self.logger.debug("Parsing %s from %s", len(inner_classes), k)
+            for item in inner_classes:
+                obj = UserClassDeclaration(v.c_unit, item, v)
+                self.i_class_info[obj.fqn] = obj
+
+        for k, v in self.i_class_info.items():
+            parents = self.get_extends_list(k)
+            if not parents:
+                self.logger.error('%s extends is None', k)
+                continue
+            else:
+                if 'org.telegram.tgnet.TLObject' not in parents:
+                    self.logger.error('%s is not subclass of TLObject: %s',
+                                      k,
+                                      parents)
+                    continue
+            self.ii_class_info[k] = v
+
+        for k, v in self.ii_class_info.items():
+            conv = get_class_value(v.decl, 'constructor')
+            if conv is not None:
+                self.cid_info[k] = f'0x{conv:08x}'
+
+        self.logger.debug('TLRPC files contain class count %d', len(self.ii_class_info))
+        self._directory = value
+
+    def get_inner_class(self, fqn: str):
+        if isinstance(fqn, UserClassDeclaration):
+            return fqn
+        return self.i_class_info.get(fqn)
+
+    def get_extends_list(self, fqn: str):
+        if (inner_class := self.get_inner_class(fqn)) is None:
             return None
         parents = []
         cur = inner_class
         for i in range(20):
-            extends = cur.extends.name
+            if not (extends := cur.extends):
+                break
             parents.append(extends)
-            cur = self.classes.get(extends)
-            if cur is None:
-                break  # pylint: disable=E275
+            if not (cur := self.get_inner_class(extends)):
+                break
         return parents
 
-    def get_fields(self, name: str):
-        inner_class = self.get_inner_class(name)
-        if inner_class is None:
+    def get_fields(self, fqn: str, recursive=True):
+        if (inner_class := self.get_inner_class(fqn)) is None:
             return None
-        field_iter = (x for x in inner_class.body if self.is_field(x))
-        fields = {x.declarators[0].name: x for x in field_iter}
-        for extend in self.get_parents(inner_class):
-            if extend == 'TLObject':
-                break  # pylint: disable=E275
-            extend_class = self.get_inner_class(extend)
-            if extend_class is None:
-                continue  # pylint: disable=E275
-            extend_iter = (x for x in extend_class.body if self.is_field(x))
-            for extend_field in extend_iter:
-                extend_field_name = extend_field.declarators[0].name
-                if extend_field_name not in fields:
-                    fields[extend_field_name] = extend_field
+        fields = {x.declarators[0].name: x for x in inner_class.decl.fields}
+        if not recursive:
+            return fields
+        for extends in self.get_extends_list(inner_class):
+            if (extends_class := self.get_inner_class(extends)) is None:
+                break
+            for extends_field in extends_class.decl.fields:
+                field_name = extends_field.declarators[0].name
+                if field_name not in fields:
+                    fields[field_name] = extends_field
         return fields
 
-    def get_methods(self, name: str):
-        inner_class = self.get_inner_class(name)
-        if inner_class is None:
+    def get_methods(self, fqn: str, recursive=True):
+        if (inner_class := self.get_inner_class(fqn)) is None:
             return None
-        method_iter = (x for x in inner_class.body if self.is_method(x))
-        methods = {x.name: x for x in method_iter}
-        for extend in self.get_parents(inner_class):
-            if extend == 'TLObject':
-                break  # pylint: disable=E275
-            extend_class = self.get_inner_class(extend)
-            if extend_class is None:
-                continue  # pylint: disable=E275
-            extend_iter = (x for x in extend_class.body if self.is_method(x))
-            for extend_method in extend_iter:
-                extend_method_name = extend_method.name
-                if extend_method_name not in methods:
-                    methods[extend_method_name] = extend_method
+        methods = {x.name: x for x in inner_class.decl.methods}
+        if not recursive:
+            return methods
+        for extends in self.get_extends_list(inner_class):
+            if (extends_class := self.get_inner_class(extends)) is None:
+                break
+            for extends_method in extends_class.decl.methods:
+                method_name = extends_method.name
+                if method_name not in methods:
+                    methods[method_name] = extends_method
         return methods
 
-    def is_extends_TLObject(self, name: str):
-        extends = self.get_parents(name)
-        return (bool(extends) and 'TLObject' in extends)
-
-    def get_constructor(self, name: ClassDeclaration) -> str:
-        inner_class = self.get_inner_class(name)
-        if inner_class is None:
-            return None
-        for item in inner_class.body:
-            if not self.is_field(item):
-                continue  # pylint: disable=E275
-            declarator = item.declarators[0]
-            if declarator.name == 'constructor':
-                value = declarator.initializer.value
-                index = int(value, 16)
-                text = f'0x{index:08x}'
-                return text
-        return None
+    def get_constructor(self, fqn: str) -> str:
+        if not (cl := self.get_inner_class(fqn)):
+            return cl
+        return self.cid_info.get(cl.fqn)
 
     def generate_class_code(self, name):
-        inner_class = InnerClassParser(name, self, self.logger_level)
-        index = inner_class.index
+        obj = ClassParser(name, self, self.logger_level)
+        index = obj.index
         if index in self.cache:
             ret = self.cache[index]
         else:
-            ret = inner_class.generate_inner_class()
+            ret = obj.generate()
         return ret
 
-    def get_class_struct(self, name):
-        inner_class = InnerClassParser(name, self, self.logger_level)
-        index = inner_class.index
-        if index in self.cache:
+    def get_class_struct(self, fqn):
+        ret = None
+        obj = ClassParser(fqn, self, self.logger_level)
+        cid = obj.cid
+        sname = obj.struct_name
+        if cid and (index := eval(cid)) in self.cache:
             res = self.cache[index]
-            mv = name_convert_to_snake(inner_class.inner_class_name[3:])
-            ret = res.format_map({'name': mv})
+            ret = [res.format_map({'name': sname})]
         else:
             try:
-                ret = inner_class.generate_inner_class()
+                ret = obj.generate()
             except Exception as e:
-                print(f'Generate class {name} error', e)
-                if index is not None:
-                    param = {'code': f'0x{index:08x}', 'name': name_convert_to_snake(
-                        inner_class.inner_class_name[3:])}
-                    ret = FAIL_STR.format_map(param)
-                    # print('------------------------')
-                    # print(ret)
-                    # print('------------------------')
-                else:
-                    ret = None
+                print(f'Generate class {fqn} error', e)
+                if str(e).startswith('get_field_type'):
+                    raise e
+                # raise e
+            finally:
+                if not ret:
+                    if obj.info.get('cid') and obj.info.get('sname'):
+                        if obj.info.get('todo'):
+                            ret = [TODO_STR.format_map(obj.info)]
+                        else:
+                            ret = [FAIL_STR.format_map(obj.info)]
         return ret
 
     def parse_tlrpc(self):
         result = []
         parse_result = {}
-        for k in self.classes:
+        for k in self.ii_class_info:
             content = self.get_class_struct(k)
             if content is None:
                 print(f'{k} content is null.')
@@ -830,7 +1097,7 @@ class TLRPCParser(BaseParser):
 
         '''
         parse_result = {}
-        for k in self.classes:
+        for k in self.ii_class_info:
             content = self.get_class_struct(k)
             if content is None:
                 print(f'{k} content is null.')
@@ -884,18 +1151,19 @@ class TLRPCParser(BaseParser):
 
     def merge_tlrpc(self, path, target):
         parse_result = {}
-        for k in self.classes:
+        for k in self.ii_class_info:
             # print(f'Process {k}')
             content = self.get_class_struct(k)
-            if content is None:
+            if not content:
                 print(f'{k} content is null.')
-                continue  # pylint: disable=E275
-            func_name = re.search(r'def (\w+)', content).group(1)
-            if func_name not in parse_result:
-                parse_result[func_name] = content
-            else:
-                print(f'{func_name} has exist.')
-                print(content, parse_result[func_name])
+                continue
+            for item in content:
+                func_name = re.search(r'def (\w+)', item).group(1)
+                if func_name not in parse_result:
+                    parse_result[func_name] = item
+                else:
+                    print(f'{func_name} has exist.')
+                    print(item, parse_result[func_name])
         with open(path, encoding='utf-8') as f:
             c = f.read()
         for i in range(3):
@@ -912,6 +1180,7 @@ class TLRPCParser(BaseParser):
         append_items = {}
         pattern = re.compile(r'LazyBound\(self.(\w+)\)')
         replaces = {}
+
         for k, v in parse_result.items():
             if k in info:
                 index = info[k]
@@ -926,8 +1195,7 @@ class TLRPCParser(BaseParser):
                             if i in info:
                                 if i in parse_result:
                                     ov = PATTERN1.search(cs[info[i]]).group(2)
-                                    mv = PATTERN1.search(
-                                        parse_result[i]).group(2)
+                                    mv = PATTERN1.search(parse_result[i]).group(2)
                                     if not ov == mv:
                                         iv = rename_struct(cs[info[i]], mv)
                                     else:
@@ -950,12 +1218,18 @@ class TLRPCParser(BaseParser):
                         print(cs[index])
                         raise e
                     mv = PATTERN1.search(v).group(2)
+                    flag = False
                     if not ov == mv:
                         cs[index] = rename_struct(cs[index], mv)
+                        flag = True
+                    if not flag and 'TODO' in cs[index] and 'TODO' not in v:
+                        cs[index] = v
+                        flag = True
             else:
                 append_items[k] = None
         cur = 0
         result_list = []
+        # print(cs)
         for item in sorted(replaces):
             s, e = item
             result_list.extend(cs[cur:s])
@@ -1079,7 +1353,7 @@ class TLRPCParser(BaseParser):
             left.append(c[start:item.start()])
             start = item.start()
             func_name = item.group(1)
-            if ('structures' in func_name or func_name.startswith('struct_')) and not func_name == 'struct_0x1cb5c415':
+            if ('structures' in func_name or func_name.startswith('struct_')) and not func_name == 'vector':
                 if func_name not in parse_result:
                     parse_result[func_name] = item.group(0)
                     start = item.end()
@@ -1167,12 +1441,18 @@ class TLRPCParser(BaseParser):
 
 
 def test():
-    # path = r"H:\Project\MIUI\Godsix\teleparser\utils\files\TLRPC-10.9.1-176-d62d2ed5.java"
-    path = r"H:\Project\MIUI\Godsix\teleparser\utils\files\TLRPC-9.3.3-151-1c03d75e.java"
-    parser = TLRPCParser(path, 'structs', level=logging.DEBUG, strict=False)
-    parser.merge_tlrpc(
-        r'H:\Project\MIUI\Godsix\teleparser\datatype\telegram.py', 'new.py')
-
+    # path = r"utils\files\TLRPC-9.4.5-152-810bc4ae.java"
+    # path = r"utils\files\TLRPC-10.9.1-176-d62d2ed5.java"
+    # path = r"utils\files\TLRPC-11.7.0-198-eee720ef.java"
+    path = r"E:\Project\Godsix\teleparser\utils\Telegram\TMessagesProj\src\main\java\org\telegram\tgnet"
+    parser = JavaParser(path, level=logging.INFO, strict=False)
+    parser.merge_tlrpc(r'E:\Project\Godsix\teleparser\datatype\telegram.py',
+                       r'E:\Project\Godsix\teleparser\new.py')
+    # content = parser.get_class_struct('org.telegram.tgnet.tl.TL_stories.TL_togglePinnedToTop')
+    # 
+    # content = parser.get_class_struct('org.telegram.tgnet.TLRPC.TL_pageBlockEmbedPost_layer82')
+    # if content:
+    #     print(content[0])
 
 # ------------------------------------------------------------------------------
 if __name__ == '__main__':

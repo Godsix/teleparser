@@ -28,11 +28,21 @@ def constructor(cid, name, use_lru=False):
             @wraps(func)
             def wrapper(*args, **kwargs):
                 if cid in STRUCT_CACHE:
-                    result = STRUCT_CACHE[cid]
+                    ret = STRUCT_CACHE[cid]
                 else:
                     result = func(*args, **kwargs)
-                    STRUCT_CACHE[cid] = result
-                return result
+                    if isinstance(result, (list, tuple)):
+                        ret = Struct('sname' / Computed(name),
+                                     'signature' / Hex(Const(cid, Int32ul)),
+                                     *result)
+                    elif isinstance(result, dict):
+                        ret = Struct('sname' / Computed(name),
+                                     'signature' / Hex(Const(cid, Int32ul)),
+                                     **result)
+                    else:
+                        ret = result
+                    STRUCT_CACHE[cid] = ret
+                return ret
             return wrapper
         return decorator
     else:
@@ -60,44 +70,47 @@ class TLStruct:  # pylint: disable=C0103
             name = INFO.get(signature)
             if blob_parser:
                 pblob = blob_parser().parse(data)
-                # Some structures has the 'UNPARSED' field to get the remaining
-                # bytes. It's expected to get some of these cases (e.g. wrong
-                # flags, it happens...) and I want everything to be in front of
-                # the analyst. So, if UNPARSED has a length > 0, a warning
-                # message is raised, but the missing data is in the blob.
-                unparsed = getattr(pblob, 'UNPARSED', None)
-                if unparsed:
-                    unparsed_len = len(pblob.UNPARSED)
-                    if unparsed_len:
-                        logger.warning('Object: %s [0x%x] contains unparsed '
-                                       'data [%d bytes], see UPARSED field',
-                                       name, signature, unparsed_len)
                 data_len = len(data)
-                # In case the object has not (yet) the UNPARSED field, the next
-                # check will raise and error and report the missed data. Note
-                # that the missed data will be not reported in the blob.
                 object_len = pblob._io.tell()
                 if data_len != object_len:
                     logger.error('Not all data parsed for object: %s [0x%x], '
                                  'input: %d, parsed: %d, missed: %s',
                                  name, signature, data_len, object_len,
                                  data[object_len:])
-            # else:
-            #     logger.warning('blob \'%s\' [%s] not supported',
-            #                    name, hex(signature))
+                    # raise ValueError('Not all data parsed for object')
         else:
-            logger.error('unknown signature %s', hex(signature))
+            try:
+                pblob_parser = self.struct_list()
+                pblob = pblob_parser.parse(data)
+            except Exception:
+                print(f'unknown signature: 0x{signature:08x}')
+                # raise ValueError('unknown signature')
         return pblob
 
     # ---------------------------- Common start -------------------------------
 
     @constructor(0x1cb5c415, 'vector', use_lru=True)
-    def struct_0x1cb5c415(self, datatype, name: str):
-        name = 'content'
+    def vector(self, datatype, name: str):
         return Struct(
             'sname' / Computed('vector'),
             'signature' / Hex(Const(0x1cb5c415, Int32ul)),
             'count' / Int32ul,
-            name / Array(this.count, datatype))
+            'content' / Array(this.count, datatype))
+
+    @structures
+    def struct_list(self):
+        # pylint: disable=C0301
+        tag_map = {
+            0xc077ec01: LazyBound(self.struct_0xc077ec01),
+            0x40d13c0e: LazyBound(self.struct_0x40d13c0e),
+            0xfb197a65: LazyBound(self.struct_0xfb197a65),
+            0x2b085862: LazyBound(self.struct_0x2b085862),
+        }
+        return Struct(
+            'sname' / Computed('list'),
+            'count' / Int32ul,
+            'content' / Array(this.count, Struct(
+                                                '_signature' / Peek(Int32ul),
+                                                'item' / Switch(this._signature, tag_map))))
 
     # ---------------------------- Common end ---------------------------------
