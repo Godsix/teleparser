@@ -9,7 +9,7 @@ import re
 import json
 from glob import iglob
 import importlib
-from functools import partial
+from functools import partial, lru_cache
 from inspect import getsource
 from functools import cmp_to_key
 from types import MethodType, FunctionType
@@ -228,11 +228,14 @@ SNAKE = re.compile(
 #         raise ValueError(f'{name}字符中包含下划线，无法转换')
 #     return name.lower()
 
-
+@lru_cache(maxsize=1024)
 def name_convert_to_snake(name: str) -> str:
     """驼峰转下划线"""
-    name = SNAKE.sub(sub_snake, name)
-    return name.lower()
+    if any(x.isupper() for x in name):
+        name = SNAKE.sub(sub_snake, name)
+        return name.lower()
+    else:
+        return name
 
 
 def name_convert_to_camel(name: str) -> str:
@@ -258,3 +261,25 @@ def find_import(mod_path, *patterns, index=1):
             name = osp.splitext(osp.basename(path))[0]
             result.append(f'from .{name} import {", ".join(objects)}')
     return '\n'.join(result)
+
+def lazy_property(func):
+    attr_name = "_lazy_{}".format(func.__name__)
+
+    @property
+    def _lazy_property(self):
+        if not hasattr(self, attr_name):
+            ret = func(self)
+            if ret is None:
+                return ret
+            setattr(self, attr_name, ret)
+        return getattr(self, attr_name)
+
+    @_lazy_property.setter
+    def _lazy_property(self, value):
+        setattr(self, attr_name, value)
+
+    @_lazy_property.deleter
+    def _lazy_property(self):
+        delattr(self, attr_name)
+
+    return _lazy_property

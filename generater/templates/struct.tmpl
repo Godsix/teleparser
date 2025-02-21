@@ -1,12 +1,12 @@
     @constructor({{cid}}, '{{sname}}')
     def struct_{{cid}}(self):
         return Struct(
-            {% for item in struct %}
-            '{{item[0]}}' / {{item[1]-}}
-            {% if item[0] in flags %}
+            {% for key, value in struct.items() %}
+            '{{key}}' / {{value-}}
+            {% if key in flags %}
             {{-','}}
-            {% for name, value in flags[item[0]].items() %}
-                                {{name}}={{value-}}
+            {% for subkey, subvalue in flags[key].items() %}
+                                {{subkey}}={{subvalue-}}
                                 {% if not loop.last %}
                                 {{-','}}
                                 {% else %}

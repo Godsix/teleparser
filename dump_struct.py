@@ -22,7 +22,7 @@ def main():
         else:
             with open(path, "w+", encoding="utf-8", newline='') as f:
                 f.write(content)
-            print("剪切板内容已写入 {osp.basename(path)}")
+            print(f"剪切板内容已写入 {osp.basename(path)}")
     else:
         print(f'content not match:{content}')
 

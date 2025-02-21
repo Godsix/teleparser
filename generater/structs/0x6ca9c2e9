@@ -1,7 +1,0 @@
-    @constructor(0x6ca9c2e9, '{name}')
-    def struct_0x6ca9c2e9(self):
-        return Struct(
-            'sname' / Computed('{name}'),
-            'signature' / Hex(Const(0x6ca9c2e9, Int32ul)),
-            'text' / TString,
-            'option' / TBytes)

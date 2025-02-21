@@ -6,46 +6,72 @@ Created on Wed Dec  7 08:47:59 2022
 """
 import os
 import os.path as osp
-from glob import iglob
 import re
 import logging
+from glob import iglob
 from enum import IntEnum
+from functools import lru_cache
+import autopep8
 from javalang.parse import parse
-from javalang.tree import (CompilationUnit, FieldDeclaration,
-                           ClassDeclaration, MethodDeclaration,
-                           StatementExpression, LocalVariableDeclaration,
-                           ForStatement, SwitchStatement, IfStatement,
-                           ReturnStatement,
+from javalang.tree import (Node, 
+                           CompilationUnit, ClassDeclaration,
+                           FieldDeclaration, FormalParameter,
+                           MethodDeclaration, BlockStatement,
+                           Statement, IfStatement, ForStatement,
+                           ReturnStatement, SwitchStatement,
+                           StatementExpression, TryStatement,
+                           LocalVariableDeclaration,
                            MethodInvocation, Assignment,
-                           BasicType, ReferenceType, BlockStatement,
-                           ForControl, BinaryOperation,
-                           Cast, MemberReference, Literal)
+                           BasicType, ReferenceType, ClassCreator,
+                           ForControl, BinaryOperation, TernaryExpression,
+                           Cast, This, MemberReference, Literal)
 try:
     from .common import STRUCT_CACHE, HEADER
     from .tools import get_struct_content, get_structures_content
-    from .utils import name_convert_to_snake, save_code
+    from .utils import name_convert_to_snake, save_code, lazy_property
 except ImportError:
     from generater.common import STRUCT_CACHE, HEADER
     from generater.tools import get_struct_content, get_structures_content
-    from generater.utils import name_convert_to_snake, save_code
+    from generater.utils import name_convert_to_snake, save_code, lazy_property
 
 
 TYPE_INFO = {
     'writeInt32': 'Int32ul',
     'writeInt64': 'Int64ul',
     'writeBool': 'TBool',
+    'writeBytes': 'GreedyBytes',
+    'writeByte': 'Byte',
     'writeString': 'TString',
     'writeByteArray': 'TBytes',
+    'writeFloat': 'Single',
     'writeDouble': 'Double',
     'writeByteBuffer': 'TBytes',
     'readInt32': 'Int32ul',
     'readInt64': 'Int64ul',
     'readBool': 'TBool',
+    'readBytes': 'GreedyBytes',
+    'readByte': 'Byte',
     'readString': 'TString',
     'readByteArray': 'TBytes',
+    'readFloat': 'Single',
     'readDouble': 'Double',
     'readByteBuffer': 'TBytes',
 }
+
+VECTOR_TYPE_INFO = {
+    'serialize': '',
+    'serializeInt': 'Int32ul',
+    'serializeLong': 'Int64ul',
+    'serializeString': 'TString',
+    'deserialize': '',
+    'deserializeInt': 'Int32ul',
+    'deserializeLong': 'Int64ul',
+    'deserializeString': 'TString',
+}
+
+
+
+
 
 PATTERN1 = re.compile(r"@constructor\((\w+), '(\w+)'(.*)\)")
 PATTERN2 = re.compile(r"'sname'\s*/\s*Computed\(\s*'(\w+)'\s*\)")
@@ -58,6 +84,7 @@ FAIL_STR = '''    @constructor({cid}, '{sname}')
             'sname' / Computed('{sname}'),
             'signature' / Hex(Const({cid}, Int32ul)))'''
 
+
 TODO_STR = '''    @constructor({cid}, '{sname}')
     def struct_{cid}(self):
         # TODO: {todo}
@@ -66,31 +93,84 @@ TODO_STR = '''    @constructor({cid}, '{sname}')
             'signature' / Hex(Const({cid}, Int32ul)))'''
 
 
+SIMP_STR = '''    @constructor({cid}, '{sname}')
+    def struct_{cid}(self):
+        return [{content}]'''
+
+
 FUNCTION_PATTERN = re.compile(r"^ +@.+\n +def (\w+)\(.+\)(?s:.+?)\n\n", re.M)
 
 
-def is_class(obj):
-    '''判断对象是否为类声明'''
-    return isinstance(obj, ClassDeclaration)
+GDATA = {}
+
+NAME_MAP = {('peer', 'user_id'): 'peer_user_id',
+            ('title', 'text'): 'title_text',
+            ('color', 'background_emoji_id'): 'background_emoji_id',
+            ('question', 'text'): 'question_text',
+            ('from_id', 'user_id'): 'from_user_id',
+            ('from_id', 'channel_id'): 'from_channel_id',
+            ('reply_to', 'reply_to_msg_id'): 'reply_to_msg_id',
+            ('fwd_from', 'date'): 'fwd_from_date',
+            ('fwd_from.from_id', 'user_id'): 'fwd_from_user_id',
+            ('reply_to', 'reply_to_random_id'): 'reply_to_random_id',
+            ('owner_id', 'user_id'): 'owner_user_id',
+            ('stars', 'amount'): 'stars_amount',
+            ('balance', 'amount'): 'balance_amount',
+            ('sender_id', 'user_id'): 'sender_user_id',
+            ('recipient_id', 'user_id'): 'recipient_user_id'}
 
 
-def get_parent_class(class_decl: ClassDeclaration):
-    if not (extends := class_decl.extends):
-        return None
-    if extends.sub_type:
-        return f'{extends.name}.{extends.sub_type.name}'
-    else:
-        return extends.name
+class UserWrapper:
+    def __init__(self, obj: Node):
+        self.object = obj
 
+    def __getattr__(self, name):
+        if hasattr(self.object, name):
+            return getattr(self.object, name)
+        raise AttributeError(f"'ClassParser' object has no attribute '{name}'")
 
-class UserClassDeclaration:
+class UserCompilationUnit(UserWrapper):
+    def __init__(self, path, encoding: str = "utf-8"):
+        with open(path, 'rb') as f:
+            c = f.read()
+        super().__init__(parse(c))
+        self.lines =[x for x in c.decode(encoding).splitlines()]
+        self.path = path
+
+    @lazy_property
+    def package(self):
+        return self.object.package  # pylint: disable=E1101
+
+    @lazy_property
+    def imports(self):
+        return self.object.imports  # pylint: disable=E1101
+
+    @lazy_property
+    def types(self):
+        return self.object.types  # pylint: disable=E1101
+    
+    @lazy_property
+    def class_list(self) -> list:
+        return [x for x in self.types if isinstance(x, ClassDeclaration)]
+
+    def get_line(self, obj: Node):
+        if not (position := obj.position):
+            return position
+        return self.lines[position.line - 1][position.column - 1:]
+
+class UserClassDeclaration(UserWrapper):
     def __init__(self,
-                 compile_unit: CompilationUnit,
                  declaration: ClassDeclaration,
-                 outer: 'UserClassDeclaration' = None):
-        self.c_unit = compile_unit
-        self.decl = declaration
-        self.outer = outer
+                 outer: UserWrapper):
+        super().__init__(declaration)
+        if isinstance(outer, UserCompilationUnit):
+            self.c_unit = outer
+            self.outer = None
+        elif isinstance(outer, UserClassDeclaration):
+            self.c_unit = outer.c_unit
+            self.outer = outer
+        else:
+            raise TypeError("'outer' must be a UserCompilationUnit or UserClassDeclaration")
         self.imports = {}
         self.outer_imports = {}
         for item in self.c_unit.imports:
@@ -98,29 +178,52 @@ class UserClassDeclaration:
             self.imports[item_path.split('.')[-1]] = item_path
         if self.outer:
             fqn = self.outer.fqn
-            for item in (x for x in self.outer.decl.body if is_class(x)):
+            for item in self.outer.class_list:
                 item_name = item.name
                 self.outer_imports[item_name] = f'{fqn}.{item_name}'
 
-    @property
-    def name(self):
-        return self.decl.name
+    @lazy_property
+    def package(self):
+        return self.c_unit.package.name
 
-    @property
+    @lazy_property
+    def name(self):
+        return self.object.name
+
+    @lazy_property
+    def body(self):
+        return self.object.body
+
+    @lazy_property
+    def fields(self):
+        return self.object.fields
+
+    @lazy_property
+    def methods(self):
+        return self.object.methods
+    @lazy_property
     def fqn(self):
         '''类的全限定名(Fully Qualified Name, FQN)'''
         if self.outer:
-            return f'{self.outer.fqn}.{self.decl.name}'
+            return f'{self.outer.fqn}.{self.name}'
         else:
-            return f'{self.c_unit.package.name}.{self.decl.name}'
+            return f'{self.package}.{self.name}'
 
-    @property
+    @lazy_property
     def extends(self):
-        v = get_parent_class(self.decl)
-        if not v:
+        if not (extends := self.object.extends):
             return None
+        if extends.sub_type:
+            v = f'{extends.name}.{extends.sub_type.name}'
+        else:
+            v = extends.name
         return self.get_fqn(v)
 
+    @lazy_property
+    def class_list(self) -> list:
+        return [x for x in self.body if isinstance(x, ClassDeclaration)]
+
+    @lru_cache()
     def get_fqn(self, value: str):
         if '.' not in value:
             if value in self.outer_imports:
@@ -131,30 +234,22 @@ class UserClassDeclaration:
             c1, c2 = value.split('.')
             if c1 in self.imports:
                 return f'{self.imports[c1]}.{c2}'
-        return f'{self.c_unit.package.name}.{value}'
+        return f'{self.package}.{value}'
 
-JAVA_TYPE = {
-    'int': eval,
-}
-
-
-def get_class_value(cls_: ClassDeclaration, name: str):
-    for field in cls_.fields:
-        declarators = field.declarators
-        type_name = field.type.name
-        for declarator in declarators:
-            if declarator.name == name:
-                name = declarator.name
-                init_value = declarator.initializer.value
-                if (func := JAVA_TYPE.get(type_name)):
-                    return func(init_value)
-                else:
-                    return init_value
-
-def parse_java_file(path) -> CompilationUnit:
-    with open(path, 'rb') as f:
-        c = f.read()
-    return parse(c)
+    @lru_cache()
+    def get_value(self, name: str):
+        for field in self.fields:
+            declarators = field.declarators
+            # type_name = field.type.name
+            for declarator in declarators:
+                if declarator.name == name:
+                    value = declarator.initializer.value
+                    if value:
+                        return eval(value) # pylint: disable=W0123
+                    else:
+                        return value
+    def get_line(self, obj: Node):
+        return self.c_unit.get_line(obj)
 
 
 def rename_struct(content: str, name):
@@ -170,7 +265,7 @@ def rename_struct(content: str, name):
 
 def get_stream_type(member, name=''):
     datatype = TYPE_INFO[member]
-    if datatype == 'Int32ul' and (name == 'date' or name.endswith('date')):
+    if datatype == 'Int32ul' and name.endswith('date'):
         return 'TTimestamp'
     return datatype
 
@@ -180,7 +275,13 @@ class Tag(IntEnum):
     VECTOR_CONTENT = 2
     VECTOR_END = 3
     FLAGS_TAG = 4
+    FLAGS_GAP = 5
 
+
+class MethodType(IntEnum):
+    WRITE = 1
+    READ = 2
+    TLDES = 3
 
 class BaseParser:
     LOG = None
@@ -198,19 +299,6 @@ class BaseParser:
             handler.setLevel(logging.DEBUG)
             logger.addHandler(handler)
             logger.setLevel(level)
-
-    @classmethod
-    def is_class(cls, obj):
-        '''判断对象是否为类声明'''
-        return isinstance(obj, ClassDeclaration)
-
-    @classmethod
-    def is_field(cls, obj):
-        return isinstance(obj, FieldDeclaration)
-
-    @classmethod
-    def is_method(cls, obj):
-        return isinstance(obj, MethodDeclaration)
 
     @classmethod
     def is_statement_expression(cls, obj):
@@ -239,6 +327,10 @@ class BaseParser:
     @classmethod
     def is_return_statement(cls, obj):
         return isinstance(obj, ReturnStatement)
+
+    @classmethod
+    def is_try_statement(cls, obj):
+        return isinstance(obj, TryStatement)
 
     @classmethod
     def is_method_invocation(cls, obj):
@@ -273,103 +365,120 @@ class BaseParser:
         return isinstance(obj, Cast)
 
     @classmethod
+    def is_this(cls, obj):
+        return isinstance(obj, This)
+
+    @classmethod
     def is_literal(cls, obj):
         return isinstance(obj, Literal)
 
+    @classmethod
+    def is_ternary_expression(cls, obj):
+        return isinstance(obj, TernaryExpression)
+
+    @classmethod
+    def is_class_creator(cls, obj):
+        return isinstance(obj, ClassCreator)
+
+def get_single(text:str):
+    if text.endswith('ies'):
+        result = f'{text[:-3]}y'
+    elif text.endswith('s'):
+        result = text[:-1]
+    else:
+        result = text
+    return result
+
+
+def get_struct_name(fqn: str):
+    fqns = fqn.split('.')
+    *_, s1, name = fqns
+    if name.startswith('TL_'):
+        cname = name[3:]
+    else:
+        cname = name
+    if s1.startswith('TL_'):
+        prefix = s1[3:]
+        cnamel = cname.lower()
+        single = get_single(prefix)
+        if cnamel.startswith(prefix) or cnamel.startswith(single):
+            sname = cname
+        else:
+            sname = f'{prefix}_{cname}'
+    else:
+        sname = cname
+    return name_convert_to_snake(sname)
 
 class ClassParser(BaseParser):
     LOG = 'ClassParser'
 
-    def __init__(self, fqn, java_parser, level=logging.INFO):
+    def __init__(self, fqn, java_parser: 'JavaParser', level=logging.INFO):
         super().__init__(level)
-        self.fqn = fqn
         self.java_parser = java_parser
-        self.user_class = self.get_inner_class(fqn)
-        self.cid = self.cid_info.get(fqn)
-        name = self.user_class.name
-        assert name, f'parse {fqn} name error'
+        self.object = self.get_class(fqn)
+        self.fqn = self.object.fqn
+        self.cid = self.cid_info.get(self.fqn)
+        name = self.object.name
+        assert name, f'parse {self.fqn} name error'
         self.name = name
-        if name.startswith('TL_'):
-            self.cname = name[3:]
-            self.is_tl = True
-        else:
-            self.cname = name
-            self.is_tl = False
-        fqns = fqn.split('.')
-        if fqns[-2].startswith('TL_'):
-            prefix = fqns[-2][3:]
-            cnamel = self.cname.lower()
-            if prefix.endswith('ies'):
-                prefixs = f'{prefix[:-3]}y'
-            elif prefix.endswith('s'):
-                prefixs = prefix[:-1]
-            else:
-                prefixs = prefix
-            if cnamel.startswith(prefix) or cnamel.startswith(prefixs):
-                self.sname = self.cname
-            else:
-                self.sname = f'{prefix}_{self.cname}'
-        else:
-            self.sname = self.cname
-        self.struct_name = name_convert_to_snake(self.sname)
-        self.fields = self.get_fields(self.user_class)
-        self.methods = self.get_methods(self.user_class, False)
+        self.struct_name = get_struct_name(self.fqn)
+        self.fields = self.get_fields(self.object)
+        self.methods = self.get_methods(self.object, False)
         self.info = {}
-        self.struct = []
-        self.info['struct'] = self.struct
-        self.switch = []
-        self.info['switch'] = self.switch
-        self.content_0x1cb5c415 = []
-        self.flags = {}
-        self.info['flags'] = self.flags
+        self.info['cid'] = self.cid
+        self.info['sname'] = self.struct_name
+        self.struct = self.info.setdefault('struct', {})
+        self.switch = self.info.setdefault('switch', [])
+        self.flags = self.info.setdefault('flags', {})
+        self.vector = []
+        self.current_method = None
+        self.fields_context = {}
+        self.flags_info = {}  # ('flags', 4)=>('flags', 'isPublic', '4', 'is_public', 4)
+
+
 
     def __getattr__(self, name):
         if hasattr(self.java_parser, name):
             return getattr(self.java_parser, name)
         raise AttributeError(f"'ClassParser' object has no attribute '{name}'")
-    
+
     def get_cid(self, fqn):
         return self.cid_info.get(fqn)
 
-    def parse(self):
-        name = self.name
-        struct_name = self.struct_name
-        self.info['sname'] = struct_name
-        self.logger.debug('Parse class %s', name)
-        result = None
-        if self.cid:
-            self.info['cid'] = self.cid
-            if 'serializeToStream' in self.methods:
-                self.struct.append(('sname', f"Computed('{struct_name}')"))
-                self.parse_serialize_to_stream()
-                result = True
-            elif 'readParams' in self.methods:
-                self.struct.append(('sname', f"Computed('{struct_name}')"))
-                self.struct.append(('signature',
-                                    f'Hex(Const({self.cid}, Int32ul))'))
-                self.parse_read_param()
-                result = True
-            elif 'TLdeserialize' in self.methods:
-                pass
-            else:
-                msg = f'Class {name} has no method parsed.'
-                if self.strict:
-                    raise NotImplementedError(msg)
-                else:
-                    self.info['todo'] = 'no method'
-                    self.logger.error(msg)
-        if 'TLdeserialize' in self.methods:
-            self.parse_deserialize()
-            result = True
-        else:
-            if not result:
-                self.logger.warning('Class has not TLdeserialize: %s', name)
-        return result
+    def get_fqn(self, name: str):
+        if name.startswith('org.telegram'):
+            return name
+        return self.object.get_fqn(name)
 
+    def set_struct(self, name: str, value: str):
+        self.struct[name] = value
+
+    def add_switch(self, name, value):
+        self.struct[name] = value
+
+    def parse(self):
+        self.logger.debug('Parse class %s', self.name)
+        has_struct = False
+        has_switch = False
+        if self.cid:
+            if 'serializeToStream' in self.methods:
+                has_struct = self.parse_serialize_to_stream()
+            if has_struct is False and 'readParams' in self.methods:
+                has_struct = self.parse_read_param()
+        if self.fqn in self.structure_info:
+            has_switch = self.parse_deserialize()
+        if not has_struct and not has_switch:
+            msg = f'Class {self.name} has no method parsed.'
+            if self.strict:
+                raise NotImplementedError(msg)
+            else:
+                self.info['todo'] = 'no method'
+                self.logger.error(msg)
+        return (has_struct and has_switch)
 
     def parse_vector(self):
-        '''parse 0x1cb5c415'''
-        data = self.content_0x1cb5c415[1]
+        '''parse vector 0x1cb5c415'''
+        data = self.vector[1]
         if self.is_local_variable(data):
             data_name = data.declarators[0].initializer.qualifier
         elif self.is_statement_expression(data):
@@ -382,43 +491,59 @@ class ClassParser(BaseParser):
                 raise TypeError(type(expression))
         else:
             return None
-        data_type, is_array = self.parse_field_type(data_name)
-        if is_array is False:
-            raise TypeError(data_name)
-        if data_type in ('int', 'str', 'bytes'):
-            for_item = self.content_0x1cb5c415[-1]
-            for_member = for_item.body.statements[0].expression.member
-            data_type = get_stream_type(for_member)
+        for_item = self.vector[-1]
+        statement = for_item.body.statements[0]
+        if (self.is_statement_expression(statement) and
+            self.is_method_invocation(statement.expression) and
+            statement.expression.qualifier == 'stream'):
+            member = statement.expression.member
+            data_type = get_stream_type(member)
         else:
-            # raise ValueError(f'data_type: {data_type}')
-            pass  # pylint: disable=E275
+            data_type, is_array = self.parse_field_type(data_name)
+            if is_array is False:
+                raise TypeError(data_name)
+            if data_type in ('int', 'str', 'bytes'):
+                for_member = for_item.body.statements[0].expression.member
+                data_type = get_stream_type(for_member)
+            else:
+                # raise ValueError(f'data_type: {data_type}')
+                pass  # pylint: disable=E275
         struct_type = f"self.vector({data_type}, '{data_name}')"
         dname = name_convert_to_snake(data_name)
         return (dname, struct_type)
-
+        
     def parse_class_type(self, data_name, data_type):
-        fqn = self.user_class.get_fqn(data_type)
-        data_class = self.get_inner_class(fqn)
+        fqn = self.get_fqn(data_type)
+        if fqn in self.structure_info:
+            sname = self.structure_info[fqn]['name']
+            dname = name_convert_to_snake(data_name)
+            struct_type = f"self.{sname}_structures('{dname}')"
+            return struct_type
+        data_class = self.get_class(fqn)
         if data_class is not None:
-            dtype = data_class.name
-            if dtype.startswith('TL_'):
-                constructor = self.java_parser.get_constructor(data_class)
-                if constructor is None:
-                    raise TypeError(f'Class {fqn} has not constructor.')
-                struct_type = f"self.struct_{constructor}()"
+            for item in self.get_extends_list(data_class):
+                if item in self.structure_info:
+                    sname = self.structure_info[item]['name']
+                    dname = name_convert_to_snake(data_name)
+                    struct_type = f"self.{sname}_structures('{dname}')"
+                    break
             else:
-                sname = name_convert_to_snake(dtype)
-                dname = name_convert_to_snake(data_name)
-                struct_type = f"self.{sname}_structures('{dname}')"
+                cid = self.java_parser.get_cid(data_class)
+                if cid is None:
+                    raise TypeError(f'Class {fqn} has not constructor.')
+                struct_type = f"self.struct_{cid}()"
         else:
             if data_type == 'Integer':
-                return 'int'
+                if data_name.endswith('date'):
+                    return 'TTimestamp'
+                else:
+                    return 'Int32ul'
             elif data_type == 'Long':
-                return 'int'
+                return 'Int64ul'
             elif data_type == 'String':
-                return 'str'
+                return 'TString'
             elif data_type == 'byte':
-                return 'bytes'
+                return 'TBytes'
             raise ValueError(f'{data_name}, {data_type}')
         return struct_type
 
@@ -426,7 +551,7 @@ class ClassParser(BaseParser):
         if class_name is None:
             fields = self.fields
         else:
-            fqn = self.user_class.get_fqn(class_name)
+            fqn = self.get_fqn(class_name)
             fields = self.java_parser.get_fields(fqn)
         if fields is None:
             self.logger.error('get_field_type: fields is None: %s', class_name)
@@ -438,162 +563,51 @@ class ClassParser(BaseParser):
             return None
         field_type = field.type.name
         return field_type
+    
+    def parse_type(self, obj: str | FieldDeclaration | FormalParameter):
+        if isinstance(obj, str):
+            field = self.fields.get(obj)
+            if field is None:
+                self.logger.error('parse_field: can not find field %s', obj)
+                return None
+        else:
+            field = obj
+        if not isinstance(field, (FieldDeclaration, FormalParameter)):
+            raise TypeError(type(field))
 
-    def parse_field_type(self, field_name):
-        if field_name is None:
-            self.logger.error('parse_field_type: field_name is None')
+        if (is_array := (field.type.name == 'ArrayList')):
+            field = field.type.arguments[0]
+        try:
+            if (sub_type := field.type.sub_type.name):
+                full_type = f'{field.type.name}.{sub_type}'
+            else:
+                full_type = field.type.name
+        except AttributeError:
+            full_type = field.type.name
+        return (full_type, is_array)
+
+    def parse_field_type(self, name):
+        if name is None:
+            self.logger.error('parse_field_type: name is None')
             return None
-        if '.' in field_name:
-            field_name_list = field_name.split('.')
+        if '.' in name:
+            name_list = name.split('.')
             class_name = None
-            for item in field_name_list:
+            for item in name_list:
                 class_name = self.get_field_type(item, class_name)
                 if class_name is None:
                     self.logger.error('parse_field_type: field parse fail: %s',
-                                      field_name)
+                                      name)
                     return None
-            data_name = field_name.replace('.', '_')
+            data_name = name.replace('.', '_')
             return (self.parse_class_type(data_name, class_name), False)
         else:
-            field = self.fields.get(field_name)
-            if field is None:
-                self.logger.error('parse_field_type: can not find field %s',
-                                  field_name)
+            if (ret := self.parse_type(name)) is not None:
+                full_type, is_array = ret
+                return (self.parse_class_type(name, full_type), is_array)
+            else:
                 return None
-            if (is_array := (field.type.name == 'ArrayList')):
-                field = field.type.arguments[0]
-            field_type = field.type.name
-            full_type = field_type
-            
-            try:
-                if (field_sub_type := field.type.sub_type.name):
-                    full_type = f'{field_type}.{field_sub_type}'
-            except AttributeError:
-                pass
-            return (self.parse_class_type(field_name, full_type), is_array)
-
-    @classmethod
-    def is_member_reference_or_cast(cls, obj):
-        return cls.is_member_reference(obj) or cls.is_cast(obj)
-
-    def parse_statement_expression_w(self, statement):
-        expression = statement.expression
-        if self.is_method_invocation(expression):
-            qualifier = expression.qualifier
-            member = expression.member
-            arguments = expression.arguments
-            if qualifier == 'stream':
-                assert len(arguments) == 1, f'{statement} {len(arguments)}'
-                argument = arguments[0]
-                if self.is_member_reference_or_cast(argument):
-                    if self.is_member_reference(argument):
-                        struct_name = argument.member
-                    else:
-                        struct_name = argument.expression.member
-                    data_type = get_stream_type(member, struct_name)
-                    if struct_name == 'constructor':
-                        struct_name = 'signature'
-                        field = self.fields['constructor']
-                        struct_value = field.declarators[0].initializer.value
-                        struct_index = int(struct_value, 16)
-                        struct_text = f'0x{struct_index:08x}'
-                        struct_type = f'Hex(Const({struct_text}, {data_type}))'
-                    elif struct_name in ('flags', 'flags2'):
-                        return (struct_name, f'FlagsEnum({data_type}')
-                    else:
-                        struct_type = data_type
-                    return (struct_name, struct_type)
-                elif self.is_literal(argument):
-                    try:
-                        argument_value = argument.value
-                    except AttributeError as e:
-                        print(self.name, argument)
-                        raise e
-                    if argument_value == '0x1cb5c415':
-                        return Tag.VECTOR_START
-                    elif argument_value in ('""', '0'):
-                        data_type = get_stream_type(member)
-                        return ('_reserve', data_type)
-                    else:
-                        raise ValueError(f'{argument.value}')
-                else:
-                    TypeError(type(argument))
-            elif qualifier == 'Vector':
-                argument = arguments[1]
-                data_name = argument.member
-                dname = name_convert_to_snake(data_name)
-                data_type = None
-                if member == 'serialize':
-                    data_type, is_array = self.parse_field_type(data_name)
-                    if is_array is False:
-                        raise TypeError(data_name)
-                    if data_type in ('int', 'str', 'bytes'):
-                        for_item = self.content_0x1cb5c415[-1]
-                        for_member = for_item.body.statements[0].expression.member
-                        data_type = get_stream_type(for_member)
-                    else:
-                        # raise ValueError(f'data_type: {data_type}')
-                        pass  # pylint: disable=E275
-                elif member == 'serializeInt':
-                    data_type = 'Int32ul'
-                elif member == 'serializeLong':
-                    data_type = 'Int64ul'
-                elif member == 'serializeString':
-                    data_type = 'TString'
-                if data_type:
-                    struct_type = f"self.vector({data_type}, '{data_name}')"
-                    return (dname, struct_type)
-            elif not qualifier and member == 'writeAttachPath':
-                return ('attach_path', 'TString')
-            else:
-                if member == 'serializeToStream':
-                    try:
-                        struct_type, is_array = self.parse_field_type(qualifier)
-                    except Exception as e:
-                        print('Parse statement error',
-                              self.name, statement, self.user_class)
-                        raise e
-                    dname = name_convert_to_snake(qualifier.replace('.', '_'))
-                    return (dname, struct_type)
-                elif member == 'get':
-                    struct_name = qualifier
-                    if struct_name.endswith('s'):
-                        struct_name = struct_name[:-1]
-                    selectors = expression.selectors
-                    selector = selectors[0]
-                    assert selector.member == 'serializeToStream'
-                    struct_type, is_array = self.parse_field_type(qualifier)
-                    assert is_array
-                    assert struct_type.startswith('self')
-                    struct_type = struct_type.replace(qualifier, struct_name)
-                    # TODO
-                    dname = name_convert_to_snake(struct_name)
-                    return (struct_name, struct_type)
-        elif self.is_assignment(expression):
-            member = expression.expressionl.member
-            if member in ('flags', 'flags2'):
-                if_false = expression.value.if_false.operandr.value
-                if_true = expression.value.if_true.operandr.value
-                assert if_false == if_true, f'{if_false} ≠ {if_true}'
-                condition = expression.value.condition
-                if self.is_member_reference(condition):
-                    condition_member = condition.member
-                elif self.is_binary_operation(condition):
-                    condition_member = condition.operandl.member
-                else:
-                    raise ValueError(type(condition))
-                value = if_true
-                if condition_member.startswith('is'):
-                    flag_tag = name_convert_to_snake(condition_member)
-                elif condition_member.startswith('has_'):
-                    flag_tag = condition_member
-                else:
-                    flag_tag = f'is_{condition_member}'
-                self.add_flags(member, flag_tag, value)
-                return Tag.FLAGS_TAG
-            else:
-                raise ValueError(member)
-
+ 
     def parse_statement_expression_r(self, statement):
         expression = statement.expression
         if self.is_assignment(expression):
@@ -603,139 +617,68 @@ class ClassParser(BaseParser):
                 qualifier = value.qualifier
                 member = value.member
                 if qualifier == 'stream':
-                    struct_name = memberl
-                    data_type = get_stream_type(member, struct_name)
-                    if struct_name in ('flags', 'flags2'):
-                        return (struct_name, f'FlagsEnum({data_type}')
-                    else:
-                        struct_type = data_type
-                        return (struct_name, struct_type)
+                    sname = memberl
+                    stype = get_stream_type(member, sname)
+                    return (sname, stype)
                 elif qualifier == 'Vector':
-                    struct_name = memberl
-                    struct_type = None
+                    sname = memberl
+                    stype = None
                     if member == 'deserialize':
                         stype = value.arguments[1]
-                        argument_member = stype.expression.member
-                        struct_type = self.parse_class_type(struct_name,
-                                                            argument_member)
-                        if not struct_type:
-                            raise ValueError(f'Parse java type error: {argument_member}')
+                        stype_member = stype.expression.member
+                        if (stype_qualifier := stype.expression.qualifier):
+                            arg1_member = f'{stype_qualifier}.{stype_member}'
+                        else:
+                            arg1_member = stype_member
+                        stype = self.parse_class_type(sname, arg1_member)
+                        if not stype:
+                            raise ValueError(f'Parse java type error: {arg1_member}')
                     elif member == 'deserializeInt':
-                        struct_type = 'Int32ul'
+                        stype = 'Int32ul'
                     elif member == 'deserializeLong':
-                        struct_type = 'Int64ul'
+                        stype = 'Int64ul'
                     elif member == 'deserializeString':
-                        struct_type = 'TString'
-                    if struct_type:
-                        struct_type = f"self.vector({struct_type}, '{struct_name}')"
-                        return (struct_name, struct_type)
+                        stype = 'TString'
+                    if stype:
+                        stype = f"self.vector({stype}, '{sname}')"
+                        return (sname, stype)
                 elif member == 'TLdeserialize':
                     sname = memberl
                     stype = name_convert_to_snake(qualifier)
-                    ret = {'name': sname, 'type': stype}
+                    return (sname, f"self.{stype}_structures('{sname}')")
             elif self.is_binary_operation(value):
                 member = value.operandl.operandl.member
                 mask = value.operandl.operandr.value
-                if member.startswith('is'):
-                    flag_tag = name_convert_to_snake(member)
-                else:
-                    flag_tag = f'is_{member}'
-                self.add_flags(memberl, flag_tag, mask)
+                self.add_flag_value(member, memberl, mask)
                 return Tag.FLAGS_TAG
 
-
-    def add_flags(self, tag, name, value, force=False):
-        flag_info = self.flags.setdefault(tag, {})
-        if force:
-            flag_info.setdefault(name, value)
-            return name
-        info = {v: k for k, v in flag_info.items()}
-        if value not in info:
-            flag_info.setdefault(name, value)
-            return name
-        else:
-            return info[value]
-
-    def parse_if_statement_w(self, statement):
-        result = []
-        condition = statement.condition
-        operandl = condition.operandl
-        if self.is_binary_operation(operandl):
-            condition_member = operandl.operandl.member
-            condition_value = operandl.operandr.value
-            then_statements = statement.then_statement.statements
-            result_list = self._parse_serialize(then_statements)
-            c_m = condition_member
-            for item in result_list:
-                struct_name, data_type = item
-                f_n = f'has_{struct_name}'
-                fnn = self.add_flags(c_m, f_n, condition_value)
-                struct_type = f'If(this.{c_m}.{fnn}, {data_type})'
-                result.append((struct_name, struct_type))
-            return result
-        elif self.is_member_reference(operandl):
-            struct_name = operandl.member
-            try:
-                then_statement = getattr(statement, 'then_statement')
-                member1 = then_statement.expression.member
-                data_type1 = get_stream_type(member1, struct_name)
-                else_statement = getattr(statement, 'else_statement', None)
-                if else_statement:
-                    member2 = then_statement.expression.member
-                    data_type2 = get_stream_type(member2, struct_name)
-                else:
-                    data_type2 = None
-                assert data_type1 == data_type2, statement
-                result.append((struct_name, data_type1))
-                return result
-            except AttributeError:
-                pass  # pylint: disable=E275
-            try:
-                is_ = f'is_{struct_name}'
-                has_ = f'has_{struct_name}'
-                if condition.operandr.value == 'null':
-                    for k, v in self.flags.items():
-                        c_m = k
-                        value = v.get(is_)
-                        if value is not None:
-                            f_n = is_
-                            break  # pylint: disable=E275
-                        value = v.get(has_)
-                        if value is not None:
-                            f_n = has_
-                            break  # pylint: disable=E275
-                    else:
-                        if self.strict:
-                            raise AttributeError(
-                                f'Can not found flag {is_} or {has_}')
-                        return []
-                    then_statements = statement.then_statement.statements
-                    result_list = self._parse_serialize(then_statements)
-                    for item in result_list:
-                        _, data_type = item
-                        struct_type = f'If(this.{c_m}.{f_n}, {data_type})'
-                        result.append((struct_name, struct_type))
-                    return result
-                else:
-                    raise AttributeError('condition.operandr.value not null')
-            except AttributeError as e:
-                if self.strict:
-                    self.logger.error('Class %s, statement %s, error %s',
-                                      self.name,
-                                      statement, e)
-                    raise e
-                else:
-                    self.logger.error('Class %s, statement %s, error %s',
-                                      self.name,
-                                      statement, e)
-                return []
-        else:
-            t = type(condition.operandl).__name__
-            msg = f'Condition left type is {t}'
-            if self.strict:
-                raise TypeError(msg)
+    def add_flag_value(self, val_name, name, value, prefix=None):
+        '''self.add_flag_value('flags', 'isPublic', '4')'''
+        # ('flags', 4)=>('flags', 'isPublic', '4', 'is_public', 4)
+        mask_value = eval(value) # pylint: disable=W0123
+        key = (val_name, mask_value)
+        if key not in self.flags_info:
+            sname = name_convert_to_snake(name)
+            if sname.startswith('is_') or sname.startswith('has_'):
+                pname = sname
             else:
-                self.logger.error(msg)
+                if not prefix:
+                    prefix = 'has'
+                    if name in self.fields_context:
+                        obj_type, _ = self.fields_context[name]
+                        if obj_type.lower() == 'boolean':
+                            prefix = 'is'
+                ppname = f'{prefix}_{sname}'
+                for item in self.flags_info.values():
+                    if item[0] == val_name and item[3] == ppname:
+                        if prefix == 'is':
+                            prefix = 'has'
+                        else:
+                            prefix = 'is'
+                        break
+                pname = f'{prefix}_{sname}'
+            self.flags_info[key] = (val_name, name, value, pname, mask_value)
+        return self.flags_info[key]
 
     def parse_if_statement_r(self, statement):
         result = []
@@ -745,57 +688,339 @@ class ClassParser(BaseParser):
             condition_member = operandl.operandl.member
             condition_value = operandl.operandr.value
             then_statements = statement.then_statement.statements
-            result_list = self._parse_read_param(then_statements)
+            result_list = self.parse_blocks_r(then_statements)
             c_m = condition_member
             for item in result_list:
-                struct_name, data_type = item
-                f_n = f'has_{struct_name}'
-                fnn = self.add_flags(c_m, f_n, condition_value)
-                struct_type = f'If(this.{c_m}.{fnn}, {data_type})'
-                result.append((struct_name, struct_type))
+                sname, dtype = item
+                flag = self.add_flag_value(c_m, sname, condition_value, prefix='has')
+                struct_type = f'If(this.{flag[0]}.{flag[3]}, {dtype})'
+                result.append((sname, struct_type))
             return result
 
-    def _parse_serialize(self, statements):
-        assert (not self.content_0x1cb5c415)
+    def is_line_w_0(self, line: Node):
+        if self.vector:
+            return {'object': line}
+        else:
+            return False
+
+    def parse_line_w_0(self, info: dict):
+        line = info['object']
+        self.vector.append(line)
+        if self.is_for_statement(line):
+            res = self.parse_vector()
+            if res is None:
+                raise ValueError(line)
+            self.vector.clear()
+            return res
+        else:
+            return Tag.VECTOR_CONTENT
+
+    def is_line_w_1(self, line: Node):
+        if self.is_statement_expression(line) and self.is_method_invocation(line.expression):
+            return {'object': line.expression}
+        return False
+
+
+    def parse_line_w_1(self, info: dict):
+        '''stream.writeInt32(constructor);'''
+        line = info['object']
+        qualifier = line.qualifier
+        member = line.member
+        arguments = line.arguments
+        if qualifier in self.fields_context:
+            is_array, _ = self.fields_context[qualifier]
+        else:
+            is_array = False
+        if qualifier == 'stream' and member in TYPE_INFO:
+            argument = arguments[0]
+            arg0 = argument
+            if self.is_ternary_expression(arg0):
+                if self.is_literal(arg0.if_false):
+                    arg0 = arg0.if_true
+                else:
+                    arg0 = arg0.if_false
+            if self.is_cast(arg0):
+                arg0 = arg0.expression
+            if self.is_this(arg0):
+                arg0 = arg0.selectors[0]
+            if self.is_method_invocation(arg0):
+                if arg0.member == 'get':
+                    struct_name = get_single(arg0.qualifier)
+                else:
+                    struct_name = arg0.qualifier
+                struct_name = name_convert_to_snake(struct_name)
+                struct_type = get_stream_type(member, struct_name)
+                return (struct_name, struct_type)
+            elif self.is_member_reference(arg0):
+                if arg0.qualifier:
+                    if arg0.qualifier == arg0.member:
+                        struct_name = arg0.member
+                    elif (arg0.qualifier, arg0.member) in NAME_MAP:
+                        struct_name = NAME_MAP[(arg0.qualifier, arg0.member)]
+                    else:
+                        struct_name = arg0.member
+                        GDATA[(arg0.qualifier, arg0.member)] = None
+                else:
+                    struct_name = name_convert_to_snake(arg0.member)
+                data_type = get_stream_type(member, struct_name)
+                if struct_name == 'constructor':
+                    struct_name = 'signature'
+                    field = self.fields['constructor']
+                    struct_value = field.declarators[0].initializer.value
+                    struct_index = int(struct_value, 16)
+                    struct_text = f'0x{struct_index:08x}'
+                    struct_type = f'Hex(Const({struct_text}, {data_type}))'
+                else:
+                    struct_type = data_type
+                return (struct_name, struct_type)
+            elif self.is_literal(arg0):
+                arg0_value = eval(arg0.value)   # pylint: disable=W0123
+                if arg0_value == 0x1cb5c415:
+                    return Tag.VECTOR_START
+                elif arg0_value == '':
+                    data_type = get_stream_type(member)
+                    return ('restriction_reason', data_type)
+                elif arg0_value == 0:
+                    data_type = get_stream_type(member)
+                    return ('_reserve', data_type)
+                else:
+                    raise ValueError(f'{arg0.value}')
+            else:
+                raise TypeError(str(argument))
+        elif qualifier == 'Vector' and member in VECTOR_TYPE_INFO:
+            data_type = VECTOR_TYPE_INFO[member]
+            argument = arguments[-1]
+            data_name = argument.member
+            dname = name_convert_to_snake(data_name)
+            if not data_type:
+                data_type, is_array = self.parse_field_type(data_name)
+                if is_array is False:
+                    raise TypeError(data_name)
+            if data_type:
+                struct_type = f"self.vector({data_type}, '{data_name}')"
+                return (dname, struct_type)
+            else:
+                raise TypeError(line)
+        elif not qualifier and member == 'writeAttachPath':
+            return ('attach_path', 'TString')
+        elif member == 'serializeToStream':
+            struct_type, is_array = self.parse_field_type(qualifier)
+            struct_name = name_convert_to_snake(qualifier.replace('.', '_'))
+            return (struct_name, struct_type)
+        elif is_array and member == 'get':
+            assert line.selectors[0].member == 'serializeToStream'
+            struct_name = name_convert_to_snake(get_single(qualifier))
+            full_type, is_array = self.parse_type(qualifier)
+            struct_type = self.parse_class_type(struct_name, full_type)
+            return (struct_name, struct_type)
+        else:
+            raise TypeError(line)
+
+    def is_line_w_2(self, line: Node):
+        try:
+            condition = line.condition
+            operandl = condition.operandl
+            operandr = condition.operandr
+            assert operandr.value == 'null'
+            name = operandl.member
+            expression = line.then_statement.statements[0].expression
+            flag = expression.expressionl.member
+            value = expression.value.operandr.value
+            info = {'flag' : flag, 'name': name, 'value': value}
+            return info
+        except Exception:
+            return False
+
+    def parse_line_w_2(self, info: dict):
+        '''
+            if (username == null) {
+                flags = flags & ~8;
+            }
+        '''
+        self.add_flag_value(info['flag'], info['name'], info['value'])
+        return Tag.FLAGS_TAG
+
+    def is_line_w_3(self, line: Node):
+        try:
+            condition = line.condition
+            operandl = condition.operandl
+            operandr = condition.operandr
+            assert operandr.value == 'null'
+            flag = operandl.member
+            expr_true = line.then_statement.statements[0].expression
+            name_true = expr_true.expressionl.member
+            value_true = expr_true.value.value
+            if line.else_statement:
+                expr_false = line.else_statement.statements[0].expression
+                name_false = expr_false.expressionl.member
+                value_false = expr_false.value.value
+                assert name_true == name_false
+                assert value_true == value_false
+            info = {'flag' : name_true, 'name': flag, 'value': value_true}
+            return info
+        except Exception:
+            return False
+
+    def parse_line_w_3(self, info: dict):
+        '''
+            if (storyItem != null) {
+                flags |= 1;
+            } else {
+                flags &= ~1;
+            }
+        '''
+        self.add_flag_value(info['flag'], info['name'], info['value'])
+        return Tag.FLAGS_TAG
+
+    def is_line_w_4(self, line: Node):
+        if self.is_statement_expression(line) and self.is_assignment(line.expression):
+            return {'object': line.expression}
+        return False
+
+    def parse_line_w_4(self, info: dict):
+        '''flags = self ? (flags | 1024) : (flags &~ 1024);'''
+        line = info['object']
+        member = line.expressionl.member
+        value = line.value
+        if self.is_ternary_expression(value):
+            if_false = value.if_false.operandr.value
+            if_true = value.if_true.operandr.value
+            assert if_false == if_true, f'{if_false} ≠ {if_true}'
+            condition = value.condition
+            if self.is_member_reference(condition):
+                condition_member = condition.member
+            elif self.is_binary_operation(condition):
+                member_ref = condition
+                for i in range(3):
+                    if self.is_binary_operation(member_ref):
+                        member_ref = member_ref.operandl
+                    else:
+                        break
+                condition_member = member_ref.member
+            else:
+                raise ValueError(type(condition))
+            self.add_flag_value(member, condition_member, if_true)
+            return Tag.FLAGS_TAG
+        elif self.is_class_creator(value):
+            return Tag.FLAGS_GAP
+        else:
+            raise ValueError(line)
+
+    def is_line_w_5(self, line: Node):
+        try:
+            condition = line.condition
+            operandl = condition.operandl
+            operandr = condition.operandr
+            assert condition.operator == '!='
+            assert operandr.value == '0'
+            name = operandl.operandl.member
+            value = operandl.operandr.value
+            then_statement = line.then_statement
+            info = {'name' : name, 'value': value}            
+        except Exception:
+            return False
+        info['result'] = self.parse_block(then_statement)
+        return info
+
+    def parse_line_w_5(self, info: dict):
+        '''
+            if ((flags & 1073741824) != 0) {
+                emoji_status.serializeToStream(stream);
+            }
+        '''
         result = []
-        for item in statements:
-            if self.content_0x1cb5c415:
-                self.content_0x1cb5c415.append(item)
-                if self.is_for_statement(item):
-                    res = self.parse_vector()
-                    if res is None:
-                        raise ValueError(repr(item))
-                    self.content_0x1cb5c415.clear()
-                    result.append(res)
-                continue  # pylint: disable=E275
-            if self.is_statement_expression(item):
-                res = self.parse_statement_expression_w(item)
-                if res is None:
-                    raise ValueError(repr(item))
-                if res == Tag.VECTOR_START:
-                    self.content_0x1cb5c415.append(item)
-                    continue  # pylint: disable=E275
-                if res == Tag.FLAGS_TAG:
-                    continue  # pylint: disable=E275
-                result.append(res)
-            elif self.is_local_variable(item):
-                raise TypeError('local_variable')
-            elif self.is_for_statement(item):
-                raise TypeError('for_statement')
-            elif self.is_if_statement(item):
-                res = self.parse_if_statement_w(item)
-                if res is None:
-                    raise ValueError(repr(item))
-                result.extend(res)
+        for item in info['result']:
+            sname, dtype = item
+            flag = self.add_flag_value(info['name'], sname, info['value'], prefix='has')
+            stype = f'If(this.{flag[0]}.{flag[3]}, {dtype})'
+            result.append((sname, stype))
         return result
 
-    def _parse_read_param(self, statements):
+    def is_line_w_6(self, line: Node):
+        try:
+            condition = line.condition
+            operandl = condition.operandl
+            operandr = condition.operandr
+            assert condition.operator == '!='
+            assert operandr.value == 'null'
+            name = operandl.member
+            then_statement = line.then_statement
+            value = None
+            for item in self.flags_info.values():
+                if item[1] == name:
+                    value = item
+            if not value:
+                return False
+            info = {'flag' : value[0], 'name': value[3]}            
+        except Exception:
+            return False
+        info['result'] = self.parse_block(then_statement)
+        return info
+
+    def parse_line_w_6(self, info: dict):
+        '''
+            if (about != null) {
+                stream.writeString(about);
+            }
+        '''
         result = []
-        for item in statements:
+        for item in info['result']:
+            sname, dtype = item
+            stype = f'If(this.{info["flag"]}.{info["name"]}, {dtype})'
+            result.append((sname, stype))
+        return result
+
+    def is_line_w_7(self, line: Node):
+        if self.is_if_statement(line):
+            return {'object': line}
+        return False
+
+    def parse_line_w_7(self, info: dict):
+        statement = info['object']
+        condition = statement.condition
+        operandl = condition.operandl
+        operandr = condition.operandr
+        if self.is_literal(operandr) and operandr.value == 'null':
+            return self.parse_block(statement.then_statement)
+        elif condition.operator == 'instanceof':
+            return self.parse_block(statement.then_statement)
+        else:
+            raise ValueError(statement)
+
+    def parse_blocks_w(self, blocks: list):
+        result = []
+        for index, item in enumerate(blocks):
+            res = None
+            for i in range(36):
+                func1 = getattr(self, f'is_line_w_{i}', None)
+                if func1 is None:
+                    break
+                func2 = getattr(self, f'parse_line_w_{i}')
+                if (info := func1(item)):
+                    # print(index, i, info)
+                    res = func2(info)
+                    break
+            if res is None:
+                raise ValueError(item)
+            elif isinstance(res, list):
+                result.extend(res)
+            elif isinstance(res, tuple):
+                result.append(res)
+            elif res == Tag.VECTOR_START:
+                self.vector.append(item)
+            elif res == Tag.FLAGS_TAG:
+                continue
+            elif res == Tag.FLAGS_GAP:
+                continue
+        return result
+
+    def parse_blocks_r(self, blocks):
+        result = []
+        for item in blocks:
             if self.is_statement_expression(item):
                 res = self.parse_statement_expression_r(item)
                 if res is None:
-                    raise ValueError('++++++++++++++++++' + repr(item))
+                    raise ValueError(repr(item))
                 if res == Tag.FLAGS_TAG:
                     continue  # pylint: disable=E275
                 result.append(res)
@@ -810,19 +1035,8 @@ class ClassParser(BaseParser):
                 result.extend(res)
         return result
 
-    def parse_serialize_to_stream(self):
-        method = self.methods['serializeToStream']
-        result = self._parse_serialize(method.body)
-        self.struct.extend(result)
-
-    def parse_read_param(self):
-        method = self.methods['readParams']
-        result = self._parse_read_param(method.body)
-        self.struct.extend(result)
-
-    def parse_deserialize(self):
-        method = self.methods['TLdeserialize']
-        for item in method.body:
+    def parse_blocks_d(self, blocks):
+        for item in blocks:
             if self.is_switch_statement(item):
                 switch_member = item.expression.member
                 assert switch_member == 'constructor', 'Switch not constructor'
@@ -838,7 +1052,7 @@ class ClassParser(BaseParser):
                         case_qualifier = case_expr.qualifier
                         case_member = case_expr.member
                         if case_member == 'constructor':
-                            case_fqn = self.user_class.get_fqn(case_qualifier)
+                            case_fqn = self.object.get_fqn(case_qualifier)
                             if (case_cid := self.get_cid(case_fqn)):
                                 self.switch.append(case_cid)
                             else:
@@ -864,6 +1078,97 @@ class ClassParser(BaseParser):
         #                   self.name)
         return False
 
+    def parse_serialize_to_stream(self):
+        assert (not self.vector)
+        method = self.methods['serializeToStream']
+        self.flags_info.clear()
+        self.struct.clear()
+        self.set_struct('sname',
+                        f"Computed('{self.struct_name}')")
+        for k, v in self.fields.items():
+            self.fields_context[k] = self.parse_type(v)
+        for item in method.parameters:
+            self.fields_context[item.name] = self.parse_type(item)
+        self.current_method = MethodType.WRITE
+        result = self.parse_block(method)
+        self.current_method = None
+        self.fields_context.clear()
+        self.flags.clear()
+        for k, v in self.flags_info.items():
+            fn, _, _, mn, val = v 
+            flag = self.flags.setdefault(fn, {})
+            flag[mn] = val
+        for item in result:
+            self.set_struct(*item)
+        # print(self.flags)
+        for k in self.flags:
+            try:
+                self.struct[k] = f'FlagsEnum({self.struct[k]}'
+            except KeyError:
+                return False
+        return True
+
+    def parse_read_param(self):
+        assert (not self.vector)
+        method = self.methods['readParams']
+        self.flags_info.clear()
+        self.struct.clear()
+        self.set_struct('sname',
+                        f"Computed('{self.struct_name}')")
+        self.set_struct('signature',
+                        f'Hex(Const({self.cid}, Int32ul))')
+        for k, v in self.fields.items():
+            self.fields_context[k] = self.parse_type(v)
+        for item in method.parameters:
+            self.fields_context[item.name] = self.parse_type(item)
+        self.current_method = MethodType.READ
+        result = self.parse_block(method)
+        self.current_method = None
+        self.fields_context.clear()
+        self.flags.clear()
+        for k, v in self.flags_info.items():
+            fn, _, _, mn, val = v 
+            flag = self.flags.setdefault(fn, {})
+            flag[mn] = val
+        for item in result:
+            self.set_struct(*item)
+        for k in self.flags:
+            self.struct[k] = f'FlagsEnum({self.struct[k]}'
+        return True
+
+    def parse_deserialize(self):
+        assert (not self.vector)
+        method = self.structure_info[self.fqn]['method']
+        for k, v in self.fields.items():
+            self.fields_context[k] = self.parse_type(v)
+        for item in method.parameters:
+            self.fields_context[item.name] = self.parse_type(item)
+        self.current_method = MethodType.TLDES
+        self.parse_block(method)
+        self.current_method = None
+        self.fields_context.clear()
+        return True
+    
+    def parse_block(self, obj: MethodDeclaration | BlockStatement | TryStatement):
+        if isinstance(obj, MethodDeclaration):
+            body = obj.body
+        elif self.is_block_statement(obj):
+            body = obj.statements
+        elif self.is_try_statement(obj):
+            body = obj.block
+        else:
+            # raise TypeError(f'Unknown type: {type(obj).__name__}: {obj}')
+            body = [obj]
+        if self.current_method == MethodType.WRITE:
+            result = self.parse_blocks_w(body)
+        elif self.current_method == MethodType.READ:
+            result = self.parse_blocks_r(body)
+        elif self.current_method == MethodType.TLDES:
+            result = self.parse_blocks_d(body)
+        else:
+            result = None
+        return result
+
     def generate(self):
         ret = self.parse()
         if ret is None:
@@ -873,11 +1178,28 @@ class ClassParser(BaseParser):
             return None
         result = []
         if self.struct:
-            result.append(get_struct_content(self.info))
+            if len(self.struct) == 2:
+                result.append(SIMP_STR.format_map({'cid': self.info['cid'],
+                                                   'sname': self.info['sname'],
+                                                   'content': ''}))
+            elif len(self.struct) == 3 and not self.flags:
+                item = list(self.struct.items())[2]
+                content = f"'{item[0]}' / {item[1]}"
+                result.append(SIMP_STR.format_map({'cid': self.info['cid'],
+                                                   'sname': self.info['sname'],
+                                                   'content': content}))
+
+            else:
+                content = get_struct_content(self.info)
+                if len(self.flags) > 0:
+                    content = autopep8.fix_code(content,
+                                                options={'max_line_length': 512})
+                    if content.startswith('@'):
+                        content = '\n'.join(f'    {x}' if x else x for x in content.split('\n'))
+                result.append(content)
         if self.switch:
             result.append(get_structures_content(self.info))
         return result
-
 
 
 class JavaParser(BaseParser):
@@ -898,7 +1220,6 @@ class JavaParser(BaseParser):
                 with open(path, encoding='utf-8') as f:
                     c = f.read()
                 self.cache[eval(basename)] = c
-        
 
     @property
     def directory(self):
@@ -908,21 +1229,21 @@ class JavaParser(BaseParser):
     def directory(self, value):
         path = osp.join(value, 'TLRPC.java')
         assert osp.isfile(path), f"Not found TLRPC file in {value}"
-        self.java_info = {}
-        self.class_info = {}
-        self.i_class_info = {}
-        self.ii_class_info = {}
+        self.java_info = {}  # <path, UserCompilationUnit>
+        self.class_info = {}  # <fqn, UserClassDeclaration>
+        self.tlobj_info = {}  # <fqn, UserClassDeclaration>
         self.cid_info = {}
-        self.LAYER = None
+        self.structure_info = {} # <fqn, dict>
+        self.LAYER = None  # pylint: disable=C0103
         self.logger.debug("Parsing %s", osp.basename(path))
-        self.tree = parse_java_file(path)
-        self.package = self.tree.package.name  # 获取包名
-        self.java_info[path] = self.tree
+        tree = UserCompilationUnit(path)
+        package = tree.package.name  # 获取包名
+        self.java_info[path] = tree
         # 获取包名下的其他文件
-        java_path_regex = re.compile(f'^{self.package}\.(.+)$', re.M)
-        for item in self.tree.imports:
+        regex = re.compile(f'^{package}\.(.+)$', re.M)
+        for item in tree.imports:
             java_path = item.path
-            if not (m := java_path_regex.fullmatch(java_path)):
+            if not (m := regex.fullmatch(java_path)):
                 continue
             relpath = m.group(1).replace('.', os.sep)
             item_path = osp.join(value, f'{relpath}.java')
@@ -930,28 +1251,32 @@ class JavaParser(BaseParser):
                 self.logger.warning("Not found %s", item_path)
                 continue
             self.logger.debug("Parsing %s", osp.basename(item_path))
-            tree = parse_java_file(item_path)
+            tree = UserCompilationUnit(item_path)
             self.java_info[item_path] = tree
 
         # 获取包名下的所有大类
-        for java_path, java_data in self.java_info.items():
-            for item in (x for x in java_data.types if is_class(x)):
-                obj = UserClassDeclaration(java_data, item)
+        for k, v in self.java_info.items():
+            for item in v.class_list:
+                obj = UserClassDeclaration(item, v)
                 self.class_info[obj.fqn] = obj
 
         # 解析 LAYER
         self.main = self.class_info['org.telegram.tgnet.TLRPC']
-        self.LAYER = get_class_value(self.main.decl, 'LAYER')
+        self.LAYER = self.main.get_value('LAYER')
         self.logger.debug('%s = %d', 'LAYER', self.LAYER)
 
-        for k, v in self.class_info.items():
-            inner_classes = [x for x in v.decl.body if is_class(x)]
-            self.logger.debug("Parsing %s from %s", len(inner_classes), k)
-            for item in inner_classes:
-                obj = UserClassDeclaration(v.c_unit, item, v)
-                self.i_class_info[obj.fqn] = obj
+        inner_class_info = {}
 
-        for k, v in self.i_class_info.items():
+        for k, v in self.class_info.items():
+            classes = v.class_list
+            for item in classes:
+                obj = UserClassDeclaration(item, v)
+                inner_class_info[obj.fqn] = obj
+            self.logger.debug("Parsing %s from %s", len(classes), k)
+        
+        self.class_info.update(inner_class_info)
+
+        for k, v in inner_class_info.items():
             parents = self.get_extends_list(k)
             if not parents:
                 self.logger.error('%s extends is None', k)
@@ -962,67 +1287,74 @@ class JavaParser(BaseParser):
                                       k,
                                       parents)
                     continue
-            self.ii_class_info[k] = v
+            self.tlobj_info[k] = v
 
-        for k, v in self.ii_class_info.items():
-            conv = get_class_value(v.decl, 'constructor')
-            if conv is not None:
+        for k, v in self.tlobj_info.items():
+            if (conv := v.get_value('constructor')):
                 self.cid_info[k] = f'0x{conv:08x}'
+            for item in (x for x in v.methods if x.name == 'TLdeserialize'):
+                if any(BaseParser.is_switch_statement(x) for x in item.body):
+                    self.structure_info[k] = {'name': get_struct_name(k),
+                                              'method': item}
+                    break
 
-        self.logger.debug('TLRPC files contain class count %d', len(self.ii_class_info))
+        self.logger.debug('TLRPC files contain class count %d',
+                          len(self.tlobj_info))
         self._directory = value
 
-    def get_inner_class(self, fqn: str):
+    def get_class(self, fqn: str):
         if isinstance(fqn, UserClassDeclaration):
             return fqn
-        return self.i_class_info.get(fqn)
+        return self.class_info.get(fqn)
 
     def get_extends_list(self, fqn: str):
-        if (inner_class := self.get_inner_class(fqn)) is None:
+        if (obj := self.get_class(fqn)) is None:
             return None
         parents = []
-        cur = inner_class
+        cur = obj
         for i in range(20):
             if not (extends := cur.extends):
                 break
             parents.append(extends)
-            if not (cur := self.get_inner_class(extends)):
+            if not (cur := self.get_class(extends)):
                 break
         return parents
 
     def get_fields(self, fqn: str, recursive=True):
-        if (inner_class := self.get_inner_class(fqn)) is None:
+        if (obj := self.get_class(fqn)) is None:
             return None
-        fields = {x.declarators[0].name: x for x in inner_class.decl.fields}
+        fields = {x.declarators[0].name: x for x in obj.fields}
         if not recursive:
             return fields
-        for extends in self.get_extends_list(inner_class):
-            if (extends_class := self.get_inner_class(extends)) is None:
+        for extends in self.get_extends_list(obj):
+            if (extends_class := self.get_class(extends)) is None:
                 break
-            for extends_field in extends_class.decl.fields:
-                field_name = extends_field.declarators[0].name
-                if field_name not in fields:
-                    fields[field_name] = extends_field
+            for field in extends_class.fields:
+                name = field.declarators[0].name
+                if name not in fields:
+                    fields[name] = field
         return fields
 
     def get_methods(self, fqn: str, recursive=True):
-        if (inner_class := self.get_inner_class(fqn)) is None:
+        if (obj := self.get_class(fqn)) is None:
             return None
-        methods = {x.name: x for x in inner_class.decl.methods}
+        methods = {x.name: x for x in obj.methods}
         if not recursive:
             return methods
-        for extends in self.get_extends_list(inner_class):
-            if (extends_class := self.get_inner_class(extends)) is None:
+        for extends in self.get_extends_list(obj):
+            if (extends_class := self.get_class(extends)) is None:
                 break
-            for extends_method in extends_class.decl.methods:
-                method_name = extends_method.name
-                if method_name not in methods:
-                    methods[method_name] = extends_method
+            for method in extends_class.methods:
+                name = method.name
+                if name not in methods:
+                    methods[name] = method
         return methods
 
-    def get_constructor(self, fqn: str) -> str:
-        if not (cl := self.get_inner_class(fqn)):
-            return cl
+    def get_cid(self, fqn: str) -> str:
+        if fqn in self.cid_info:
+            return self.cid_info[fqn]
+        if not (cl := self.get_class(fqn)):
+            return None
         return self.cid_info.get(cl.fqn)
 
     def generate_class_code(self, name):
@@ -1039,17 +1371,18 @@ class JavaParser(BaseParser):
         obj = ClassParser(fqn, self, self.logger_level)
         cid = obj.cid
         sname = obj.struct_name
-        if cid and (index := eval(cid)) in self.cache:
+        if cid and (index := int(cid, 16)) in self.cache:
             res = self.cache[index]
             ret = [res.format_map({'name': sname})]
         else:
             try:
                 ret = obj.generate()
             except Exception as e:
-                print(f'Generate class {fqn} error', e)
-                if str(e).startswith('get_field_type'):
+                self.logger.error('Generate class %s error: %s', fqn, e)
+                # if str(e).startswith('get_field_type'):
+                #     raise e
+                if self.strict:
                     raise e
-                # raise e
             finally:
                 if not ret:
                     if obj.info.get('cid') and obj.info.get('sname'):
@@ -1062,7 +1395,7 @@ class JavaParser(BaseParser):
     def parse_tlrpc(self):
         result = []
         parse_result = {}
-        for k in self.ii_class_info:
+        for k in self.tlobj_info:
             content = self.get_class_struct(k)
             if content is None:
                 print(f'{k} content is null.')
@@ -1097,7 +1430,7 @@ class JavaParser(BaseParser):
 
         '''
         parse_result = {}
-        for k in self.ii_class_info:
+        for k in self.tlobj_info:
             content = self.get_class_struct(k)
             if content is None:
                 print(f'{k} content is null.')
@@ -1149,9 +1482,9 @@ class JavaParser(BaseParser):
         save_code(target, result_text, pep8=True,
                   options={'max_line_length': 119})
 
-    def merge_tlrpc(self, path, target):
+    def merge_tlrpc(self, path, target, replace=False):
         parse_result = {}
-        for k in self.ii_class_info:
+        for k in self.tlobj_info:
             # print(f'Process {k}')
             content = self.get_class_struct(k)
             if not content:
@@ -1195,7 +1528,8 @@ class JavaParser(BaseParser):
                             if i in info:
                                 if i in parse_result:
                                     ov = PATTERN1.search(cs[info[i]]).group(2)
-                                    mv = PATTERN1.search(parse_result[i]).group(2)
+                                    mv = PATTERN1.search(
+                                        parse_result[i]).group(2)
                                     if not ov == mv:
                                         iv = rename_struct(cs[info[i]], mv)
                                     else:
@@ -1212,19 +1546,22 @@ class JavaParser(BaseParser):
                         replaces[(start, end)] = result
                     cs[index] = v
                 else:
-                    try:
-                        ov = PATTERN1.search(cs[index]).group(2)
-                    except Exception as e:
-                        print(cs[index])
-                        raise e
-                    mv = PATTERN1.search(v).group(2)
-                    flag = False
-                    if not ov == mv:
-                        cs[index] = rename_struct(cs[index], mv)
-                        flag = True
-                    if not flag and 'TODO' in cs[index] and 'TODO' not in v:
+                    if replace:
                         cs[index] = v
-                        flag = True
+                    else:
+                        try:
+                            ov = PATTERN1.search(cs[index]).group(2)
+                        except Exception as e:
+                            print(cs[index])
+                            raise e
+                        mv = PATTERN1.search(v).group(2)
+                        flag = False
+                        if not ov == mv:
+                            cs[index] = rename_struct(cs[index], mv)
+                            flag = True
+                        if not flag and 'TODO' in cs[index] and 'TODO' not in v:
+                            cs[index] = v
+                            flag = True
             else:
                 append_items[k] = None
         cur = 0
@@ -1439,20 +1776,74 @@ class JavaParser(BaseParser):
             else:
                 f.write(c[start:])
 
-
+# Class TL_updatesTooLong has no method parsed.
+# Class TL_chatChannelParticipant has no method parsed.
 def test():
     # path = r"utils\files\TLRPC-9.4.5-152-810bc4ae.java"
     # path = r"utils\files\TLRPC-10.9.1-176-d62d2ed5.java"
     # path = r"utils\files\TLRPC-11.7.0-198-eee720ef.java"
     path = r"E:\Project\Godsix\teleparser\utils\Telegram\TMessagesProj\src\main\java\org\telegram\tgnet"
-    parser = JavaParser(path, level=logging.INFO, strict=False)
-    parser.merge_tlrpc(r'E:\Project\Godsix\teleparser\datatype\telegram.py',
-                       r'E:\Project\Godsix\teleparser\new.py')
-    # content = parser.get_class_struct('org.telegram.tgnet.tl.TL_stories.TL_togglePinnedToTop')
-    # 
-    # content = parser.get_class_struct('org.telegram.tgnet.TLRPC.TL_pageBlockEmbedPost_layer82')
-    # if content:
-    #     print(content[0])
+    parser = JavaParser(path, level=logging.INFO, strict=True)
+    debug = False
+    # debug = True
+    # return
+    if not debug:
+        parser.merge_tlrpc(r'E:\Project\Godsix\teleparser\datatype\telegram.py',
+                           r'E:\Project\Godsix\teleparser\new.py', True)
+        if GDATA:
+            print('GDATA:', GDATA)
+    else:
+        # for k, v in parser.tlobj_info.items():
+        #     methods = parser.get_methods(v)
+        #     if not (method := methods.get('serializeToStream')):
+        #         continue
+        #     for item in method.body:
+        #         if (BaseParser.is_statement_expression(item) and
+        #             BaseParser.is_method_invocation(item.expression)):
+        #             qualifier = item.expression.qualifier
+        #             member = item.expression.member
+        #             arguments = item.expression.arguments
+        #             if qualifier == 'stream':
+        #                 argument = arguments[0]
+        #                 if BaseParser.is_member_reference(argument):
+        #                     pass
+        #                 elif BaseParser.is_cast(argument):
+        #                     if not argument.type.name == 'int':
+        #                         print('+' * 20, v.get_line(item))
+        #                         print(item)
+        #                     pass
+        #                 elif BaseParser.is_this(argument):
+        #                     # print(v.get_line(item), item)
+        #                     pass
+        #                 elif BaseParser.is_ternary_expression(argument):
+        #                     if BaseParser.is_literal(argument.if_false):
+        #                         argument = argument.if_true
+        #                     else:
+        #                         argument = argument.if_false
+        #                     # print(v.get_line(item), argument)
+        #                     pass
+        #                 elif BaseParser.is_literal(argument):
+        #                     # print(v.get_line(item))
+        #                     pass
+
+
+        # return
+        # fqn = 'org.telegram.tgnet.TLRPC.TL_messagePeerReaction_layer144'
+        fqn = 'org.telegram.tgnet.TLRPC.Update'
+        # obj = ClassParser(fqn, parser, parser.logger_level)
+        # for item in obj.user_class.methods:
+        #     print(item.name)
+        # res = obj.methods['serializeToStream']
+        # print(res)
+        # for i, item in enumerate(res.body):
+        #     print(i, item, dir(item), item.__firstlineno__, item._position)
+        #     if isinstance(item, IfStatement):
+        #         print(item.then_statement)
+        # return
+        content = parser.get_class_struct(fqn)
+        if content:
+            print(content[0])
+
 
 # ------------------------------------------------------------------------------
 if __name__ == '__main__':

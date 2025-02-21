@@ -5,7 +5,7 @@ Created on Wed Dec  7 14:37:16 2022
 @author: 皓
 """
 import os.path as osp
-import datetime
+from datetime import datetime
 import getpass
 from .utils import load_data, save_code
 from .common import STRUCT_TEMPLATE, MODEL_TEMPLATE, STRUCTURES_TEMPLATE

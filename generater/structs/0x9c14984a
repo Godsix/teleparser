@@ -4,10 +4,10 @@
             'sname' / Computed('{name}'),
             'signature' / Hex(Const(0x9c14984a, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
-                                has_top_color=1,
+                                has_message_color=1,
                                 has_wallpaper=2),
             'base_theme' / self.base_theme_structures('base_theme'),
             'accent_color' / Int32ul,
-            'message_top_color' / If(this.flags.has_top_color, Int32ul),
-            'message_bottom_color' / If(this.flags.has_top_color, Int32ul),
+            'message_top_color' / If(this.flags.has_message_color, Int32ul),
+            'message_bottom_color' / If(this.flags.has_message_color, Int32ul),
             'wallpaper' / If(this.flags.has_wallpaper, self.wall_paper_structures('wallpaper')))

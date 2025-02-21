@@ -1,7 +1,0 @@
-    @constructor(0xa384b779, '{name}')
-    def struct_0xa384b779(self):
-        return Struct(
-            'sname' / Computed('{name}'),
-            'signature' / Hex(Const(0xa384b779, Int32ul)),
-            'id' / Int32ul,
-            'flags' / Int32ul)
