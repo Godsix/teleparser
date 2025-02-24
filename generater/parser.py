@@ -1599,25 +1599,88 @@ class JavaParser(BaseParser):
             f.write(''.join(b_list))
 
     @classmethod
-    def remove_dup(cls, path, target, all_same=True):
+    def remove_duplicate(cls, path, target, all_same=True):
+        with open(path, encoding='utf-8') as f:
+            c = f.read()
+        func_map = {}
+        func_index_map = {}
+        start = 0
+        result = []
+        result_index = 0
+        for item in FUNCTION_PATTERN.finditer(c):
+            result.append(c[start:item.start()])
+            result_index += 1
+            func_name = item.group(1)
+            func_content = item.group(0)
+            if func_name not in func_map:
+                func_map[func_name] = func_content
+                func_index_map[func_name] = result_index
+                result.append(func_content)
+                result_index += 1
+            else:
+                if all_same:
+                    if not func_map[func_name] == func_content:
+                        # result.append(func_content)
+                        print(f'Replace {func_name}')
+                        result[func_index_map[func_name]] = func_content
+            start = item.end()
+        else:
+            result.append(c[start:])
+        with open(target, 'w+', encoding='utf-8') as f:
+            f.write(''.join(result))
+
+    @classmethod
+    def sort_file(cls, path, target):
         with open(path, encoding='utf-8') as f:
             c = f.read()
         func_map = {}
         start = 0
-        with open(target, 'w+', encoding='utf-8') as f:
-            for item in FUNCTION_PATTERN.finditer(c):
-                f.write(c[start:item.start()])
-                func_name = item.group(1)
-                if func_name not in func_map:
-                    func_map[func_name] = item.group(0)
-                    f.write(item.group(0))
-                else:
-                    if all_same:
-                        if not func_map[func_name] == item.group(0):
-                            f.write(item.group(0))
-                start = item.end()
+        result = []
+        for item in FUNCTION_PATTERN.finditer(c):
+            result.append(c[start:item.start()])
+            func_name = item.group(1)
+            func_content = item.group(0)
+            if (func_name.endswith('_structures') or
+                re.fullmatch('struct_0x\w{8}', func_name)):
+                func_map[func_name] = func_content
             else:
-                f.write(c[start:])
+                result.append(func_content)
+            start = item.end()
+        else:
+            result.append(c[start:])
+            
+        result.append('\n' + '#' * 79 + '\n')
+        
+        structures_func_names = [x for x in func_map if x.endswith('_structures')]
+        structures_func_names = list(sorted(structures_func_names))
+        sorted_names = {}
+        sorted_contents = []
+        regex = re.compile(r'self\.(struct_0x\w{8})')
+        split_line = f'{" " * 4}# {"-" * 73}\n\n'
+        for item in structures_func_names:
+            item_content_list = []
+            item_struct = func_map[item]
+            for subitem in regex.finditer(item_struct):
+                fname = subitem.group(1)
+                if fname in func_map:
+                    sorted_names[fname] = None
+                    item_content_list.append(func_map[fname])
+                else:
+                    text = f'    def {fname}(self):\n        #TODO\n'
+                    item_content_list.append(text)
+            item_content_list.append(item_struct)
+            sorted_names[item] = None
+            sorted_contents.extend(item_content_list)
+            sorted_contents.append(split_line)
+            print(item, len(item_content_list))
+        result.extend(sorted_contents)
+        result.append('\n' + '#' * 79 + '\n')
+        for k, v in func_map.items():
+            if k not in sorted_names:
+               result.append(v)
+        result.append('\n' + '#' * 79 + '\n')
+        with open(target, 'w+', encoding='utf-8') as f:
+            f.write(''.join(result))
 
     @classmethod
     def format_pycode(cls, path, limit=120):
@@ -1690,15 +1753,17 @@ class JavaParser(BaseParser):
             left.append(c[start:item.start()])
             start = item.start()
             func_name = item.group(1)
-            if ('structures' in func_name or func_name.startswith('struct_')) and not func_name == 'vector':
+            func_content = item.group(0)
+            if (func_name.endswith('_structures') or
+                func_name.startswith('struct_')):
                 if func_name not in parse_result:
-                    parse_result[func_name] = item.group(0)
+                    parse_result[func_name] = func_content
                     start = item.end()
                 else:
                     print(f'{func_name} has exists.')
         # print(''.join(left))
         # return
-        structures_func_names = [x for x in parse_result if 'structures' in x]
+        structures_func_names = [x for x in parse_result if x.endswith('_structures')]
         structures_func_names = list(sorted(structures_func_names))
         sorted_names = []
         sorted_contents = []
@@ -1730,7 +1795,7 @@ class JavaParser(BaseParser):
         sorted_text = '\r\n\r\n'.join(sorted_all_contents)
         sorted_name_info = dict.fromkeys(sorted_names)
         left_names = [x for x in parse_result if x not in sorted_name_info]
-        assert (len(left_names) == (len(parse_result) - len(sorted_names)))
+        # assert (len(left_names) == (len(parse_result) - len(sorted_names)))
         left_text = '\r\n\r\n'.join(parse_result[x] for x in left_names)
         result_text = ''
         result_text += ''.join(left)
@@ -1738,7 +1803,7 @@ class JavaParser(BaseParser):
         result_text += sorted_text
         result_text += left_text
         save_code(target, result_text, pep8=True,
-                  options={'max_line_length': 119})
+                  options={'max_line_length': 512})
 
     @classmethod
     def format_cid(cls, value):
@@ -1776,8 +1841,6 @@ class JavaParser(BaseParser):
             else:
                 f.write(c[start:])
 
-# Class TL_updatesTooLong has no method parsed.
-# Class TL_chatChannelParticipant has no method parsed.
 def test():
     # path = r"utils\files\TLRPC-9.4.5-152-810bc4ae.java"
     # path = r"utils\files\TLRPC-10.9.1-176-d62d2ed5.java"
@@ -1786,7 +1849,6 @@ def test():
     parser = JavaParser(path, level=logging.INFO, strict=True)
     debug = False
     # debug = True
-    # return
     if not debug:
         parser.merge_tlrpc(r'E:\Project\Godsix\teleparser\datatype\telegram.py',
                            r'E:\Project\Godsix\teleparser\new.py', True)
@@ -1844,7 +1906,24 @@ def test():
         if content:
             print(content[0])
 
+def test2():
+    JavaParser.remove_duplicate(r'E:\Project\Godsix\teleparser\datatype\telegram.py',
+                            r'E:\Project\Godsix\teleparser\datatype\telegram1.py')
+    return
+
+
+def test3():
+    JavaParser.sort_file(r'E:\Project\Godsix\teleparser\datatype\telegram.py',
+                         r'E:\Project\Godsix\teleparser\datatype\telegram1.py')
+    return
+
+
+def main():
+    # test()
+    # test2()
+    test3()
+
 
 # ------------------------------------------------------------------------------
 if __name__ == '__main__':
-    test()
+    main()

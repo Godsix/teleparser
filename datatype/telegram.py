@@ -14,11 +14,9 @@ import logger
 from .common import TString, TBytes, TBool, TTimestamp
 # -----------------------------------------------------------------------------
 
-
 INFO = {}
 
 STRUCT_CACHE = {}
-
 
 def constructor(cid, name, use_lru=False):
     INFO[cid] = name
@@ -48,11 +46,9 @@ def constructor(cid, name, use_lru=False):
     else:
         return lru_cache()
 
-
 structures = lru_cache()
 
 # -----------------------------------------------------------------------------
-
 
 class TLStruct:  # pylint: disable=C0103
     LAYER = 176
@@ -110,10 +106,40 @@ class TLStruct:  # pylint: disable=C0103
             'sname' / Computed('list'),
             'count' / Int32ul,
             'content' / Array(this.count, Struct(
-                                                '_signature' / Peek(Int32ul),
-                                                'item' / Switch(this._signature, tag_map))))
+                '_signature' / Peek(Int32ul),
+                'item' / Switch(this._signature, tag_map))))
 
     # ---------------------------- Common end ---------------------------------
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0xc9b9e2b9, 'account_business_away_message_schedule_always')
+    def struct_0xc9b9e2b9(self):
+        return []
+
+    @constructor(0xc3f2f501, 'account_business_away_message_schedule_outside_work_hours')
+    def struct_0xc3f2f501(self):
+        return []
+
+    @constructor(0xcc4d9ecc, 'account_business_away_message_schedule_custom')
+    def struct_0xcc4d9ecc(self):
+        return Struct(
+            'sname' / Computed('account_business_away_message_schedule_custom'),
+            'signature' / Hex(Const(0xcc4d9ecc, Int32ul)),
+            'start_date' / TTimestamp,
+            'end_date' / TTimestamp)
+
+    @structures
+    def account_business_away_message_schedule_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0xc9b9e2b9: LazyBound(self.struct_0xc9b9e2b9),
+            0xc3f2f501: LazyBound(self.struct_0xc3f2f501),
+            0xcc4d9ecc: LazyBound(self.struct_0xcc4d9ecc)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
 
     # -------------------------------------------------------------------------
 
@@ -219,6 +245,27 @@ class TLStruct:  # pylint: disable=C0103
         tag_map = {
             0x957b50fb: LazyBound(self.struct_0x957b50fb),
             0x185b184f: LazyBound(self.struct_0x185b184f)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0xbac3a61a, 'account_reaction_notifications_from_contacts')
+    def struct_0xbac3a61a(self):
+        return []
+
+    @constructor(0x4b9e22a0, 'account_reaction_notifications_from_all')
+    def struct_0x4b9e22a0(self):
+        return []
+
+    @structures
+    def account_reaction_notifications_from_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0xbac3a61a: LazyBound(self.struct_0xbac3a61a),
+            0x4b9e22a0: LazyBound(self.struct_0x4b9e22a0)
         }
         return Struct(
             '_signature' / Peek(Int32ul),
@@ -1311,6 +1358,39 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
+    @constructor(0xc3ff71e7, 'broadcast_revenue_balances')
+    def struct_0xc3ff71e7(self):
+        return Struct(
+            'sname' / Computed('broadcast_revenue_balances'),
+            'signature' / Hex(Const(0xc3ff71e7, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_withdrawal_enabled=1),
+            'current_balance' / Int64ul,
+            'available_balance' / Int64ul,
+            'overall_revenue' / Int64ul)
+
+    @constructor(0x8438f1c6, 'broadcast_revenue_balances_layer186')
+    def struct_0x8438f1c6(self):
+        return Struct(
+            'sname' / Computed('broadcast_revenue_balances_layer186'),
+            'signature' / Hex(Const(0x8438f1c6, Int32ul)),
+            'current_balance' / Int64ul,
+            'available_balance' / Int64ul,
+            'overall_revenue' / Int64ul)
+
+    @structures
+    def broadcast_revenue_balances_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0xc3ff71e7: LazyBound(self.struct_0xc3ff71e7),
+            0x8438f1c6: LazyBound(self.struct_0x8438f1c6)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
     @constructor(0xc9b9e2b9, 'account_business_away_message_schedule_always')
     def struct_0xc9b9e2b9(self):
         return []
@@ -1881,7 +1961,7 @@ class TLStruct:  # pylint: disable=C0103
         return Struct(
             'sname' / Computed('channel_participant_layer185'),
             'signature' / Hex(Const(0xc00c07c0, Int32ul)),
-            'user_id' / Int64ul,
+            'peer_user_id' / Int64ul,
             'date' / TTimestamp)
 
     @constructor(0x2fe601d3, 'channel_participant_creator')
@@ -2143,6 +2223,36 @@ class TLStruct:  # pylint: disable=C0103
         tag_map = {
             0x9ab0feaf: LazyBound(self.struct_0x9ab0feaf),
             0xf0173fe9: LazyBound(self.struct_0xf0173fe9)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0x846f9e42, 'channels_sponsored_message_report_result_choose_option')
+    def struct_0x846f9e42(self):
+        return Struct(
+            'sname' / Computed('channels_sponsored_message_report_result_choose_option'),
+            'signature' / Hex(Const(0x846f9e42, Int32ul)),
+            'title' / TString,
+            'options' / self.vector(self.struct_0x430d3150(), 'options'))
+
+    @constructor(0x3e3bcf2f, 'channels_sponsored_message_report_result_ads_hidden')
+    def struct_0x3e3bcf2f(self):
+        return []
+
+    @constructor(0xad798849, 'channels_sponsored_message_report_result_reported')
+    def struct_0xad798849(self):
+        return []
+
+    @structures
+    def channels_sponsored_message_report_result_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x846f9e42: LazyBound(self.struct_0x846f9e42),
+            0x3e3bcf2f: LazyBound(self.struct_0x3e3bcf2f),
+            0xad798849: LazyBound(self.struct_0xad798849)
         }
         return Struct(
             '_signature' / Peek(Int32ul),
@@ -4771,7 +4881,6 @@ class TLStruct:  # pylint: disable=C0103
             'stripped_thumb' / If(this.flags.has_stripped_thumb, TBytes),
             'dc_id' / Int32ul)
 
-
     @constructor(0x475cdbd5, 'chat_photo_layer115')
     def struct_0x475cdbd5(self):
         return Struct(
@@ -5020,18 +5129,18 @@ class TLStruct:  # pylint: disable=C0103
                                 has_default_banned_rights=262144,
                                 has_participants_count=131072),
             'flags2' / FlagsEnum(Int32ul,
-                                is_stories_hidden=2,
-                                is_stories_hidden_min=4,
-                                is_stories_unavailable=8,
-                                is_signature_profiles=4096,
-                                has_usernames=1,
-                                has_stories_max_id=16,
-                                has_color=128,
-                                has_profile_color=256,
-                                has_emoji_status=512,
-                                has_level=1024,
-                                has_subscription_until_date=2048,
-                                has_bot_verification_icon=8192),
+                                 is_stories_hidden=2,
+                                 is_stories_hidden_min=4,
+                                 is_stories_unavailable=8,
+                                 is_signature_profiles=4096,
+                                 has_usernames=1,
+                                 has_stories_max_id=16,
+                                 has_color=128,
+                                 has_profile_color=256,
+                                 has_emoji_status=512,
+                                 has_level=1024,
+                                 has_subscription_until_date=2048,
+                                 has_bot_verification_icon=8192),
             'id' / Int64ul,
             'access_hash' / If(this.flags.has_access_hash, Int64ul),
             'title' / TString,
@@ -5085,17 +5194,17 @@ class TLStruct:  # pylint: disable=C0103
                                 has_default_banned_rights=262144,
                                 has_participants_count=131072),
             'flags2' / FlagsEnum(Int32ul,
-                                is_stories_hidden=2,
-                                is_stories_hidden_min=4,
-                                is_stories_unavailable=8,
-                                is_signature_profiles=4096,
-                                has_usernames=1,
-                                has_stories_max_id=16,
-                                has_color=128,
-                                has_profile_color=256,
-                                has_emoji_status=512,
-                                has_level=1024,
-                                has_subscription_until_date=2048),
+                                 is_stories_hidden=2,
+                                 is_stories_hidden_min=4,
+                                 is_stories_unavailable=8,
+                                 is_signature_profiles=4096,
+                                 has_usernames=1,
+                                 has_stories_max_id=16,
+                                 has_color=128,
+                                 has_profile_color=256,
+                                 has_emoji_status=512,
+                                 has_level=1024,
+                                 has_subscription_until_date=2048),
             'id' / Int64ul,
             'access_hash' / If(this.flags.has_access_hash, Int64ul),
             'title' / TString,
@@ -5163,7 +5272,7 @@ class TLStruct:  # pylint: disable=C0103
             'username' / If(this.flags.has_username, TString),
             'photo' / self.chat_photo_structures('photo'),
             'date' / TTimestamp,
-            'restriction_reason' / If(this.flags.is_restricted, self.vector(self.struct_0xd072acb4(), 'restriction_reason')),
+            'restriction_reason' / If(this.flags.is_restricted, self.vector(self.restriction_reason_structures('restriction_reason'), 'restriction_reason')),
             'admin_rights' / If(this.flags.has_admin_rights, self.struct_0x5fb224d5()),
             'banned_rights' / If(this.flags.has_banned_rights, self.struct_0x9f120418()),
             'default_banned_rights' / If(this.flags.has_default_banned_rights, self.struct_0x9f120418()),
@@ -6561,7 +6670,7 @@ class TLStruct:  # pylint: disable=C0103
                                 has_emoticon=33554432,
                                 has_color=134217728),
             'id' / Int32ul,
-            'title' / TString,
+            'title_text' / TString,
             'emoticon' / If(this.flags.has_emoticon, TString),
             'color' / If(this.flags.has_color, Int32ul),
             'pinned_peers' / self.vector(self.input_peer_structures('pinned_peers'), 'pinned_peers'),
@@ -6616,7 +6725,7 @@ class TLStruct:  # pylint: disable=C0103
                                 has_emoticon=33554432,
                                 has_color=134217728),
             'id' / Int32ul,
-            'title' / TString,
+            'title_text' / TString,
             'emoticon' / If(this.flags.has_emoticon, TString),
             'color' / If(this.flags.has_color, Int32ul),
             'pinned_peers' / self.vector(self.input_peer_structures('pinned_peers'), 'pinned_peers'),
@@ -7177,6 +7286,20 @@ class TLStruct:  # pylint: disable=C0103
             'date' / TTimestamp,
             'effect' / If(this.flags.has_effect, Int64ul))
 
+    @structures
+    def draft_message_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x1b0c841a: LazyBound(self.struct_0x1b0c841a),
+            0xba4baec5: LazyBound(self.struct_0xba4baec5),
+            0xfd8e711f: LazyBound(self.struct_0xfd8e711f),
+            0x3fccf7ef: LazyBound(self.struct_0x3fccf7ef),
+            0x2d65321f: LazyBound(self.struct_0x2d65321f)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
     # -------------------------------------------------------------------------
 
     @constructor(0x922e55a9, 'email_verification_code')
@@ -7228,6 +7351,46 @@ class TLStruct:  # pylint: disable=C0103
             0x4345be73: LazyBound(self.struct_0x4345be73),
             0x527d22eb: LazyBound(self.struct_0x527d22eb),
             0xbbf51685: LazyBound(self.struct_0xbbf51685)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0x7a9abda9, 'emoji_group')
+    def struct_0x7a9abda9(self):
+        return Struct(
+            'sname' / Computed('emoji_group'),
+            'signature' / Hex(Const(0x7a9abda9, Int32ul)),
+            'title' / TString,
+            'icon_emoji_id' / Int64ul,
+            'emoticons' / self.vector(TString, 'emoticons'))
+
+    @constructor(0x80d26cc7, 'emoji_group_greeting')
+    def struct_0x80d26cc7(self):
+        return Struct(
+            'sname' / Computed('emoji_group_greeting'),
+            'signature' / Hex(Const(0x80d26cc7, Int32ul)),
+            'title' / TString,
+            'icon_emoji_id' / Int64ul,
+            'emoticons' / self.vector(TString, 'emoticons'))
+
+    @constructor(0x093bcf34, 'emoji_group_premium')
+    def struct_0x093bcf34(self):
+        return Struct(
+            'sname' / Computed('emoji_group_premium'),
+            'signature' / Hex(Const(0x093bcf34, Int32ul)),
+            'title' / TString,
+            'icon_emoji_id' / Int64ul)
+
+    @structures
+    def emoji_group_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x7a9abda9: LazyBound(self.struct_0x7a9abda9),
+            0x80d26cc7: LazyBound(self.struct_0x80d26cc7),
+            0x093bcf34: LazyBound(self.struct_0x093bcf34)
         }
         return Struct(
             '_signature' / Peek(Int32ul),
@@ -7590,6 +7753,35 @@ class TLStruct:  # pylint: disable=C0103
             name / Switch(this._signature, tag_map))
 
     # -------------------------------------------------------------------------
+
+    @constructor(0xa22cbd96, 'chat_invite_exported')
+    def struct_0xa22cbd96(self):
+        return Struct(
+            'sname' / Computed('chat_invite_exported'),
+            'signature' / Hex(Const(0xa22cbd96, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_revoked=1,
+                                is_permanent=32,
+                                is_request_needed=64,
+                                has_start_date=16,
+                                has_expire_date=2,
+                                has_usage_limit=4,
+                                has_usage=8,
+                                has_requested=128,
+                                has_subscription_expired=1024,
+                                has_title=256,
+                                has_subscription_pricing=512),
+            'link' / TString,
+            'admin_id' / Int64ul,
+            'date' / TTimestamp,
+            'start_date' / If(this.flags.has_start_date, TTimestamp),
+            'expire_date' / If(this.flags.has_expire_date, TTimestamp),
+            'usage_limit' / If(this.flags.has_usage_limit, Int32ul),
+            'usage' / If(this.flags.has_usage, Int32ul),
+            'requested' / If(this.flags.has_requested, Int32ul),
+            'subscription_expired' / If(this.flags.has_subscription_expired, Int32ul),
+            'title' / If(this.flags.has_title, TString),
+            'subscription_pricing' / If(this.flags.has_subscription_pricing, self.struct_0x05416d58()))
 
     @constructor(0x0ab4a819, 'chat_invite_exported_layer185')
     def struct_0x0ab4a819(self):
@@ -8137,6 +8329,57 @@ class TLStruct:  # pylint: disable=C0103
         tag_map = {
             0x2ba1f5ce: LazyBound(self.struct_0x2ba1f5ce),
             0x00f8ed08: LazyBound(self.struct_0x00f8ed08)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0x5334759c, 'help_premium_promo')
+    def struct_0x5334759c(self):
+        return Struct(
+            'sname' / Computed('help_premium_promo'),
+            'signature' / Hex(Const(0x5334759c, Int32ul)),
+            'status_text' / TString,
+            'status_entities' / self.vector(self.message_entity_structures('status_entities'), 'status_entities'),
+            'video_sections' / self.vector(TString, 'video_sections'),
+            'videos' / self.vector(self.document_structures('videos'), 'videos'),
+            'period_options' / self.vector(self.premium_subscription_option_structures('period_options'), 'period_options'),
+            'users' / self.vector(self.user_structures('users'), 'users'))
+
+    @constructor(0x8a4f3c29, 'help_premium_promo_layer144')
+    def struct_0x8a4f3c29(self):
+        return Struct(
+            'sname' / Computed('help_premium_promo_layer144'),
+            'signature' / Hex(Const(0x8a4f3c29, Int32ul)),
+            'status_text' / TString,
+            'status_entities' / self.vector(self.message_entity_structures('status_entities'), 'status_entities'),
+            'video_sections' / self.vector(TString, 'video_sections'),
+            'videos' / self.vector(self.document_structures('videos'), 'videos'),
+            'currency' / TString,
+            'monthly_amount' / Int64ul,
+            'users' / self.vector(self.user_structures('users'), 'users'))
+
+    @constructor(0xe0360f1b, 'help_premium_promo_layer140')
+    def struct_0xe0360f1b(self):
+        return Struct(
+            'sname' / Computed('help_premium_promo_layer140'),
+            'signature' / Hex(Const(0xe0360f1b, Int32ul)),
+            'status_text' / TString,
+            'status_entities' / self.vector(self.message_entity_structures('status_entities'), 'status_entities'),
+            'video_sections' / self.vector(TString, 'video_sections'),
+            'videos' / self.vector(self.document_structures('videos'), 'videos'),
+            'currency' / TString,
+            'monthly_amount' / Int64ul)
+
+    @structures
+    def help_premium_promo_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x5334759c: LazyBound(self.struct_0x5334759c),
+            0x8a4f3c29: LazyBound(self.struct_0x8a4f3c29),
+            0xe0360f1b: LazyBound(self.struct_0xe0360f1b)
         }
         return Struct(
             '_signature' / Peek(Int32ul),
@@ -8782,6 +9025,23 @@ class TLStruct:  # pylint: disable=C0103
             'stargift' / self.stars_input_saved_star_gift_structures('stargift'),
             'to_id' / self.input_peer_structures('to_id'))
 
+    @structures
+    def input_invoice_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x98986c0d: LazyBound(self.struct_0x98986c0d),
+            0xc5b56859: LazyBound(self.struct_0xc5b56859),
+            0xc326caef: LazyBound(self.struct_0xc326caef),
+            0x65f00ce3: LazyBound(self.struct_0x65f00ce3),
+            0x34e793f1: LazyBound(self.struct_0x34e793f1),
+            0xe8625e92: LazyBound(self.struct_0xe8625e92),
+            0x4d818d5d: LazyBound(self.struct_0x4d818d5d),
+            0x4a5f5bd9: LazyBound(self.struct_0x4a5f5bd9)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
     # -------------------------------------------------------------------------
 
     @constructor(0xf8ab7dfb, 'input_media_contact')
@@ -8969,6 +9229,7 @@ class TLStruct:  # pylint: disable=C0103
             'stars_amount' / Int64ul,
             'extended_media' / self.vector(self.input_media_structures('extended_media'), 'extended_media'),
             'payload' / If(this.flags.has_payload, TString))
+
     @structures
     def input_media_structures(self, name):
         # pylint: disable=C0301
@@ -9634,6 +9895,7 @@ class TLStruct:  # pylint: disable=C0103
             'currency' / TString,
             'amount' / Int64ul,
             'users' / Int32ul)
+
     @structures
     def input_store_payment_purpose_structures(self, name):
         # pylint: disable=C0301
@@ -9773,6 +10035,90 @@ class TLStruct:  # pylint: disable=C0103
         tag_map = {
             0x9f2221c9: LazyBound(self.struct_0x9f2221c9),
             0xc239d686: LazyBound(self.struct_0xc239d686)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0x049ee584, 'invoice')
+    def struct_0x049ee584(self):
+        return Struct(
+            'sname' / Computed('invoice'),
+            'signature' / Hex(Const(0x049ee584, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_test=1,
+                                is_name_requested=2,
+                                is_phone_requested=4,
+                                is_email_requested=8,
+                                is_shipping_address_requested=16,
+                                is_flexible=32,
+                                is_phone_to_provider=64,
+                                is_email_to_provider=128,
+                                is_recurring=512,
+                                has_max_tip_amount=256,
+                                has_terms_url=1024,
+                                has_subscription_period=2048),
+            'currency' / TString,
+            'prices' / self.vector(self.struct_0xcb296bf8(), 'prices'),
+            'max_tip_amount' / If(this.flags.has_max_tip_amount, Int64ul),
+            'suggested_tip_amounts' / If(this.flags.has_max_tip_amount, self.vector(Int64ul, 'suggested_tip_amounts')),
+            'terms_url' / If(this.flags.has_terms_url, TString),
+            'subscription_period' / If(this.flags.has_subscription_period, Int32ul))
+
+    @constructor(0x5db95a15, 'invoice_layer193')
+    def struct_0x5db95a15(self):
+        return Struct(
+            'sname' / Computed('invoice_layer193'),
+            'signature' / Hex(Const(0x5db95a15, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_test=1,
+                                is_name_requested=2,
+                                is_phone_requested=4,
+                                is_email_requested=8,
+                                is_shipping_address_requested=16,
+                                is_flexible=32,
+                                is_phone_to_provider=64,
+                                is_email_to_provider=128,
+                                is_recurring=512,
+                                has_max_tip_amount=256,
+                                has_terms_url=1024),
+            'currency' / TString,
+            'prices' / self.vector(self.struct_0xcb296bf8(), 'prices'),
+            'max_tip_amount' / If(this.flags.has_max_tip_amount, Int64ul),
+            'suggested_tip_amounts' / If(this.flags.has_max_tip_amount, self.vector(Int64ul, 'suggested_tip_amounts')),
+            'terms_url' / If(this.flags.has_terms_url, TString))
+
+    @constructor(0x3e85a91b, 'invoice_layer163')
+    def struct_0x3e85a91b(self):
+        return Struct(
+            'sname' / Computed('invoice_layer163'),
+            'signature' / Hex(Const(0x3e85a91b, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_test=1,
+                                is_name_requested=2,
+                                is_phone_requested=4,
+                                is_email_requested=8,
+                                is_shipping_address_requested=16,
+                                is_flexible=32,
+                                is_phone_to_provider=64,
+                                is_email_to_provider=128,
+                                is_recurring=512,
+                                has_max_tip_amount=256),
+            'currency' / TString,
+            'prices' / self.vector(self.struct_0xcb296bf8(), 'prices'),
+            'max_tip_amount' / If(this.flags.has_max_tip_amount, Int64ul),
+            'suggested_tip_amounts' / If(this.flags.has_max_tip_amount, self.vector(Int64ul, 'suggested_tip_amounts')),
+            'terms_url' / If(this.flags.is_recurring, TString))
+
+    @structures
+    def invoice_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x049ee584: LazyBound(self.struct_0x049ee584),
+            0x5db95a15: LazyBound(self.struct_0x5db95a15),
+            0x3e85a91b: LazyBound(self.struct_0x3e85a91b)
         }
         return Struct(
             '_signature' / Peek(Int32ul),
@@ -9982,6 +10328,7 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0x75d2698e, Int32ul)),
             'text' / TString,
             'copy_text' / TString)
+
     @structures
     def keyboard_button_structures(self, name):
         # pylint: disable=C0301
@@ -10190,9 +10537,28 @@ class TLStruct:  # pylint: disable=C0103
     def struct_0xe1037f92(self):
         return ['channel_id' / Int64ul]
 
+    @constructor(0xa80f51e4, 'message_action_giveaway_launch')
+    def struct_0xa80f51e4(self):
+        return Struct(
+            'sname' / Computed('message_action_giveaway_launch'),
+            'signature' / Hex(Const(0xa80f51e4, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_stars=1),
+            'stars' / If(this.flags.has_stars, Int64ul))
+
     @constructor(0x332ba9ed, 'message_action_giveaway_launch_layer186')
     def struct_0x332ba9ed(self):
         return []
+
+    @constructor(0x87e2f155, 'message_action_giveaway_results')
+    def struct_0x87e2f155(self):
+        return Struct(
+            'sname' / Computed('message_action_giveaway_results'),
+            'signature' / Hex(Const(0x87e2f155, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_stars=1),
+            'winners_count' / Int32ul,
+            'unclaimed_count' / Int32ul)
 
     @constructor(0x2a9fadc5, 'message_action_giveaway_results_layer186')
     def struct_0x2a9fadc5(self):
@@ -10285,6 +10651,26 @@ class TLStruct:  # pylint: disable=C0103
     @constructor(0x55555550, 'message_action_user_joined')
     def struct_0x55555550(self):
         return []
+
+    @constructor(0x56d03994, 'message_action_gift_code')
+    def struct_0x56d03994(self):
+        return Struct(
+            'sname' / Computed('message_action_gift_code'),
+            'signature' / Hex(Const(0x56d03994, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_via_giveaway=1,
+                                is_unclaimed=4,
+                                has_boost_peer=2,
+                                has_crypto_currency=8,
+                                has_message=16),
+            'boost_peer' / If(this.flags.has_boost_peer, self.peer_structures('boost_peer')),
+            'months' / Int32ul,
+            'slug' / TString,
+            'currency' / If(this.flags.is_unclaimed, TString),
+            'amount' / If(this.flags.is_unclaimed, Int64ul),
+            'crypto_currency' / If(this.flags.has_crypto_currency, TString),
+            'crypto_amount' / If(this.flags.has_crypto_currency, Int64ul),
+            'message' / If(this.flags.has_message, self.struct_0x751f3146()))
 
     @constructor(0x678c2e09, 'message_action_gift_code_layer189')
     def struct_0x678c2e09(self):
@@ -10481,6 +10867,21 @@ class TLStruct:  # pylint: disable=C0103
             'domain' / If(this.flags.has_domain, TString),
             'app' / If(this.flags.has_app, self.bot_app_structures('app')))
 
+    @constructor(0xc624b16e, 'message_action_payment_sent')
+    def struct_0xc624b16e(self):
+        return Struct(
+            'sname' / Computed('message_action_payment_sent'),
+            'signature' / Hex(Const(0xc624b16e, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_recurring_init=4,
+                                is_recurring_used=8,
+                                has_invoice_slug=1,
+                                has_subscription_until_date=16),
+            'currency' / TString,
+            'total_amount' / Int64ul,
+            'invoice_slug' / If(this.flags.has_invoice_slug, TString),
+            'subscription_until_date' / If(this.flags.has_subscription_until_date, TTimestamp))
+
     @constructor(0x96163f56, 'message_action_payment_sent_layer193')
     def struct_0x96163f56(self):
         return Struct(
@@ -10526,6 +10927,25 @@ class TLStruct:  # pylint: disable=C0103
     def struct_0xcc02aa6d(self):
         return ['boosts' / Int32ul]
 
+    @constructor(0xffa00ccc, 'message_action_payment_sent_me')
+    def struct_0xffa00ccc(self):
+        return Struct(
+            'sname' / Computed('message_action_payment_sent_me'),
+            'signature' / Hex(Const(0xffa00ccc, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_recurring_init=4,
+                                is_recurring_used=8,
+                                has_info=1,
+                                has_shipping_option_id=2,
+                                has_subscription_until_date=16),
+            'currency' / TString,
+            'total_amount' / Int64ul,
+            'payload' / TBytes,
+            'info' / If(this.flags.has_info, self.struct_0x909c3f94()),
+            'shipping_option_id' / If(this.flags.has_shipping_option_id, TString),
+            'charge' / self.struct_0xea02c27e(),
+            'subscription_until_date' / If(this.flags.has_subscription_until_date, TTimestamp))
+
     @constructor(0x8f31b327, 'message_action_payment_sent_me_layer193')
     def struct_0x8f31b327(self):
         return Struct(
@@ -10542,6 +10962,21 @@ class TLStruct:  # pylint: disable=C0103
             'info' / If(this.flags.has_info, self.struct_0x909c3f94()),
             'shipping_option_id' / If(this.flags.has_shipping_option_id, TString),
             'charge' / self.struct_0xea02c27e())
+
+    @constructor(0x6c6274fa, 'message_action_gift_premium')
+    def struct_0x6c6274fa(self):
+        return Struct(
+            'sname' / Computed('message_action_gift_premium'),
+            'signature' / Hex(Const(0x6c6274fa, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_crypto_currency=1,
+                                has_message=2),
+            'currency' / TString,
+            'amount' / Int64ul,
+            'months' / Int32ul,
+            'crypto_currency' / If(this.flags.has_crypto_currency, TString),
+            'crypto_amount' / If(this.flags.has_crypto_currency, Int64ul),
+            'message' / If(this.flags.has_message, self.struct_0x751f3146()))
 
     @constructor(0xc83d6aec, 'message_action_gift_premium_layer189')
     def struct_0xc83d6aec(self):
@@ -10571,6 +11006,161 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0x31518e9b, Int32ul)),
             'button_id' / Int32ul,
             'peers' / self.vector(self.peer_structures('peers'), 'peers'))
+
+    @constructor(0x41b3e202, 'message_action_payment_refunded')
+    def struct_0x41b3e202(self):
+        return Struct(
+            'sname' / Computed('message_action_payment_refunded'),
+            'signature' / Hex(Const(0x41b3e202, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_payload=1),
+            'peer' / self.peer_structures('peer'),
+            'currency' / TString,
+            'total_amount' / Int64ul,
+            'payload' / If(this.flags.has_payload, TBytes),
+            'charge' / self.struct_0xea02c27e())
+
+    @constructor(0x45d5b021, 'message_action_gift_stars')
+    def struct_0x45d5b021(self):
+        return Struct(
+            'sname' / Computed('message_action_gift_stars'),
+            'signature' / Hex(Const(0x45d5b021, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_crypto_currency=1,
+                                has_transaction_id=2),
+            'currency' / TString,
+            'amount' / Int64ul,
+            'stars' / Int64ul,
+            'crypto_currency' / If(this.flags.has_crypto_currency, TString),
+            'crypto_amount' / If(this.flags.has_crypto_currency, Int64ul),
+            'transaction_id' / If(this.flags.has_transaction_id, TString))
+
+    @constructor(0xb00c47a2, 'message_action_prize_stars')
+    def struct_0xb00c47a2(self):
+        return Struct(
+            'sname' / Computed('message_action_prize_stars'),
+            'signature' / Hex(Const(0xb00c47a2, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_unclaimed=1),
+            'stars' / Int64ul,
+            'transaction_id' / TString,
+            'boost_peer' / self.peer_structures('boost_peer'),
+            'giveaway_msg_id' / Int32ul)
+
+    @constructor(0x4717e8a4, 'message_action_star_gift')
+    def struct_0x4717e8a4(self):
+        return Struct(
+            'sname' / Computed('message_action_star_gift'),
+            'signature' / Hex(Const(0x4717e8a4, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_name_hidden=1,
+                                is_saved=4,
+                                is_converted=8,
+                                is_upgraded=32,
+                                is_transferred=64,
+                                is_can_upgrade=1024,
+                                is_refunded=512,
+                                has_message=2,
+                                has_convert_stars=16,
+                                has_upgrade_stars=256,
+                                has_from_id=2048,
+                                has_peer=4096),
+            'gift' / self.star_gift_structures('gift'),
+            'message' / If(this.flags.has_message, self.struct_0x751f3146()),
+            'convert_stars' / If(this.flags.has_convert_stars, Int64ul),
+            'upgrade_msg_id' / If(this.flags.is_upgraded, Int32ul),
+            'upgrade_stars' / If(this.flags.has_upgrade_stars, Int64ul),
+            'from_id' / If(this.flags.has_from_id, self.peer_structures('from_id')),
+            'peer' / If(this.flags.has_peer, self.peer_structures('peer')),
+            'saved_id' / If(this.flags.has_peer, Int64ul))
+
+    @constructor(0xd8f4f0a7, 'message_action_star_gift_layer197')
+    def struct_0xd8f4f0a7(self):
+        return Struct(
+            'sname' / Computed('message_action_star_gift_layer197'),
+            'signature' / Hex(Const(0xd8f4f0a7, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_name_hidden=1,
+                                is_saved=4,
+                                is_converted=8,
+                                is_upgraded=32,
+                                is_transferred=64,
+                                is_can_upgrade=1024,
+                                is_refunded=512,
+                                has_message=2,
+                                has_convert_stars=16,
+                                has_upgrade_stars=256),
+            'gift' / self.star_gift_structures('gift'),
+            'message' / If(this.flags.has_message, self.struct_0x751f3146()),
+            'convert_stars' / If(this.flags.has_convert_stars, Int64ul),
+            'upgrade_msg_id' / If(this.flags.is_upgraded, Int32ul),
+            'upgrade_stars' / If(this.flags.has_upgrade_stars, Int64ul))
+
+    @constructor(0x08557637, 'message_action_star_gift_layer195')
+    def struct_0x08557637(self):
+        return Struct(
+            'sname' / Computed('message_action_star_gift_layer195'),
+            'signature' / Hex(Const(0x08557637, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_name_hidden=1,
+                                is_saved=4,
+                                is_converted=8,
+                                has_message=2,
+                                has_convert_stars=16),
+            'gift' / self.star_gift_structures('gift'),
+            'message' / If(this.flags.has_message, self.struct_0x751f3146()),
+            'convert_stars' / If(this.flags.has_convert_stars, Int64ul))
+
+    @constructor(0x9bb3ef44, 'message_action_star_gift_layer192')
+    def struct_0x9bb3ef44(self):
+        return Struct(
+            'sname' / Computed('message_action_star_gift_layer192'),
+            'signature' / Hex(Const(0x9bb3ef44, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_name_hidden=1,
+                                is_saved=4,
+                                is_converted=8,
+                                has_message=2),
+            'gift' / self.star_gift_structures('gift'),
+            'message' / If(this.flags.has_message, self.struct_0x751f3146()),
+            'convert_stars' / Int64ul)
+
+    @constructor(0x26077b99, 'message_action_star_gift_unique_layer197')
+    def struct_0x26077b99(self):
+        return Struct(
+            'sname' / Computed('message_action_star_gift_unique_layer197'),
+            'signature' / Hex(Const(0x26077b99, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_upgrade=1,
+                                is_transferred=2,
+                                is_saved=4,
+                                is_refunded=32,
+                                has_can_export_at=8,
+                                has_transfer_stars=16),
+            'gift' / self.star_gift_structures('gift'),
+            'can_export_at' / If(this.flags.has_can_export_at, Int32ul),
+            'transfer_stars' / If(this.flags.has_transfer_stars, Int64ul))
+
+    @constructor(0xacdfcb81, 'message_action_star_gift_unique')
+    def struct_0xacdfcb81(self):
+        return Struct(
+            'sname' / Computed('message_action_star_gift_unique'),
+            'signature' / Hex(Const(0xacdfcb81, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_upgrade=1,
+                                is_transferred=2,
+                                is_saved=4,
+                                is_refunded=32,
+                                has_can_export_at=8,
+                                has_transfer_stars=16,
+                                has_from_id=64,
+                                has_peer=128),
+            'gift' / self.star_gift_structures('gift'),
+            'can_export_at' / If(this.flags.has_can_export_at, Int32ul),
+            'transfer_stars' / If(this.flags.has_transfer_stars, Int64ul),
+            'from_id' / If(this.flags.has_from_id, self.peer_structures('from_id')),
+            'peer' / If(this.flags.has_peer, self.peer_structures('peer')),
+            'saved_id' / If(this.flags.has_peer, Int64ul))
 
     @structures
     def message_action_structures(self, name):
@@ -11292,6 +11882,29 @@ class TLStruct:  # pylint: disable=C0103
             'poll' / self.poll_structures('poll'),
             'results' / self.poll_results_structures('results'))
 
+    @constructor(0xceaa3ea1, 'message_media_giveaway_results')
+    def struct_0xceaa3ea1(self):
+        return Struct(
+            'sname' / Computed('message_media_giveaway_results'),
+            'signature' / Hex(Const(0xceaa3ea1, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_only_new_subscribers=1,
+                                is_refunded=4,
+                                has_additional_peers_count=8,
+                                has_months=16,
+                                has_stars=32,
+                                has_prize_description=2),
+            'channel_id' / Int64ul,
+            'additional_peers_count' / If(this.flags.has_additional_peers_count, Int32ul),
+            'launch_msg_id' / Int32ul,
+            'winners_count' / Int32ul,
+            'unclaimed_count' / Int32ul,
+            'winners' / self.vector(Int64ul, 'winners'),
+            'months' / If(this.flags.has_months, Int32ul),
+            'stars' / If(this.flags.has_stars, Int64ul),
+            'prize_description' / If(this.flags.has_prize_description, TString),
+            'until_date' / TTimestamp)
+
     @constructor(0xc6991068, 'message_media_giveaway_results_layer186')
     def struct_0xc6991068(self):
         return Struct(
@@ -11310,6 +11923,26 @@ class TLStruct:  # pylint: disable=C0103
             'winners' / self.vector(Int64ul, 'winners'),
             'months' / Int32ul,
             'prize_description' / If(this.flags.has_prize_description, TString),
+            'until_date' / TTimestamp)
+
+    @constructor(0xaa073beb, 'message_media_giveaway')
+    def struct_0xaa073beb(self):
+        return Struct(
+            'sname' / Computed('message_media_giveaway'),
+            'signature' / Hex(Const(0xaa073beb, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_only_new_subscribers=1,
+                                is_winners_are_visible=4,
+                                has_countries_iso2=2,
+                                has_prize_description=8,
+                                has_months=16,
+                                has_stars=32),
+            'channels' / self.vector(Int64ul, 'channels'),
+            'countries_iso2' / If(this.flags.has_countries_iso2, self.vector(TString, 'countries_iso2')),
+            'prize_description' / If(this.flags.has_prize_description, TString),
+            'quantity' / Int32ul,
+            'months' / If(this.flags.has_months, Int32ul),
+            'stars' / If(this.flags.has_stars, Int64ul),
             'until_date' / TTimestamp)
 
     @constructor(0xdaad85b0, 'message_media_giveaway_layer186')
@@ -11741,6 +12374,43 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
+    @constructor(0x4ba3a95a, 'message_reactor')
+    def struct_0x4ba3a95a(self):
+        return Struct(
+            'sname' / Computed('message_reactor'),
+            'signature' / Hex(Const(0x4ba3a95a, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_top=1,
+                                is_my=2,
+                                is_anonymous=4,
+                                has_peer_id=8),
+            'peer_id' / If(this.flags.has_peer_id, self.peer_structures('peer_id')),
+            'count' / Int32ul)
+
+    @constructor(0xef00d448, 'message_reactor_old')
+    def struct_0xef00d448(self):
+        return Struct(
+            'sname' / Computed('message_reactor_old'),
+            'signature' / Hex(Const(0xef00d448, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_top=1,
+                                is_my=2),
+            'peer_id' / self.peer_structures('peer_id'),
+            'count' / Int32ul)
+
+    @structures
+    def message_reactor_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x4ba3a95a: LazyBound(self.struct_0x4ba3a95a),
+            0xef00d448: LazyBound(self.struct_0xef00d448)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
     @constructor(0x4128faac, 'message_replies_layer131')
     def struct_0x4128faac(self):
         return Struct(
@@ -11854,7 +12524,6 @@ class TLStruct:  # pylint: disable=C0103
             'quote_text' / If(this.flags.has_quote_text, TString),
             'quote_entities' / If(this.flags.has_quote_entities, self.vector(self.message_entity_structures('quote_entities'), 'quote_entities')))
 
-
     @constructor(0x3d5c1693, 'message_reply_header_layer165_2')
     def struct_0x3d5c1693(self):
         return Struct(
@@ -11875,7 +12544,6 @@ class TLStruct:  # pylint: disable=C0103
             'reply_to_top_id' / If(this.flags.has_reply_to_top_id, Int32ul),
             'quote_text' / If(this.flags.has_quote_text, TString),
             'quote_entities' / If(this.flags.has_quote_entities, self.vector(self.message_entity_structures('quote_entities'), 'quote_entities')))
-
 
     @constructor(0xa6d57763, 'message_reply_header_layer165')
     def struct_0xa6d57763(self):
@@ -12800,11 +13468,11 @@ class TLStruct:  # pylint: disable=C0103
                                 has_ttl_period=33554432,
                                 has_quick_reply_shortcut_id=1073741824),
             'flags2' / FlagsEnum(Int32ul,
-                                is_offline=2,
-                                is_video_processing_pending=16,
-                                has_via_business_bot_id=1,
-                                has_effect=4,
-                                has_factcheck=8),
+                                 is_offline=2,
+                                 is_video_processing_pending=16,
+                                 has_via_business_bot_id=1,
+                                 has_effect=4,
+                                 has_factcheck=8),
             'id' / Int32ul,
             'from_id' / If(this.flags.has_from_id, self.peer_structures('from_id')),
             'from_boosts_applied' / If(this.flags.has_from_boosts_applied, Int32ul),
@@ -12825,7 +13493,7 @@ class TLStruct:  # pylint: disable=C0103
             'edit_date' / If(this.flags.has_edit_date, TTimestamp),
             'post_author' / If(this.flags.has_post_author, TString),
             'grouped_id' / If(this.flags.has_grouped_id, Int64ul),
-            'reactions' / If(this.flags.has_reactions, self.struct_0x0a339f0b()),
+            'reactions' / If(this.flags.has_reactions, self.message_reactions_structures('reactions')),
             'restriction_reason' / If(this.flags.has_restriction_reason, self.vector(self.restriction_reason_structures('restriction_reason'), 'restriction_reason')),
             'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
             'quick_reply_shortcut_id' / If(this.flags.has_quick_reply_shortcut_id, Int32ul),
@@ -12869,9 +13537,9 @@ class TLStruct:  # pylint: disable=C0103
                                 has_ttl_period=33554432,
                                 has_quick_reply_shortcut_id=1073741824),
             'flags2' / FlagsEnum(Int32ul,
-                                is_offline=2,
-                                has_via_business_bot_id=1,
-                                has_effect=4),
+                                 is_offline=2,
+                                 has_via_business_bot_id=1,
+                                 has_effect=4),
             'id' / Int32ul,
             'from_id' / If(this.flags.has_from_id, self.peer_structures('from_id')),
             'from_boosts_applied' / If(this.flags.has_from_boosts_applied, Int32ul),
@@ -12892,11 +13560,139 @@ class TLStruct:  # pylint: disable=C0103
             'edit_date' / If(this.flags.has_edit_date, TTimestamp),
             'post_author' / If(this.flags.has_post_author, TString),
             'grouped_id' / If(this.flags.has_grouped_id, Int64ul),
-            'reactions' / If(this.flags.has_reactions, self.struct_0x0a339f0b()),
+            'reactions' / If(this.flags.has_reactions, self.message_reactions_structures('reactions')),
             'restriction_reason' / If(this.flags.has_restriction_reason, self.vector(self.restriction_reason_structures('restriction_reason'), 'restriction_reason')),
             'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
             'quick_reply_shortcut_id' / If(this.flags.has_quick_reply_shortcut_id, Int32ul),
             'effect' / If(this.flags2.has_effect, Int64ul),
+            'attach_path' / TString)
+
+    @constructor(0xa4e97f37, 'message_layer179_1')
+    def struct_0xa4e97f37(self):
+        return Struct(
+            'sname' / Computed('message_layer179_1'),
+            'signature' / Hex(Const(0xa4e97f37, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_out=2,
+                                is_mentioned=16,
+                                is_media_unread=32,
+                                is_silent=8192,
+                                is_post=16384,
+                                is_from_scheduled=262144,
+                                is_legacy=524288,
+                                is_edit_hide=2097152,
+                                is_pinned=16777216,
+                                is_noforwards=67108864,
+                                is_invert_media=134217728,
+                                has_from_id=256,
+                                has_from_boosts_applied=536870912,
+                                has_saved_peer_id=268435456,
+                                has_fwd_from=4,
+                                has_via_bot_id=2048,
+                                has_reply_to=8,
+                                has_media=512,
+                                has_reply_markup=64,
+                                has_entities=128,
+                                has_views=1024,
+                                has_replies=8388608,
+                                has_edit_date=32768,
+                                has_post_author=65536,
+                                has_grouped_id=131072,
+                                has_reactions=1048576,
+                                has_restriction_reason=4194304,
+                                has_ttl_period=33554432,
+                                has_quick_reply_shortcut_id=1073741824),
+            'flags2' / FlagsEnum(Int32ul,
+                                 is_offline=2,
+                                 has_via_business_bot_id=1),
+            'id' / Int32ul,
+            'from_id' / If(this.flags.has_from_id, self.peer_structures('from_id')),
+            'from_boosts_applied' / If(this.flags.has_from_boosts_applied, Int32ul),
+            'peer_id' / self.peer_structures('peer_id'),
+            'saved_peer_id' / If(this.flags.has_saved_peer_id, self.peer_structures('saved_peer_id')),
+            'fwd_from' / If(this.flags.has_fwd_from, self.message_fwd_header_structures('fwd_from')),
+            'via_bot_id' / If(this.flags.has_via_bot_id, Int64ul),
+            'via_business_bot_id' / If(this.flags2.has_via_business_bot_id, Int64ul),
+            'reply_to' / If(this.flags.has_reply_to, self.message_reply_header_structures('reply_to')),
+            'date' / TTimestamp,
+            'message' / TString,
+            'media' / If(this.flags.has_media, self.message_media_structures('media')),
+            'reply_markup' / If(this.flags.has_reply_markup, self.reply_markup_structures('reply_markup')),
+            'entities' / If(this.flags.has_entities, self.vector(self.message_entity_structures('entities'), 'entities')),
+            'views' / If(this.flags.has_views, Int32ul),
+            'forwards' / If(this.flags.has_views, Int32ul),
+            'replies' / If(this.flags.has_replies, self.message_replies_structures('replies')),
+            'edit_date' / If(this.flags.has_edit_date, TTimestamp),
+            'post_author' / If(this.flags.has_post_author, TString),
+            'grouped_id' / If(this.flags.has_grouped_id, Int64ul),
+            'reactions' / If(this.flags.has_reactions, self.message_reactions_structures('reactions')),
+            'restriction_reason' / If(this.flags.has_restriction_reason, self.vector(self.restriction_reason_structures('restriction_reason'), 'restriction_reason')),
+            'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
+            'quick_reply_shortcut_id' / If(this.flags.has_quick_reply_shortcut_id, Int32ul),
+            'attach_path' / TString)
+
+    @constructor(0x2357bf25, 'message_layer179')
+    def struct_0x2357bf25(self):
+        return Struct(
+            'sname' / Computed('message_layer179'),
+            'signature' / Hex(Const(0x2357bf25, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_out=2,
+                                is_mentioned=16,
+                                is_media_unread=32,
+                                is_silent=8192,
+                                is_post=16384,
+                                is_from_scheduled=262144,
+                                is_legacy=524288,
+                                is_edit_hide=2097152,
+                                is_pinned=16777216,
+                                is_noforwards=67108864,
+                                is_invert_media=134217728,
+                                has_from_id=256,
+                                has_from_boosts_applied=536870912,
+                                has_saved_peer_id=268435456,
+                                has_fwd_from=4,
+                                has_via_bot_id=2048,
+                                has_reply_to=8,
+                                has_media=512,
+                                has_reply_markup=64,
+                                has_entities=128,
+                                has_views=1024,
+                                has_replies=8388608,
+                                has_edit_date=32768,
+                                has_post_author=65536,
+                                has_grouped_id=131072,
+                                has_reactions=1048576,
+                                has_restriction_reason=4194304,
+                                has_ttl_period=33554432,
+                                has_quick_reply_shortcut_id=1073741824),
+            'flags2' / FlagsEnum(Int32ul,
+                                 is_offline=2,
+                                 has_via_business_bot_id=1),
+            'id' / Int32ul,
+            'from_id' / If(this.flags.has_from_id, self.peer_structures('from_id')),
+            'from_boosts_applied' / If(this.flags.has_from_boosts_applied, Int32ul),
+            'peer_id' / self.peer_structures('peer_id'),
+            'saved_peer_id' / If(this.flags.has_saved_peer_id, self.peer_structures('saved_peer_id')),
+            'fwd_from' / If(this.flags.has_fwd_from, self.message_fwd_header_structures('fwd_from')),
+            'via_bot_id' / If(this.flags.has_via_bot_id, Int64ul),
+            'via_business_bot_id' / If(this.flags2.has_via_business_bot_id, Int64ul),
+            'reply_to' / If(this.flags.has_reply_to, self.message_reply_header_structures('reply_to')),
+            'date' / TTimestamp,
+            'message' / TString,
+            'media' / If(this.flags.has_media, self.message_media_structures('media')),
+            'reply_markup' / If(this.flags.has_reply_markup, self.reply_markup_structures('reply_markup')),
+            'entities' / If(this.flags.has_entities, self.vector(self.message_entity_structures('entities'), 'entities')),
+            'views' / If(this.flags.has_views, Int32ul),
+            'forwards' / If(this.flags.has_views, Int32ul),
+            'replies' / If(this.flags.has_replies, self.message_replies_structures('replies')),
+            'edit_date' / If(this.flags.has_edit_date, TTimestamp),
+            'post_author' / If(this.flags.has_post_author, TString),
+            'grouped_id' / If(this.flags.has_grouped_id, Int64ul),
+            'reactions' / If(this.flags.has_reactions, self.message_reactions_structures('reactions')),
+            'restriction_reason' / If(this.flags.has_restriction_reason, self.vector(self.restriction_reason_structures('restriction_reason'), 'restriction_reason')),
+            'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
+            'quick_reply_shortcut_id' / If(this.flags.has_quick_reply_shortcut_id, Int32ul),
             'attach_path' / TString)
 
     @constructor(0xa66c7efc, 'message_layer176')
@@ -12953,8 +13749,8 @@ class TLStruct:  # pylint: disable=C0103
             'edit_date' / If(this.flags.has_edit_date, TTimestamp),
             'post_author' / If(this.flags.has_post_author, TString),
             'grouped_id' / If(this.flags.has_grouped_id, Int64ul),
-            'reactions' / If(this.flags.has_reactions, self.struct_0x4f2b9479()),
-            'restriction_reason' / If(this.flags.has_restriction_reason, self.vector(self.struct_0xd072acb4(), 'restriction_reason')),
+            'reactions' / If(this.flags.has_reactions, self.message_reactions_structures('reactions')),
+            'restriction_reason' / If(this.flags.has_restriction_reason, self.vector(self.restriction_reason_structures('restriction_reason'), 'restriction_reason')),
             'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
             'quick_reply_shortcut_id' / If(this.flags.has_quick_reply_shortcut_id, Int32ul),
             'attach_path' / TString)
@@ -13218,7 +14014,7 @@ class TLStruct:  # pylint: disable=C0103
             'reply_to' / If(this.flags.has_reply_to, self.message_reply_header_structures('reply_to')),
             'date' / TTimestamp,
             'action' / self.message_action_structures('action'),
-            'reactions' / If(this.flags.has_reactions, self.struct_0x0a339f0b()),
+            'reactions' / If(this.flags.has_reactions, self.message_reactions_structures('reactions')),
             'ttl_period' / If(this.flags.has_ttl_period, Int32ul))
 
     @constructor(0xf07814c8, 'message_old5')
@@ -13283,6 +14079,7 @@ class TLStruct:  # pylint: disable=C0103
             0x94345242: LazyBound(self.struct_0x94345242),
             0xbde09c2e: LazyBound(self.struct_0xbde09c2e),
             0xa4e97f37: LazyBound(self.struct_0xa4e97f37),
+            0x2357bf25: LazyBound(self.struct_0x2357bf25),
             0xa66c7efc: LazyBound(self.struct_0xa66c7efc),
             0x1e4c8a69: LazyBound(self.struct_0x1e4c8a69),
             0x38116ee0: LazyBound(self.struct_0x38116ee0),
@@ -13317,6 +14114,32 @@ class TLStruct:  # pylint: disable=C0103
         tag_map = {
             0xcdbbcebb: LazyBound(self.struct_0xcdbbcebb),
             0xe86602c3: LazyBound(self.struct_0xe86602c3)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0xd1ed9a5b, 'messages_available_effects_not_modified')
+    def struct_0xd1ed9a5b(self):
+        return []
+
+    @constructor(0xbddb616e, 'messages_available_effects')
+    def struct_0xbddb616e(self):
+        return Struct(
+            'sname' / Computed('messages_available_effects'),
+            'signature' / Hex(Const(0xbddb616e, Int32ul)),
+            'hash' / Int32ul,
+            'effects' / self.vector(self.struct_0x93c3e27e(), 'effects'),
+            'documents' / self.vector(self.document_structures('documents'), 'documents'))
+
+    @structures
+    def messages_available_effects_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0xd1ed9a5b: LazyBound(self.struct_0xd1ed9a5b),
+            0xbddb616e: LazyBound(self.struct_0xbddb616e)
         }
         return Struct(
             '_signature' / Peek(Int32ul),
@@ -13743,6 +14566,39 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
+    @constructor(0x82c9e290, 'messages_found_stickers')
+    def struct_0x82c9e290(self):
+        return Struct(
+            'sname' / Computed('messages_found_stickers'),
+            'signature' / Hex(Const(0x82c9e290, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_next_offset=1),
+            'next_offset' / If(this.flags.has_next_offset, Int32ul),
+            'hash' / Int64ul,
+            'stickers' / self.vector(self.document_structures('stickers'), 'stickers'))
+
+    @constructor(0x6010c534, 'messages_found_stickers_not_modified')
+    def struct_0x6010c534(self):
+        return Struct(
+            'sname' / Computed('messages_found_stickers_not_modified'),
+            'signature' / Hex(Const(0x6010c534, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_next_offset=1),
+            'next_offset' / If(this.flags.has_next_offset, Int32ul))
+
+    @structures
+    def messages_found_stickers_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x82c9e290: LazyBound(self.struct_0x82c9e290),
+            0x6010c534: LazyBound(self.struct_0x6010c534)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
     @constructor(0x3a54685e, 'messages_messages_slice')
     def struct_0x3a54685e(self):
         return Struct(
@@ -14012,21 +14868,12 @@ class TLStruct:  # pylint: disable=C0103
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
-    @constructor(0x65a4c7d5, 'messages_sponsored_messages_layer147')
-    def struct_0x65a4c7d5(self):
-        return Struct(
-            'sname' / Computed('messages_sponsored_messages_layer147'),
-            'signature' / Hex(Const(0x65a4c7d5, Int32ul)),
-            'messages' / self.vector(self.struct_0xed5383f7(), 'messages'),
-            'chats' / self.vector(self.chat_structures('chats'), 'chats'),
-            'users' / self.vector(self.user_structures('users'), 'users'))
     @structures
     def messages_sponsored_messages_structures(self, name):
         # pylint: disable=C0301
         tag_map = {
             0x1839490f: LazyBound(self.struct_0x1839490f),
-            0xc9ee1d87: LazyBound(self.struct_0xc9ee1d87),
-            0x65a4c7d5: LazyBound(self.struct_0x65a4c7d5)
+            0xc9ee1d87: LazyBound(self.struct_0xc9ee1d87)
         }
         return Struct(
             '_signature' / Peek(Int32ul),
@@ -14714,6 +15561,129 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
+    @constructor(0xa0058751, 'payments_payment_form')
+    def struct_0xa0058751(self):
+        return Struct(
+            'sname' / Computed('payments_payment_form'),
+            'signature' / Hex(Const(0xa0058751, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_can_save_credentials=4,
+                                is_password_missing=8,
+                                has_photo=32,
+                                has_native_provider=16,
+                                has_additional_methods=64,
+                                has_saved_info=1,
+                                has_saved_credentials=2),
+            'form_id' / Int64ul,
+            'bot_id' / Int64ul,
+            'title' / TString,
+            'description' / TString,
+            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
+            'invoice' / self.invoice_structures('invoice'),
+            'provider_id' / Int64ul,
+            'url' / TString,
+            'native_provider' / If(this.flags.has_native_provider, TString),
+            'native_params' / If(this.flags.has_native_provider, self.struct_0x7d748d04()),
+            'additional_methods' / If(this.flags.has_additional_methods, self.vector(self.struct_0x88f8f21b(), 'additional_methods')),
+            'saved_info' / If(this.flags.has_saved_info, self.struct_0x909c3f94()),
+            'saved_credentials' / If(this.flags.has_saved_credentials, self.vector(self.struct_0xcdc27a1f(), 'saved_credentials')),
+            'users' / self.vector(self.user_structures('users'), 'users'))
+
+    @constructor(0x7bf6b15c, 'payments_payment_form_stars')
+    def struct_0x7bf6b15c(self):
+        return Struct(
+            'sname' / Computed('payments_payment_form_stars'),
+            'signature' / Hex(Const(0x7bf6b15c, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_can_save_credentials=4,
+                                is_password_missing=8,
+                                has_photo=32),
+            'form_id' / Int64ul,
+            'bot_id' / Int64ul,
+            'title' / TString,
+            'description' / TString,
+            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
+            'invoice' / self.invoice_structures('invoice'),
+            'users' / self.vector(self.user_structures('users'), 'users'))
+
+    @constructor(0xb425cfe1, 'payments_payment_form_star_gift')
+    def struct_0xb425cfe1(self):
+        return Struct(
+            'sname' / Computed('payments_payment_form_star_gift'),
+            'signature' / Hex(Const(0xb425cfe1, Int32ul)),
+            'form_id' / Int64ul,
+            'invoice' / self.invoice_structures('invoice'))
+
+    @structures
+    def payment_form_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0xa0058751: LazyBound(self.struct_0xa0058751),
+            0x7bf6b15c: LazyBound(self.struct_0x7bf6b15c),
+            0xb425cfe1: LazyBound(self.struct_0xb425cfe1)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0x70c4fe03, 'payments_payment_receipt')
+    def struct_0x70c4fe03(self):
+        return Struct(
+            'sname' / Computed('payments_payment_receipt'),
+            'signature' / Hex(Const(0x70c4fe03, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_photo=4,
+                                has_info=1,
+                                has_shipping=2,
+                                has_tip_amount=8),
+            'date' / TTimestamp,
+            'bot_id' / Int64ul,
+            'provider_id' / Int64ul,
+            'title' / TString,
+            'description' / TString,
+            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
+            'invoice' / self.invoice_structures('invoice'),
+            'info' / If(this.flags.has_info, self.struct_0x909c3f94()),
+            'shipping' / If(this.flags.has_shipping, self.struct_0xb6213cdf()),
+            'tip_amount' / If(this.flags.has_tip_amount, Int64ul),
+            'currency' / TString,
+            'total_amount' / Int64ul,
+            'credentials_title' / TString,
+            'users' / self.vector(self.user_structures('users'), 'users'))
+
+    @constructor(0xdabbf83a, 'payments_payment_receipt_stars')
+    def struct_0xdabbf83a(self):
+        return Struct(
+            'sname' / Computed('payments_payment_receipt_stars'),
+            'signature' / Hex(Const(0xdabbf83a, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_photo=4),
+            'date' / TTimestamp,
+            'bot_id' / Int64ul,
+            'title' / TString,
+            'description' / TString,
+            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
+            'invoice' / self.invoice_structures('invoice'),
+            'currency' / TString,
+            'total_amount' / Int64ul,
+            'transaction_id' / TString,
+            'users' / self.vector(self.user_structures('users'), 'users'))
+
+    @structures
+    def payment_receipt_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x70c4fe03: LazyBound(self.struct_0x70c4fe03),
+            0xdabbf83a: LazyBound(self.struct_0xdabbf83a)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
     @constructor(0xe175e66f, 'payments_giveaway_info_results')
     def struct_0xe175e66f(self):
         return Struct(
@@ -14926,6 +15896,66 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
+    @constructor(0xacd66c5e, 'peer_settings')
+    def struct_0xacd66c5e(self):
+        return Struct(
+            'sname' / Computed('peer_settings'),
+            'signature' / Hex(Const(0xacd66c5e, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_report_spam=1,
+                                is_add_contact=2,
+                                is_block_contact=4,
+                                is_share_contact=8,
+                                is_need_contacts_exception=16,
+                                is_report_geo=32,
+                                is_autoarchived=128,
+                                is_invite_members=256,
+                                is_request_chat_broadcast=1024,
+                                is_business_bot_paused=2048,
+                                is_business_bot_can_reply=4096,
+                                has_geo_distance=64,
+                                has_request_chat_title=512,
+                                has_business_bot_id=8192),
+            'geo_distance' / If(this.flags.has_geo_distance, Int32ul),
+            'request_chat_title' / If(this.flags.has_request_chat_title, TString),
+            'request_chat_date' / If(this.flags.has_request_chat_title, TTimestamp),
+            'business_bot_id' / If(this.flags.has_business_bot_id, Int64ul),
+            'business_bot_manage_url' / If(this.flags.has_business_bot_id, TString))
+
+    @constructor(0xa518110d, 'peer_settings_layer176')
+    def struct_0xa518110d(self):
+        return Struct(
+            'sname' / Computed('peer_settings_layer176'),
+            'signature' / Hex(Const(0xa518110d, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_report_spam=1,
+                                is_add_contact=2,
+                                is_block_contact=4,
+                                is_share_contact=8,
+                                is_need_contacts_exception=16,
+                                is_report_geo=32,
+                                is_autoarchived=128,
+                                is_invite_members=256,
+                                is_request_chat_broadcast=1024,
+                                has_geo_distance=64,
+                                has_request_chat_title=512),
+            'geo_distance' / If(this.flags.has_geo_distance, Int32ul),
+            'request_chat_title' / If(this.flags.has_request_chat_title, TString),
+            'request_chat_date' / If(this.flags.has_request_chat_title, TTimestamp))
+
+    @structures
+    def peer_settings_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0xacd66c5e: LazyBound(self.struct_0xacd66c5e),
+            0xa518110d: LazyBound(self.struct_0xa518110d)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
     @constructor(0x9a35e999, 'stories_peer_stories')
     def struct_0x9a35e999(self):
         return Struct(
@@ -15021,6 +16051,20 @@ class TLStruct:  # pylint: disable=C0103
     @constructor(0xafe2b839, 'phone_call_discard_reason_allow_group_call')
     def struct_0xafe2b839(self):
         return ['encrypted_key' / TBytes]
+
+    @structures
+    def phone_call_discard_reason_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x57adc690: LazyBound(self.struct_0x57adc690),
+            0xfaf7e8c9: LazyBound(self.struct_0xfaf7e8c9),
+            0x85e42301: LazyBound(self.struct_0x85e42301),
+            0xe095c1a0: LazyBound(self.struct_0xe095c1a0),
+            0xafe2b839: LazyBound(self.struct_0xafe2b839)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
 
     # -------------------------------------------------------------------------
 
@@ -15555,6 +16599,35 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
+    @constructor(0xff16e2ca, 'poll_answer')
+    def struct_0xff16e2ca(self):
+        return Struct(
+            'sname' / Computed('poll_answer'),
+            'signature' / Hex(Const(0xff16e2ca, Int32ul)),
+            'text' / self.struct_0x751f3146(),
+            'option' / TBytes)
+
+    @constructor(0x6ca9c2e9, 'poll_answer_layer178')
+    def struct_0x6ca9c2e9(self):
+        return Struct(
+            'sname' / Computed('poll_answer_layer178'),
+            'signature' / Hex(Const(0x6ca9c2e9, Int32ul)),
+            'text' / TString,
+            'option' / TBytes)
+
+    @structures
+    def poll_answer_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0xff16e2ca: LazyBound(self.struct_0xff16e2ca),
+            0x6ca9c2e9: LazyBound(self.struct_0x6ca9c2e9)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
     @constructor(0x5755785a, 'poll_results_layer108')
     def struct_0x5755785a(self):
         return Struct(
@@ -15679,8 +16752,8 @@ class TLStruct:  # pylint: disable=C0103
                                 is_quiz=8,
                                 has_close_period=16,
                                 has_close_date=32),
-            'question' / TString,
-            'answers' / self.vector(self.struct_0x6ca9c2e9(), 'answers'),
+            'question_text' / TString,
+            'answers' / self.vector(self.poll_answer_structures('answers'), 'answers'),
             'close_period' / If(this.flags.has_close_period, Int32ul),
             'close_date' / If(this.flags.has_close_date, TTimestamp))
 
@@ -15755,6 +16828,49 @@ class TLStruct:  # pylint: disable=C0103
         tag_map = {
             0x8a480e27: LazyBound(self.struct_0x8a480e27),
             0xe7058e7f: LazyBound(self.struct_0xe7058e7f)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0x5f2d1df2, 'premium_subscription_option')
+    def struct_0x5f2d1df2(self):
+        return Struct(
+            'sname' / Computed('premium_subscription_option'),
+            'signature' / Hex(Const(0x5f2d1df2, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_current=2,
+                                is_can_purchase_upgrade=4,
+                                has_transaction=8,
+                                has_store_product=1),
+            'transaction' / If(this.flags.has_transaction, TString),
+            'months' / Int32ul,
+            'currency' / TString,
+            'amount' / Int64ul,
+            'bot_url' / TString,
+            'store_product' / If(this.flags.has_store_product, TString))
+
+    @constructor(0xb6f11ebe, 'premium_subscription_option_layer151')
+    def struct_0xb6f11ebe(self):
+        return Struct(
+            'sname' / Computed('premium_subscription_option_layer151'),
+            'signature' / Hex(Const(0xb6f11ebe, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_store_product=1),
+            'months' / Int32ul,
+            'currency' / TString,
+            'amount' / Int64ul,
+            'bot_url' / TString,
+            'store_product' / If(this.flags.has_store_product, TString))
+
+    @structures
+    def premium_subscription_option_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x5f2d1df2: LazyBound(self.struct_0x5f2d1df2),
+            0xb6f11ebe: LazyBound(self.struct_0xb6f11ebe)
         }
         return Struct(
             '_signature' / Peek(Int32ul),
@@ -15881,6 +16997,27 @@ class TLStruct:  # pylint: disable=C0103
     def struct_0xf6a5f82f(self):
         return []
 
+    @structures
+    def privacy_rule_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0xf888fa1a: LazyBound(self.struct_0xf888fa1a),
+            0xe4621141: LazyBound(self.struct_0xe4621141),
+            0x6b134e8e: LazyBound(self.struct_0x6b134e8e),
+            0x41c87565: LazyBound(self.struct_0x41c87565),
+            0x65427b82: LazyBound(self.struct_0x65427b82),
+            0x8b73e763: LazyBound(self.struct_0x8b73e763),
+            0xb8905fb2: LazyBound(self.struct_0xb8905fb2),
+            0xfffe1bac: LazyBound(self.struct_0xfffe1bac),
+            0xf7e8d89b: LazyBound(self.struct_0xf7e8d89b),
+            0xece9814b: LazyBound(self.struct_0xece9814b),
+            0x21461b5d: LazyBound(self.struct_0x21461b5d),
+            0xf6a5f82f: LazyBound(self.struct_0xf6a5f82f)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
     # -------------------------------------------------------------------------
 
     @constructor(0x01f2bf4a, 'stats_public_forward_message')
@@ -15908,16 +17045,6 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
-    @constructor(0x6fb250d1, 'reaction_count_old')
-    def struct_0x6fb250d1(self):
-        return Struct(
-            'sname' / Computed('reaction_count_old'),
-            'signature' / Hex(Const(0x6fb250d1, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_chosen=1),
-            'reaction' / TString,
-            'count' / Int32ul)
-
     @constructor(0xa3d1cb80, 'reaction_count')
     def struct_0xa3d1cb80(self):
         return Struct(
@@ -15927,6 +17054,16 @@ class TLStruct:  # pylint: disable=C0103
                                 has_chosen_order=1),
             'chosen_order' / If(this.flags.has_chosen_order, Int32ul),
             'reaction' / self.reaction_structures('reaction'),
+            'count' / Int32ul)
+
+    @constructor(0x6fb250d1, 'reaction_count_old')
+    def struct_0x6fb250d1(self):
+        return Struct(
+            'sname' / Computed('reaction_count_old'),
+            'signature' / Hex(Const(0x6fb250d1, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_chosen=1),
+            'reaction' / TString,
             'count' / Int32ul)
 
     @structures
@@ -16150,6 +17287,41 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
+    @constructor(0xf0e4e0b6, 'report_result_choose_option')
+    def struct_0xf0e4e0b6(self):
+        return Struct(
+            'sname' / Computed('report_result_choose_option'),
+            'signature' / Hex(Const(0xf0e4e0b6, Int32ul)),
+            'title' / TString,
+            'options' / self.vector(self.struct_0x7903e3d9(), 'options'))
+
+    @constructor(0x6f09ac31, 'report_result_add_comment')
+    def struct_0x6f09ac31(self):
+        return Struct(
+            'sname' / Computed('report_result_add_comment'),
+            'signature' / Hex(Const(0x6f09ac31, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_optional=1),
+            'option' / TBytes)
+
+    @constructor(0x8db33c4b, 'report_result_reported')
+    def struct_0x8db33c4b(self):
+        return []
+
+    @structures
+    def report_result_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0xf0e4e0b6: LazyBound(self.struct_0xf0e4e0b6),
+            0x6f09ac31: LazyBound(self.struct_0x6f09ac31),
+            0x8db33c4b: LazyBound(self.struct_0x8db33c4b)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
     @constructor(0x5f3b8a00, 'request_peer_type_user')
     def struct_0x5f3b8a00(self):
         return Struct(
@@ -16199,6 +17371,27 @@ class TLStruct:  # pylint: disable=C0103
             0x5f3b8a00: LazyBound(self.struct_0x5f3b8a00),
             0xc9f06e1b: LazyBound(self.struct_0xc9f06e1b),
             0x339bef6c: LazyBound(self.struct_0x339bef6c)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0xd072acb4, 'restriction_reason')
+    def struct_0xd072acb4(self):
+        return Struct(
+            'sname' / Computed('restriction_reason'),
+            'signature' / Hex(Const(0xd072acb4, Int32ul)),
+            'platform' / TString,
+            'reason' / TString,
+            'text' / TString)
+
+    @structures
+    def restriction_reason_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0xd072acb4: LazyBound(self.struct_0xd072acb4)
         }
         return Struct(
             '_signature' / Peek(Int32ul),
@@ -16728,6 +17921,737 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
+    @constructor(0x39d99013, 'star_gift_attribute_model')
+    def struct_0x39d99013(self):
+        return Struct(
+            'sname' / Computed('star_gift_attribute_model'),
+            'signature' / Hex(Const(0x39d99013, Int32ul)),
+            'name' / TString,
+            'document' / self.document_structures('document'),
+            'rarity_permille' / Int32ul)
+
+    @constructor(0x13acff19, 'star_gift_attribute_pattern')
+    def struct_0x13acff19(self):
+        return Struct(
+            'sname' / Computed('star_gift_attribute_pattern'),
+            'signature' / Hex(Const(0x13acff19, Int32ul)),
+            'name' / TString,
+            'document' / self.document_structures('document'),
+            'rarity_permille' / Int32ul)
+
+    @constructor(0x94271762, 'star_gift_attribute_backdrop')
+    def struct_0x94271762(self):
+        return Struct(
+            'sname' / Computed('star_gift_attribute_backdrop'),
+            'signature' / Hex(Const(0x94271762, Int32ul)),
+            'name' / TString,
+            'center_color' / Int32ul,
+            'edge_color' / Int32ul,
+            'pattern_color' / Int32ul,
+            'text_color' / Int32ul,
+            'rarity_permille' / Int32ul)
+
+    @constructor(0xe0bff26c, 'star_gift_attribute_original_details')
+    def struct_0xe0bff26c(self):
+        return Struct(
+            'sname' / Computed('star_gift_attribute_original_details'),
+            'signature' / Hex(Const(0xe0bff26c, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_sender_id=1,
+                                has_message=2),
+            'sender_id' / If(this.flags.has_sender_id, self.peer_structures('sender_id')),
+            'recipient_id' / self.peer_structures('recipient_id'),
+            'date' / TTimestamp,
+            'message' / If(this.flags.has_message, self.struct_0x751f3146()))
+
+    @constructor(0xc02c4f4b, 'star_gift_attribute_original_details_layer197')
+    def struct_0xc02c4f4b(self):
+        return Struct(
+            'sname' / Computed('star_gift_attribute_original_details_layer197'),
+            'signature' / Hex(Const(0xc02c4f4b, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_sender_user_id=1,
+                                has_message=2),
+            'sender_user_id' / If(this.flags.has_sender_user_id, Int64ul),
+            'recipient_user_id' / Int64ul,
+            'date' / TTimestamp,
+            'message' / If(this.flags.has_message, self.struct_0x751f3146()))
+
+    @structures
+    def star_gift_attribute_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x39d99013: LazyBound(self.struct_0x39d99013),
+            0x13acff19: LazyBound(self.struct_0x13acff19),
+            0x94271762: LazyBound(self.struct_0x94271762),
+            0xe0bff26c: LazyBound(self.struct_0xe0bff26c),
+            0xc02c4f4b: LazyBound(self.struct_0xc02c4f4b)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0x02cc73c8, 'star_gift')
+    def struct_0x02cc73c8(self):
+        return Struct(
+            'sname' / Computed('star_gift'),
+            'signature' / Hex(Const(0x02cc73c8, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_limited=1,
+                                is_sold_out=2,
+                                is_birthday=4,
+                                is_can_upgrade=8),
+            'id' / Int64ul,
+            'sticker' / self.document_structures('sticker'),
+            'stars' / Int64ul,
+            'availability_remains' / If(this.flags.is_limited, Int32ul),
+            'availability_total' / If(this.flags.is_limited, Int32ul),
+            'convert_stars' / Int64ul,
+            'first_sale_date' / If(this.flags.is_sold_out, TTimestamp),
+            'last_sale_date' / If(this.flags.is_sold_out, TTimestamp),
+            'upgrade_stars' / If(this.flags.is_can_upgrade, Int64ul))
+
+    @constructor(0xf2fe7e4a, 'star_gift_unique')
+    def struct_0xf2fe7e4a(self):
+        return Struct(
+            'sname' / Computed('star_gift_unique'),
+            'signature' / Hex(Const(0xf2fe7e4a, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_owner_id=1,
+                                has_owner_name=2,
+                                has_owner_address=4),
+            'id' / Int64ul,
+            'title' / TString,
+            'slug' / TString,
+            'num' / Int32ul,
+            'owner_id' / If(this.flags.has_owner_id, self.peer_structures('owner_id')),
+            'owner_name' / If(this.flags.has_owner_name, TString),
+            'owner_address' / If(this.flags.has_owner_address, TString),
+            'attributes' / self.vector(self.star_gift_attribute_structures('attributes'), 'attributes'),
+            'availability_issued' / Int32ul,
+            'availability_total' / Int32ul)
+
+    @constructor(0x3482f322, 'star_gift_unique_layer197')
+    def struct_0x3482f322(self):
+        return Struct(
+            'sname' / Computed('star_gift_unique_layer197'),
+            'signature' / Hex(Const(0x3482f322, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_owner_user_id=1,
+                                has_owner_name=2),
+            'id' / Int64ul,
+            'title' / TString,
+            'slug' / TString,
+            'num' / Int32ul,
+            'owner_user_id' / If(this.flags.has_owner_user_id, Int64ul),
+            'owner_name' / If(this.flags.has_owner_name, TString),
+            'attributes' / self.vector(self.star_gift_attribute_structures('attributes'), 'attributes'),
+            'availability_issued' / Int32ul,
+            'availability_total' / Int32ul)
+
+    @constructor(0x6a1407cd, 'star_gift_unique_layer196')
+    def struct_0x6a1407cd(self):
+        return Struct(
+            'sname' / Computed('star_gift_unique_layer196'),
+            'signature' / Hex(Const(0x6a1407cd, Int32ul)),
+            'id' / Int64ul,
+            'title' / TString,
+            'num' / Int32ul,
+            'owner_user_id' / Int64ul,
+            'attributes' / self.vector(self.star_gift_attribute_structures('attributes'), 'attributes'),
+            'availability_issued' / Int32ul,
+            'availability_total' / Int32ul)
+
+    @constructor(0xaea174ee, 'star_gift_layer190')
+    def struct_0xaea174ee(self):
+        return Struct(
+            'sname' / Computed('star_gift_layer190'),
+            'signature' / Hex(Const(0xaea174ee, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_limited=1),
+            'id' / Int64ul,
+            'sticker' / self.document_structures('sticker'),
+            'stars' / Int64ul,
+            'availability_remains' / If(this.flags.is_limited, Int32ul),
+            'availability_total' / If(this.flags.is_limited, Int32ul),
+            'convert_stars' / Int64ul)
+
+    @constructor(0x49c577cd, 'star_gift_layer195')
+    def struct_0x49c577cd(self):
+        return Struct(
+            'sname' / Computed('star_gift_layer195'),
+            'signature' / Hex(Const(0x49c577cd, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_limited=1,
+                                is_sold_out=2,
+                                is_birthday=4),
+            'id' / Int64ul,
+            'sticker' / self.document_structures('sticker'),
+            'stars' / Int64ul,
+            'availability_remains' / If(this.flags.is_limited, Int32ul),
+            'availability_total' / If(this.flags.is_limited, Int32ul),
+            'convert_stars' / Int64ul,
+            'first_sale_date' / If(this.flags.is_sold_out, TTimestamp),
+            'last_sale_date' / If(this.flags.is_sold_out, TTimestamp))
+
+    @structures
+    def star_gift_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x02cc73c8: LazyBound(self.struct_0x02cc73c8),
+            0xf2fe7e4a: LazyBound(self.struct_0xf2fe7e4a),
+            0x3482f322: LazyBound(self.struct_0x3482f322),
+            0x6a1407cd: LazyBound(self.struct_0x6a1407cd),
+            0xaea174ee: LazyBound(self.struct_0xaea174ee),
+            0x49c577cd: LazyBound(self.struct_0x49c577cd)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0x901689ea, 'star_gifts')
+    def struct_0x901689ea(self):
+        return Struct(
+            'sname' / Computed('star_gifts'),
+            'signature' / Hex(Const(0x901689ea, Int32ul)),
+            'hash' / Int32ul,
+            'gifts' / self.vector(self.star_gift_structures('gifts'), 'gifts'))
+
+    @constructor(0xa388a368, 'star_gifts_not_modified')
+    def struct_0xa388a368(self):
+        return []
+
+    @structures
+    def star_gifts_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x901689ea: LazyBound(self.struct_0x901689ea),
+            0xa388a368: LazyBound(self.struct_0xa388a368)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0x69279795, 'stars_input_saved_star_gift_user')
+    def struct_0x69279795(self):
+        return ['msg_id' / Int32ul]
+
+    @constructor(0xf101aa7f, 'stars_input_saved_star_gift_chat')
+    def struct_0xf101aa7f(self):
+        return Struct(
+            'sname' / Computed('stars_input_saved_star_gift_chat'),
+            'signature' / Hex(Const(0xf101aa7f, Int32ul)),
+            'peer' / self.input_peer_structures('peer'),
+            'saved_id' / Int64ul)
+
+    @structures
+    def stars_input_saved_star_gift_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x69279795: LazyBound(self.struct_0x69279795),
+            0xf101aa7f: LazyBound(self.struct_0xf101aa7f)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0xbbfa316c, 'stars_payments_stars_status_layer194')
+    def struct_0xbbfa316c(self):
+        return Struct(
+            'sname' / Computed('stars_payments_stars_status_layer194'),
+            'signature' / Hex(Const(0xbbfa316c, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_subscriptions=2,
+                                has_subscriptions_next_offset=4,
+                                has_subscriptions_missing_balance=16,
+                                has_history=8,
+                                has_next_offset=1),
+            'balance_amount' / Int64ul,
+            'subscriptions' / If(this.flags.has_subscriptions, self.vector(self.stars_subscription_structures('subscriptions'), 'subscriptions')),
+            'subscriptions_next_offset' / If(this.flags.has_subscriptions_next_offset, TString),
+            'subscriptions_missing_balance' / If(this.flags.has_subscriptions_missing_balance, Int64ul),
+            'history' / If(this.flags.has_history, self.vector(self.stars_transaction_structures('history'), 'history')),
+            'next_offset' / If(this.flags.has_next_offset, TString),
+            'chats' / self.vector(self.chat_structures('chats'), 'chats'),
+            'users' / self.vector(self.user_structures('users'), 'users'))
+
+    @constructor(0x6c9ce8ed, 'stars_payments_stars_status')
+    def struct_0x6c9ce8ed(self):
+        return Struct(
+            'sname' / Computed('stars_payments_stars_status'),
+            'signature' / Hex(Const(0x6c9ce8ed, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_subscriptions=2,
+                                has_subscriptions_next_offset=4,
+                                has_subscriptions_missing_balance=16,
+                                has_history=8,
+                                has_next_offset=1),
+            'balance' / self.struct_0xbbb6b4a3(),
+            'subscriptions' / If(this.flags.has_subscriptions, self.vector(self.stars_subscription_structures('subscriptions'), 'subscriptions')),
+            'subscriptions_next_offset' / If(this.flags.has_subscriptions_next_offset, TString),
+            'subscriptions_missing_balance' / If(this.flags.has_subscriptions_missing_balance, Int64ul),
+            'history' / If(this.flags.has_history, self.vector(self.stars_transaction_structures('history'), 'history')),
+            'next_offset' / If(this.flags.has_next_offset, TString),
+            'chats' / self.vector(self.chat_structures('chats'), 'chats'),
+            'users' / self.vector(self.user_structures('users'), 'users'))
+
+    @structures
+    def stars_status_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0xbbfa316c: LazyBound(self.struct_0xbbfa316c),
+            0x6c9ce8ed: LazyBound(self.struct_0x6c9ce8ed)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0x2e6eab1a, 'stars_subscription')
+    def struct_0x2e6eab1a(self):
+        return Struct(
+            'sname' / Computed('stars_subscription'),
+            'signature' / Hex(Const(0x2e6eab1a, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_canceled=1,
+                                is_can_refulfill=2,
+                                is_missing_balance=4,
+                                is_bot_canceled=128,
+                                has_chat_invite_hash=8,
+                                has_title=16,
+                                has_photo=32,
+                                has_invoice_slug=64),
+            'id' / TString,
+            'peer' / self.peer_structures('peer'),
+            'until_date' / TTimestamp,
+            'pricing' / self.struct_0x05416d58(),
+            'chat_invite_hash' / If(this.flags.has_chat_invite_hash, TString),
+            'title' / If(this.flags.has_title, TString),
+            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
+            'invoice_slug' / If(this.flags.has_invoice_slug, TString))
+
+    @constructor(0x538ecf18, 'stars_subscription_layer193')
+    def struct_0x538ecf18(self):
+        return Struct(
+            'sname' / Computed('stars_subscription_layer193'),
+            'signature' / Hex(Const(0x538ecf18, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_canceled=1,
+                                is_can_refulfill=2,
+                                is_missing_balance=4,
+                                has_chat_invite_hash=8),
+            'id' / TString,
+            'peer' / self.peer_structures('peer'),
+            'until_date' / TTimestamp,
+            'pricing' / self.struct_0x05416d58(),
+            'chat_invite_hash' / If(this.flags.has_chat_invite_hash, TString))
+
+    @constructor(0xd073f1e6, 'stars_subscription_old')
+    def struct_0xd073f1e6(self):
+        return Struct(
+            'sname' / Computed('stars_subscription_old'),
+            'signature' / Hex(Const(0xd073f1e6, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_canceled=1,
+                                is_can_refulfill=2,
+                                is_missing_balance=4),
+            'id' / TString,
+            'peer' / self.peer_structures('peer'),
+            'until_date' / TTimestamp,
+            'pricing' / self.struct_0x05416d58())
+
+    @structures
+    def stars_subscription_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x2e6eab1a: LazyBound(self.struct_0x2e6eab1a),
+            0x538ecf18: LazyBound(self.struct_0x538ecf18),
+            0xd073f1e6: LazyBound(self.struct_0xd073f1e6)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0xd80da15d, 'stars_transaction_peer')
+    def struct_0xd80da15d(self):
+        return ['peer' / self.peer_structures('peer')]
+
+    @constructor(0xb457b375, 'stars_transaction_peer_app_store')
+    def struct_0xb457b375(self):
+        return []
+
+    @constructor(0x7b560a0b, 'stars_transaction_peer_play_market')
+    def struct_0x7b560a0b(self):
+        return []
+
+    @constructor(0xe92fd902, 'stars_transaction_peer_fragment')
+    def struct_0xe92fd902(self):
+        return []
+
+    @constructor(0x250dbaf8, 'stars_transaction_peer_premium_bot')
+    def struct_0x250dbaf8(self):
+        return []
+
+    @constructor(0x95f2bfe4, 'stars_transaction_peer_unsupported')
+    def struct_0x95f2bfe4(self):
+        return []
+
+    @constructor(0x60682812, 'stars_transaction_peer_ads')
+    def struct_0x60682812(self):
+        return []
+
+    @constructor(0xf9677aad, 'stars_transaction_peer_api')
+    def struct_0xf9677aad(self):
+        return []
+
+    @structures
+    def stars_transaction_peer_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0xd80da15d: LazyBound(self.struct_0xd80da15d),
+            0xb457b375: LazyBound(self.struct_0xb457b375),
+            0x7b560a0b: LazyBound(self.struct_0x7b560a0b),
+            0xe92fd902: LazyBound(self.struct_0xe92fd902),
+            0x250dbaf8: LazyBound(self.struct_0x250dbaf8),
+            0x95f2bfe4: LazyBound(self.struct_0x95f2bfe4),
+            0x60682812: LazyBound(self.struct_0x60682812),
+            0xf9677aad: LazyBound(self.struct_0xf9677aad)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0xcc7079b2, 'stars_transaction_layer181')
+    def struct_0xcc7079b2(self):
+        return Struct(
+            'sname' / Computed('stars_transaction_layer181'),
+            'signature' / Hex(Const(0xcc7079b2, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_refund=8,
+                                has_title=1,
+                                has_description=2,
+                                has_photo=4),
+            'stars_amount' / Int64ul,
+            'date' / TTimestamp,
+            'peer' / self.stars_transaction_peer_structures('peer'),
+            'title' / If(this.flags.has_title, TString),
+            'description' / If(this.flags.has_description, TString),
+            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')))
+
+    @constructor(0xaa00c898, 'stars_transaction_layer182')
+    def struct_0xaa00c898(self):
+        return Struct(
+            'sname' / Computed('stars_transaction_layer182'),
+            'signature' / Hex(Const(0xaa00c898, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_refund=8,
+                                is_pending=16,
+                                is_failed=64,
+                                has_title=1,
+                                has_description=2,
+                                has_photo=4,
+                                has_transaction_date=32),
+            'stars_amount' / Int64ul,
+            'date' / TTimestamp,
+            'peer' / self.stars_transaction_peer_structures('peer'),
+            'title' / If(this.flags.has_title, TString),
+            'description' / If(this.flags.has_description, TString),
+            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
+            'transaction_date' / If(this.flags.has_transaction_date, TTimestamp),
+            'transaction_url' / If(this.flags.has_transaction_date, TString))
+
+    @constructor(0x2db5418f, 'stars_transaction_layer185')
+    def struct_0x2db5418f(self):
+        return Struct(
+            'sname' / Computed('stars_transaction_layer185'),
+            'signature' / Hex(Const(0x2db5418f, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_refund=8,
+                                is_pending=16,
+                                is_failed=64,
+                                is_gift=1024,
+                                has_title=1,
+                                has_description=2,
+                                has_photo=4,
+                                has_transaction_date=32,
+                                has_bot_payload=128,
+                                has_msg_id=256,
+                                has_extended_media=512),
+            'stars_amount' / Int64ul,
+            'date' / TTimestamp,
+            'peer' / self.stars_transaction_peer_structures('peer'),
+            'title' / If(this.flags.has_title, TString),
+            'description' / If(this.flags.has_description, TString),
+            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
+            'transaction_date' / If(this.flags.has_transaction_date, TTimestamp),
+            'transaction_url' / If(this.flags.has_transaction_date, TString),
+            'bot_payload' / If(this.flags.has_bot_payload, TBytes),
+            'msg_id' / If(this.flags.has_msg_id, Int32ul),
+            'extended_media' / If(this.flags.has_extended_media, self.vector(self.message_media_structures('extended_media'), 'extended_media')))
+
+    @constructor(0x433aeb2b, 'stars_transaction_layer186')
+    def struct_0x433aeb2b(self):
+        return Struct(
+            'sname' / Computed('stars_transaction_layer186'),
+            'signature' / Hex(Const(0x433aeb2b, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_refund=8,
+                                is_pending=16,
+                                is_failed=64,
+                                is_gift=1024,
+                                is_reaction=2048,
+                                is_subscription=4096,
+                                has_title=1,
+                                has_description=2,
+                                has_photo=4,
+                                has_transaction_date=32,
+                                has_bot_payload=128,
+                                has_msg_id=256,
+                                has_extended_media=512),
+            'stars_amount' / Int64ul,
+            'date' / TTimestamp,
+            'peer' / self.stars_transaction_peer_structures('peer'),
+            'title' / If(this.flags.has_title, TString),
+            'description' / If(this.flags.has_description, TString),
+            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
+            'transaction_date' / If(this.flags.has_transaction_date, TTimestamp),
+            'transaction_url' / If(this.flags.has_transaction_date, TString),
+            'bot_payload' / If(this.flags.has_bot_payload, TBytes),
+            'msg_id' / If(this.flags.has_msg_id, Int32ul),
+            'extended_media' / If(this.flags.has_extended_media, self.vector(self.message_media_structures('extended_media'), 'extended_media')),
+            'subscription_period' / If(this.flags.is_subscription, Int32ul))
+
+    @constructor(0xee7522d5, 'stars_transaction_layer188')
+    def struct_0xee7522d5(self):
+        return Struct(
+            'sname' / Computed('stars_transaction_layer188'),
+            'signature' / Hex(Const(0xee7522d5, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_refund=8,
+                                is_pending=16,
+                                is_failed=64,
+                                is_gift=1024,
+                                is_reaction=2048,
+                                is_subscription=4096,
+                                has_title=1,
+                                has_description=2,
+                                has_photo=4,
+                                has_transaction_date=32,
+                                has_bot_payload=128,
+                                has_msg_id=256,
+                                has_extended_media=512,
+                                has_giveaway_post_id=8192),
+            'stars_amount' / Int64ul,
+            'date' / TTimestamp,
+            'peer' / self.stars_transaction_peer_structures('peer'),
+            'title' / If(this.flags.has_title, TString),
+            'description' / If(this.flags.has_description, TString),
+            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
+            'transaction_date' / If(this.flags.has_transaction_date, TTimestamp),
+            'transaction_url' / If(this.flags.has_transaction_date, TString),
+            'bot_payload' / If(this.flags.has_bot_payload, TBytes),
+            'msg_id' / If(this.flags.has_msg_id, Int32ul),
+            'extended_media' / If(this.flags.has_extended_media, self.vector(self.message_media_structures('extended_media'), 'extended_media')),
+            'subscription_period' / If(this.flags.is_subscription, Int32ul),
+            'giveaway_post_id' / If(this.flags.has_giveaway_post_id, Int32ul))
+
+    @constructor(0x0a9ee4c2, 'stars_transaction_layer191')
+    def struct_0x0a9ee4c2(self):
+        return Struct(
+            'sname' / Computed('stars_transaction_layer191'),
+            'signature' / Hex(Const(0x0a9ee4c2, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_refund=8,
+                                is_pending=16,
+                                is_failed=64,
+                                is_gift=1024,
+                                is_reaction=2048,
+                                is_subscription=4096,
+                                has_title=1,
+                                has_description=2,
+                                has_photo=4,
+                                has_transaction_date=32,
+                                has_bot_payload=128,
+                                has_msg_id=256,
+                                has_extended_media=512,
+                                has_giveaway_post_id=8192,
+                                has_stargift=16384),
+            'stars_amount' / Int64ul,
+            'date' / TTimestamp,
+            'peer' / self.stars_transaction_peer_structures('peer'),
+            'title' / If(this.flags.has_title, TString),
+            'description' / If(this.flags.has_description, TString),
+            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
+            'transaction_date' / If(this.flags.has_transaction_date, TTimestamp),
+            'transaction_url' / If(this.flags.has_transaction_date, TString),
+            'bot_payload' / If(this.flags.has_bot_payload, TBytes),
+            'msg_id' / If(this.flags.has_msg_id, Int32ul),
+            'extended_media' / If(this.flags.has_extended_media, self.vector(self.message_media_structures('extended_media'), 'extended_media')),
+            'subscription_period' / If(this.flags.is_subscription, Int32ul),
+            'giveaway_post_id' / If(this.flags.has_giveaway_post_id, Int32ul),
+            'stargift' / If(this.flags.has_stargift, self.star_gift_structures('stargift')))
+
+    @constructor(0x35d4f276, 'stars_transaction_layer194')
+    def struct_0x35d4f276(self):
+        return Struct(
+            'sname' / Computed('stars_transaction_layer194'),
+            'signature' / Hex(Const(0x35d4f276, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_refund=8,
+                                is_pending=16,
+                                is_failed=64,
+                                is_gift=1024,
+                                is_reaction=2048,
+                                is_subscription=4096,
+                                is_floodskip=32768,
+                                has_title=1,
+                                has_description=2,
+                                has_photo=4,
+                                has_transaction_date=32,
+                                has_bot_payload=128,
+                                has_msg_id=256,
+                                has_extended_media=512,
+                                has_giveaway_post_id=8192,
+                                has_stargift=16384),
+            'stars_amount' / Int64ul,
+            'date' / TTimestamp,
+            'peer' / self.stars_transaction_peer_structures('peer'),
+            'title' / If(this.flags.has_title, TString),
+            'description' / If(this.flags.has_description, TString),
+            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
+            'transaction_date' / If(this.flags.has_transaction_date, TTimestamp),
+            'transaction_url' / If(this.flags.has_transaction_date, TString),
+            'bot_payload' / If(this.flags.has_bot_payload, TBytes),
+            'msg_id' / If(this.flags.has_msg_id, Int32ul),
+            'extended_media' / If(this.flags.has_extended_media, self.vector(self.message_media_structures('extended_media'), 'extended_media')),
+            'subscription_period' / If(this.flags.is_subscription, Int32ul),
+            'giveaway_post_id' / If(this.flags.has_giveaway_post_id, Int32ul),
+            'stargift' / If(this.flags.has_stargift, self.star_gift_structures('stargift')),
+            'floodskip_number' / If(this.flags.is_floodskip, Int32ul))
+
+    @constructor(0x64dfc926, 'stars_transaction')
+    def struct_0x64dfc926(self):
+        return Struct(
+            'sname' / Computed('stars_transaction'),
+            'signature' / Hex(Const(0x64dfc926, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_refund=8,
+                                is_pending=16,
+                                is_failed=64,
+                                is_gift=1024,
+                                is_reaction=2048,
+                                is_subscription=4096,
+                                is_floodskip=32768,
+                                is_stargift_upgrade=262144,
+                                has_title=1,
+                                has_description=2,
+                                has_photo=4,
+                                has_transaction_date=32,
+                                has_bot_payload=128,
+                                has_msg_id=256,
+                                has_extended_media=512,
+                                has_giveaway_post_id=8192,
+                                has_stargift=16384,
+                                has_starref_commission_permille=65536,
+                                has_starref_peer=131072),
+            'stars' / self.struct_0xbbb6b4a3(),
+            'date' / TTimestamp,
+            'peer' / self.stars_transaction_peer_structures('peer'),
+            'title' / If(this.flags.has_title, TString),
+            'description' / If(this.flags.has_description, TString),
+            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
+            'transaction_date' / If(this.flags.has_transaction_date, TTimestamp),
+            'transaction_url' / If(this.flags.has_transaction_date, TString),
+            'bot_payload' / If(this.flags.has_bot_payload, TBytes),
+            'msg_id' / If(this.flags.has_msg_id, Int32ul),
+            'extended_media' / If(this.flags.has_extended_media, self.vector(self.message_media_structures('extended_media'), 'extended_media')),
+            'subscription_period' / If(this.flags.is_subscription, Int32ul),
+            'giveaway_post_id' / If(this.flags.has_giveaway_post_id, Int32ul),
+            'stargift' / If(this.flags.has_stargift, self.star_gift_structures('stargift')),
+            'floodskip_number' / If(this.flags.is_floodskip, Int32ul),
+            'starref_commission_permille' / If(this.flags.has_starref_commission_permille, Int32ul),
+            'starref_peer' / If(this.flags.has_starref_peer, self.peer_structures('starref_peer')),
+            'starref_amount' / If(this.flags.has_starref_peer, self.struct_0xbbb6b4a3()))
+
+    @structures
+    def stars_transaction_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0xcc7079b2: LazyBound(self.struct_0xcc7079b2),
+            0xaa00c898: LazyBound(self.struct_0xaa00c898),
+            0x2db5418f: LazyBound(self.struct_0x2db5418f),
+            0x433aeb2b: LazyBound(self.struct_0x433aeb2b),
+            0xee7522d5: LazyBound(self.struct_0xee7522d5),
+            0x0a9ee4c2: LazyBound(self.struct_0x0a9ee4c2),
+            0x35d4f276: LazyBound(self.struct_0x35d4f276),
+            0x64dfc926: LazyBound(self.struct_0x64dfc926)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0x557e2cc4, 'stats_broadcast_revenue_transaction_proceeds')
+    def struct_0x557e2cc4(self):
+        return Struct(
+            'sname' / Computed('stats_broadcast_revenue_transaction_proceeds'),
+            'signature' / Hex(Const(0x557e2cc4, Int32ul)),
+            'amount' / Int64ul,
+            'from_date' / TTimestamp,
+            'to_date' / TTimestamp)
+
+    @constructor(0x5a590978, 'stats_broadcast_revenue_transaction_withdrawal')
+    def struct_0x5a590978(self):
+        return Struct(
+            'sname' / Computed('stats_broadcast_revenue_transaction_withdrawal'),
+            'signature' / Hex(Const(0x5a590978, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_pending=1,
+                                is_failed=4,
+                                has_transaction_date=2),
+            'amount' / Int64ul,
+            'date' / TTimestamp,
+            'provider' / TString,
+            'transaction_date' / If(this.flags.has_transaction_date, TTimestamp),
+            'transaction_url' / If(this.flags.has_transaction_date, TString))
+
+    @constructor(0x42d30d2e, 'stats_broadcast_revenue_transaction_refund')
+    def struct_0x42d30d2e(self):
+        return Struct(
+            'sname' / Computed('stats_broadcast_revenue_transaction_refund'),
+            'signature' / Hex(Const(0x42d30d2e, Int32ul)),
+            'amount' / Int64ul,
+            'from_date' / TTimestamp,
+            'provider' / TString)
+
+    @structures
+    def stats_broadcast_revenue_transaction_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x557e2cc4: LazyBound(self.struct_0x557e2cc4),
+            0x5a590978: LazyBound(self.struct_0x5a590978),
+            0x42d30d2e: LazyBound(self.struct_0x42d30d2e)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
     @constructor(0x8ea464b6, 'stats_graph')
     def struct_0x8ea464b6(self):
         return Struct(
@@ -16753,6 +18677,64 @@ class TLStruct:  # pylint: disable=C0103
             0x8ea464b6: LazyBound(self.struct_0x8ea464b6),
             0x4a27eb2d: LazyBound(self.struct_0x4a27eb2d),
             0xbedc9822: LazyBound(self.struct_0xbedc9822)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0x8a480e27, 'stats_post_interaction_counters_story')
+    def struct_0x8a480e27(self):
+        return Struct(
+            'sname' / Computed('stats_post_interaction_counters_story'),
+            'signature' / Hex(Const(0x8a480e27, Int32ul)),
+            'story_id' / Int32ul,
+            'views' / Int32ul,
+            'forwards' / Int32ul,
+            'reactions' / Int32ul)
+
+    @constructor(0xe7058e7f, 'stats_post_interaction_counters_message')
+    def struct_0xe7058e7f(self):
+        return Struct(
+            'sname' / Computed('stats_post_interaction_counters_message'),
+            'signature' / Hex(Const(0xe7058e7f, Int32ul)),
+            'msg_id' / Int32ul,
+            'views' / Int32ul,
+            'forwards' / Int32ul,
+            'reactions' / Int32ul)
+
+    @structures
+    def stats_post_interaction_counters_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x8a480e27: LazyBound(self.struct_0x8a480e27),
+            0xe7058e7f: LazyBound(self.struct_0xe7058e7f)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0x01f2bf4a, 'stats_public_forward_message')
+    def struct_0x01f2bf4a(self):
+        return ['message' / self.message_structures('message')]
+
+    @constructor(0xedf3add0, 'stories_public_forward_story')
+    def struct_0xedf3add0(self):
+        return Struct(
+            'sname' / Computed('stories_public_forward_story'),
+            'signature' / Hex(Const(0xedf3add0, Int32ul)),
+            'peer' / self.peer_structures('peer'),
+            'story' / self.story_item_structures('story'))
+
+    @structures
+    def stats_public_forward_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x01f2bf4a: LazyBound(self.struct_0x01f2bf4a),
+            0xedf3add0: LazyBound(self.struct_0xedf3add0)
         }
         return Struct(
             '_signature' / Peek(Int32ul),
@@ -17091,6 +19073,309 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
+    @constructor(0x4b3e14d6, 'stories_boost')
+    def struct_0x4b3e14d6(self):
+        return Struct(
+            'sname' / Computed('stories_boost'),
+            'signature' / Hex(Const(0x4b3e14d6, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_gift=2,
+                                is_giveaway=4,
+                                is_unclaimed=8,
+                                has_user_id=1,
+                                has_used_gift_slug=16,
+                                has_multiplier=32,
+                                has_stars=64),
+            'id' / TString,
+            'user_id' / If(this.flags.has_user_id, Int64ul),
+            'giveaway_msg_id' / If(this.flags.is_giveaway, Int32ul),
+            'date' / TTimestamp,
+            'expires' / Int32ul,
+            'used_gift_slug' / If(this.flags.has_used_gift_slug, TString),
+            'multiplier' / If(this.flags.has_multiplier, Int32ul),
+            'stars' / If(this.flags.has_stars, Int64ul))
+
+    @constructor(0x2a1c8c71, 'stories_boost_layer186')
+    def struct_0x2a1c8c71(self):
+        return Struct(
+            'sname' / Computed('stories_boost_layer186'),
+            'signature' / Hex(Const(0x2a1c8c71, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_gift=2,
+                                is_giveaway=4,
+                                is_unclaimed=8,
+                                has_user_id=1,
+                                has_used_gift_slug=16,
+                                has_multiplier=32),
+            'id' / TString,
+            'user_id' / If(this.flags.has_user_id, Int64ul),
+            'giveaway_msg_id' / If(this.flags.is_giveaway, Int32ul),
+            'date' / TTimestamp,
+            'expires' / Int32ul,
+            'used_gift_slug' / If(this.flags.has_used_gift_slug, TString),
+            'multiplier' / If(this.flags.has_multiplier, Int32ul))
+
+    @structures
+    def stories_boost_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x4b3e14d6: LazyBound(self.struct_0x4b3e14d6),
+            0x2a1c8c71: LazyBound(self.struct_0x2a1c8c71)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0xcfc9e002, 'stories_media_area_coordinates')
+    def struct_0xcfc9e002(self):
+        return Struct(
+            'sname' / Computed('stories_media_area_coordinates'),
+            'signature' / Hex(Const(0xcfc9e002, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_radius=1),
+            'x' / Double,
+            'y' / Double,
+            'w' / Double,
+            'h' / Double,
+            'rotation' / Double,
+            'radius' / If(this.flags.has_radius, Double))
+
+    @constructor(0x03d1ea4e, 'stories_media_area_coordinates_layer181')
+    def struct_0x03d1ea4e(self):
+        return Struct(
+            'sname' / Computed('stories_media_area_coordinates_layer181'),
+            'signature' / Hex(Const(0x03d1ea4e, Int32ul)),
+            'x' / Double,
+            'y' / Double,
+            'w' / Double,
+            'h' / Double,
+            'rotation' / Double)
+
+    @structures
+    def stories_media_area_coordinates_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0xcfc9e002: LazyBound(self.struct_0xcfc9e002),
+            0x03d1ea4e: LazyBound(self.struct_0x03d1ea4e)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0x37381085, 'stories_media_area_url')
+    def struct_0x37381085(self):
+        return Struct(
+            'sname' / Computed('stories_media_area_url'),
+            'signature' / Hex(Const(0x37381085, Int32ul)),
+            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
+            'url' / TString)
+
+    @constructor(0x5787686d, 'stories_media_area_star_gift')
+    def struct_0x5787686d(self):
+        return Struct(
+            'sname' / Computed('stories_media_area_star_gift'),
+            'signature' / Hex(Const(0x5787686d, Int32ul)),
+            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
+            'slug' / TString)
+
+    @constructor(0xbe82db9c, 'stories_media_area_venue')
+    def struct_0xbe82db9c(self):
+        return Struct(
+            'sname' / Computed('stories_media_area_venue'),
+            'signature' / Hex(Const(0xbe82db9c, Int32ul)),
+            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
+            'geo' / self.geo_point_structures('geo'),
+            'title' / TString,
+            'address' / TString,
+            'provider' / TString,
+            'venue_id' / TString,
+            'venue_type' / TString)
+
+    @constructor(0xcad5452d, 'stories_media_area_geo_point')
+    def struct_0xcad5452d(self):
+        return Struct(
+            'sname' / Computed('stories_media_area_geo_point'),
+            'signature' / Hex(Const(0xcad5452d, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_address=1),
+            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
+            'geo' / self.geo_point_structures('geo'),
+            'address' / If(this.flags.has_address, self.struct_0xde4c5d93()))
+
+    @constructor(0xdf8b3b22, 'stories_media_area_geo_point_layer181')
+    def struct_0xdf8b3b22(self):
+        return Struct(
+            'sname' / Computed('stories_media_area_geo_point_layer181'),
+            'signature' / Hex(Const(0xdf8b3b22, Int32ul)),
+            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
+            'geo' / self.geo_point_structures('geo'))
+
+    @constructor(0x14455871, 'stories_media_area_suggested_reaction')
+    def struct_0x14455871(self):
+        return Struct(
+            'sname' / Computed('stories_media_area_suggested_reaction'),
+            'signature' / Hex(Const(0x14455871, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_dark=1,
+                                is_flipped=2),
+            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
+            'reaction' / self.reaction_structures('reaction'))
+
+    @constructor(0x770416af, 'stories_media_area_channel_post')
+    def struct_0x770416af(self):
+        return Struct(
+            'sname' / Computed('stories_media_area_channel_post'),
+            'signature' / Hex(Const(0x770416af, Int32ul)),
+            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
+            'channel_id' / Int64ul,
+            'msg_id' / Int32ul)
+
+    @constructor(0xb282217f, 'stories_input_media_area_venue')
+    def struct_0xb282217f(self):
+        return Struct(
+            'sname' / Computed('stories_input_media_area_venue'),
+            'signature' / Hex(Const(0xb282217f, Int32ul)),
+            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
+            'query_id' / Int64ul,
+            'result_id' / TString)
+
+    @constructor(0x2271f2bf, 'stories_input_media_area_channel_post')
+    def struct_0x2271f2bf(self):
+        return Struct(
+            'sname' / Computed('stories_input_media_area_channel_post'),
+            'signature' / Hex(Const(0x2271f2bf, Int32ul)),
+            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
+            'channel' / self.input_channel_structures('channel'),
+            'msg_id' / Int32ul)
+
+    @constructor(0x49a6549c, 'stories_media_area_weather')
+    def struct_0x49a6549c(self):
+        return Struct(
+            'sname' / Computed('stories_media_area_weather'),
+            'signature' / Hex(Const(0x49a6549c, Int32ul)),
+            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
+            'emoji' / TString,
+            'temperature_c' / Double,
+            'color' / Int32ul)
+
+    @constructor(0x4386f849, 'stories_media_area_weather_old')
+    def struct_0x4386f849(self):
+        return Struct(
+            'sname' / Computed('stories_media_area_weather_old'),
+            'signature' / Hex(Const(0x4386f849, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_dark=1),
+            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
+            'emoji' / TString,
+            'temperature_c' / Double)
+
+    @constructor(0x855f223e, 'stories_media_area_weather2')
+    def struct_0x855f223e(self):
+        return Struct(
+            'sname' / Computed('stories_media_area_weather2'),
+            'signature' / Hex(Const(0x855f223e, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_dark=1),
+            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
+            'emoji' / TString,
+            'temperature_c' / Int32ul)
+
+    @structures
+    def stories_media_area_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x37381085: LazyBound(self.struct_0x37381085),
+            0x5787686d: LazyBound(self.struct_0x5787686d),
+            0xbe82db9c: LazyBound(self.struct_0xbe82db9c),
+            0xcad5452d: LazyBound(self.struct_0xcad5452d),
+            0xdf8b3b22: LazyBound(self.struct_0xdf8b3b22),
+            0x14455871: LazyBound(self.struct_0x14455871),
+            0x770416af: LazyBound(self.struct_0x770416af),
+            0xb282217f: LazyBound(self.struct_0xb282217f),
+            0x2271f2bf: LazyBound(self.struct_0x2271f2bf),
+            0x49a6549c: LazyBound(self.struct_0x49a6549c),
+            0x4386f849: LazyBound(self.struct_0x4386f849),
+            0x855f223e: LazyBound(self.struct_0x855f223e)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0x9a35e999, 'stories_peer_stories')
+    def struct_0x9a35e999(self):
+        return Struct(
+            'sname' / Computed('stories_peer_stories'),
+            'signature' / Hex(Const(0x9a35e999, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_max_read_id=1),
+            'peer' / self.peer_structures('peer'),
+            'max_read_id' / If(this.flags.has_max_read_id, Int32ul),
+            'stories' / self.vector(self.story_item_structures('stories'), 'stories'))
+
+    @constructor(0x8611a200, 'stories_peer_stories_layer162')
+    def struct_0x8611a200(self):
+        return Struct(
+            'sname' / Computed('stories_peer_stories_layer162'),
+            'signature' / Hex(Const(0x8611a200, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_max_read_id=1),
+            'peer_user_id' / Int64ul,
+            'max_read_id' / If(this.flags.has_max_read_id, Int32ul),
+            'stories' / self.vector(self.story_item_structures('stories'), 'stories'))
+
+    @structures
+    def stories_peer_stories_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x9a35e999: LazyBound(self.struct_0x9a35e999),
+            0x8611a200: LazyBound(self.struct_0x8611a200)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
+    @constructor(0xb2539d54, 'stories_prepaid_giveaway')
+    def struct_0xb2539d54(self):
+        return Struct(
+            'sname' / Computed('stories_prepaid_giveaway'),
+            'signature' / Hex(Const(0xb2539d54, Int32ul)),
+            'id' / Int64ul,
+            'months' / Int32ul,
+            'quantity' / Int32ul,
+            'date' / TTimestamp)
+
+    @constructor(0x9a9d77e0, 'stories_prepaid_stars_giveaway')
+    def struct_0x9a9d77e0(self):
+        return Struct(
+            'sname' / Computed('stories_prepaid_stars_giveaway'),
+            'signature' / Hex(Const(0x9a9d77e0, Int32ul)),
+            'id' / Int64ul,
+            'stars' / Int64ul,
+            'quantity' / Int32ul,
+            'boosts' / Int32ul,
+            'date' / TTimestamp)
+
+    @structures
+    def stories_prepaid_giveaway_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0xb2539d54: LazyBound(self.struct_0xb2539d54),
+            0x9a9d77e0: LazyBound(self.struct_0x9a9d77e0)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
     @constructor(0xb826e150, 'story_fwd_header')
     def struct_0xb826e150(self):
         return Struct(
@@ -17312,14 +19597,6 @@ class TLStruct:  # pylint: disable=C0103
             name / Switch(this._signature, tag_map))
 
     # -------------------------------------------------------------------------
-
-    @constructor(0xde9eed1d, 'stories_story_views')
-    def struct_0xde9eed1d(self):
-        return Struct(
-            'sname' / Computed('stories_story_views'),
-            'signature' / Hex(Const(0xde9eed1d, Int32ul)),
-            'views' / self.vector(self.story_views_structures('views'), 'views'),
-            'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0xb0bdeac5, 'story_view')
     def struct_0xb0bdeac5(self):
@@ -17653,6 +19930,24 @@ class TLStruct:  # pylint: disable=C0103
     def struct_0xfd9e7bec(self):
         return []
 
+    @structures
+    def top_peer_category_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x161d9628: LazyBound(self.struct_0x161d9628),
+            0x1e76a78c: LazyBound(self.struct_0x1e76a78c),
+            0xbd17a14a: LazyBound(self.struct_0xbd17a14a),
+            0x148677e2: LazyBound(self.struct_0x148677e2),
+            0xa8406ca9: LazyBound(self.struct_0xa8406ca9),
+            0xfbeec0f0: LazyBound(self.struct_0xfbeec0f0),
+            0xab661b5b: LazyBound(self.struct_0xab661b5b),
+            0x0637b7ed: LazyBound(self.struct_0x0637b7ed),
+            0xfd9e7bec: LazyBound(self.struct_0xfd9e7bec)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
     # -------------------------------------------------------------------------
 
     @constructor(0x24f40e77, 'update_message_poll_vote')
@@ -17665,14 +19960,14 @@ class TLStruct:  # pylint: disable=C0103
             'options' / self.vector(TBytes, 'options'),
             'qts' / Int32ul)
 
-    @constructor(0x5a73a98c, 'update_message_extended_media')
-    def struct_0x5a73a98c(self):
+    @constructor(0xd5a41724, 'update_message_extended_media')
+    def struct_0xd5a41724(self):
         return Struct(
             'sname' / Computed('update_message_extended_media'),
-            'signature' / Hex(Const(0x5a73a98c, Int32ul)),
+            'signature' / Hex(Const(0xd5a41724, Int32ul)),
             'peer' / self.peer_structures('peer'),
             'msg_id' / Int32ul,
-            'extended_media' / self.message_extended_media_structures('extended_media'))
+            'extended_media' / self.vector(self.message_extended_media_structures('extended_media'), 'extended_media'))
 
     @constructor(0xaca1657b, 'update_message_poll')
     def struct_0xaca1657b(self):
@@ -18047,12 +20342,14 @@ class TLStruct:  # pylint: disable=C0103
             'chat' / self.encrypted_chat_structures('chat'),
             'date' / TTimestamp)
 
-    @constructor(0x14b24500, 'update_group_call')
-    def struct_0x14b24500(self):
+    @constructor(0x97d64341, 'update_group_call')
+    def struct_0x97d64341(self):
         return Struct(
             'sname' / Computed('update_group_call'),
-            'signature' / Hex(Const(0x14b24500, Int32ul)),
-            'chat_id' / Int64ul,
+            'signature' / Hex(Const(0x97d64341, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_chat_id=1),
+            'chat_id' / If(this.flags.has_chat_id, Int64ul),
             'call' / self.group_call_structures('call'))
 
     @constructor(0x108d941f, 'update_channel_too_long')
@@ -18328,13 +20625,16 @@ class TLStruct:  # pylint: disable=C0103
             'pts' / Int32ul,
             'pts_count' / Int32ul)
 
-    @constructor(0x90866cee, 'update_delete_scheduled_messages')
-    def struct_0x90866cee(self):
+    @constructor(0xf2a71983, 'update_delete_scheduled_messages')
+    def struct_0xf2a71983(self):
         return Struct(
             'sname' / Computed('update_delete_scheduled_messages'),
-            'signature' / Hex(Const(0x90866cee, Int32ul)),
+            'signature' / Hex(Const(0xf2a71983, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_sent_messages=1),
             'peer' / self.peer_structures('peer'),
-            'messages' / self.vector(Int32ul, 'messages'))
+            'messages' / self.vector(Int32ul, 'messages'),
+            'sent_messages' / If(this.flags.has_sent_messages, self.vector(Int32ul, 'sent_messages')))
 
     @constructor(0xd29a27f4, 'update_channel_message_forwards')
     def struct_0xd29a27f4(self):
@@ -18376,10 +20676,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x20529438, 'update_user')
     def struct_0x20529438(self):
-        return ['user_id' / Int64ul]
-
-    @constructor(0xccf08ad6, 'update_group_invite_privacy_forbidden')
-    def struct_0xccf08ad6(self):
         return ['user_id' / Int64ul]
 
     @constructor(0x17b7a20b, 'update_attach_menu_bots')
@@ -18633,6 +20929,137 @@ class TLStruct:  # pylint: disable=C0103
             'payload' / TString,
             'until_date' / TTimestamp,
             'qts' / Int32ul)
+
+    @structures
+    def update_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x24f40e77: LazyBound(self.struct_0x24f40e77),
+            0xd5a41724: LazyBound(self.struct_0xd5a41724),
+            0xaca1657b: LazyBound(self.struct_0xaca1657b),
+            0xbb9bb9a5: LazyBound(self.struct_0xbb9bb9a5),
+            0xf89a6a4e: LazyBound(self.struct_0xf89a6a4e),
+            0xa20db0e5: LazyBound(self.struct_0xa20db0e5),
+            0x5bb98608: LazyBound(self.struct_0x5bb98608),
+            0xf2ebdb4e: LazyBound(self.struct_0xf2ebdb4e),
+            0x571d2742: LazyBound(self.struct_0x571d2742),
+            0x1710f156: LazyBound(self.struct_0x1710f156),
+            0xd6b19546: LazyBound(self.struct_0xd6b19546),
+            0x2f2f21bf: LazyBound(self.struct_0x2f2f21bf),
+            0x62ba04d9: LazyBound(self.struct_0x62ba04d9),
+            0x1592b79d: LazyBound(self.struct_0x1592b79d),
+            0x6e6fe51c: LazyBound(self.struct_0x6e6fe51c),
+            0x6a7e7366: LazyBound(self.struct_0x6a7e7366),
+            0x05492a13: LazyBound(self.struct_0x05492a13),
+            0x4e90bfd6: LazyBound(self.struct_0x4e90bfd6),
+            0xb75f99a9: LazyBound(self.struct_0xb75f99a9),
+            0x8c88c923: LazyBound(self.struct_0x8c88c923),
+            0x1bf335b9: LazyBound(self.struct_0x1bf335b9),
+            0x31c24808: LazyBound(self.struct_0x31c24808),
+            0x19360dc0: LazyBound(self.struct_0x19360dc0),
+            0x1f2b0afd: LazyBound(self.struct_0x1f2b0afd),
+            0x39a51dfb: LazyBound(self.struct_0x39a51dfb),
+            0x12bcbd9a: LazyBound(self.struct_0x12bcbd9a),
+            0x86fccf85: LazyBound(self.struct_0x86fccf85),
+            0xe5bdf8de: LazyBound(self.struct_0xe5bdf8de),
+            0x28373599: LazyBound(self.struct_0x28373599),
+            0xf226ac08: LazyBound(self.struct_0xf226ac08),
+            0x0b783982: LazyBound(self.struct_0x0b783982),
+            0x4d712f2e: LazyBound(self.struct_0x4d712f2e),
+            0x871fb939: LazyBound(self.struct_0x871fb939),
+            0xbec268ef: LazyBound(self.struct_0xbec268ef),
+            0x985d3abb: LazyBound(self.struct_0x985d3abb),
+            0x695c9e7c: LazyBound(self.struct_0x695c9e7c),
+            0xe32f3d77: LazyBound(self.struct_0xe32f3d77),
+            0xfb4c496c: LazyBound(self.struct_0xfb4c496c),
+            0xe40370a3: LazyBound(self.struct_0xe40370a3),
+            0x6f7863f4: LazyBound(self.struct_0x6f7863f4),
+            0x39c67432: LazyBound(self.struct_0x39c67432),
+            0x7f891213: LazyBound(self.struct_0x7f891213),
+            0xe511996d: LazyBound(self.struct_0xe511996d),
+            0x3dda5451: LazyBound(self.struct_0x3dda5451),
+            0x83487af0: LazyBound(self.struct_0x83487af0),
+            0x564fe691: LazyBound(self.struct_0x564fe691),
+            0xb4a2e88d: LazyBound(self.struct_0xb4a2e88d),
+            0x97d64341: LazyBound(self.struct_0x97d64341),
+            0x108d941f: LazyBound(self.struct_0x108d941f),
+            0xc01e857f: LazyBound(self.struct_0xc01e857f),
+            0xf74e932b: LazyBound(self.struct_0xf74e932b),
+            0xebe46819: LazyBound(self.struct_0xebe46819),
+            0x56022f4d: LazyBound(self.struct_0x56022f4d),
+            0xb23fc698: LazyBound(self.struct_0xb23fc698),
+            0xd7ca61a2: LazyBound(self.struct_0xd7ca61a2),
+            0xea29055d: LazyBound(self.struct_0xea29055d),
+            0xee3b272a: LazyBound(self.struct_0xee3b272a),
+            0xa229dd06: LazyBound(self.struct_0xa229dd06),
+            0xe16459c3: LazyBound(self.struct_0xe16459c3),
+            0x1b49ec6d: LazyBound(self.struct_0x1b49ec6d),
+            0x8951abef: LazyBound(self.struct_0x8951abef),
+            0xa7848924: LazyBound(self.struct_0xa7848924),
+            0x5e1b3cb8: LazyBound(self.struct_0x5e1b3cb8),
+            0xab0f6b1e: LazyBound(self.struct_0xab0f6b1e),
+            0x26ffde7d: LazyBound(self.struct_0x26ffde7d),
+            0xebe07752: LazyBound(self.struct_0xebe07752),
+            0xed85eab5: LazyBound(self.struct_0xed85eab5),
+            0x2661bf09: LazyBound(self.struct_0x2661bf09),
+            0x88617090: LazyBound(self.struct_0x88617090),
+            0xfa0f3ca2: LazyBound(self.struct_0xfa0f3ca2),
+            0x74d8be99: LazyBound(self.struct_0x74d8be99),
+            0x2c084dc1: LazyBound(self.struct_0x2c084dc1),
+            0x0084cd5a: LazyBound(self.struct_0x0084cd5a),
+            0xb4afcfb0: LazyBound(self.struct_0xb4afcfb0),
+            0x9a422c20: LazyBound(self.struct_0x9a422c20),
+            0x9c974fdf: LazyBound(self.struct_0x9c974fdf),
+            0xa5d72105: LazyBound(self.struct_0xa5d72105),
+            0x9375341e: LazyBound(self.struct_0x9375341e),
+            0x7084a7be: LazyBound(self.struct_0x7084a7be),
+            0x635b4c09: LazyBound(self.struct_0x635b4c09),
+            0x2f2ba99f: LazyBound(self.struct_0x2f2ba99f),
+            0xf2a71983: LazyBound(self.struct_0xf2a71983),
+            0xd29a27f4: LazyBound(self.struct_0xd29a27f4),
+            0xc32d5b12: LazyBound(self.struct_0xc32d5b12),
+            0x7d627683: LazyBound(self.struct_0x7d627683),
+            0xf227868c: LazyBound(self.struct_0xf227868c),
+            0x20529438: LazyBound(self.struct_0x20529438),
+            0x17b7a20b: LazyBound(self.struct_0x17b7a20b),
+            0x3504914f: LazyBound(self.struct_0x3504914f),
+            0x30f443db: LazyBound(self.struct_0x30f443db),
+            0x75b3b798: LazyBound(self.struct_0x75b3b798),
+            0x7063c3db: LazyBound(self.struct_0x7063c3db),
+            0x8e5e9873: LazyBound(self.struct_0x8e5e9873),
+            0x1b3f4df7: LazyBound(self.struct_0x1b3f4df7),
+            0x688a30aa: LazyBound(self.struct_0x688a30aa),
+            0x8216fba3: LazyBound(self.struct_0x8216fba3),
+            0x46560264: LazyBound(self.struct_0x46560264),
+            0x38fe25b7: LazyBound(self.struct_0x38fe25b7),
+            0x0bb2d201: LazyBound(self.struct_0x0bb2d201),
+            0x922e6e10: LazyBound(self.struct_0x922e6e10),
+            0xf8227181: LazyBound(self.struct_0xf8227181),
+            0x07761198: LazyBound(self.struct_0x07761198),
+            0x54c01850: LazyBound(self.struct_0x54c01850),
+            0x14b85813: LazyBound(self.struct_0x14b85813),
+            0xfe198602: LazyBound(self.struct_0xfe198602),
+            0x192efbe3: LazyBound(self.struct_0x192efbe3),
+            0x07b68920: LazyBound(self.struct_0x07b68920),
+            0xae3f101d: LazyBound(self.struct_0xae3f101d),
+            0xaeaf9e74: LazyBound(self.struct_0xaeaf9e74),
+            0x686c85a6: LazyBound(self.struct_0x686c85a6),
+            0xf9470ab2: LazyBound(self.struct_0xf9470ab2),
+            0xf53da717: LazyBound(self.struct_0xf53da717),
+            0x53e6f1ec: LazyBound(self.struct_0x53e6f1ec),
+            0x3e050d0f: LazyBound(self.struct_0x3e050d0f),
+            0x566fe7cd: LazyBound(self.struct_0x566fe7cd),
+            0x1824e40b: LazyBound(self.struct_0x1824e40b),
+            0xdfd961f5: LazyBound(self.struct_0xdfd961f5),
+            0x4e80a379: LazyBound(self.struct_0x4e80a379),
+            0xa584b019: LazyBound(self.struct_0xa584b019),
+            0x283bd312: LazyBound(self.struct_0x283bd312),
+            0x51ca7aec: LazyBound(self.struct_0x51ca7aec),
+            0xa8ae3eb1: LazyBound(self.struct_0xa8ae3eb1)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
 
     # -------------------------------------------------------------------------
 
@@ -19386,6 +21813,69 @@ class TLStruct:  # pylint: disable=C0103
             'business_greeting_message' / If(this.flags2.has_business_greeting_message, self.struct_0xe519abab()),
             'business_away_message' / If(this.flags2.has_business_away_message, self.struct_0xef156a5c()),
             'business_intro' / If(this.flags2.has_business_intro, self.struct_0x5a0a066d()))
+
+    @constructor(0x22ff3e85, 'user_full_layer176')
+    def struct_0x22ff3e85(self):
+        return Struct(
+            'sname' / Computed('user_full_layer176'),
+            'signature' / Hex(Const(0x22ff3e85, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_blocked=1,
+                                is_phone_calls_available=16,
+                                is_phone_calls_private=32,
+                                is_can_pin_message=128,
+                                has_scheduled=4096,
+                                is_video_calls_available=8192,
+                                is_voice_messages_forbidden=1048576,
+                                is_translations_disabled=8388608,
+                                is_stories_pinned_available=67108864,
+                                is_blocked_my_stories_from=134217728,
+                                is_wallpaper_overridden=268435456,
+                                is_contact_require_premium=536870912,
+                                is_read_dates_private=1073741824,
+                                has_about=2,
+                                has_personal_photo=2097152,
+                                has_profile_photo=4,
+                                has_fallback_photo=4194304,
+                                has_bot_info=8,
+                                has_pinned_msg_id=64,
+                                has_folder_id=2048,
+                                has_ttl_period=16384,
+                                has_theme_emoticon=32768,
+                                has_private_forward_name=65536,
+                                has_bot_group_admin_rights=131072,
+                                has_bot_broadcast_admin_rights=262144,
+                                has_premium_gifts=524288,
+                                has_wallpaper=16777216,
+                                has_stories=33554432),
+            'flags2' / FlagsEnum(Int32ul,
+                                 has_business_work_hours=1,
+                                 has_business_location=2,
+                                 has_business_greeting_message=4,
+                                 has_business_away_message=8),
+            'id' / Int64ul,
+            'about' / If(this.flags.has_about, TString),
+            'settings' / self.peer_settings_structures('settings'),
+            'personal_photo' / If(this.flags.has_personal_photo, self.photo_structures('personal_photo')),
+            'profile_photo' / If(this.flags.has_profile_photo, self.photo_structures('profile_photo')),
+            'fallback_photo' / If(this.flags.has_fallback_photo, self.photo_structures('fallback_photo')),
+            'notify_settings' / self.peer_notify_settings_structures('notify_settings'),
+            'bot_info' / If(this.flags.has_bot_info, self.bot_info_structures('bot_info')),
+            'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
+            'common_chats_count' / Int32ul,
+            'folder_id' / If(this.flags.has_folder_id, Int32ul),
+            'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
+            'theme_emoticon' / If(this.flags.has_theme_emoticon, TString),
+            'private_forward_name' / If(this.flags.has_private_forward_name, TString),
+            'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
+            'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
+            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.struct_0x74c34319(), 'premium_gifts')),
+            'wallpaper' / If(this.flags.has_wallpaper, self.wall_paper_structures('wallpaper')),
+            'stories' / If(this.flags.has_stories, self.stories_peer_stories_structures('stories')),
+            'business_work_hours' / If(this.flags2.has_business_work_hours, self.struct_0x8c92b098()),
+            'business_location' / If(this.flags2.has_business_location, self.struct_0xac5c1af7()),
+            'business_greeting_message' / If(this.flags2.has_business_greeting_message, self.struct_0xe519abab()),
+            'business_away_message' / If(this.flags2.has_business_away_message, self.struct_0xef156a5c()))
 
     @constructor(0xb9b12c6c, 'user_full_layer175')
     def struct_0xb9b12c6c(self):
@@ -21063,6 +23553,31 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
+    @constructor(0x62d706b8, 'users')
+    def struct_0x62d706b8(self):
+        return ['users' / self.vector(self.user_structures('users'), 'users')]
+
+    @constructor(0x315a4974, 'users_slice')
+    def struct_0x315a4974(self):
+        return Struct(
+            'sname' / Computed('users_slice'),
+            'signature' / Hex(Const(0x315a4974, Int32ul)),
+            'count' / Int32ul,
+            'users' / self.vector(self.user_structures('users'), 'users'))
+
+    @structures
+    def users_structures(self, name):
+        # pylint: disable=C0301
+        tag_map = {
+            0x62d706b8: LazyBound(self.struct_0x62d706b8),
+            0x315a4974: LazyBound(self.struct_0x315a4974)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    # -------------------------------------------------------------------------
+
     @constructor(0x435bb987, 'video_size_layer115')
     def struct_0x435bb987(self):
         return Struct(
@@ -21749,6 +24264,54 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
+
+###############################################################################
+    @constructor(0x65a4c7d5, 'messages_sponsored_messages_layer147')
+    def struct_0x65a4c7d5(self):
+        return Struct(
+            'sname' / Computed('messages_sponsored_messages_layer147'),
+            'signature' / Hex(Const(0x65a4c7d5, Int32ul)),
+            'messages' / self.vector(self.struct_0xed5383f7(), 'messages'),
+            'chats' / self.vector(self.chat_structures('chats'), 'chats'),
+            'users' / self.vector(self.user_structures('users'), 'users'))
+
+    @constructor(0xde9eed1d, 'stories_story_views')
+    def struct_0xde9eed1d(self):
+        return Struct(
+            'sname' / Computed('stories_story_views'),
+            'signature' / Hex(Const(0xde9eed1d, Int32ul)),
+            'views' / self.vector(self.story_views_structures('views'), 'views'),
+            'users' / self.vector(self.user_structures('users'), 'users'))
+
+    @constructor(0x5a73a98c, 'update_message_extended_media')
+    def struct_0x5a73a98c(self):
+        return Struct(
+            'sname' / Computed('update_message_extended_media'),
+            'signature' / Hex(Const(0x5a73a98c, Int32ul)),
+            'peer' / self.peer_structures('peer'),
+            'msg_id' / Int32ul,
+            'extended_media' / self.message_extended_media_structures('extended_media'))
+
+    @constructor(0x14b24500, 'update_group_call')
+    def struct_0x14b24500(self):
+        return Struct(
+            'sname' / Computed('update_group_call'),
+            'signature' / Hex(Const(0x14b24500, Int32ul)),
+            'chat_id' / Int64ul,
+            'call' / self.group_call_structures('call'))
+
+    @constructor(0x90866cee, 'update_delete_scheduled_messages')
+    def struct_0x90866cee(self):
+        return Struct(
+            'sname' / Computed('update_delete_scheduled_messages'),
+            'signature' / Hex(Const(0x90866cee, Int32ul)),
+            'peer' / self.peer_structures('peer'),
+            'messages' / self.vector(Int32ul, 'messages'))
+
+    @constructor(0xccf08ad6, 'update_group_invite_privacy_forbidden')
+    def struct_0xccf08ad6(self):
+        return ['user_id' / Int64ul]
+
     @constructor(0xef7ff916, 'stats_megagroup_stats')
     def struct_0xef7ff916(self):
         return Struct(
@@ -21817,31 +24380,6 @@ class TLStruct:  # pylint: disable=C0103
             'entities' / self.vector(self.message_entity_structures('entities'), 'entities'),
             'min_age_confirm' / If(this.flags.has_min_age_confirm, Int32ul))
 
-    @constructor(0x70c4fe03, 'payments_payment_receipt')
-    def struct_0x70c4fe03(self):
-        return Struct(
-            'sname' / Computed('payments_payment_receipt'),
-            'signature' / Hex(Const(0x70c4fe03, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_photo=4,
-                                has_info=1,
-                                has_shipping=2,
-                                has_tip_amount=8),
-            'date' / TTimestamp,
-            'bot_id' / Int64ul,
-            'provider_id' / Int64ul,
-            'title' / TString,
-            'description' / TString,
-            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
-            'invoice' / self.invoice_structures('invoice'),
-            'info' / If(this.flags.has_info, self.struct_0x909c3f94()),
-            'shipping' / If(this.flags.has_shipping, self.struct_0xb6213cdf()),
-            'tip_amount' / If(this.flags.has_tip_amount, Int64ul),
-            'currency' / TString,
-            'total_amount' / Int64ul,
-            'credentials_title' / TString,
-            'users' / self.vector(self.user_structures('users'), 'users'))
-
     @constructor(0xafe5623f, 'phone_join_as_peers')
     def struct_0xafe5623f(self):
         return Struct(
@@ -21860,49 +24398,6 @@ class TLStruct:  # pylint: disable=C0103
             'from_version' / Int32ul,
             'version' / Int32ul,
             'keywords' / self.vector(self.emoji_keyword_structures('keywords'), 'keywords'))
-
-    @constructor(0x5f2d1df2, 'premium_subscription_option')
-    def struct_0x5f2d1df2(self):
-        return Struct(
-            'sname' / Computed('premium_subscription_option'),
-            'signature' / Hex(Const(0x5f2d1df2, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_current=2,
-                                is_can_purchase_upgrade=4,
-                                has_transaction=8,
-                                has_store_product=1),
-            'transaction' / If(this.flags.has_transaction, TString),
-            'months' / Int32ul,
-            'currency' / TString,
-            'amount' / Int64ul,
-            'bot_url' / TString,
-            'store_product' / If(this.flags.has_store_product, TString))
-
-    @constructor(0xb6f11ebe, 'premium_subscription_option_layer151')
-    def struct_0xb6f11ebe(self):
-        return Struct(
-            'sname' / Computed('premium_subscription_option_layer151'),
-            'signature' / Hex(Const(0xb6f11ebe, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_store_product=1),
-            'months' / Int32ul,
-            'currency' / TString,
-            'amount' / Int64ul,
-            'bot_url' / TString,
-            'store_product' / If(this.flags.has_store_product, TString))
-
-    @structures
-    def premium_subscription_option_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x5f2d1df2: LazyBound(self.struct_0x5f2d1df2),
-            0xb6f11ebe: LazyBound(self.struct_0xb6f11ebe)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    # -------------------------------------------------------------------------
 
     @constructor(0x74c34319, 'premium_gift_option')
     def struct_0x74c34319(self):
@@ -22000,14 +24495,6 @@ class TLStruct:  # pylint: disable=C0103
                                 is_embed_links=128),
             'until_date' / TTimestamp)
 
-    @constructor(0x6ca9c2e9, 'poll_answer_layer178')
-    def struct_0x6ca9c2e9(self):
-        return Struct(
-            'sname' / Computed('poll_answer_layer178'),
-            'signature' / Hex(Const(0x6ca9c2e9, Int32ul)),
-            'text' / TString,
-            'option' / TBytes)
-
     @constructor(0x5e0fb7b9, 'messages_history_import_parsed')
     def struct_0x5e0fb7b9(self):
         return Struct(
@@ -22042,34 +24529,6 @@ class TLStruct:  # pylint: disable=C0103
             'deleted' / Int32ul,
             'kicked' / Int32ul,
             'banned' / Int32ul)
-
-    @constructor(0xa0058751, 'payments_payment_form')
-    def struct_0xa0058751(self):
-        return Struct(
-            'sname' / Computed('payments_payment_form'),
-            'signature' / Hex(Const(0xa0058751, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_can_save_credentials=4,
-                                is_password_missing=8,
-                                has_photo=32,
-                                has_native_provider=16,
-                                has_additional_methods=64,
-                                has_saved_info=1,
-                                has_saved_credentials=2),
-            'form_id' / Int64ul,
-            'bot_id' / Int64ul,
-            'title' / TString,
-            'description' / TString,
-            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
-            'invoice' / self.invoice_structures('invoice'),
-            'provider_id' / Int64ul,
-            'url' / TString,
-            'native_provider' / If(this.flags.has_native_provider, TString),
-            'native_params' / If(this.flags.has_native_provider, self.struct_0x7d748d04()),
-            'additional_methods' / If(this.flags.has_additional_methods, self.vector(self.struct_0x88f8f21b(), 'additional_methods')),
-            'saved_info' / If(this.flags.has_saved_info, self.struct_0x909c3f94()),
-            'saved_credentials' / If(this.flags.has_saved_credentials, self.vector(self.struct_0xcdc27a1f(), 'saved_credentials')),
-            'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0x88f8f21b, 'payment_form_method')
     def struct_0x88f8f21b(self):
@@ -22301,66 +24760,6 @@ class TLStruct:  # pylint: disable=C0103
             'about' / If(this.flags.has_about, TString),
             'approved_by' / If(this.flags.has_approved_by, Int64ul))
 
-    @constructor(0xacd66c5e, 'peer_settings')
-    def struct_0xacd66c5e(self):
-        return Struct(
-            'sname' / Computed('peer_settings'),
-            'signature' / Hex(Const(0xacd66c5e, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_report_spam=1,
-                                is_add_contact=2,
-                                is_block_contact=4,
-                                is_share_contact=8,
-                                is_need_contacts_exception=16,
-                                is_report_geo=32,
-                                is_autoarchived=128,
-                                is_invite_members=256,
-                                is_request_chat_broadcast=1024,
-                                is_business_bot_paused=2048,
-                                is_business_bot_can_reply=4096,
-                                has_geo_distance=64,
-                                has_request_chat_title=512,
-                                has_business_bot_id=8192),
-            'geo_distance' / If(this.flags.has_geo_distance, Int32ul),
-            'request_chat_title' / If(this.flags.has_request_chat_title, TString),
-            'request_chat_date' / If(this.flags.has_request_chat_title, TTimestamp),
-            'business_bot_id' / If(this.flags.has_business_bot_id, Int64ul),
-            'business_bot_manage_url' / If(this.flags.has_business_bot_id, TString))
-
-    @constructor(0xa518110d, 'peer_settings_layer176')
-    def struct_0xa518110d(self):
-        return Struct(
-            'sname' / Computed('peer_settings_layer176'),
-            'signature' / Hex(Const(0xa518110d, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_report_spam=1,
-                                is_add_contact=2,
-                                is_block_contact=4,
-                                is_share_contact=8,
-                                is_need_contacts_exception=16,
-                                is_report_geo=32,
-                                is_autoarchived=128,
-                                is_invite_members=256,
-                                is_request_chat_broadcast=1024,
-                                has_geo_distance=64,
-                                has_request_chat_title=512),
-            'geo_distance' / If(this.flags.has_geo_distance, Int32ul),
-            'request_chat_title' / If(this.flags.has_request_chat_title, TString),
-            'request_chat_date' / If(this.flags.has_request_chat_title, TTimestamp))
-
-    @structures
-    def peer_settings_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xacd66c5e: LazyBound(self.struct_0xacd66c5e),
-            0xa518110d: LazyBound(self.struct_0xa518110d)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    # -------------------------------------------------------------------------
-
     @constructor(0x4a4ff172, 'read_participant_date')
     def struct_0x4a4ff172(self):
         return Struct(
@@ -22474,43 +24873,6 @@ class TLStruct:  # pylint: disable=C0103
                                 is_keep_archived_folders=4,
                                 is_hide_read_marks=8,
                                 is_new_noncontact_peers_require_premium=16))
-
-    @constructor(0x8a4f3c29, 'help_premium_promo_layer144')
-    def struct_0x8a4f3c29(self):
-        return Struct(
-            'sname' / Computed('help_premium_promo_layer144'),
-            'signature' / Hex(Const(0x8a4f3c29, Int32ul)),
-            'status_text' / TString,
-            'status_entities' / self.vector(self.message_entity_structures('status_entities'), 'status_entities'),
-            'video_sections' / self.vector(TString, 'video_sections'),
-            'videos' / self.vector(self.document_structures('videos'), 'videos'),
-            'currency' / TString,
-            'monthly_amount' / Int64ul,
-            'users' / self.vector(self.user_structures('users'), 'users'))
-
-    @constructor(0xe0360f1b, 'help_premium_promo_layer140')
-    def struct_0xe0360f1b(self):
-        return Struct(
-            'sname' / Computed('help_premium_promo_layer140'),
-            'signature' / Hex(Const(0xe0360f1b, Int32ul)),
-            'status_text' / TString,
-            'status_entities' / self.vector(self.message_entity_structures('status_entities'), 'status_entities'),
-            'video_sections' / self.vector(TString, 'video_sections'),
-            'videos' / self.vector(self.document_structures('videos'), 'videos'),
-            'currency' / TString,
-            'monthly_amount' / Int64ul)
-
-    @constructor(0x5334759c, 'help_premium_promo')
-    def struct_0x5334759c(self):
-        return Struct(
-            'sname' / Computed('help_premium_promo'),
-            'signature' / Hex(Const(0x5334759c, Int32ul)),
-            'status_text' / TString,
-            'status_entities' / self.vector(self.message_entity_structures('status_entities'), 'status_entities'),
-            'video_sections' / self.vector(TString, 'video_sections'),
-            'videos' / self.vector(self.document_structures('videos'), 'videos'),
-            'period_options' / self.vector(self.premium_subscription_option_structures('period_options'), 'period_options'),
-            'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0xed1ecdb0, 'secure_value_hash')
     def struct_0xed1ecdb0(self):
@@ -22855,51 +25217,6 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0x4fcba9c8, Int32ul)),
             'count' / Int32ul,
             'sets' / self.vector(self.sticker_set_covered_structures('sets'), 'sets'))
-
-    @constructor(0x5db95a15, 'invoice_layer193')
-    def struct_0x5db95a15(self):
-        return Struct(
-            'sname' / Computed('invoice_layer193'),
-            'signature' / Hex(Const(0x5db95a15, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_test=1,
-                                is_name_requested=2,
-                                is_phone_requested=4,
-                                is_email_requested=8,
-                                is_shipping_address_requested=16,
-                                is_flexible=32,
-                                is_phone_to_provider=64,
-                                is_email_to_provider=128,
-                                is_recurring=512,
-                                has_max_tip_amount=256,
-                                has_terms_url=1024),
-            'currency' / TString,
-            'prices' / self.vector(self.struct_0xcb296bf8(), 'prices'),
-            'max_tip_amount' / If(this.flags.has_max_tip_amount, Int64ul),
-            'suggested_tip_amounts' / If(this.flags.has_max_tip_amount, self.vector(Int64ul, 'suggested_tip_amounts')),
-            'terms_url' / If(this.flags.has_terms_url, TString))
-
-    @constructor(0x3e85a91b, 'invoice_layer163')
-    def struct_0x3e85a91b(self):
-        return Struct(
-            'sname' / Computed('invoice_layer163'),
-            'signature' / Hex(Const(0x3e85a91b, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_test=1,
-                                is_name_requested=2,
-                                is_phone_requested=4,
-                                is_email_requested=8,
-                                is_shipping_address_requested=16,
-                                is_flexible=32,
-                                is_phone_to_provider=64,
-                                is_email_to_provider=128,
-                                is_recurring=512,
-                                has_max_tip_amount=256),
-            'currency' / TString,
-            'prices' / self.vector(self.struct_0xcb296bf8(), 'prices'),
-            'max_tip_amount' / If(this.flags.has_max_tip_amount, Int64ul),
-            'suggested_tip_amounts' / If(this.flags.has_max_tip_amount, self.vector(Int64ul, 'suggested_tip_amounts')),
-            'terms_url' / If(this.flags.is_recurring, TString))
 
     @constructor(0x9bed434d, 'input_web_document')
     def struct_0x9bed434d(self):
@@ -23492,15 +25809,6 @@ class TLStruct:  # pylint: disable=C0103
             'photo' / self.photo_structures('photo'),
             'document' / If(this.flags.has_document, self.document_structures('document')))
 
-    @constructor(0x7a9abda9, 'emoji_group')
-    def struct_0x7a9abda9(self):
-        return Struct(
-            'sname' / Computed('emoji_group'),
-            'signature' / Hex(Const(0x7a9abda9, Int32ul)),
-            'title' / TString,
-            'icon_emoji_id' / Int64ul,
-            'emoticons' / self.vector(TString, 'emoticons'))
-
     @constructor(0x63cacf26, 'account_auto_download_settings')
     def struct_0x63cacf26(self):
         return Struct(
@@ -23617,15 +25925,6 @@ class TLStruct:  # pylint: disable=C0103
                                 is_pin_messages=128,
                                 is_add_admins=512,
                                 is_manage_call=1024))
-
-    @constructor(0xd072acb4, 'restriction_reason')
-    def struct_0xd072acb4(self):
-        return Struct(
-            'sname' / Computed('restriction_reason'),
-            'signature' / Hex(Const(0xd072acb4, Int32ul)),
-            'platform' / TString,
-            'reason' / TString,
-            'text' / TString)
 
     @constructor(0x33db32f8, 'messages_translate_result')
     def struct_0x33db32f8(self):
@@ -28862,26 +31161,6 @@ class TLStruct:  # pylint: disable=C0103
             'slots' / If(this.flags.has_slots, self.vector(Int32ul, 'slots')),
             'peer' / self.input_peer_structures('peer'))
 
-    @constructor(0x2a1c8c71, 'stories_boost_layer186')
-    def struct_0x2a1c8c71(self):
-        return Struct(
-            'sname' / Computed('stories_boost_layer186'),
-            'signature' / Hex(Const(0x2a1c8c71, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_gift=2,
-                                is_giveaway=4,
-                                is_unclaimed=8,
-                                has_user_id=1,
-                                has_used_gift_slug=16,
-                                has_multiplier=32),
-            'id' / TString,
-            'user_id' / If(this.flags.has_user_id, Int64ul),
-            'giveaway_msg_id' / If(this.flags.is_giveaway, Int32ul),
-            'date' / TTimestamp,
-            'expires' / Int32ul,
-            'used_gift_slug' / If(this.flags.has_used_gift_slug, TString),
-            'multiplier' / If(this.flags.has_multiplier, Int32ul))
-
     @constructor(0x86f8613c, 'stories_premium_boosts_list')
     def struct_0x86f8613c(self):
         return Struct(
@@ -28904,27 +31183,6 @@ class TLStruct:  # pylint: disable=C0103
             'peer' / self.input_peer_structures('peer'),
             'offset' / TString,
             'limit' / Int32ul)
-
-    @constructor(0x03d1ea4e, 'stories_media_area_coordinates_layer181')
-    def struct_0x03d1ea4e(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_coordinates_layer181'),
-            'signature' / Hex(Const(0x03d1ea4e, Int32ul)),
-            'x' / Double,
-            'y' / Double,
-            'w' / Double,
-            'h' / Double,
-            'rotation' / Double)
-
-    @constructor(0xb2539d54, 'stories_prepaid_giveaway')
-    def struct_0xb2539d54(self):
-        return Struct(
-            'sname' / Computed('stories_prepaid_giveaway'),
-            'signature' / Hex(Const(0xb2539d54, Int32ul)),
-            'id' / Int64ul,
-            'months' / Int32ul,
-            'quantity' / Int32ul,
-            'date' / TTimestamp)
 
     @constructor(0x50cd067c, 'stories_stats_story_stats')
     def struct_0x50cd067c(self):
@@ -28972,190 +31230,6 @@ class TLStruct:  # pylint: disable=C0103
             'offset' / If(this.flags.has_offset, TString),
             'limit' / Int32ul)
 
-    @structures
-    def draft_message_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x1b0c841a: LazyBound(self.struct_0x1b0c841a),
-            0xba4baec5: LazyBound(self.struct_0xba4baec5),
-            0xfd8e711f: LazyBound(self.struct_0xfd8e711f),
-            0x3fccf7ef: LazyBound(self.struct_0x3fccf7ef),
-            0x2d65321f: LazyBound(self.struct_0x2d65321f)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-
-    @structures
-    def payment_receipt_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x70c4fe03: LazyBound(self.struct_0x70c4fe03),
-            0xdabbf83a: LazyBound(self.struct_0xdabbf83a)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0xdabbf83a, 'payments_payment_receipt_stars')
-    def struct_0xdabbf83a(self):
-        return Struct(
-            'sname' / Computed('payments_payment_receipt_stars'),
-            'signature' / Hex(Const(0xdabbf83a, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_photo=4),
-            'date' / TTimestamp,
-            'bot_id' / Int64ul,
-            'title' / TString,
-            'description' / TString,
-            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
-            'invoice' / self.invoice_structures('invoice'),
-            'currency' / TString,
-            'total_amount' / Int64ul,
-            'transaction_id' / TString,
-            'users' / self.vector(self.user_structures('users'), 'users'))
-
-    @constructor(0x17399fad, 'document_attribute_video_layer187')
-    def struct_0x17399fad(self):
-        return Struct(
-            'sname' / Computed('document_attribute_video_layer187'),
-            'signature' / Hex(Const(0x17399fad, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_round_message=1,
-                                is_supports_streaming=2,
-                                is_nosound=8,
-                                has_preload_prefix_size=4,
-                                has_video_start_ts=16),
-            'duration' / Double,
-            'w' / Int32ul,
-            'h' / Int32ul,
-            'preload_prefix_size' / If(this.flags.has_preload_prefix_size, Int32ul),
-            'video_start_ts' / If(this.flags.has_video_start_ts, Double))
-
-    @constructor(0xd38ff1c2, 'document_attribute_video_layer184')
-    def struct_0xd38ff1c2(self):
-        return Struct(
-            'sname' / Computed('document_attribute_video_layer184'),
-            'signature' / Hex(Const(0xd38ff1c2, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_round_message=1,
-                                is_supports_streaming=2,
-                                is_nosound=8,
-                                has_preload_prefix_size=4),
-            'duration' / Double,
-            'w' / Int32ul,
-            'h' / Int32ul,
-            'preload_prefix_size' / If(this.flags.has_preload_prefix_size, Int32ul))
-
-    @constructor(0xd597650c, 'group_call_layer195')
-    def struct_0xd597650c(self):
-        return Struct(
-            'sname' / Computed('group_call_layer195'),
-            'signature' / Hex(Const(0xd597650c, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_join_muted=2,
-                                is_can_change_join_muted=4,
-                                is_join_date_asc=64,
-                                is_schedule_start_subscribed=256,
-                                is_can_start_video=512,
-                                is_record_video_active=2048,
-                                is_rtmp_stream=4096,
-                                is_listeners_hidden=8192,
-                                has_title=8,
-                                has_stream_dc_id=16,
-                                has_record_start_date=32,
-                                has_schedule_date=128,
-                                has_unmuted_video_count=1024),
-            'id' / Int64ul,
-            'access_hash' / Int64ul,
-            'participants_count' / Int32ul,
-            'title' / If(this.flags.has_title, TString),
-            'stream_dc_id' / If(this.flags.has_stream_dc_id, Int32ul),
-            'record_start_date' / If(this.flags.has_record_start_date, TTimestamp),
-            'schedule_date' / If(this.flags.has_schedule_date, TTimestamp),
-            'unmuted_video_count' / If(this.flags.has_unmuted_video_count, Int32ul),
-            'unmuted_video_limit' / Int32ul,
-            'version' / Int32ul)
-
-
-    @structures
-    def poll_answer_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xff16e2ca: LazyBound(self.struct_0xff16e2ca),
-            0x6ca9c2e9: LazyBound(self.struct_0x6ca9c2e9)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0xff16e2ca, 'poll_answer')
-    def struct_0xff16e2ca(self):
-        return Struct(
-            'sname' / Computed('poll_answer'),
-            'signature' / Hex(Const(0xff16e2ca, Int32ul)),
-            'text' / self.struct_0x751f3146(),
-            'option' / TBytes)
-
-    @structures
-    def payment_form_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xa0058751: LazyBound(self.struct_0xa0058751),
-            0x7bf6b15c: LazyBound(self.struct_0x7bf6b15c),
-            0xb425cfe1: LazyBound(self.struct_0xb425cfe1)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x7bf6b15c, 'payments_payment_form_stars')
-    def struct_0x7bf6b15c(self):
-        return Struct(
-            'sname' / Computed('payments_payment_form_stars'),
-            'signature' / Hex(Const(0x7bf6b15c, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_can_save_credentials=4,
-                                is_password_missing=8,
-                                has_photo=32),
-            'form_id' / Int64ul,
-            'bot_id' / Int64ul,
-            'title' / TString,
-            'description' / TString,
-            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
-            'invoice' / self.invoice_structures('invoice'),
-            'users' / self.vector(self.user_structures('users'), 'users'))
-
-    @constructor(0xb425cfe1, 'payments_payment_form_star_gift')
-    def struct_0xb425cfe1(self):
-        return Struct(
-            'sname' / Computed('payments_payment_form_star_gift'),
-            'signature' / Hex(Const(0xb425cfe1, Int32ul)),
-            'form_id' / Int64ul,
-            'invoice' / self.invoice_structures('invoice'))
-
-    @structures
-    def privacy_rule_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xf888fa1a: LazyBound(self.struct_0xf888fa1a),
-            0xe4621141: LazyBound(self.struct_0xe4621141),
-            0x6b134e8e: LazyBound(self.struct_0x6b134e8e),
-            0x41c87565: LazyBound(self.struct_0x41c87565),
-            0x65427b82: LazyBound(self.struct_0x65427b82),
-            0x8b73e763: LazyBound(self.struct_0x8b73e763),
-            0xb8905fb2: LazyBound(self.struct_0xb8905fb2),
-            0xfffe1bac: LazyBound(self.struct_0xfffe1bac),
-            0xf7e8d89b: LazyBound(self.struct_0xf7e8d89b),
-            0xece9814b: LazyBound(self.struct_0xece9814b),
-            0x21461b5d: LazyBound(self.struct_0x21461b5d),
-            0xf6a5f82f: LazyBound(self.struct_0xf6a5f82f)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
     @constructor(0x405fef0d, 'input_media_invoice')
     def struct_0x405fef0d(self):
         return Struct(
@@ -29174,463 +31248,6 @@ class TLStruct:  # pylint: disable=C0103
             'provider_data' / self.struct_0x7d748d04(),
             'start_param' / If(this.flags.has_start_param, TString),
             'extend_media' / If(this.flags.has_extend_media, self.input_media_structures('extend_media')))
-
-    @structures
-    def help_premium_promo_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x5334759c: LazyBound(self.struct_0x5334759c),
-            0x8a4f3c29: LazyBound(self.struct_0x8a4f3c29),
-            0xe0360f1b: LazyBound(self.struct_0xe0360f1b)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-
-    @structures
-    def phone_call_discard_reason_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x57adc690: LazyBound(self.struct_0x57adc690),
-            0xfaf7e8c9: LazyBound(self.struct_0xfaf7e8c9),
-            0x85e42301: LazyBound(self.struct_0x85e42301),
-            0xe095c1a0: LazyBound(self.struct_0xe095c1a0),
-            0xafe2b839: LazyBound(self.struct_0xafe2b839)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x5fb5523b, 'dialog_filter_layer195')
-    def struct_0x5fb5523b(self):
-        return Struct(
-            'sname' / Computed('dialog_filter_layer195'),
-            'signature' / Hex(Const(0x5fb5523b, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_contacts=1,
-                                is_non_contacts=2,
-                                is_groups=4,
-                                is_broadcasts=8,
-                                is_bots=16,
-                                is_exclude_muted=2048,
-                                is_exclude_read=4096,
-                                is_exclude_archived=8192,
-                                has_emoticon=33554432,
-                                has_color=134217728),
-            'id' / Int32ul,
-            'title_text' / TString,
-            'emoticon' / If(this.flags.has_emoticon, TString),
-            'color' / If(this.flags.has_color, Int32ul),
-            'pinned_peers' / self.vector(self.input_peer_structures('pinned_peers'), 'pinned_peers'),
-            'include_peers' / self.vector(self.input_peer_structures('include_peers'), 'include_peers'),
-            'exclude_peers' / self.vector(self.input_peer_structures('exclude_peers'), 'exclude_peers'))
-
-    @constructor(0x41b3e202, 'message_action_payment_refunded')
-    def struct_0x41b3e202(self):
-        return Struct(
-            'sname' / Computed('message_action_payment_refunded'),
-            'signature' / Hex(Const(0x41b3e202, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_payload=1),
-            'peer' / self.peer_structures('peer'),
-            'currency' / TString,
-            'total_amount' / Int64ul,
-            'payload' / If(this.flags.has_payload, TBytes),
-            'charge' / self.struct_0xea02c27e())
-
-    @constructor(0x45d5b021, 'message_action_gift_stars')
-    def struct_0x45d5b021(self):
-        return Struct(
-            'sname' / Computed('message_action_gift_stars'),
-            'signature' / Hex(Const(0x45d5b021, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_crypto_currency=1,
-                                has_transaction_id=2),
-            'currency' / TString,
-            'amount' / Int64ul,
-            'stars' / Int64ul,
-            'crypto_currency' / If(this.flags.has_crypto_currency, TString),
-            'crypto_amount' / If(this.flags.has_crypto_currency, Int64ul),
-            'transaction_id' / If(this.flags.has_transaction_id, TString))
-
-    @constructor(0xc624b16e, 'message_action_payment_sent')
-    def struct_0xc624b16e(self):
-        return Struct(
-            'sname' / Computed('message_action_payment_sent'),
-            'signature' / Hex(Const(0xc624b16e, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_recurring_init=4,
-                                is_recurring_used=8,
-                                has_invoice_slug=1,
-                                has_subscription_until_date=16),
-            'currency' / TString,
-            'total_amount' / Int64ul,
-            'invoice_slug' / If(this.flags.has_invoice_slug, TString),
-            'subscription_until_date' / If(this.flags.has_subscription_until_date, TTimestamp))
-
-    @constructor(0x6c6274fa, 'message_action_gift_premium')
-    def struct_0x6c6274fa(self):
-        return Struct(
-            'sname' / Computed('message_action_gift_premium'),
-            'signature' / Hex(Const(0x6c6274fa, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_crypto_currency=1,
-                                has_message=2),
-            'currency' / TString,
-            'amount' / Int64ul,
-            'months' / Int32ul,
-            'crypto_currency' / If(this.flags.has_crypto_currency, TString),
-            'crypto_amount' / If(this.flags.has_crypto_currency, Int64ul),
-            'message' / If(this.flags.has_message, self.struct_0x751f3146()))
-
-    @constructor(0xffa00ccc, 'message_action_payment_sent_me')
-    def struct_0xffa00ccc(self):
-        return Struct(
-            'sname' / Computed('message_action_payment_sent_me'),
-            'signature' / Hex(Const(0xffa00ccc, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_recurring_init=4,
-                                is_recurring_used=8,
-                                has_info=1,
-                                has_shipping_option_id=2,
-                                has_subscription_until_date=16),
-            'currency' / TString,
-            'total_amount' / Int64ul,
-            'payload' / TBytes,
-            'info' / If(this.flags.has_info, self.struct_0x909c3f94()),
-            'shipping_option_id' / If(this.flags.has_shipping_option_id, TString),
-            'charge' / self.struct_0xea02c27e(),
-            'subscription_until_date' / If(this.flags.has_subscription_until_date, TTimestamp))
-
-    @constructor(0x049ee584, 'invoice')
-    def struct_0x049ee584(self):
-        return Struct(
-            'sname' / Computed('invoice'),
-            'signature' / Hex(Const(0x049ee584, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_test=1,
-                                is_name_requested=2,
-                                is_phone_requested=4,
-                                is_email_requested=8,
-                                is_shipping_address_requested=16,
-                                is_flexible=32,
-                                is_phone_to_provider=64,
-                                is_email_to_provider=128,
-                                is_recurring=512,
-                                has_max_tip_amount=256,
-                                has_terms_url=1024,
-                                has_subscription_period=2048),
-            'currency' / TString,
-            'prices' / self.vector(self.struct_0xcb296bf8(), 'prices'),
-            'max_tip_amount' / If(this.flags.has_max_tip_amount, Int64ul),
-            'suggested_tip_amounts' / If(this.flags.has_max_tip_amount, self.vector(Int64ul, 'suggested_tip_amounts')),
-            'terms_url' / If(this.flags.has_terms_url, TString),
-            'subscription_period' / If(this.flags.has_subscription_period, Int32ul))
-
-    @structures
-    def invoice_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x049ee584: LazyBound(self.struct_0x049ee584),
-            0x5db95a15: LazyBound(self.struct_0x5db95a15),
-            0x3e85a91b: LazyBound(self.struct_0x3e85a91b)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-
-    @structures
-    def message_reactor_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x4ba3a95a: LazyBound(self.struct_0x4ba3a95a),
-            0xef00d448: LazyBound(self.struct_0xef00d448)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x4ba3a95a, 'message_reactor')
-    def struct_0x4ba3a95a(self):
-        return Struct(
-            'sname' / Computed('message_reactor'),
-            'signature' / Hex(Const(0x4ba3a95a, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_top=1,
-                                is_my=2,
-                                is_anonymous=4,
-                                has_peer_id=8),
-            'peer_id' / If(this.flags.has_peer_id, self.peer_structures('peer_id')),
-            'count' / Int32ul)
-
-    @constructor(0xef00d448, 'message_reactor_old')
-    def struct_0xef00d448(self):
-        return Struct(
-            'sname' / Computed('message_reactor_old'),
-            'signature' / Hex(Const(0xef00d448, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_top=1,
-                                is_my=2),
-            'peer_id' / self.peer_structures('peer_id'),
-            'count' / Int32ul)
-
-    @constructor(0x4f2b9479, 'message_reactions_layer185')
-    def struct_0x4f2b9479(self):
-        return Struct(
-            'sname' / Computed('message_reactions_layer185'),
-            'signature' / Hex(Const(0x4f2b9479, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_min=1,
-                                is_can_see_list=4,
-                                is_reactions_as_tags=8,
-                                has_recent_reactions=2),
-            'results' / self.vector(self.reaction_count_structures('results'), 'results'),
-            'recent_reactions' / If(this.flags.has_recent_reactions, self.vector(self.message_peer_reaction_structures('recent_reactions'), 'recent_reactions')))
-
-    @structures
-    def top_peer_category_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x161d9628: LazyBound(self.struct_0x161d9628),
-            0x1e76a78c: LazyBound(self.struct_0x1e76a78c),
-            0xbd17a14a: LazyBound(self.struct_0xbd17a14a),
-            0x148677e2: LazyBound(self.struct_0x148677e2),
-            0xa8406ca9: LazyBound(self.struct_0xa8406ca9),
-            0xfbeec0f0: LazyBound(self.struct_0xfbeec0f0),
-            0xab661b5b: LazyBound(self.struct_0xab661b5b),
-            0x0637b7ed: LazyBound(self.struct_0x0637b7ed),
-            0xfd9e7bec: LazyBound(self.struct_0xfd9e7bec)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-
-    @structures
-    def input_media_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xf8ab7dfb: LazyBound(self.struct_0xf8ab7dfb),
-            0xa8763ab5: LazyBound(self.struct_0xa8763ab5),
-            0xd33f43f3: LazyBound(self.struct_0xd33f43f3),
-            0xe66fbf7b: LazyBound(self.struct_0xe66fbf7b),
-            0xf9c44144: LazyBound(self.struct_0xf9c44144),
-            0x779600f9: LazyBound(self.struct_0x779600f9),
-            0x9664f57f: LazyBound(self.struct_0x9664f57f),
-            0x0f94e5f1: LazyBound(self.struct_0x0f94e5f1),
-            0x1e287d04: LazyBound(self.struct_0x1e287d04),
-            0xc13d1c11: LazyBound(self.struct_0xc13d1c11),
-            0x971fa843: LazyBound(self.struct_0x971fa843),
-            0x037c9330: LazyBound(self.struct_0x037c9330),
-            0xe5bbfe1a: LazyBound(self.struct_0xe5bbfe1a),
-            0xb3ba0635: LazyBound(self.struct_0xb3ba0635),
-            0xc21b8849: LazyBound(self.struct_0xc21b8849),
-            0xaa661fc3: LazyBound(self.struct_0xaa661fc3),
-            0xc4103386: LazyBound(self.struct_0xc4103386)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0xc4103386, 'input_media_paid_media')
-    def struct_0xc4103386(self):
-        return Struct(
-            'sname' / Computed('input_media_paid_media'),
-            'signature' / Hex(Const(0xc4103386, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_payload=1),
-            'stars_amount' / Int64ul,
-            'extended_media' / self.vector(self.input_media_structures('extended_media'), 'extended_media'),
-            'payload' / If(this.flags.has_payload, TString))
-
-    @structures
-    def update_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x24f40e77: LazyBound(self.struct_0x24f40e77),
-            0xd5a41724: LazyBound(self.struct_0xd5a41724),
-            0xaca1657b: LazyBound(self.struct_0xaca1657b),
-            0xbb9bb9a5: LazyBound(self.struct_0xbb9bb9a5),
-            0xf89a6a4e: LazyBound(self.struct_0xf89a6a4e),
-            0xa20db0e5: LazyBound(self.struct_0xa20db0e5),
-            0x5bb98608: LazyBound(self.struct_0x5bb98608),
-            0xf2ebdb4e: LazyBound(self.struct_0xf2ebdb4e),
-            0x571d2742: LazyBound(self.struct_0x571d2742),
-            0x1710f156: LazyBound(self.struct_0x1710f156),
-            0xd6b19546: LazyBound(self.struct_0xd6b19546),
-            0x2f2f21bf: LazyBound(self.struct_0x2f2f21bf),
-            0x62ba04d9: LazyBound(self.struct_0x62ba04d9),
-            0x1592b79d: LazyBound(self.struct_0x1592b79d),
-            0x6e6fe51c: LazyBound(self.struct_0x6e6fe51c),
-            0x6a7e7366: LazyBound(self.struct_0x6a7e7366),
-            0x05492a13: LazyBound(self.struct_0x05492a13),
-            0x4e90bfd6: LazyBound(self.struct_0x4e90bfd6),
-            0xb75f99a9: LazyBound(self.struct_0xb75f99a9),
-            0x8c88c923: LazyBound(self.struct_0x8c88c923),
-            0x1bf335b9: LazyBound(self.struct_0x1bf335b9),
-            0x31c24808: LazyBound(self.struct_0x31c24808),
-            0x19360dc0: LazyBound(self.struct_0x19360dc0),
-            0x1f2b0afd: LazyBound(self.struct_0x1f2b0afd),
-            0x39a51dfb: LazyBound(self.struct_0x39a51dfb),
-            0x12bcbd9a: LazyBound(self.struct_0x12bcbd9a),
-            0x86fccf85: LazyBound(self.struct_0x86fccf85),
-            0xe5bdf8de: LazyBound(self.struct_0xe5bdf8de),
-            0x28373599: LazyBound(self.struct_0x28373599),
-            0xf226ac08: LazyBound(self.struct_0xf226ac08),
-            0x0b783982: LazyBound(self.struct_0x0b783982),
-            0x4d712f2e: LazyBound(self.struct_0x4d712f2e),
-            0x871fb939: LazyBound(self.struct_0x871fb939),
-            0xbec268ef: LazyBound(self.struct_0xbec268ef),
-            0x985d3abb: LazyBound(self.struct_0x985d3abb),
-            0x695c9e7c: LazyBound(self.struct_0x695c9e7c),
-            0xe32f3d77: LazyBound(self.struct_0xe32f3d77),
-            0xfb4c496c: LazyBound(self.struct_0xfb4c496c),
-            0xe40370a3: LazyBound(self.struct_0xe40370a3),
-            0x6f7863f4: LazyBound(self.struct_0x6f7863f4),
-            0x39c67432: LazyBound(self.struct_0x39c67432),
-            0x7f891213: LazyBound(self.struct_0x7f891213),
-            0xe511996d: LazyBound(self.struct_0xe511996d),
-            0x3dda5451: LazyBound(self.struct_0x3dda5451),
-            0x83487af0: LazyBound(self.struct_0x83487af0),
-            0x564fe691: LazyBound(self.struct_0x564fe691),
-            0xb4a2e88d: LazyBound(self.struct_0xb4a2e88d),
-            0x97d64341: LazyBound(self.struct_0x97d64341),
-            0x108d941f: LazyBound(self.struct_0x108d941f),
-            0xc01e857f: LazyBound(self.struct_0xc01e857f),
-            0xf74e932b: LazyBound(self.struct_0xf74e932b),
-            0xebe46819: LazyBound(self.struct_0xebe46819),
-            0x56022f4d: LazyBound(self.struct_0x56022f4d),
-            0xb23fc698: LazyBound(self.struct_0xb23fc698),
-            0xd7ca61a2: LazyBound(self.struct_0xd7ca61a2),
-            0xea29055d: LazyBound(self.struct_0xea29055d),
-            0xee3b272a: LazyBound(self.struct_0xee3b272a),
-            0xa229dd06: LazyBound(self.struct_0xa229dd06),
-            0xe16459c3: LazyBound(self.struct_0xe16459c3),
-            0x1b49ec6d: LazyBound(self.struct_0x1b49ec6d),
-            0x8951abef: LazyBound(self.struct_0x8951abef),
-            0xa7848924: LazyBound(self.struct_0xa7848924),
-            0x5e1b3cb8: LazyBound(self.struct_0x5e1b3cb8),
-            0xab0f6b1e: LazyBound(self.struct_0xab0f6b1e),
-            0x26ffde7d: LazyBound(self.struct_0x26ffde7d),
-            0xebe07752: LazyBound(self.struct_0xebe07752),
-            0xed85eab5: LazyBound(self.struct_0xed85eab5),
-            0x2661bf09: LazyBound(self.struct_0x2661bf09),
-            0x88617090: LazyBound(self.struct_0x88617090),
-            0xfa0f3ca2: LazyBound(self.struct_0xfa0f3ca2),
-            0x74d8be99: LazyBound(self.struct_0x74d8be99),
-            0x2c084dc1: LazyBound(self.struct_0x2c084dc1),
-            0x0084cd5a: LazyBound(self.struct_0x0084cd5a),
-            0xb4afcfb0: LazyBound(self.struct_0xb4afcfb0),
-            0x9a422c20: LazyBound(self.struct_0x9a422c20),
-            0x9c974fdf: LazyBound(self.struct_0x9c974fdf),
-            0xa5d72105: LazyBound(self.struct_0xa5d72105),
-            0x9375341e: LazyBound(self.struct_0x9375341e),
-            0x7084a7be: LazyBound(self.struct_0x7084a7be),
-            0x635b4c09: LazyBound(self.struct_0x635b4c09),
-            0x2f2ba99f: LazyBound(self.struct_0x2f2ba99f),
-            0xf2a71983: LazyBound(self.struct_0xf2a71983),
-            0xd29a27f4: LazyBound(self.struct_0xd29a27f4),
-            0xc32d5b12: LazyBound(self.struct_0xc32d5b12),
-            0x7d627683: LazyBound(self.struct_0x7d627683),
-            0xf227868c: LazyBound(self.struct_0xf227868c),
-            0x20529438: LazyBound(self.struct_0x20529438),
-            0x17b7a20b: LazyBound(self.struct_0x17b7a20b),
-            0x3504914f: LazyBound(self.struct_0x3504914f),
-            0x30f443db: LazyBound(self.struct_0x30f443db),
-            0x75b3b798: LazyBound(self.struct_0x75b3b798),
-            0x7063c3db: LazyBound(self.struct_0x7063c3db),
-            0x8e5e9873: LazyBound(self.struct_0x8e5e9873),
-            0x1b3f4df7: LazyBound(self.struct_0x1b3f4df7),
-            0x688a30aa: LazyBound(self.struct_0x688a30aa),
-            0x8216fba3: LazyBound(self.struct_0x8216fba3),
-            0x46560264: LazyBound(self.struct_0x46560264),
-            0x38fe25b7: LazyBound(self.struct_0x38fe25b7),
-            0x0bb2d201: LazyBound(self.struct_0x0bb2d201),
-            0x922e6e10: LazyBound(self.struct_0x922e6e10),
-            0xf8227181: LazyBound(self.struct_0xf8227181),
-            0x07761198: LazyBound(self.struct_0x07761198),
-            0x54c01850: LazyBound(self.struct_0x54c01850),
-            0x14b85813: LazyBound(self.struct_0x14b85813),
-            0xfe198602: LazyBound(self.struct_0xfe198602),
-            0x192efbe3: LazyBound(self.struct_0x192efbe3),
-            0x07b68920: LazyBound(self.struct_0x07b68920),
-            0xae3f101d: LazyBound(self.struct_0xae3f101d),
-            0xaeaf9e74: LazyBound(self.struct_0xaeaf9e74),
-            0x686c85a6: LazyBound(self.struct_0x686c85a6),
-            0xf9470ab2: LazyBound(self.struct_0xf9470ab2),
-            0xf53da717: LazyBound(self.struct_0xf53da717),
-            0x53e6f1ec: LazyBound(self.struct_0x53e6f1ec),
-            0x3e050d0f: LazyBound(self.struct_0x3e050d0f),
-            0x566fe7cd: LazyBound(self.struct_0x566fe7cd),
-            0x1824e40b: LazyBound(self.struct_0x1824e40b),
-            0xdfd961f5: LazyBound(self.struct_0xdfd961f5),
-            0x4e80a379: LazyBound(self.struct_0x4e80a379),
-            0xa584b019: LazyBound(self.struct_0xa584b019),
-            0x283bd312: LazyBound(self.struct_0x283bd312),
-            0x51ca7aec: LazyBound(self.struct_0x51ca7aec),
-            0xa8ae3eb1: LazyBound(self.struct_0xa8ae3eb1)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0xd5a41724, 'update_message_extended_media')
-    def struct_0xd5a41724(self):
-        return Struct(
-            'sname' / Computed('update_message_extended_media'),
-            'signature' / Hex(Const(0xd5a41724, Int32ul)),
-            'peer' / self.peer_structures('peer'),
-            'msg_id' / Int32ul,
-            'extended_media' / self.vector(self.message_extended_media_structures('extended_media'), 'extended_media'))
-
-    @constructor(0x97d64341, 'update_group_call')
-    def struct_0x97d64341(self):
-        return Struct(
-            'sname' / Computed('update_group_call'),
-            'signature' / Hex(Const(0x97d64341, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_chat_id=1),
-            'chat_id' / If(this.flags.has_chat_id, Int64ul),
-            'call' / self.group_call_structures('call'))
-
-    @constructor(0xf2a71983, 'update_delete_scheduled_messages')
-    def struct_0xf2a71983(self):
-        return Struct(
-            'sname' / Computed('update_delete_scheduled_messages'),
-            'signature' / Hex(Const(0xf2a71983, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_sent_messages=1),
-            'peer' / self.peer_structures('peer'),
-            'messages' / self.vector(Int32ul, 'messages'),
-            'sent_messages' / If(this.flags.has_sent_messages, self.vector(Int32ul, 'sent_messages')))
-
-    @constructor(0x020df5d0, 'message_entity_blockquote_layer180')
-    def struct_0x020df5d0(self):
-        return Struct(
-            'sname' / Computed('message_entity_blockquote_layer180'),
-            'signature' / Hex(Const(0x020df5d0, Int32ul)),
-            'offset' / Int32ul,
-            'length' / Int32ul)
-
-    @constructor(0x86e18161, 'poll_layer178')
-    def struct_0x86e18161(self):
-        return Struct(
-            'sname' / Computed('poll_layer178'),
-            'signature' / Hex(Const(0x86e18161, Int32ul)),
-            'id' / Int64ul,
-            'flags' / FlagsEnum(Int32ul,
-                                is_closed=1,
-                                is_public_voters=2,
-                                is_multiple_choice=4,
-                                is_quiz=8,
-                                has_close_period=16,
-                                has_close_date=32),
-            'question_text' / TString,
-            'answers' / self.vector(self.poll_answer_structures('answers'), 'answers'),
-            'close_period' / If(this.flags.has_close_period, Int32ul),
-            'close_date' / If(this.flags.has_close_date, TTimestamp))
 
     @constructor(0x4d93a990, 'sponsored_message')
     def struct_0x4d93a990(self):
@@ -29666,34 +31283,6 @@ class TLStruct:  # pylint: disable=C0103
             'text' / TString,
             'option' / TBytes)
 
-    @structures
-    def channels_sponsored_message_report_result_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x846f9e42: LazyBound(self.struct_0x846f9e42),
-            0x3e3bcf2f: LazyBound(self.struct_0x3e3bcf2f),
-            0xad798849: LazyBound(self.struct_0xad798849)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x846f9e42, 'channels_sponsored_message_report_result_choose_option')
-    def struct_0x846f9e42(self):
-        return Struct(
-            'sname' / Computed('channels_sponsored_message_report_result_choose_option'),
-            'signature' / Hex(Const(0x846f9e42, Int32ul)),
-            'title' / TString,
-            'options' / self.vector(self.struct_0x430d3150(), 'options'))
-
-    @constructor(0x3e3bcf2f, 'channels_sponsored_message_report_result_ads_hidden')
-    def struct_0x3e3bcf2f(self):
-        return []
-
-    @constructor(0xad798849, 'channels_sponsored_message_report_result_reported')
-    def struct_0xad798849(self):
-        return []
-
     @constructor(0x1af3dbb8, 'messages_report_sponsored_message')
     def struct_0x1af3dbb8(self):
         return Struct(
@@ -29702,459 +31291,6 @@ class TLStruct:  # pylint: disable=C0103
             'peer' / self.input_peer_structures('peer'),
             'random_id' / TBytes,
             'option' / TBytes)
-
-    @constructor(0xc00c07c0, 'channel_participant_layer185')
-    def struct_0xc00c07c0(self):
-        return Struct(
-            'sname' / Computed('channel_participant_layer185'),
-            'signature' / Hex(Const(0xc00c07c0, Int32ul)),
-            'peer_user_id' / Int64ul,
-            'date' / TTimestamp)
-
-    @structures
-    def emoji_group_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x7a9abda9: LazyBound(self.struct_0x7a9abda9),
-            0x80d26cc7: LazyBound(self.struct_0x80d26cc7),
-            0x093bcf34: LazyBound(self.struct_0x093bcf34)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x80d26cc7, 'emoji_group_greeting')
-    def struct_0x80d26cc7(self):
-        return Struct(
-            'sname' / Computed('emoji_group_greeting'),
-            'signature' / Hex(Const(0x80d26cc7, Int32ul)),
-            'title' / TString,
-            'icon_emoji_id' / Int64ul,
-            'emoticons' / self.vector(TString, 'emoticons'))
-
-    @constructor(0x093bcf34, 'emoji_group_premium')
-    def struct_0x093bcf34(self):
-        return Struct(
-            'sname' / Computed('emoji_group_premium'),
-            'signature' / Hex(Const(0x093bcf34, Int32ul)),
-            'title' / TString,
-            'icon_emoji_id' / Int64ul)
-
-    @structures
-    def channel_admin_log_event_action_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xdb9f9140: LazyBound(self.struct_0xdb9f9140),
-            0xb1c3caa7: LazyBound(self.struct_0xb1c3caa7),
-            0x46d840ab: LazyBound(self.struct_0x46d840ab),
-            0xf92424d2: LazyBound(self.struct_0xf92424d2),
-            0x2df5fc0a: LazyBound(self.struct_0x2df5fc0a),
-            0xfe69018d: LazyBound(self.struct_0xfe69018d),
-            0xf89777f2: LazyBound(self.struct_0xf89777f2),
-            0x709b2405: LazyBound(self.struct_0x709b2405),
-            0xe90ebb59: LazyBound(self.struct_0xe90ebb59),
-            0x6a4afc38: LazyBound(self.struct_0x6a4afc38),
-            0x0e6b76ae: LazyBound(self.struct_0x0e6b76ae),
-            0x434bd2af: LazyBound(self.struct_0x434bd2af),
-            0xd5676710: LazyBound(self.struct_0xd5676710),
-            0x53909779: LazyBound(self.struct_0x53909779),
-            0xfe9fc158: LazyBound(self.struct_0xfe9fc158),
-            0x410a134e: LazyBound(self.struct_0x410a134e),
-            0x8f079643: LazyBound(self.struct_0x8f079643),
-            0x5a50fca4: LazyBound(self.struct_0x5a50fca4),
-            0x26ae0971: LazyBound(self.struct_0x26ae0971),
-            0x3e7f6847: LazyBound(self.struct_0x3e7f6847),
-            0x02cc6383: LazyBound(self.struct_0x02cc6383),
-            0xf06fe208: LazyBound(self.struct_0xf06fe208),
-            0x5d8d353b: LazyBound(self.struct_0x5d8d353b),
-            0xe6d83d7e: LazyBound(self.struct_0xe6d83d7e),
-            0x183040d3: LazyBound(self.struct_0x183040d3),
-            0x5f5c95f1: LazyBound(self.struct_0x5f5c95f1),
-            0xafb6144a: LazyBound(self.struct_0xafb6144a),
-            0xe9e82c18: LazyBound(self.struct_0xe9e82c18),
-            0x56d6a247: LazyBound(self.struct_0x56d6a247),
-            0xe31c34d8: LazyBound(self.struct_0xe31c34d8),
-            0x55188a2e: LazyBound(self.struct_0x55188a2e),
-            0x23209745: LazyBound(self.struct_0x23209745),
-            0xbe4e0ef8: LazyBound(self.struct_0xbe4e0ef8),
-            0x050c7ac8: LazyBound(self.struct_0x050c7ac8),
-            0x1b7907ae: LazyBound(self.struct_0x1b7907ae),
-            0xe64429c0: LazyBound(self.struct_0xe64429c0),
-            0x42e047bb: LazyBound(self.struct_0x42e047bb),
-            0xe6dfb825: LazyBound(self.struct_0xe6dfb825),
-            0x6e941a38: LazyBound(self.struct_0x6e941a38),
-            0xcb2ac766: LazyBound(self.struct_0xcb2ac766),
-            0xf04fb3a9: LazyBound(self.struct_0xf04fb3a9),
-            0x58707d28: LazyBound(self.struct_0x58707d28),
-            0xae168909: LazyBound(self.struct_0xae168909),
-            0x64f36dfc: LazyBound(self.struct_0x64f36dfc),
-            0x3c2b247b: LazyBound(self.struct_0x3c2b247b),
-            0x445fc434: LazyBound(self.struct_0x445fc434),
-            0x5796e780: LazyBound(self.struct_0x5796e780),
-            0x5e477b25: LazyBound(self.struct_0x5e477b25),
-            0x31bb5d52: LazyBound(self.struct_0x31bb5d52),
-            0x3ea9feb1: LazyBound(self.struct_0x3ea9feb1),
-            0x60a79c79: LazyBound(self.struct_0x60a79c79),
-            0x64642db3: LazyBound(self.struct_0x64642db3)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x64642db3, 'channel_admin_log_event_action_participant_sub_extend')
-    def struct_0x64642db3(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_participant_sub_extend'),
-            'signature' / Hex(Const(0x64642db3, Int32ul)),
-            'prev_participant' / self.channel_participant_structures('prev_participant'),
-            'new_participant' / self.channel_participant_structures('new_participant'))
-
-    @constructor(0x46aeac06, 'channel_layer196_1')
-    def struct_0x46aeac06(self):
-        return Struct(
-            'sname' / Computed('channel_layer196_1'),
-            'signature' / Hex(Const(0x46aeac06, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_creator=1,
-                                is_left=4,
-                                is_broadcast=32,
-                                is_verified=128,
-                                is_megagroup=256,
-                                is_restricted=512,
-                                is_signatures=2048,
-                                is_min=4096,
-                                is_scam=524288,
-                                has_link=1048576,
-                                has_geo=2097152,
-                                is_slowmode_enabled=4194304,
-                                is_call_active=8388608,
-                                is_call_not_empty=16777216,
-                                is_fake=33554432,
-                                is_gigagroup=67108864,
-                                is_noforwards=134217728,
-                                is_join_to_send=268435456,
-                                is_join_request=536870912,
-                                is_forum=1073741824,
-                                has_access_hash=8192,
-                                has_username=64,
-                                has_admin_rights=16384,
-                                has_banned_rights=32768,
-                                has_default_banned_rights=262144,
-                                has_participants_count=131072),
-            'flags2' / FlagsEnum(Int32ul,
-                                 is_stories_hidden=2,
-                                 is_stories_hidden_min=4,
-                                 is_stories_unavailable=8,
-                                 is_signature_profiles=4096,
-                                 has_usernames=1,
-                                 has_stories_max_id=16,
-                                 has_color=128,
-                                 has_profile_color=256,
-                                 has_emoji_status=512,
-                                 has_level=1024,
-                                 has_subscription_until_date=2048,
-                                 has_bot_verification_icon=8192),
-            'id' / Int64ul,
-            'access_hash' / If(this.flags.has_access_hash, Int64ul),
-            'title' / TString,
-            'username' / If(this.flags.has_username, TString),
-            'photo' / self.chat_photo_structures('photo'),
-            'date' / TTimestamp,
-            'restriction_reason' / If(this.flags.is_restricted, self.vector(self.restriction_reason_structures('restriction_reason'), 'restriction_reason')),
-            'admin_rights' / If(this.flags.has_admin_rights, self.struct_0x5fb224d5()),
-            'banned_rights' / If(this.flags.has_banned_rights, self.struct_0x9f120418()),
-            'default_banned_rights' / If(this.flags.has_default_banned_rights, self.struct_0x9f120418()),
-            'participants_count' / If(this.flags.has_participants_count, Int32ul),
-            'usernames' / If(this.flags2.has_usernames, self.vector(self.struct_0xb4073647(), 'usernames')),
-            'stories_max_id' / If(this.flags2.has_stories_max_id, Int32ul),
-            'color' / If(this.flags2.has_color, self.struct_0xb54b5acf()),
-            'profile_color' / If(this.flags2.has_profile_color, self.struct_0xb54b5acf()),
-            'emoji_status' / If(this.flags2.has_emoji_status, self.emoji_status_structures('emoji_status')),
-            'level' / If(this.flags2.has_level, Int32ul),
-            'subscription_until_date' / If(this.flags2.has_subscription_until_date, TTimestamp),
-            'bot_verification_icon' / If(this.flags2.has_bot_verification_icon, Int64ul))
-
-    @constructor(0xfe4478bd, 'channel_layer195')
-    def struct_0xfe4478bd(self):
-        return Struct(
-            'sname' / Computed('channel_layer195'),
-            'signature' / Hex(Const(0xfe4478bd, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_creator=1,
-                                is_left=4,
-                                is_broadcast=32,
-                                is_verified=128,
-                                is_megagroup=256,
-                                is_restricted=512,
-                                is_signatures=2048,
-                                is_min=4096,
-                                is_scam=524288,
-                                has_link=1048576,
-                                has_geo=2097152,
-                                is_slowmode_enabled=4194304,
-                                is_call_active=8388608,
-                                is_call_not_empty=16777216,
-                                is_fake=33554432,
-                                is_gigagroup=67108864,
-                                is_noforwards=134217728,
-                                is_join_to_send=268435456,
-                                is_join_request=536870912,
-                                is_forum=1073741824,
-                                has_access_hash=8192,
-                                has_username=64,
-                                has_admin_rights=16384,
-                                has_banned_rights=32768,
-                                has_default_banned_rights=262144,
-                                has_participants_count=131072),
-            'flags2' / FlagsEnum(Int32ul,
-                                 is_stories_hidden=2,
-                                 is_stories_hidden_min=4,
-                                 is_stories_unavailable=8,
-                                 is_signature_profiles=4096,
-                                 has_usernames=1,
-                                 has_stories_max_id=16,
-                                 has_color=128,
-                                 has_profile_color=256,
-                                 has_emoji_status=512,
-                                 has_level=1024,
-                                 has_subscription_until_date=2048),
-            'id' / Int64ul,
-            'access_hash' / If(this.flags.has_access_hash, Int64ul),
-            'title' / TString,
-            'username' / If(this.flags.has_username, TString),
-            'photo' / self.chat_photo_structures('photo'),
-            'date' / TTimestamp,
-            'restriction_reason' / If(this.flags.is_restricted, self.vector(self.restriction_reason_structures('restriction_reason'), 'restriction_reason')),
-            'admin_rights' / If(this.flags.has_admin_rights, self.struct_0x5fb224d5()),
-            'banned_rights' / If(this.flags.has_banned_rights, self.struct_0x9f120418()),
-            'default_banned_rights' / If(this.flags.has_default_banned_rights, self.struct_0x9f120418()),
-            'participants_count' / If(this.flags.has_participants_count, Int32ul),
-            'usernames' / If(this.flags2.has_usernames, self.vector(self.struct_0xb4073647(), 'usernames')),
-            'stories_max_id' / If(this.flags2.has_stories_max_id, Int32ul),
-            'color' / If(this.flags2.has_color, self.struct_0xb54b5acf()),
-            'profile_color' / If(this.flags2.has_profile_color, self.struct_0xb54b5acf()),
-            'emoji_status' / If(this.flags2.has_emoji_status, self.emoji_status_structures('emoji_status')),
-            'level' / If(this.flags2.has_level, Int32ul),
-            'subscription_until_date' / If(this.flags2.has_subscription_until_date, TTimestamp))
-
-    @constructor(0x0aadfc8f, 'channel_layer185')
-    def struct_0x0aadfc8f(self):
-        return Struct(
-            'sname' / Computed('channel_layer185'),
-            'signature' / Hex(Const(0x0aadfc8f, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_creator=1,
-                                is_left=4,
-                                is_broadcast=32,
-                                is_verified=128,
-                                is_megagroup=256,
-                                is_restricted=512,
-                                is_signatures=2048,
-                                is_min=4096,
-                                is_scam=524288,
-                                has_link=1048576,
-                                has_geo=2097152,
-                                is_slowmode_enabled=4194304,
-                                is_call_active=8388608,
-                                is_call_not_empty=16777216,
-                                is_fake=33554432,
-                                is_gigagroup=67108864,
-                                is_noforwards=134217728,
-                                is_join_to_send=268435456,
-                                is_join_request=536870912,
-                                is_forum=1073741824,
-                                has_access_hash=8192,
-                                has_username=64,
-                                has_admin_rights=16384,
-                                has_banned_rights=32768,
-                                has_default_banned_rights=262144,
-                                has_participants_count=131072),
-            'flags2' / FlagsEnum(Int32ul,
-                                 is_stories_hidden=2,
-                                 is_stories_hidden_min=4,
-                                 is_stories_unavailable=8,
-                                 has_usernames=1,
-                                 has_stories_max_id=16,
-                                 has_color=128,
-                                 has_profile_color=256,
-                                 has_emoji_status=512,
-                                 has_level=1024),
-            'id' / Int64ul,
-            'access_hash' / If(this.flags.has_access_hash, Int64ul),
-            'title' / TString,
-            'username' / If(this.flags.has_username, TString),
-            'photo' / self.chat_photo_structures('photo'),
-            'date' / TTimestamp,
-            'restriction_reason' / If(this.flags.is_restricted, self.vector(self.restriction_reason_structures('restriction_reason'), 'restriction_reason')),
-            'admin_rights' / If(this.flags.has_admin_rights, self.struct_0x5fb224d5()),
-            'banned_rights' / If(this.flags.has_banned_rights, self.struct_0x9f120418()),
-            'default_banned_rights' / If(this.flags.has_default_banned_rights, self.struct_0x9f120418()),
-            'participants_count' / If(this.flags.has_participants_count, Int32ul),
-            'usernames' / If(this.flags2.has_usernames, self.vector(self.struct_0xb4073647(), 'usernames')),
-            'stories_max_id' / If(this.flags2.has_stories_max_id, Int32ul),
-            'color' / If(this.flags2.has_color, self.struct_0xb54b5acf()),
-            'profile_color' / If(this.flags2.has_profile_color, self.struct_0xb54b5acf()),
-            'emoji_status' / If(this.flags2.has_emoji_status, self.emoji_status_structures('emoji_status')),
-            'level' / If(this.flags2.has_level, Int32ul))
-
-    @structures
-    def restriction_reason_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xd072acb4: LazyBound(self.struct_0xd072acb4)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0xa22cbd96, 'chat_invite_exported')
-    def struct_0xa22cbd96(self):
-        return Struct(
-            'sname' / Computed('chat_invite_exported'),
-            'signature' / Hex(Const(0xa22cbd96, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_revoked=1,
-                                is_permanent=32,
-                                is_request_needed=64,
-                                has_start_date=16,
-                                has_expire_date=2,
-                                has_usage_limit=4,
-                                has_usage=8,
-                                has_requested=128,
-                                has_subscription_expired=1024,
-                                has_title=256,
-                                has_subscription_pricing=512),
-            'link' / TString,
-            'admin_id' / Int64ul,
-            'date' / TTimestamp,
-            'start_date' / If(this.flags.has_start_date, TTimestamp),
-            'expire_date' / If(this.flags.has_expire_date, TTimestamp),
-            'usage_limit' / If(this.flags.has_usage_limit, Int32ul),
-            'usage' / If(this.flags.has_usage, Int32ul),
-            'requested' / If(this.flags.has_requested, Int32ul),
-            'subscription_expired' / If(this.flags.has_subscription_expired, Int32ul),
-            'title' / If(this.flags.has_title, TString),
-            'subscription_pricing' / If(this.flags.has_subscription_pricing, self.struct_0x05416d58()))
-
-    @structures
-    def input_file_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xfa4f0bb5: LazyBound(self.struct_0xfa4f0bb5),
-            0xf52ff27f: LazyBound(self.struct_0xf52ff27f),
-            0x62dc8b48: LazyBound(self.struct_0x62dc8b48)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x22ff3e85, 'user_full_layer176')
-    def struct_0x22ff3e85(self):
-        return Struct(
-            'sname' / Computed('user_full_layer176'),
-            'signature' / Hex(Const(0x22ff3e85, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_blocked=1,
-                                is_phone_calls_available=16,
-                                is_phone_calls_private=32,
-                                is_can_pin_message=128,
-                                has_scheduled=4096,
-                                is_video_calls_available=8192,
-                                is_voice_messages_forbidden=1048576,
-                                is_translations_disabled=8388608,
-                                is_stories_pinned_available=67108864,
-                                is_blocked_my_stories_from=134217728,
-                                is_wallpaper_overridden=268435456,
-                                is_contact_require_premium=536870912,
-                                is_read_dates_private=1073741824,
-                                has_about=2,
-                                has_personal_photo=2097152,
-                                has_profile_photo=4,
-                                has_fallback_photo=4194304,
-                                has_bot_info=8,
-                                has_pinned_msg_id=64,
-                                has_folder_id=2048,
-                                has_ttl_period=16384,
-                                has_theme_emoticon=32768,
-                                has_private_forward_name=65536,
-                                has_bot_group_admin_rights=131072,
-                                has_bot_broadcast_admin_rights=262144,
-                                has_premium_gifts=524288,
-                                has_wallpaper=16777216,
-                                has_stories=33554432),
-            'flags2' / FlagsEnum(Int32ul,
-                                 has_business_work_hours=1,
-                                 has_business_location=2,
-                                 has_business_greeting_message=4,
-                                 has_business_away_message=8),
-            'id' / Int64ul,
-            'about' / If(this.flags.has_about, TString),
-            'settings' / self.peer_settings_structures('settings'),
-            'personal_photo' / If(this.flags.has_personal_photo, self.photo_structures('personal_photo')),
-            'profile_photo' / If(this.flags.has_profile_photo, self.photo_structures('profile_photo')),
-            'fallback_photo' / If(this.flags.has_fallback_photo, self.photo_structures('fallback_photo')),
-            'notify_settings' / self.peer_notify_settings_structures('notify_settings'),
-            'bot_info' / If(this.flags.has_bot_info, self.bot_info_structures('bot_info')),
-            'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
-            'common_chats_count' / Int32ul,
-            'folder_id' / If(this.flags.has_folder_id, Int32ul),
-            'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
-            'theme_emoticon' / If(this.flags.has_theme_emoticon, TString),
-            'private_forward_name' / If(this.flags.has_private_forward_name, TString),
-            'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
-            'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
-            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.struct_0x74c34319(), 'premium_gifts')),
-            'wallpaper' / If(this.flags.has_wallpaper, self.wall_paper_structures('wallpaper')),
-            'stories' / If(this.flags.has_stories, self.stories_peer_stories_structures('stories')),
-            'business_work_hours' / If(this.flags2.has_business_work_hours, self.struct_0x8c92b098()),
-            'business_location' / If(this.flags2.has_business_location, self.struct_0xac5c1af7()),
-            'business_greeting_message' / If(this.flags2.has_business_greeting_message, self.struct_0xe519abab()),
-            'business_away_message' / If(this.flags2.has_business_away_message, self.struct_0xef156a5c()))
-
-    @constructor(0x929b619d, 'emoji_status_layer197')
-    def struct_0x929b619d(self):
-        return ['document_id' / Int64ul]
-
-    @constructor(0x7184603b, 'emoji_status_collectible')
-    def struct_0x7184603b(self):
-        return Struct(
-            'sname' / Computed('emoji_status_collectible'),
-            'signature' / Hex(Const(0x7184603b, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_until=1),
-            'collectible_id' / Int64ul,
-            'document_id' / Int64ul,
-            'title' / TString,
-            'slug' / TString,
-            'pattern_document_id' / Int64ul,
-            'center_color' / Int32ul,
-            'edge_color' / Int32ul,
-            'pattern_color' / Int32ul,
-            'text_color' / Int32ul,
-            'until' / If(this.flags.has_until, Int32ul))
-
-    @constructor(0x07141dbf, 'input_emoji_status_collectible')
-    def struct_0x07141dbf(self):
-        return Struct(
-            'sname' / Computed('input_emoji_status_collectible'),
-            'signature' / Hex(Const(0x07141dbf, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_until=1),
-            'collectible_id' / Int64ul,
-            'until' / If(this.flags.has_until, Int32ul))
-
-    @structures
-    def reaction_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x8935fc73: LazyBound(self.struct_0x8935fc73),
-            0x79f5d419: LazyBound(self.struct_0x79f5d419),
-            0x1b2286b8: LazyBound(self.struct_0x1b2286b8),
-            0x523da4eb: LazyBound(self.struct_0x523da4eb)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
 
     @constructor(0x1dd840f5, 'messages_get_emoji_sticker_groups')
     def struct_0x1dd840f5(self):
@@ -30275,39 +31411,6 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0x7903e3d9, Int32ul)),
             'text' / TString,
             'option' / TBytes)
-
-    @structures
-    def report_result_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xf0e4e0b6: LazyBound(self.struct_0xf0e4e0b6),
-            0x6f09ac31: LazyBound(self.struct_0x6f09ac31),
-            0x8db33c4b: LazyBound(self.struct_0x8db33c4b)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0xf0e4e0b6, 'report_result_choose_option')
-    def struct_0xf0e4e0b6(self):
-        return Struct(
-            'sname' / Computed('report_result_choose_option'),
-            'signature' / Hex(Const(0xf0e4e0b6, Int32ul)),
-            'title' / TString,
-            'options' / self.vector(self.struct_0x7903e3d9(), 'options'))
-
-    @constructor(0x6f09ac31, 'report_result_add_comment')
-    def struct_0x6f09ac31(self):
-        return Struct(
-            'sname' / Computed('report_result_add_comment'),
-            'signature' / Hex(Const(0x6f09ac31, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_optional=1),
-            'option' / TBytes)
-
-    @constructor(0x8db33c4b, 'report_result_reported')
-    def struct_0x8db33c4b(self):
-        return []
 
     @constructor(0xfc78af9b, 'messages_report')
     def struct_0xfc78af9b(self):
@@ -30556,299 +31659,6 @@ class TLStruct:  # pylint: disable=C0103
             'count' / Int32ul,
             'sets' / self.vector(self.sticker_set_covered_structures('sets'), 'sets'))
 
-    @constructor(0x94345242, 'message_layer195')
-    def struct_0x94345242(self):
-        return Struct(
-            'sname' / Computed('message_layer195'),
-            'signature' / Hex(Const(0x94345242, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_out=2,
-                                is_mentioned=16,
-                                is_media_unread=32,
-                                is_silent=8192,
-                                is_post=16384,
-                                is_from_scheduled=262144,
-                                is_legacy=524288,
-                                is_edit_hide=2097152,
-                                is_pinned=16777216,
-                                is_noforwards=67108864,
-                                is_invert_media=134217728,
-                                has_from_id=256,
-                                has_from_boosts_applied=536870912,
-                                has_saved_peer_id=268435456,
-                                has_fwd_from=4,
-                                has_via_bot_id=2048,
-                                has_reply_to=8,
-                                has_media=512,
-                                has_reply_markup=64,
-                                has_entities=128,
-                                has_views=1024,
-                                has_replies=8388608,
-                                has_edit_date=32768,
-                                has_post_author=65536,
-                                has_grouped_id=131072,
-                                has_reactions=1048576,
-                                has_restriction_reason=4194304,
-                                has_ttl_period=33554432,
-                                has_quick_reply_shortcut_id=1073741824),
-            'flags2' / FlagsEnum(Int32ul,
-                                 is_offline=2,
-                                 is_video_processing_pending=16,
-                                 has_via_business_bot_id=1,
-                                 has_effect=4,
-                                 has_factcheck=8),
-            'id' / Int32ul,
-            'from_id' / If(this.flags.has_from_id, self.peer_structures('from_id')),
-            'from_boosts_applied' / If(this.flags.has_from_boosts_applied, Int32ul),
-            'peer_id' / self.peer_structures('peer_id'),
-            'saved_peer_id' / If(this.flags.has_saved_peer_id, self.peer_structures('saved_peer_id')),
-            'fwd_from' / If(this.flags.has_fwd_from, self.message_fwd_header_structures('fwd_from')),
-            'via_bot_id' / If(this.flags.has_via_bot_id, Int64ul),
-            'via_business_bot_id' / If(this.flags2.has_via_business_bot_id, Int64ul),
-            'reply_to' / If(this.flags.has_reply_to, self.message_reply_header_structures('reply_to')),
-            'date' / TTimestamp,
-            'message' / TString,
-            'media' / If(this.flags.has_media, self.message_media_structures('media')),
-            'reply_markup' / If(this.flags.has_reply_markup, self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.vector(self.message_entity_structures('entities'), 'entities')),
-            'views' / If(this.flags.has_views, Int32ul),
-            'forwards' / If(this.flags.has_views, Int32ul),
-            'replies' / If(this.flags.has_replies, self.message_replies_structures('replies')),
-            'edit_date' / If(this.flags.has_edit_date, TTimestamp),
-            'post_author' / If(this.flags.has_post_author, TString),
-            'grouped_id' / If(this.flags.has_grouped_id, Int64ul),
-            'reactions' / If(this.flags.has_reactions, self.message_reactions_structures('reactions')),
-            'restriction_reason' / If(this.flags.has_restriction_reason, self.vector(self.restriction_reason_structures('restriction_reason'), 'restriction_reason')),
-            'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
-            'quick_reply_shortcut_id' / If(this.flags.has_quick_reply_shortcut_id, Int32ul),
-            'effect' / If(this.flags2.has_effect, Int64ul),
-            'factcheck' / If(this.flags2.has_factcheck, self.struct_0xb89bfccf()),
-            'attach_path' / TString)
-
-    @constructor(0xbde09c2e, 'message_layer180')
-    def struct_0xbde09c2e(self):
-        return Struct(
-            'sname' / Computed('message_layer180'),
-            'signature' / Hex(Const(0xbde09c2e, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_out=2,
-                                is_mentioned=16,
-                                is_media_unread=32,
-                                is_silent=8192,
-                                is_post=16384,
-                                is_from_scheduled=262144,
-                                is_legacy=524288,
-                                is_edit_hide=2097152,
-                                is_pinned=16777216,
-                                is_noforwards=67108864,
-                                is_invert_media=134217728,
-                                has_from_id=256,
-                                has_from_boosts_applied=536870912,
-                                has_saved_peer_id=268435456,
-                                has_fwd_from=4,
-                                has_via_bot_id=2048,
-                                has_reply_to=8,
-                                has_media=512,
-                                has_reply_markup=64,
-                                has_entities=128,
-                                has_views=1024,
-                                has_replies=8388608,
-                                has_edit_date=32768,
-                                has_post_author=65536,
-                                has_grouped_id=131072,
-                                has_reactions=1048576,
-                                has_restriction_reason=4194304,
-                                has_ttl_period=33554432,
-                                has_quick_reply_shortcut_id=1073741824),
-            'flags2' / FlagsEnum(Int32ul,
-                                 is_offline=2,
-                                 has_via_business_bot_id=1,
-                                 has_effect=4),
-            'id' / Int32ul,
-            'from_id' / If(this.flags.has_from_id, self.peer_structures('from_id')),
-            'from_boosts_applied' / If(this.flags.has_from_boosts_applied, Int32ul),
-            'peer_id' / self.peer_structures('peer_id'),
-            'saved_peer_id' / If(this.flags.has_saved_peer_id, self.peer_structures('saved_peer_id')),
-            'fwd_from' / If(this.flags.has_fwd_from, self.message_fwd_header_structures('fwd_from')),
-            'via_bot_id' / If(this.flags.has_via_bot_id, Int64ul),
-            'via_business_bot_id' / If(this.flags2.has_via_business_bot_id, Int64ul),
-            'reply_to' / If(this.flags.has_reply_to, self.message_reply_header_structures('reply_to')),
-            'date' / TTimestamp,
-            'message' / TString,
-            'media' / If(this.flags.has_media, self.message_media_structures('media')),
-            'reply_markup' / If(this.flags.has_reply_markup, self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.vector(self.message_entity_structures('entities'), 'entities')),
-            'views' / If(this.flags.has_views, Int32ul),
-            'forwards' / If(this.flags.has_views, Int32ul),
-            'replies' / If(this.flags.has_replies, self.message_replies_structures('replies')),
-            'edit_date' / If(this.flags.has_edit_date, TTimestamp),
-            'post_author' / If(this.flags.has_post_author, TString),
-            'grouped_id' / If(this.flags.has_grouped_id, Int64ul),
-            'reactions' / If(this.flags.has_reactions, self.message_reactions_structures('reactions')),
-            'restriction_reason' / If(this.flags.has_restriction_reason, self.vector(self.restriction_reason_structures('restriction_reason'), 'restriction_reason')),
-            'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
-            'quick_reply_shortcut_id' / If(this.flags.has_quick_reply_shortcut_id, Int32ul),
-            'effect' / If(this.flags2.has_effect, Int64ul),
-            'attach_path' / TString)
-
-    @constructor(0x2357bf25, 'message_layer179')
-    def struct_0x2357bf25(self):
-        return Struct(
-            'sname' / Computed('message_layer179'),
-            'signature' / Hex(Const(0x2357bf25, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_out=2,
-                                is_mentioned=16,
-                                is_media_unread=32,
-                                is_silent=8192,
-                                is_post=16384,
-                                is_from_scheduled=262144,
-                                is_legacy=524288,
-                                is_edit_hide=2097152,
-                                is_pinned=16777216,
-                                is_noforwards=67108864,
-                                is_invert_media=134217728,
-                                has_from_id=256,
-                                has_from_boosts_applied=536870912,
-                                has_saved_peer_id=268435456,
-                                has_fwd_from=4,
-                                has_via_bot_id=2048,
-                                has_reply_to=8,
-                                has_media=512,
-                                has_reply_markup=64,
-                                has_entities=128,
-                                has_views=1024,
-                                has_replies=8388608,
-                                has_edit_date=32768,
-                                has_post_author=65536,
-                                has_grouped_id=131072,
-                                has_reactions=1048576,
-                                has_restriction_reason=4194304,
-                                has_ttl_period=33554432,
-                                has_quick_reply_shortcut_id=1073741824),
-            'flags2' / FlagsEnum(Int32ul,
-                                 is_offline=2,
-                                 has_via_business_bot_id=1),
-            'id' / Int32ul,
-            'from_id' / If(this.flags.has_from_id, self.peer_structures('from_id')),
-            'from_boosts_applied' / If(this.flags.has_from_boosts_applied, Int32ul),
-            'peer_id' / self.peer_structures('peer_id'),
-            'saved_peer_id' / If(this.flags.has_saved_peer_id, self.peer_structures('saved_peer_id')),
-            'fwd_from' / If(this.flags.has_fwd_from, self.message_fwd_header_structures('fwd_from')),
-            'via_bot_id' / If(this.flags.has_via_bot_id, Int64ul),
-            'via_business_bot_id' / If(this.flags2.has_via_business_bot_id, Int64ul),
-            'reply_to' / If(this.flags.has_reply_to, self.message_reply_header_structures('reply_to')),
-            'date' / TTimestamp,
-            'message' / TString,
-            'media' / If(this.flags.has_media, self.message_media_structures('media')),
-            'reply_markup' / If(this.flags.has_reply_markup, self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.vector(self.message_entity_structures('entities'), 'entities')),
-            'views' / If(this.flags.has_views, Int32ul),
-            'forwards' / If(this.flags.has_views, Int32ul),
-            'replies' / If(this.flags.has_replies, self.message_replies_structures('replies')),
-            'edit_date' / If(this.flags.has_edit_date, TTimestamp),
-            'post_author' / If(this.flags.has_post_author, TString),
-            'grouped_id' / If(this.flags.has_grouped_id, Int64ul),
-            'reactions' / If(this.flags.has_reactions, self.message_reactions_structures('reactions')),
-            'restriction_reason' / If(this.flags.has_restriction_reason, self.vector(self.restriction_reason_structures('restriction_reason'), 'restriction_reason')),
-            'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
-            'quick_reply_shortcut_id' / If(this.flags.has_quick_reply_shortcut_id, Int32ul),
-            'attach_path' / TString)
-
-    @constructor(0xa66c7efc, 'message_layer176')
-    def struct_0xa66c7efc(self):
-        return Struct(
-            'sname' / Computed('message_layer176'),
-            'signature' / Hex(Const(0xa66c7efc, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_out=2,
-                                is_mentioned=16,
-                                is_media_unread=32,
-                                is_silent=8192,
-                                is_post=16384,
-                                is_from_scheduled=262144,
-                                is_legacy=524288,
-                                is_edit_hide=2097152,
-                                is_pinned=16777216,
-                                is_noforwards=67108864,
-                                is_invert_media=134217728,
-                                has_from_id=256,
-                                has_from_boosts_applied=536870912,
-                                has_saved_peer_id=268435456,
-                                has_fwd_from=4,
-                                has_via_bot_id=2048,
-                                has_reply_to=8,
-                                has_media=512,
-                                has_reply_markup=64,
-                                has_entities=128,
-                                has_views=1024,
-                                has_replies=8388608,
-                                has_edit_date=32768,
-                                has_post_author=65536,
-                                has_grouped_id=131072,
-                                has_reactions=1048576,
-                                has_restriction_reason=4194304,
-                                has_ttl_period=33554432,
-                                has_quick_reply_shortcut_id=1073741824),
-            'id' / Int32ul,
-            'from_id' / If(this.flags.has_from_id, self.peer_structures('from_id')),
-            'from_boosts_applied' / If(this.flags.has_from_boosts_applied, Int32ul),
-            'peer_id' / self.peer_structures('peer_id'),
-            'saved_peer_id' / If(this.flags.has_saved_peer_id, self.peer_structures('saved_peer_id')),
-            'fwd_from' / If(this.flags.has_fwd_from, self.message_fwd_header_structures('fwd_from')),
-            'via_bot_id' / If(this.flags.has_via_bot_id, Int64ul),
-            'reply_to' / If(this.flags.has_reply_to, self.message_reply_header_structures('reply_to')),
-            'date' / TTimestamp,
-            'message' / TString,
-            'media' / If(this.flags.has_media, self.message_media_structures('media')),
-            'reply_markup' / If(this.flags.has_reply_markup, self.reply_markup_structures('reply_markup')),
-            'entities' / If(this.flags.has_entities, self.vector(self.message_entity_structures('entities'), 'entities')),
-            'views' / If(this.flags.has_views, Int32ul),
-            'forwards' / If(this.flags.has_views, Int32ul),
-            'replies' / If(this.flags.has_replies, self.message_replies_structures('replies')),
-            'edit_date' / If(this.flags.has_edit_date, TTimestamp),
-            'post_author' / If(this.flags.has_post_author, TString),
-            'grouped_id' / If(this.flags.has_grouped_id, Int64ul),
-            'reactions' / If(this.flags.has_reactions, self.message_reactions_structures('reactions')),
-            'restriction_reason' / If(this.flags.has_restriction_reason, self.vector(self.restriction_reason_structures('restriction_reason'), 'restriction_reason')),
-            'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
-            'quick_reply_shortcut_id' / If(this.flags.has_quick_reply_shortcut_id, Int32ul),
-            'attach_path' / TString)
-
-    @constructor(0xd3d28540, 'message_service')
-    def struct_0xd3d28540(self):
-        return Struct(
-            'sname' / Computed('message_service'),
-            'signature' / Hex(Const(0xd3d28540, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_out=2,
-                                is_mentioned=16,
-                                is_media_unread=32,
-                                is_silent=8192,
-                                is_post=16384,
-                                is_legacy=524288,
-                                is_reactions_are_possible=512,
-                                has_from_id=256,
-                                has_reply_to=8,
-                                has_reactions=1048576,
-                                has_ttl_period=33554432),
-            'id' / Int32ul,
-            'from_id' / If(this.flags.has_from_id, self.peer_structures('from_id')),
-            'peer_id' / self.peer_structures('peer_id'),
-            'reply_to' / If(this.flags.has_reply_to, self.message_reply_header_structures('reply_to')),
-            'date' / TTimestamp,
-            'action' / self.message_action_structures('action'),
-            'reactions' / If(this.flags.has_reactions, self.message_reactions_structures('reactions')),
-            'ttl_period' / If(this.flags.has_ttl_period, Int32ul))
-
-    @constructor(0x75d2698e, 'keyboard_button_copy')
-    def struct_0x75d2698e(self):
-        return Struct(
-            'sname' / Computed('keyboard_button_copy'),
-            'signature' / Hex(Const(0x75d2698e, Int32ul)),
-            'text' / TString,
-            'copy_text' / TString)
-
     @constructor(0x4d22ff98, 'web_view_result_url')
     def struct_0x4d22ff98(self):
         return Struct(
@@ -30913,23 +31723,6 @@ class TLStruct:  # pylint: disable=C0103
             'theme_params' / If(this.flags.has_theme_params, self.struct_0x7d748d04()),
             'platform' / TString)
 
-    @structures
-    def input_invoice_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x98986c0d: LazyBound(self.struct_0x98986c0d),
-            0xc5b56859: LazyBound(self.struct_0xc5b56859),
-            0xc326caef: LazyBound(self.struct_0xc326caef),
-            0x65f00ce3: LazyBound(self.struct_0x65f00ce3),
-            0x34e793f1: LazyBound(self.struct_0x34e793f1),
-            0xe8625e92: LazyBound(self.struct_0xe8625e92),
-            0x4d818d5d: LazyBound(self.struct_0x4d818d5d),
-            0x4a5f5bd9: LazyBound(self.struct_0x4a5f5bd9)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
     @constructor(0x0f093465, 'messages_click_sponsored_message')
     def struct_0x0f093465(self):
         return Struct(
@@ -30952,264 +31745,6 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0x767cde44, Int32ul)),
             'gift' / self.struct_0x6056dba5(),
             'to_gift' / self.struct_0x6056dba5())
-
-    @constructor(0x56d03994, 'message_action_gift_code')
-    def struct_0x56d03994(self):
-        return Struct(
-            'sname' / Computed('message_action_gift_code'),
-            'signature' / Hex(Const(0x56d03994, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_via_giveaway=1,
-                                is_unclaimed=4,
-                                has_boost_peer=2,
-                                has_crypto_currency=8,
-                                has_message=16),
-            'boost_peer' / If(this.flags.has_boost_peer, self.peer_structures('boost_peer')),
-            'months' / Int32ul,
-            'slug' / TString,
-            'currency' / If(this.flags.is_unclaimed, TString),
-            'amount' / If(this.flags.is_unclaimed, Int64ul),
-            'crypto_currency' / If(this.flags.has_crypto_currency, TString),
-            'crypto_amount' / If(this.flags.has_crypto_currency, Int64ul),
-            'message' / If(this.flags.has_message, self.struct_0x751f3146()))
-
-    @constructor(0xdddd0f56, 'input_store_payment_stars_topup')
-    def struct_0xdddd0f56(self):
-        return Struct(
-            'sname' / Computed('input_store_payment_stars_topup'),
-            'signature' / Hex(Const(0xdddd0f56, Int32ul)),
-            'stars' / Int64ul,
-            'currency' / TString,
-            'amount' / Int64ul)
-
-    @constructor(0x751f08fa, 'input_store_payment_stars_giveaway')
-    def struct_0x751f08fa(self):
-        return Struct(
-            'sname' / Computed('input_store_payment_stars_giveaway'),
-            'signature' / Hex(Const(0x751f08fa, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_only_new_subscribers=1,
-                                is_winners_are_visible=8,
-                                has_additional_peers=2,
-                                has_countries_iso2=4,
-                                has_prize_description=16),
-            'stars' / Int64ul,
-            'boost_peer' / self.input_peer_structures('boost_peer'),
-            'additional_peers' / If(this.flags.has_additional_peers, self.vector(self.input_peer_structures('additional_peers'), 'additional_peers')),
-            'countries_iso2' / If(this.flags.has_countries_iso2, self.vector(TString, 'countries_iso2')),
-            'prize_description' / If(this.flags.has_prize_description, TString),
-            'random_id' / Int64ul,
-            'until_date' / TTimestamp,
-            'currency' / TString,
-            'amount' / Int64ul,
-            'users' / Int32ul)
-
-    @constructor(0x1d741ef7, 'input_store_payment_stars_gift')
-    def struct_0x1d741ef7(self):
-        return Struct(
-            'sname' / Computed('input_store_payment_stars_gift'),
-            'signature' / Hex(Const(0x1d741ef7, Int32ul)),
-            'user_id' / self.input_user_structures('user_id'),
-            'stars' / Int64ul,
-            'currency' / TString,
-            'amount' / Int64ul)
-
-    @constructor(0xceaa3ea1, 'message_media_giveaway_results')
-    def struct_0xceaa3ea1(self):
-        return Struct(
-            'sname' / Computed('message_media_giveaway_results'),
-            'signature' / Hex(Const(0xceaa3ea1, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_only_new_subscribers=1,
-                                is_refunded=4,
-                                has_additional_peers_count=8,
-                                has_months=16,
-                                has_stars=32,
-                                has_prize_description=2),
-            'channel_id' / Int64ul,
-            'additional_peers_count' / If(this.flags.has_additional_peers_count, Int32ul),
-            'launch_msg_id' / Int32ul,
-            'winners_count' / Int32ul,
-            'unclaimed_count' / Int32ul,
-            'winners' / self.vector(Int64ul, 'winners'),
-            'months' / If(this.flags.has_months, Int32ul),
-            'stars' / If(this.flags.has_stars, Int64ul),
-            'prize_description' / If(this.flags.has_prize_description, TString),
-            'until_date' / TTimestamp)
-
-    @constructor(0xaa073beb, 'message_media_giveaway')
-    def struct_0xaa073beb(self):
-        return Struct(
-            'sname' / Computed('message_media_giveaway'),
-            'signature' / Hex(Const(0xaa073beb, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_only_new_subscribers=1,
-                                is_winners_are_visible=4,
-                                has_countries_iso2=2,
-                                has_prize_description=8,
-                                has_months=16,
-                                has_stars=32),
-            'channels' / self.vector(Int64ul, 'channels'),
-            'countries_iso2' / If(this.flags.has_countries_iso2, self.vector(TString, 'countries_iso2')),
-            'prize_description' / If(this.flags.has_prize_description, TString),
-            'quantity' / Int32ul,
-            'months' / If(this.flags.has_months, Int32ul),
-            'stars' / If(this.flags.has_stars, Int64ul),
-            'until_date' / TTimestamp)
-
-    @constructor(0xa8852491, 'message_media_paid_media')
-    def struct_0xa8852491(self):
-        return Struct(
-            'sname' / Computed('message_media_paid_media'),
-            'signature' / Hex(Const(0xa8852491, Int32ul)),
-            'stars_amount' / Int64ul,
-            'extended_media' / self.vector(self.message_extended_media_structures('extended_media'), 'extended_media'))
-
-    @constructor(0xa80f51e4, 'message_action_giveaway_launch')
-    def struct_0xa80f51e4(self):
-        return Struct(
-            'sname' / Computed('message_action_giveaway_launch'),
-            'signature' / Hex(Const(0xa80f51e4, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_stars=1),
-            'stars' / If(this.flags.has_stars, Int64ul))
-
-    @constructor(0x87e2f155, 'message_action_giveaway_results')
-    def struct_0x87e2f155(self):
-        return Struct(
-            'sname' / Computed('message_action_giveaway_results'),
-            'signature' / Hex(Const(0x87e2f155, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_stars=1),
-            'winners_count' / Int32ul,
-            'unclaimed_count' / Int32ul)
-
-    @constructor(0xb00c47a2, 'message_action_prize_stars')
-    def struct_0xb00c47a2(self):
-        return Struct(
-            'sname' / Computed('message_action_prize_stars'),
-            'signature' / Hex(Const(0xb00c47a2, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_unclaimed=1),
-            'stars' / Int64ul,
-            'transaction_id' / TString,
-            'boost_peer' / self.peer_structures('boost_peer'),
-            'giveaway_msg_id' / Int32ul)
-
-    @constructor(0x9bb3ef44, 'message_action_star_gift_layer192')
-    def struct_0x9bb3ef44(self):
-        return Struct(
-            'sname' / Computed('message_action_star_gift_layer192'),
-            'signature' / Hex(Const(0x9bb3ef44, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_name_hidden=1,
-                                is_saved=4,
-                                is_converted=8,
-                                has_message=2),
-            'gift' / self.star_gift_structures('gift'),
-            'message' / If(this.flags.has_message, self.struct_0x751f3146()),
-            'convert_stars' / Int64ul)
-
-    @constructor(0x4717e8a4, 'message_action_star_gift')
-    def struct_0x4717e8a4(self):
-        return Struct(
-            'sname' / Computed('message_action_star_gift'),
-            'signature' / Hex(Const(0x4717e8a4, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_name_hidden=1,
-                                is_saved=4,
-                                is_converted=8,
-                                is_upgraded=32,
-                                is_transferred=64,
-                                is_can_upgrade=1024,
-                                is_refunded=512,
-                                has_message=2,
-                                has_convert_stars=16,
-                                has_upgrade_stars=256,
-                                has_from_id=2048,
-                                has_peer=4096),
-            'gift' / self.star_gift_structures('gift'),
-            'message' / If(this.flags.has_message, self.struct_0x751f3146()),
-            'convert_stars' / If(this.flags.has_convert_stars, Int64ul),
-            'upgrade_msg_id' / If(this.flags.is_upgraded, Int32ul),
-            'upgrade_stars' / If(this.flags.has_upgrade_stars, Int64ul),
-            'from_id' / If(this.flags.has_from_id, self.peer_structures('from_id')),
-            'peer' / If(this.flags.has_peer, self.peer_structures('peer')),
-            'saved_id' / If(this.flags.has_peer, Int64ul))
-
-    @constructor(0xd8f4f0a7, 'message_action_star_gift_layer197')
-    def struct_0xd8f4f0a7(self):
-        return Struct(
-            'sname' / Computed('message_action_star_gift_layer197'),
-            'signature' / Hex(Const(0xd8f4f0a7, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_name_hidden=1,
-                                is_saved=4,
-                                is_converted=8,
-                                is_upgraded=32,
-                                is_transferred=64,
-                                is_can_upgrade=1024,
-                                is_refunded=512,
-                                has_message=2,
-                                has_convert_stars=16,
-                                has_upgrade_stars=256),
-            'gift' / self.star_gift_structures('gift'),
-            'message' / If(this.flags.has_message, self.struct_0x751f3146()),
-            'convert_stars' / If(this.flags.has_convert_stars, Int64ul),
-            'upgrade_msg_id' / If(this.flags.is_upgraded, Int32ul),
-            'upgrade_stars' / If(this.flags.has_upgrade_stars, Int64ul))
-
-    @constructor(0x08557637, 'message_action_star_gift_layer195')
-    def struct_0x08557637(self):
-        return Struct(
-            'sname' / Computed('message_action_star_gift_layer195'),
-            'signature' / Hex(Const(0x08557637, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_name_hidden=1,
-                                is_saved=4,
-                                is_converted=8,
-                                has_message=2,
-                                has_convert_stars=16),
-            'gift' / self.star_gift_structures('gift'),
-            'message' / If(this.flags.has_message, self.struct_0x751f3146()),
-            'convert_stars' / If(this.flags.has_convert_stars, Int64ul))
-
-    @constructor(0xacdfcb81, 'message_action_star_gift_unique')
-    def struct_0xacdfcb81(self):
-        return Struct(
-            'sname' / Computed('message_action_star_gift_unique'),
-            'signature' / Hex(Const(0xacdfcb81, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_upgrade=1,
-                                is_transferred=2,
-                                is_saved=4,
-                                is_refunded=32,
-                                has_can_export_at=8,
-                                has_transfer_stars=16,
-                                has_from_id=64,
-                                has_peer=128),
-            'gift' / self.star_gift_structures('gift'),
-            'can_export_at' / If(this.flags.has_can_export_at, Int32ul),
-            'transfer_stars' / If(this.flags.has_transfer_stars, Int64ul),
-            'from_id' / If(this.flags.has_from_id, self.peer_structures('from_id')),
-            'peer' / If(this.flags.has_peer, self.peer_structures('peer')),
-            'saved_id' / If(this.flags.has_peer, Int64ul))
-
-    @constructor(0x26077b99, 'message_action_star_gift_unique_layer197')
-    def struct_0x26077b99(self):
-        return Struct(
-            'sname' / Computed('message_action_star_gift_unique_layer197'),
-            'signature' / Hex(Const(0x26077b99, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_upgrade=1,
-                                is_transferred=2,
-                                is_saved=4,
-                                is_refunded=32,
-                                has_can_export_at=8,
-                                has_transfer_stars=16),
-            'gift' / self.star_gift_structures('gift'),
-            'can_export_at' / If(this.flags.has_can_export_at, Int32ul),
-            'transfer_stars' / If(this.flags.has_transfer_stars, Int64ul))
 
     @constructor(0x25a71742, 'channels_get_channel_recommendations')
     def struct_0x25a71742(self):
@@ -31265,37 +31800,6 @@ class TLStruct:  # pylint: disable=C0103
             'phone_code_hash' / TString,
             'mnc' / TString)
 
-    @structures
-    def broadcast_revenue_balances_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xc3ff71e7: LazyBound(self.struct_0xc3ff71e7),
-            0x8438f1c6: LazyBound(self.struct_0x8438f1c6)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0xc3ff71e7, 'broadcast_revenue_balances')
-    def struct_0xc3ff71e7(self):
-        return Struct(
-            'sname' / Computed('broadcast_revenue_balances'),
-            'signature' / Hex(Const(0xc3ff71e7, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_withdrawal_enabled=1),
-            'current_balance' / Int64ul,
-            'available_balance' / Int64ul,
-            'overall_revenue' / Int64ul)
-
-    @constructor(0x8438f1c6, 'broadcast_revenue_balances_layer186')
-    def struct_0x8438f1c6(self):
-        return Struct(
-            'sname' / Computed('broadcast_revenue_balances_layer186'),
-            'signature' / Hex(Const(0x8438f1c6, Int32ul)),
-            'current_balance' / Int64ul,
-            'available_balance' / Int64ul,
-            'overall_revenue' / Int64ul)
-
     @constructor(0x93c3e27e, 'available_effect')
     def struct_0x93c3e27e(self):
         return Struct(
@@ -31310,30 +31814,6 @@ class TLStruct:  # pylint: disable=C0103
             'static_icon_id' / If(this.flags.has_static_icon_id, Int64ul),
             'effect_sticker_id' / Int64ul,
             'effect_animation_id' / If(this.flags.has_effect_animation_id, Int64ul))
-
-    @structures
-    def messages_available_effects_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xd1ed9a5b: LazyBound(self.struct_0xd1ed9a5b),
-            0xbddb616e: LazyBound(self.struct_0xbddb616e)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0xd1ed9a5b, 'messages_available_effects_not_modified')
-    def struct_0xd1ed9a5b(self):
-        return []
-
-    @constructor(0xbddb616e, 'messages_available_effects')
-    def struct_0xbddb616e(self):
-        return Struct(
-            'sname' / Computed('messages_available_effects'),
-            'signature' / Hex(Const(0xbddb616e, Int32ul)),
-            'hash' / Int32ul,
-            'effects' / self.vector(self.struct_0x93c3e27e(), 'effects'),
-            'documents' / self.vector(self.document_structures('documents'), 'documents'))
 
     @constructor(0xb89bfccf, 'fact_check')
     def struct_0xb89bfccf(self):
@@ -31451,37 +31931,6 @@ class TLStruct:  # pylint: disable=C0103
             'bot' / self.input_user_structures('bot'),
             'id' / TString)
 
-    @structures
-    def messages_found_stickers_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x82c9e290: LazyBound(self.struct_0x82c9e290),
-            0x6010c534: LazyBound(self.struct_0x6010c534)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x82c9e290, 'messages_found_stickers')
-    def struct_0x82c9e290(self):
-        return Struct(
-            'sname' / Computed('messages_found_stickers'),
-            'signature' / Hex(Const(0x82c9e290, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_next_offset=1),
-            'next_offset' / If(this.flags.has_next_offset, Int32ul),
-            'hash' / Int64ul,
-            'stickers' / self.vector(self.document_structures('stickers'), 'stickers'))
-
-    @constructor(0x6010c534, 'messages_found_stickers_not_modified')
-    def struct_0x6010c534(self):
-        return Struct(
-            'sname' / Computed('messages_found_stickers_not_modified'),
-            'signature' / Hex(Const(0x6010c534, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_next_offset=1),
-            'next_offset' / If(this.flags.has_next_offset, Int32ul))
-
     @constructor(0x29b1c66a, 'messages_search_stickers')
     def struct_0x29b1c66a(self):
         return Struct(
@@ -31505,29 +31954,6 @@ class TLStruct:  # pylint: disable=C0103
                                 is_push=1),
             'peer' / self.input_peer_structures('peer'),
             'id' / self.vector(Int32ul, 'id'))
-
-    @structures
-    def users_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x62d706b8: LazyBound(self.struct_0x62d706b8),
-            0x315a4974: LazyBound(self.struct_0x315a4974)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x62d706b8, 'users')
-    def struct_0x62d706b8(self):
-        return ['users' / self.vector(self.user_structures('users'), 'users')]
-
-    @constructor(0x315a4974, 'users_slice')
-    def struct_0x315a4974(self):
-        return Struct(
-            'sname' / Computed('users_slice'),
-            'signature' / Hex(Const(0x315a4974, Int32ul)),
-            'count' / Int32ul,
-            'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0x57e28221, 'account_content_settings')
     def struct_0x57e28221(self):
@@ -31567,18 +31993,6 @@ class TLStruct:  # pylint: disable=C0103
                                 has_entities=8),
             'message' / TString,
             'entities' / If(this.flags.has_entities, self.vector(self.message_entity_structures('entities'), 'entities')))
-
-    @structures
-    def account_business_away_message_schedule_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xc9b9e2b9: LazyBound(self.struct_0xc9b9e2b9),
-            0xc3f2f501: LazyBound(self.struct_0xc3f2f501),
-            0xcc4d9ecc: LazyBound(self.struct_0xcc4d9ecc)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
 
     @constructor(0xc4e5921e, 'account_input_business_bot_recipients')
     def struct_0xc4e5921e(self):
@@ -31749,7 +32163,6 @@ class TLStruct:  # pylint: disable=C0103
     def struct_0x60073674(self):
         return ['slug' / TString]
 
-
     @constructor(0x6f70dde1, 'account_get_business_chat_links')
     def struct_0x6f70dde1(self):
         return []
@@ -31796,25 +32209,6 @@ class TLStruct:  # pylint: disable=C0103
     @constructor(0xd94305e0, 'account_update_personal_channel')
     def struct_0xd94305e0(self):
         return ['channel' / self.input_channel_structures('channel')]
-
-    @structures
-    def account_reaction_notifications_from_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xbac3a61a: LazyBound(self.struct_0xbac3a61a),
-            0x4b9e22a0: LazyBound(self.struct_0x4b9e22a0)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0xbac3a61a, 'account_reaction_notifications_from_contacts')
-    def struct_0xbac3a61a(self):
-        return []
-
-    @constructor(0x4b9e22a0, 'account_reaction_notifications_from_all')
-    def struct_0x4b9e22a0(self):
-        return []
 
     @constructor(0x56e34970, 'account_reactions_notify_settings')
     def struct_0x56e34970(self):
@@ -32108,119 +32502,6 @@ class TLStruct:  # pylint: disable=C0103
             'peer' / self.input_peer_structures('peer'),
             'link' / TString)
 
-    @constructor(0x45361c63, 'phone_call_requested')
-    def struct_0x45361c63(self):
-        return Struct(
-            'sname' / Computed('phone_call_requested'),
-            'signature' / Hex(Const(0x45361c63, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_video=64,
-                                has_conference_call=256),
-            'id' / Int64ul,
-            'access_hash' / Int64ul,
-            'date' / TTimestamp,
-            'admin_id' / Int64ul,
-            'participant_id' / Int64ul,
-            'g_a_hash' / TBytes,
-            'protocol' / self.phone_call_protocol_structures('protocol'),
-            'conference_call' / If(this.flags.has_conference_call, self.struct_0xd8aa840f()))
-
-    @constructor(0x3ba5940c, 'phone_call')
-    def struct_0x3ba5940c(self):
-        return Struct(
-            'sname' / Computed('phone_call'),
-            'signature' / Hex(Const(0x3ba5940c, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_p2p_allowed=32,
-                                is_video=64,
-                                has_custom_parameters=128,
-                                has_conference_call=256),
-            'id' / Int64ul,
-            'access_hash' / Int64ul,
-            'date' / TTimestamp,
-            'admin_id' / Int64ul,
-            'participant_id' / Int64ul,
-            'g_a_or_b' / TBytes,
-            'key_fingerprint' / Int64ul,
-            'protocol' / self.phone_call_protocol_structures('protocol'),
-            'connections' / self.vector(self.phone_connection_structures('connections'), 'connections'),
-            'start_date' / TTimestamp,
-            'custom_parameters' / If(this.flags.has_custom_parameters, self.struct_0x7d748d04()),
-            'conference_call' / If(this.flags.has_conference_call, self.struct_0xd8aa840f()))
-
-    @constructor(0x30535af5, 'phone_call_layer195')
-    def struct_0x30535af5(self):
-        return Struct(
-            'sname' / Computed('phone_call_layer195'),
-            'signature' / Hex(Const(0x30535af5, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_p2p_allowed=32,
-                                is_video=64,
-                                has_custom_parameters=128),
-            'id' / Int64ul,
-            'access_hash' / Int64ul,
-            'date' / TTimestamp,
-            'admin_id' / Int64ul,
-            'participant_id' / Int64ul,
-            'g_a_or_b' / TBytes,
-            'key_fingerprint' / Int64ul,
-            'protocol' / self.phone_call_protocol_structures('protocol'),
-            'connections' / self.vector(self.phone_connection_structures('connections'), 'connections'),
-            'start_date' / TTimestamp,
-            'custom_parameters' / If(this.flags.has_custom_parameters, self.struct_0x7d748d04()))
-
-    @constructor(0x22fd7181, 'phone_call_accepted')
-    def struct_0x22fd7181(self):
-        return Struct(
-            'sname' / Computed('phone_call_accepted'),
-            'signature' / Hex(Const(0x22fd7181, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_video=64,
-                                has_conference_call=256),
-            'id' / Int64ul,
-            'access_hash' / Int64ul,
-            'date' / TTimestamp,
-            'admin_id' / Int64ul,
-            'participant_id' / Int64ul,
-            'g_b' / TBytes,
-            'protocol' / self.phone_call_protocol_structures('protocol'),
-            'conference_call' / If(this.flags.has_conference_call, self.struct_0xd8aa840f()))
-
-    @constructor(0xeed42858, 'phone_call_waiting')
-    def struct_0xeed42858(self):
-        return Struct(
-            'sname' / Computed('phone_call_waiting'),
-            'signature' / Hex(Const(0xeed42858, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_video=64,
-                                has_receive_date=1,
-                                has_conference_call=256),
-            'id' / Int64ul,
-            'access_hash' / Int64ul,
-            'date' / TTimestamp,
-            'admin_id' / Int64ul,
-            'participant_id' / Int64ul,
-            'protocol' / self.phone_call_protocol_structures('protocol'),
-            'receive_date' / If(this.flags.has_receive_date, TTimestamp),
-            'conference_call' / If(this.flags.has_conference_call, self.struct_0xd8aa840f()))
-
-    @constructor(0xf9d25503, 'phone_call_discarded')
-    def struct_0xf9d25503(self):
-        return Struct(
-            'sname' / Computed('phone_call_discarded'),
-            'signature' / Hex(Const(0xf9d25503, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_need_rating=4,
-                                is_need_debug=8,
-                                is_video=64,
-                                has_reason=1,
-                                has_duration=2,
-                                has_conference_call=256),
-            'id' / Int64ul,
-            'reason' / If(this.flags.has_reason, self.phone_call_discard_reason_structures('reason')),
-            'duration' / If(this.flags.has_duration, Int32ul),
-            'conference_call' / If(this.flags.has_conference_call, self.struct_0xd8aa840f()))
-
     @constructor(0xa6c4600c, 'phone_request_call')
     def struct_0xa6c4600c(self):
         return Struct(
@@ -32242,147 +32523,6 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0xdfc909ab, Int32ul)),
             'peer' / self.struct_0xd8aa840f(),
             'key_fingerprint' / Int64ul)
-
-    @structures
-    def star_gift_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x02cc73c8: LazyBound(self.struct_0x02cc73c8),
-            0xf2fe7e4a: LazyBound(self.struct_0xf2fe7e4a),
-            0x3482f322: LazyBound(self.struct_0x3482f322),
-            0x6a1407cd: LazyBound(self.struct_0x6a1407cd),
-            0xaea174ee: LazyBound(self.struct_0xaea174ee),
-            0x49c577cd: LazyBound(self.struct_0x49c577cd)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0xf2fe7e4a, 'star_gift_unique')
-    def struct_0xf2fe7e4a(self):
-        return Struct(
-            'sname' / Computed('star_gift_unique'),
-            'signature' / Hex(Const(0xf2fe7e4a, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_owner_id=1,
-                                has_owner_name=2,
-                                has_owner_address=4),
-            'id' / Int64ul,
-            'title' / TString,
-            'slug' / TString,
-            'num' / Int32ul,
-            'owner_id' / If(this.flags.has_owner_id, self.peer_structures('owner_id')),
-            'owner_name' / If(this.flags.has_owner_name, TString),
-            'owner_address' / If(this.flags.has_owner_address, TString),
-            'attributes' / self.vector(self.star_gift_attribute_structures('attributes'), 'attributes'),
-            'availability_issued' / Int32ul,
-            'availability_total' / Int32ul)
-
-    @constructor(0x3482f322, 'star_gift_unique_layer197')
-    def struct_0x3482f322(self):
-        return Struct(
-            'sname' / Computed('star_gift_unique_layer197'),
-            'signature' / Hex(Const(0x3482f322, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_owner_user_id=1,
-                                has_owner_name=2),
-            'id' / Int64ul,
-            'title' / TString,
-            'slug' / TString,
-            'num' / Int32ul,
-            'owner_user_id' / If(this.flags.has_owner_user_id, Int64ul),
-            'owner_name' / If(this.flags.has_owner_name, TString),
-            'attributes' / self.vector(self.star_gift_attribute_structures('attributes'), 'attributes'),
-            'availability_issued' / Int32ul,
-            'availability_total' / Int32ul)
-
-    @constructor(0x6a1407cd, 'star_gift_unique_layer196')
-    def struct_0x6a1407cd(self):
-        return Struct(
-            'sname' / Computed('star_gift_unique_layer196'),
-            'signature' / Hex(Const(0x6a1407cd, Int32ul)),
-            'id' / Int64ul,
-            'title' / TString,
-            'num' / Int32ul,
-            'owner_user_id' / Int64ul,
-            'attributes' / self.vector(self.star_gift_attribute_structures('attributes'), 'attributes'),
-            'availability_issued' / Int32ul,
-            'availability_total' / Int32ul)
-
-    @constructor(0x02cc73c8, 'star_gift')
-    def struct_0x02cc73c8(self):
-        return Struct(
-            'sname' / Computed('star_gift'),
-            'signature' / Hex(Const(0x02cc73c8, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_limited=1,
-                                is_sold_out=2,
-                                is_birthday=4,
-                                is_can_upgrade=8),
-            'id' / Int64ul,
-            'sticker' / self.document_structures('sticker'),
-            'stars' / Int64ul,
-            'availability_remains' / If(this.flags.is_limited, Int32ul),
-            'availability_total' / If(this.flags.is_limited, Int32ul),
-            'convert_stars' / Int64ul,
-            'first_sale_date' / If(this.flags.is_sold_out, TTimestamp),
-            'last_sale_date' / If(this.flags.is_sold_out, TTimestamp),
-            'upgrade_stars' / If(this.flags.is_can_upgrade, Int64ul))
-
-    @constructor(0x49c577cd, 'star_gift_layer195')
-    def struct_0x49c577cd(self):
-        return Struct(
-            'sname' / Computed('star_gift_layer195'),
-            'signature' / Hex(Const(0x49c577cd, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_limited=1,
-                                is_sold_out=2,
-                                is_birthday=4),
-            'id' / Int64ul,
-            'sticker' / self.document_structures('sticker'),
-            'stars' / Int64ul,
-            'availability_remains' / If(this.flags.is_limited, Int32ul),
-            'availability_total' / If(this.flags.is_limited, Int32ul),
-            'convert_stars' / Int64ul,
-            'first_sale_date' / If(this.flags.is_sold_out, TTimestamp),
-            'last_sale_date' / If(this.flags.is_sold_out, TTimestamp))
-
-    @constructor(0xaea174ee, 'star_gift_layer190')
-    def struct_0xaea174ee(self):
-        return Struct(
-            'sname' / Computed('star_gift_layer190'),
-            'signature' / Hex(Const(0xaea174ee, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_limited=1),
-            'id' / Int64ul,
-            'sticker' / self.document_structures('sticker'),
-            'stars' / Int64ul,
-            'availability_remains' / If(this.flags.is_limited, Int32ul),
-            'availability_total' / If(this.flags.is_limited, Int32ul),
-            'convert_stars' / Int64ul)
-
-    @structures
-    def star_gifts_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x901689ea: LazyBound(self.struct_0x901689ea),
-            0xa388a368: LazyBound(self.struct_0xa388a368)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x901689ea, 'star_gifts')
-    def struct_0x901689ea(self):
-        return Struct(
-            'sname' / Computed('star_gifts'),
-            'signature' / Hex(Const(0x901689ea, Int32ul)),
-            'hash' / Int32ul,
-            'gifts' / self.vector(self.star_gift_structures('gifts'), 'gifts'))
-
-    @constructor(0xa388a368, 'star_gifts_not_modified')
-    def struct_0xa388a368(self):
-        return []
 
     @constructor(0xc4563590, 'stars_get_star_gifts')
     def struct_0xc4563590(self):
@@ -32498,111 +32638,6 @@ class TLStruct:  # pylint: disable=C0103
             'amount' / Int64ul,
             'winners' / self.vector(self.struct_0x54236209(), 'winners'))
 
-    @structures
-    def stars_transaction_peer_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xd80da15d: LazyBound(self.struct_0xd80da15d),
-            0xb457b375: LazyBound(self.struct_0xb457b375),
-            0x7b560a0b: LazyBound(self.struct_0x7b560a0b),
-            0xe92fd902: LazyBound(self.struct_0xe92fd902),
-            0x250dbaf8: LazyBound(self.struct_0x250dbaf8),
-            0x95f2bfe4: LazyBound(self.struct_0x95f2bfe4),
-            0x60682812: LazyBound(self.struct_0x60682812),
-            0xf9677aad: LazyBound(self.struct_0xf9677aad)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0xd80da15d, 'stars_transaction_peer')
-    def struct_0xd80da15d(self):
-        return ['peer' / self.peer_structures('peer')]
-
-    @constructor(0xb457b375, 'stars_transaction_peer_app_store')
-    def struct_0xb457b375(self):
-        return []
-
-    @constructor(0x7b560a0b, 'stars_transaction_peer_play_market')
-    def struct_0x7b560a0b(self):
-        return []
-
-    @constructor(0xe92fd902, 'stars_transaction_peer_fragment')
-    def struct_0xe92fd902(self):
-        return []
-
-    @constructor(0x250dbaf8, 'stars_transaction_peer_premium_bot')
-    def struct_0x250dbaf8(self):
-        return []
-
-    @constructor(0x95f2bfe4, 'stars_transaction_peer_unsupported')
-    def struct_0x95f2bfe4(self):
-        return []
-
-    @constructor(0x60682812, 'stars_transaction_peer_ads')
-    def struct_0x60682812(self):
-        return []
-
-    @constructor(0xf9677aad, 'stars_transaction_peer_api')
-    def struct_0xf9677aad(self):
-        return []
-
-    @structures
-    def stars_transaction_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xcc7079b2: LazyBound(self.struct_0xcc7079b2),
-            0xaa00c898: LazyBound(self.struct_0xaa00c898),
-            0x2db5418f: LazyBound(self.struct_0x2db5418f),
-            0x433aeb2b: LazyBound(self.struct_0x433aeb2b),
-            0xee7522d5: LazyBound(self.struct_0xee7522d5),
-            0x0a9ee4c2: LazyBound(self.struct_0x0a9ee4c2),
-            0x35d4f276: LazyBound(self.struct_0x35d4f276),
-            0x64dfc926: LazyBound(self.struct_0x64dfc926)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0xcc7079b2, 'stars_transaction_layer181')
-    def struct_0xcc7079b2(self):
-        return Struct(
-            'sname' / Computed('stars_transaction_layer181'),
-            'signature' / Hex(Const(0xcc7079b2, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_refund=8,
-                                has_title=1,
-                                has_description=2,
-                                has_photo=4),
-            'stars_amount' / Int64ul,
-            'date' / TTimestamp,
-            'peer' / self.stars_transaction_peer_structures('peer'),
-            'title' / If(this.flags.has_title, TString),
-            'description' / If(this.flags.has_description, TString),
-            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')))
-
-    @constructor(0xaa00c898, 'stars_transaction_layer182')
-    def struct_0xaa00c898(self):
-        return Struct(
-            'sname' / Computed('stars_transaction_layer182'),
-            'signature' / Hex(Const(0xaa00c898, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_refund=8,
-                                is_pending=16,
-                                is_failed=64,
-                                has_title=1,
-                                has_description=2,
-                                has_photo=4,
-                                has_transaction_date=32),
-            'stars_amount' / Int64ul,
-            'date' / TTimestamp,
-            'peer' / self.stars_transaction_peer_structures('peer'),
-            'title' / If(this.flags.has_title, TString),
-            'description' / If(this.flags.has_description, TString),
-            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
-            'transaction_date' / If(this.flags.has_transaction_date, TTimestamp),
-            'transaction_url' / If(this.flags.has_transaction_date, TString))
-
     @constructor(0xbbb6b4a3, 'stars_amount')
     def struct_0xbbb6b4a3(self):
         return Struct(
@@ -32610,270 +32645,6 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0xbbb6b4a3, Int32ul)),
             'amount' / Int64ul,
             'nanos' / Int32ul)
-
-    @constructor(0x64dfc926, 'stars_transaction')
-    def struct_0x64dfc926(self):
-        return Struct(
-            'sname' / Computed('stars_transaction'),
-            'signature' / Hex(Const(0x64dfc926, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_refund=8,
-                                is_pending=16,
-                                is_failed=64,
-                                is_gift=1024,
-                                is_reaction=2048,
-                                is_subscription=4096,
-                                is_floodskip=32768,
-                                is_stargift_upgrade=262144,
-                                has_title=1,
-                                has_description=2,
-                                has_photo=4,
-                                has_transaction_date=32,
-                                has_bot_payload=128,
-                                has_msg_id=256,
-                                has_extended_media=512,
-                                has_giveaway_post_id=8192,
-                                has_stargift=16384,
-                                has_starref_commission_permille=65536,
-                                has_starref_peer=131072),
-            'stars' / self.struct_0xbbb6b4a3(),
-            'date' / TTimestamp,
-            'peer' / self.stars_transaction_peer_structures('peer'),
-            'title' / If(this.flags.has_title, TString),
-            'description' / If(this.flags.has_description, TString),
-            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
-            'transaction_date' / If(this.flags.has_transaction_date, TTimestamp),
-            'transaction_url' / If(this.flags.has_transaction_date, TString),
-            'bot_payload' / If(this.flags.has_bot_payload, TBytes),
-            'msg_id' / If(this.flags.has_msg_id, Int32ul),
-            'extended_media' / If(this.flags.has_extended_media, self.vector(self.message_media_structures('extended_media'), 'extended_media')),
-            'subscription_period' / If(this.flags.is_subscription, Int32ul),
-            'giveaway_post_id' / If(this.flags.has_giveaway_post_id, Int32ul),
-            'stargift' / If(this.flags.has_stargift, self.star_gift_structures('stargift')),
-            'floodskip_number' / If(this.flags.is_floodskip, Int32ul),
-            'starref_commission_permille' / If(this.flags.has_starref_commission_permille, Int32ul),
-            'starref_peer' / If(this.flags.has_starref_peer, self.peer_structures('starref_peer')),
-            'starref_amount' / If(this.flags.has_starref_peer, self.struct_0xbbb6b4a3()))
-
-    @constructor(0x35d4f276, 'stars_transaction_layer194')
-    def struct_0x35d4f276(self):
-        return Struct(
-            'sname' / Computed('stars_transaction_layer194'),
-            'signature' / Hex(Const(0x35d4f276, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_refund=8,
-                                is_pending=16,
-                                is_failed=64,
-                                is_gift=1024,
-                                is_reaction=2048,
-                                is_subscription=4096,
-                                is_floodskip=32768,
-                                has_title=1,
-                                has_description=2,
-                                has_photo=4,
-                                has_transaction_date=32,
-                                has_bot_payload=128,
-                                has_msg_id=256,
-                                has_extended_media=512,
-                                has_giveaway_post_id=8192,
-                                has_stargift=16384),
-            'stars_amount' / Int64ul,
-            'date' / TTimestamp,
-            'peer' / self.stars_transaction_peer_structures('peer'),
-            'title' / If(this.flags.has_title, TString),
-            'description' / If(this.flags.has_description, TString),
-            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
-            'transaction_date' / If(this.flags.has_transaction_date, TTimestamp),
-            'transaction_url' / If(this.flags.has_transaction_date, TString),
-            'bot_payload' / If(this.flags.has_bot_payload, TBytes),
-            'msg_id' / If(this.flags.has_msg_id, Int32ul),
-            'extended_media' / If(this.flags.has_extended_media, self.vector(self.message_media_structures('extended_media'), 'extended_media')),
-            'subscription_period' / If(this.flags.is_subscription, Int32ul),
-            'giveaway_post_id' / If(this.flags.has_giveaway_post_id, Int32ul),
-            'stargift' / If(this.flags.has_stargift, self.star_gift_structures('stargift')),
-            'floodskip_number' / If(this.flags.is_floodskip, Int32ul))
-
-    @constructor(0x0a9ee4c2, 'stars_transaction_layer191')
-    def struct_0x0a9ee4c2(self):
-        return Struct(
-            'sname' / Computed('stars_transaction_layer191'),
-            'signature' / Hex(Const(0x0a9ee4c2, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_refund=8,
-                                is_pending=16,
-                                is_failed=64,
-                                is_gift=1024,
-                                is_reaction=2048,
-                                is_subscription=4096,
-                                has_title=1,
-                                has_description=2,
-                                has_photo=4,
-                                has_transaction_date=32,
-                                has_bot_payload=128,
-                                has_msg_id=256,
-                                has_extended_media=512,
-                                has_giveaway_post_id=8192,
-                                has_stargift=16384),
-            'stars_amount' / Int64ul,
-            'date' / TTimestamp,
-            'peer' / self.stars_transaction_peer_structures('peer'),
-            'title' / If(this.flags.has_title, TString),
-            'description' / If(this.flags.has_description, TString),
-            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
-            'transaction_date' / If(this.flags.has_transaction_date, TTimestamp),
-            'transaction_url' / If(this.flags.has_transaction_date, TString),
-            'bot_payload' / If(this.flags.has_bot_payload, TBytes),
-            'msg_id' / If(this.flags.has_msg_id, Int32ul),
-            'extended_media' / If(this.flags.has_extended_media, self.vector(self.message_media_structures('extended_media'), 'extended_media')),
-            'subscription_period' / If(this.flags.is_subscription, Int32ul),
-            'giveaway_post_id' / If(this.flags.has_giveaway_post_id, Int32ul),
-            'stargift' / If(this.flags.has_stargift, self.star_gift_structures('stargift')))
-
-    @constructor(0xee7522d5, 'stars_transaction_layer188')
-    def struct_0xee7522d5(self):
-        return Struct(
-            'sname' / Computed('stars_transaction_layer188'),
-            'signature' / Hex(Const(0xee7522d5, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_refund=8,
-                                is_pending=16,
-                                is_failed=64,
-                                is_gift=1024,
-                                is_reaction=2048,
-                                is_subscription=4096,
-                                has_title=1,
-                                has_description=2,
-                                has_photo=4,
-                                has_transaction_date=32,
-                                has_bot_payload=128,
-                                has_msg_id=256,
-                                has_extended_media=512,
-                                has_giveaway_post_id=8192),
-            'stars_amount' / Int64ul,
-            'date' / TTimestamp,
-            'peer' / self.stars_transaction_peer_structures('peer'),
-            'title' / If(this.flags.has_title, TString),
-            'description' / If(this.flags.has_description, TString),
-            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
-            'transaction_date' / If(this.flags.has_transaction_date, TTimestamp),
-            'transaction_url' / If(this.flags.has_transaction_date, TString),
-            'bot_payload' / If(this.flags.has_bot_payload, TBytes),
-            'msg_id' / If(this.flags.has_msg_id, Int32ul),
-            'extended_media' / If(this.flags.has_extended_media, self.vector(self.message_media_structures('extended_media'), 'extended_media')),
-            'subscription_period' / If(this.flags.is_subscription, Int32ul),
-            'giveaway_post_id' / If(this.flags.has_giveaway_post_id, Int32ul))
-
-    @constructor(0x433aeb2b, 'stars_transaction_layer186')
-    def struct_0x433aeb2b(self):
-        return Struct(
-            'sname' / Computed('stars_transaction_layer186'),
-            'signature' / Hex(Const(0x433aeb2b, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_refund=8,
-                                is_pending=16,
-                                is_failed=64,
-                                is_gift=1024,
-                                is_reaction=2048,
-                                is_subscription=4096,
-                                has_title=1,
-                                has_description=2,
-                                has_photo=4,
-                                has_transaction_date=32,
-                                has_bot_payload=128,
-                                has_msg_id=256,
-                                has_extended_media=512),
-            'stars_amount' / Int64ul,
-            'date' / TTimestamp,
-            'peer' / self.stars_transaction_peer_structures('peer'),
-            'title' / If(this.flags.has_title, TString),
-            'description' / If(this.flags.has_description, TString),
-            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
-            'transaction_date' / If(this.flags.has_transaction_date, TTimestamp),
-            'transaction_url' / If(this.flags.has_transaction_date, TString),
-            'bot_payload' / If(this.flags.has_bot_payload, TBytes),
-            'msg_id' / If(this.flags.has_msg_id, Int32ul),
-            'extended_media' / If(this.flags.has_extended_media, self.vector(self.message_media_structures('extended_media'), 'extended_media')),
-            'subscription_period' / If(this.flags.is_subscription, Int32ul))
-
-    @constructor(0x2db5418f, 'stars_transaction_layer185')
-    def struct_0x2db5418f(self):
-        return Struct(
-            'sname' / Computed('stars_transaction_layer185'),
-            'signature' / Hex(Const(0x2db5418f, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_refund=8,
-                                is_pending=16,
-                                is_failed=64,
-                                is_gift=1024,
-                                has_title=1,
-                                has_description=2,
-                                has_photo=4,
-                                has_transaction_date=32,
-                                has_bot_payload=128,
-                                has_msg_id=256,
-                                has_extended_media=512),
-            'stars_amount' / Int64ul,
-            'date' / TTimestamp,
-            'peer' / self.stars_transaction_peer_structures('peer'),
-            'title' / If(this.flags.has_title, TString),
-            'description' / If(this.flags.has_description, TString),
-            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
-            'transaction_date' / If(this.flags.has_transaction_date, TTimestamp),
-            'transaction_url' / If(this.flags.has_transaction_date, TString),
-            'bot_payload' / If(this.flags.has_bot_payload, TBytes),
-            'msg_id' / If(this.flags.has_msg_id, Int32ul),
-            'extended_media' / If(this.flags.has_extended_media, self.vector(self.message_media_structures('extended_media'), 'extended_media')))
-
-    @structures
-    def stars_status_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xbbfa316c: LazyBound(self.struct_0xbbfa316c),
-            0x6c9ce8ed: LazyBound(self.struct_0x6c9ce8ed)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x6c9ce8ed, 'stars_payments_stars_status')
-    def struct_0x6c9ce8ed(self):
-        return Struct(
-            'sname' / Computed('stars_payments_stars_status'),
-            'signature' / Hex(Const(0x6c9ce8ed, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_subscriptions=2,
-                                has_subscriptions_next_offset=4,
-                                has_subscriptions_missing_balance=16,
-                                has_history=8,
-                                has_next_offset=1),
-            'balance' / self.struct_0xbbb6b4a3(),
-            'subscriptions' / If(this.flags.has_subscriptions, self.vector(self.stars_subscription_structures('subscriptions'), 'subscriptions')),
-            'subscriptions_next_offset' / If(this.flags.has_subscriptions_next_offset, TString),
-            'subscriptions_missing_balance' / If(this.flags.has_subscriptions_missing_balance, Int64ul),
-            'history' / If(this.flags.has_history, self.vector(self.stars_transaction_structures('history'), 'history')),
-            'next_offset' / If(this.flags.has_next_offset, TString),
-            'chats' / self.vector(self.chat_structures('chats'), 'chats'),
-            'users' / self.vector(self.user_structures('users'), 'users'))
-
-    @constructor(0xbbfa316c, 'stars_payments_stars_status_layer194')
-    def struct_0xbbfa316c(self):
-        return Struct(
-            'sname' / Computed('stars_payments_stars_status_layer194'),
-            'signature' / Hex(Const(0xbbfa316c, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_subscriptions=2,
-                                has_subscriptions_next_offset=4,
-                                has_subscriptions_missing_balance=16,
-                                has_history=8,
-                                has_next_offset=1),
-            'balance_amount' / Int64ul,
-            'subscriptions' / If(this.flags.has_subscriptions, self.vector(self.stars_subscription_structures('subscriptions'), 'subscriptions')),
-            'subscriptions_next_offset' / If(this.flags.has_subscriptions_next_offset, TString),
-            'subscriptions_missing_balance' / If(this.flags.has_subscriptions_missing_balance, Int64ul),
-            'history' / If(this.flags.has_history, self.vector(self.stars_transaction_structures('history'), 'history')),
-            'next_offset' / If(this.flags.has_next_offset, TString),
-            'chats' / self.vector(self.chat_structures('chats'), 'chats'),
-            'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0xc00ec7d3, 'stars_payments_get_stars_topup_options')
     def struct_0xc00ec7d3(self):
@@ -32915,71 +32686,6 @@ class TLStruct:  # pylint: disable=C0103
             'form_id' / Int64ul,
             'invoice' / self.input_invoice_structures('invoice'))
 
-    @structures
-    def stars_subscription_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x2e6eab1a: LazyBound(self.struct_0x2e6eab1a),
-            0x538ecf18: LazyBound(self.struct_0x538ecf18),
-            0xd073f1e6: LazyBound(self.struct_0xd073f1e6)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x2e6eab1a, 'stars_subscription')
-    def struct_0x2e6eab1a(self):
-        return Struct(
-            'sname' / Computed('stars_subscription'),
-            'signature' / Hex(Const(0x2e6eab1a, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_canceled=1,
-                                is_can_refulfill=2,
-                                is_missing_balance=4,
-                                is_bot_canceled=128,
-                                has_chat_invite_hash=8,
-                                has_title=16,
-                                has_photo=32,
-                                has_invoice_slug=64),
-            'id' / TString,
-            'peer' / self.peer_structures('peer'),
-            'until_date' / TTimestamp,
-            'pricing' / self.struct_0x05416d58(),
-            'chat_invite_hash' / If(this.flags.has_chat_invite_hash, TString),
-            'title' / If(this.flags.has_title, TString),
-            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
-            'invoice_slug' / If(this.flags.has_invoice_slug, TString))
-
-    @constructor(0x538ecf18, 'stars_subscription_layer193')
-    def struct_0x538ecf18(self):
-        return Struct(
-            'sname' / Computed('stars_subscription_layer193'),
-            'signature' / Hex(Const(0x538ecf18, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_canceled=1,
-                                is_can_refulfill=2,
-                                is_missing_balance=4,
-                                has_chat_invite_hash=8),
-            'id' / TString,
-            'peer' / self.peer_structures('peer'),
-            'until_date' / TTimestamp,
-            'pricing' / self.struct_0x05416d58(),
-            'chat_invite_hash' / If(this.flags.has_chat_invite_hash, TString))
-
-    @constructor(0xd073f1e6, 'stars_subscription_old')
-    def struct_0xd073f1e6(self):
-        return Struct(
-            'sname' / Computed('stars_subscription_old'),
-            'signature' / Hex(Const(0xd073f1e6, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_canceled=1,
-                                is_can_refulfill=2,
-                                is_missing_balance=4),
-            'id' / TString,
-            'peer' / self.peer_structures('peer'),
-            'until_date' / TTimestamp,
-            'pricing' / self.struct_0x05416d58())
-
     @constructor(0x05416d58, 'stars_subscription_pricing')
     def struct_0x05416d58(self):
         return Struct(
@@ -33016,76 +32722,6 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0xcc5bebb3, Int32ul)),
             'peer' / self.input_peer_structures('peer'),
             'subscription_id' / TString)
-
-    @structures
-    def star_gift_attribute_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x39d99013: LazyBound(self.struct_0x39d99013),
-            0x13acff19: LazyBound(self.struct_0x13acff19),
-            0x94271762: LazyBound(self.struct_0x94271762),
-            0xe0bff26c: LazyBound(self.struct_0xe0bff26c),
-            0xc02c4f4b: LazyBound(self.struct_0xc02c4f4b)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x39d99013, 'star_gift_attribute_model')
-    def struct_0x39d99013(self):
-        return Struct(
-            'sname' / Computed('star_gift_attribute_model'),
-            'signature' / Hex(Const(0x39d99013, Int32ul)),
-            'name' / TString,
-            'document' / self.document_structures('document'),
-            'rarity_permille' / Int32ul)
-
-    @constructor(0x13acff19, 'star_gift_attribute_pattern')
-    def struct_0x13acff19(self):
-        return Struct(
-            'sname' / Computed('star_gift_attribute_pattern'),
-            'signature' / Hex(Const(0x13acff19, Int32ul)),
-            'name' / TString,
-            'document' / self.document_structures('document'),
-            'rarity_permille' / Int32ul)
-
-    @constructor(0x94271762, 'star_gift_attribute_backdrop')
-    def struct_0x94271762(self):
-        return Struct(
-            'sname' / Computed('star_gift_attribute_backdrop'),
-            'signature' / Hex(Const(0x94271762, Int32ul)),
-            'name' / TString,
-            'center_color' / Int32ul,
-            'edge_color' / Int32ul,
-            'pattern_color' / Int32ul,
-            'text_color' / Int32ul,
-            'rarity_permille' / Int32ul)
-
-    @constructor(0xe0bff26c, 'star_gift_attribute_original_details')
-    def struct_0xe0bff26c(self):
-        return Struct(
-            'sname' / Computed('star_gift_attribute_original_details'),
-            'signature' / Hex(Const(0xe0bff26c, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_sender_id=1,
-                                has_message=2),
-            'sender_id' / If(this.flags.has_sender_id, self.peer_structures('sender_id')),
-            'recipient_id' / self.peer_structures('recipient_id'),
-            'date' / TTimestamp,
-            'message' / If(this.flags.has_message, self.struct_0x751f3146()))
-
-    @constructor(0xc02c4f4b, 'star_gift_attribute_original_details_layer197')
-    def struct_0xc02c4f4b(self):
-        return Struct(
-            'sname' / Computed('star_gift_attribute_original_details_layer197'),
-            'signature' / Hex(Const(0xc02c4f4b, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_sender_user_id=1,
-                                has_message=2),
-            'sender_user_id' / If(this.flags.has_sender_user_id, Int64ul),
-            'recipient_user_id' / Int64ul,
-            'date' / TTimestamp,
-            'message' / If(this.flags.has_message, self.struct_0x751f3146()))
 
     @constructor(0xcaa2f60b, 'stars_payments_unique_star_gift')
     def struct_0xcaa2f60b(self):
@@ -33143,29 +32779,6 @@ class TLStruct:  # pylint: disable=C0103
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
-    @structures
-    def stars_input_saved_star_gift_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x69279795: LazyBound(self.struct_0x69279795),
-            0xf101aa7f: LazyBound(self.struct_0xf101aa7f)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x69279795, 'stars_input_saved_star_gift_user')
-    def struct_0x69279795(self):
-        return ['msg_id' / Int32ul]
-
-    @constructor(0xf101aa7f, 'stars_input_saved_star_gift_chat')
-    def struct_0xf101aa7f(self):
-        return Struct(
-            'sname' / Computed('stars_input_saved_star_gift_chat'),
-            'signature' / Hex(Const(0xf101aa7f, Int32ul)),
-            'peer' / self.input_peer_structures('peer'),
-            'saved_id' / Int64ul)
-
     @constructor(0x60eaefa1, 'stars_toggle_chat_star_gift_notifications')
     def struct_0x60eaefa1(self):
         return Struct(
@@ -33187,29 +32800,6 @@ class TLStruct:  # pylint: disable=C0103
             'stargift' / self.stars_input_saved_star_gift_structures('stargift'),
             'password' / self.input_check_password_srp_structures('password'))
 
-    @structures
-    def stats_post_interaction_counters_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x8a480e27: LazyBound(self.struct_0x8a480e27),
-            0xe7058e7f: LazyBound(self.struct_0xe7058e7f)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-
-    @structures
-    def stats_public_forward_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x01f2bf4a: LazyBound(self.struct_0x01f2bf4a),
-            0xedf3add0: LazyBound(self.struct_0xedf3add0)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
     @constructor(0x5407e297, 'stats_broadcast_revenue_stats')
     def struct_0x5407e297(self):
         return Struct(
@@ -33223,51 +32813,6 @@ class TLStruct:  # pylint: disable=C0103
     @constructor(0xec659737, 'stats_broadcast_revenue_withdrawal_url')
     def struct_0xec659737(self):
         return ['url' / TString]
-
-    @structures
-    def stats_broadcast_revenue_transaction_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x557e2cc4: LazyBound(self.struct_0x557e2cc4),
-            0x5a590978: LazyBound(self.struct_0x5a590978),
-            0x42d30d2e: LazyBound(self.struct_0x42d30d2e)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x557e2cc4, 'stats_broadcast_revenue_transaction_proceeds')
-    def struct_0x557e2cc4(self):
-        return Struct(
-            'sname' / Computed('stats_broadcast_revenue_transaction_proceeds'),
-            'signature' / Hex(Const(0x557e2cc4, Int32ul)),
-            'amount' / Int64ul,
-            'from_date' / TTimestamp,
-            'to_date' / TTimestamp)
-
-    @constructor(0x5a590978, 'stats_broadcast_revenue_transaction_withdrawal')
-    def struct_0x5a590978(self):
-        return Struct(
-            'sname' / Computed('stats_broadcast_revenue_transaction_withdrawal'),
-            'signature' / Hex(Const(0x5a590978, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_pending=1,
-                                is_failed=4,
-                                has_transaction_date=2),
-            'amount' / Int64ul,
-            'date' / TTimestamp,
-            'provider' / TString,
-            'transaction_date' / If(this.flags.has_transaction_date, TTimestamp),
-            'transaction_url' / If(this.flags.has_transaction_date, TString))
-
-    @constructor(0x42d30d2e, 'stats_broadcast_revenue_transaction_refund')
-    def struct_0x42d30d2e(self):
-        return Struct(
-            'sname' / Computed('stats_broadcast_revenue_transaction_refund'),
-            'signature' / Hex(Const(0x42d30d2e, Int32ul)),
-            'amount' / Int64ul,
-            'from_date' / TTimestamp,
-            'provider' / TString)
 
     @constructor(0x87158466, 'stats_broadcast_revenue_transactions')
     def struct_0x87158466(self):
@@ -33302,17 +32847,6 @@ class TLStruct:  # pylint: disable=C0103
             'peer' / self.input_peer_structures('peer'),
             'offset' / Int32ul,
             'limit' / Int32ul)
-
-    @structures
-    def stories_peer_stories_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x9a35e999: LazyBound(self.struct_0x9a35e999),
-            0x8611a200: LazyBound(self.struct_0x8611a200)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
 
     @constructor(0x63c3dd0a, 'stories_stories')
     def struct_0x63c3dd0a(self):
@@ -33381,133 +32915,6 @@ class TLStruct:  # pylint: disable=C0103
             'option' / TBytes,
             'message' / TString)
 
-    @structures
-    def stories_boost_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x4b3e14d6: LazyBound(self.struct_0x4b3e14d6),
-            0x2a1c8c71: LazyBound(self.struct_0x2a1c8c71)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x4b3e14d6, 'stories_boost')
-    def struct_0x4b3e14d6(self):
-        return Struct(
-            'sname' / Computed('stories_boost'),
-            'signature' / Hex(Const(0x4b3e14d6, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_gift=2,
-                                is_giveaway=4,
-                                is_unclaimed=8,
-                                has_user_id=1,
-                                has_used_gift_slug=16,
-                                has_multiplier=32,
-                                has_stars=64),
-            'id' / TString,
-            'user_id' / If(this.flags.has_user_id, Int64ul),
-            'giveaway_msg_id' / If(this.flags.is_giveaway, Int32ul),
-            'date' / TTimestamp,
-            'expires' / Int32ul,
-            'used_gift_slug' / If(this.flags.has_used_gift_slug, TString),
-            'multiplier' / If(this.flags.has_multiplier, Int32ul),
-            'stars' / If(this.flags.has_stars, Int64ul))
-
-    @structures
-    def stories_media_area_coordinates_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xcfc9e002: LazyBound(self.struct_0xcfc9e002),
-            0x03d1ea4e: LazyBound(self.struct_0x03d1ea4e)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0xcfc9e002, 'stories_media_area_coordinates')
-    def struct_0xcfc9e002(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_coordinates'),
-            'signature' / Hex(Const(0xcfc9e002, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_radius=1),
-            'x' / Double,
-            'y' / Double,
-            'w' / Double,
-            'h' / Double,
-            'rotation' / Double,
-            'radius' / If(this.flags.has_radius, Double))
-
-    @structures
-    def stories_media_area_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x37381085: LazyBound(self.struct_0x37381085),
-            0x5787686d: LazyBound(self.struct_0x5787686d),
-            0xbe82db9c: LazyBound(self.struct_0xbe82db9c),
-            0xcad5452d: LazyBound(self.struct_0xcad5452d),
-            0xdf8b3b22: LazyBound(self.struct_0xdf8b3b22),
-            0x14455871: LazyBound(self.struct_0x14455871),
-            0x770416af: LazyBound(self.struct_0x770416af),
-            0xb282217f: LazyBound(self.struct_0xb282217f),
-            0x2271f2bf: LazyBound(self.struct_0x2271f2bf),
-            0x49a6549c: LazyBound(self.struct_0x49a6549c),
-            0x4386f849: LazyBound(self.struct_0x4386f849),
-            0x855f223e: LazyBound(self.struct_0x855f223e)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x37381085, 'stories_media_area_url')
-    def struct_0x37381085(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_url'),
-            'signature' / Hex(Const(0x37381085, Int32ul)),
-            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
-            'url' / TString)
-
-    @constructor(0x5787686d, 'stories_media_area_star_gift')
-    def struct_0x5787686d(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_star_gift'),
-            'signature' / Hex(Const(0x5787686d, Int32ul)),
-            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
-            'slug' / TString)
-
-    @constructor(0x855f223e, 'stories_media_area_weather2')
-    def struct_0x855f223e(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_weather2'),
-            'signature' / Hex(Const(0x855f223e, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_dark=1),
-            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
-            'emoji' / TString,
-            'temperature_c' / Int32ul)
-
-    @constructor(0x49a6549c, 'stories_media_area_weather')
-    def struct_0x49a6549c(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_weather'),
-            'signature' / Hex(Const(0x49a6549c, Int32ul)),
-            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
-            'emoji' / TString,
-            'temperature_c' / Double,
-            'color' / Int32ul)
-
-    @constructor(0x4386f849, 'stories_media_area_weather_old')
-    def struct_0x4386f849(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_weather_old'),
-            'signature' / Hex(Const(0x4386f849, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_dark=1),
-            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
-            'emoji' / TString,
-            'temperature_c' / Double)
-
     @constructor(0xde4c5d93, 'stories_geo_point_address')
     def struct_0xde4c5d93(self):
         return Struct(
@@ -33522,39 +32929,6 @@ class TLStruct:  # pylint: disable=C0103
             'city' / If(this.flags.has_city, TString),
             'street' / If(this.flags.has_street, TString))
 
-    @constructor(0xcad5452d, 'stories_media_area_geo_point')
-    def struct_0xcad5452d(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_geo_point'),
-            'signature' / Hex(Const(0xcad5452d, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_address=1),
-            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
-            'geo' / self.geo_point_structures('geo'),
-            'address' / If(this.flags.has_address, self.struct_0xde4c5d93()))
-
-    @structures
-    def stories_prepaid_giveaway_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xb2539d54: LazyBound(self.struct_0xb2539d54),
-            0x9a9d77e0: LazyBound(self.struct_0x9a9d77e0)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x9a9d77e0, 'stories_prepaid_stars_giveaway')
-    def struct_0x9a9d77e0(self):
-        return Struct(
-            'sname' / Computed('stories_prepaid_stars_giveaway'),
-            'signature' / Hex(Const(0x9a9d77e0, Int32ul)),
-            'id' / Int64ul,
-            'stars' / Int64ul,
-            'quantity' / Int32ul,
-            'boosts' / Int32ul,
-            'date' / TTimestamp)
-
     @constructor(0x0b297e9b, 'stories_toggle_pinned_to_top')
     def struct_0x0b297e9b(self):
         return Struct(
@@ -33562,101 +32936,6 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0x0b297e9b, Int32ul)),
             'peer' / self.input_peer_structures('peer'),
             'id' / self.vector(Int32ul, 'id'))
-
-    @structures
-    def keyboard_button_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xa0c0505c: LazyBound(self.struct_0xa0c0505c),
-            0xb16a6c29: LazyBound(self.struct_0xb16a6c29),
-            0x50f41ccf: LazyBound(self.struct_0x50f41ccf),
-            0x258aff05: LazyBound(self.struct_0x258aff05),
-            0x0568a748: LazyBound(self.struct_0x0568a748),
-            0xfc796b3f: LazyBound(self.struct_0xfc796b3f),
-            0x10b78d29: LazyBound(self.struct_0x10b78d29),
-            0xd02e7fd4: LazyBound(self.struct_0xd02e7fd4),
-            0xbbc7515d: LazyBound(self.struct_0xbbc7515d),
-            0xafd93fbb: LazyBound(self.struct_0xafd93fbb),
-            0x683a5e46: LazyBound(self.struct_0x683a5e46),
-            0x93b9fbb5: LazyBound(self.struct_0x93b9fbb5),
-            0xa2fa4880: LazyBound(self.struct_0xa2fa4880),
-            0x35bbdb6b: LazyBound(self.struct_0x35bbdb6b),
-            0xe988037b: LazyBound(self.struct_0xe988037b),
-            0x308660c1: LazyBound(self.struct_0x308660c1),
-            0x13767230: LazyBound(self.struct_0x13767230),
-            0x0d0b468c: LazyBound(self.struct_0x0d0b468c),
-            0x53d7bfd8: LazyBound(self.struct_0x53d7bfd8),
-            0x75d2698e: LazyBound(self.struct_0x75d2698e)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x9fe28ea4, 'dialog_filter_chatlist_layer195')
-    def struct_0x9fe28ea4(self):
-        return Struct(
-            'sname' / Computed('dialog_filter_chatlist_layer195'),
-            'signature' / Hex(Const(0x9fe28ea4, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_my_invites=67108864,
-                                has_emoticon=33554432,
-                                has_color=134217728),
-            'id' / Int32ul,
-            'title_text' / TString,
-            'emoticon' / If(this.flags.has_emoticon, TString),
-            'color' / If(this.flags.has_color, Int32ul),
-            'pinned_peers' / self.vector(self.input_peer_structures('pinned_peers'), 'pinned_peers'),
-            'include_peers' / self.vector(self.input_peer_structures('include_peers'), 'include_peers'))
-
-    @structures
-    def input_store_payment_purpose_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x616f7fe8: LazyBound(self.struct_0x616f7fe8),
-            0xfb790393: LazyBound(self.struct_0xfb790393),
-            0xa6751e66: LazyBound(self.struct_0xa6751e66),
-            0x160544ca: LazyBound(self.struct_0x160544ca),
-            0x1d741ef7: LazyBound(self.struct_0x1d741ef7),
-            0xdddd0f56: LazyBound(self.struct_0xdddd0f56),
-            0x751f08fa: LazyBound(self.struct_0x751f08fa)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    @constructor(0x14b0ed0c, 'phone_call_requested_layer195')
-    def struct_0x14b0ed0c(self):
-        return Struct(
-            'sname' / Computed('phone_call_requested_layer195'),
-            'signature' / Hex(Const(0x14b0ed0c, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_video=64),
-            'id' / Int64ul,
-            'access_hash' / Int64ul,
-            'date' / TTimestamp,
-            'admin_id' / Int64ul,
-            'participant_id' / Int64ul,
-            'g_a_hash' / TBytes,
-            'protocol' / self.phone_call_protocol_structures('protocol'))
-
-    @constructor(0x967f7c67, 'phone_call_layer176')
-    def struct_0x967f7c67(self):
-        return Struct(
-            'sname' / Computed('phone_call_layer176'),
-            'signature' / Hex(Const(0x967f7c67, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_p2p_allowed=32,
-                                is_video=64),
-            'id' / Int64ul,
-            'access_hash' / Int64ul,
-            'date' / TTimestamp,
-            'admin_id' / Int64ul,
-            'participant_id' / Int64ul,
-            'g_a_or_b' / TBytes,
-            'key_fingerprint' / Int64ul,
-            'protocol' / self.phone_call_protocol_structures('protocol'),
-            'connections' / self.vector(self.phone_connection_structures('connections'), 'connections'),
-            'start_date' / TTimestamp)
 
     @constructor(0x3660c311, 'phone_call_accepted_layer195')
     def struct_0x3660c311(self):
@@ -33673,13 +32952,3 @@ class TLStruct:  # pylint: disable=C0103
             'g_b' / TBytes,
             'protocol' / self.phone_call_protocol_structures('protocol'))
 
-    @structures
-    def messages_sponsored_messages_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x1839490f: LazyBound(self.struct_0x1839490f),
-            0xc9ee1d87: LazyBound(self.struct_0xc9ee1d87)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
