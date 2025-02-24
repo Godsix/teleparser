@@ -1391,36 +1391,6 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
-    @constructor(0xc9b9e2b9, 'account_business_away_message_schedule_always')
-    def struct_0xc9b9e2b9(self):
-        return []
-
-    @constructor(0xc3f2f501, 'account_business_away_message_schedule_outside_work_hours')
-    def struct_0xc3f2f501(self):
-        return []
-
-    @constructor(0xcc4d9ecc, 'account_business_away_message_schedule_custom')
-    def struct_0xcc4d9ecc(self):
-        return Struct(
-            'sname' / Computed('account_business_away_message_schedule_custom'),
-            'signature' / Hex(Const(0xcc4d9ecc, Int32ul)),
-            'start_date' / TTimestamp,
-            'end_date' / TTimestamp)
-
-    @structures
-    def business_away_message_schedule_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xc9b9e2b9: LazyBound(self.struct_0xc9b9e2b9),
-            0xc3f2f501: LazyBound(self.struct_0xc3f2f501),
-            0xcc4d9ecc: LazyBound(self.struct_0xcc4d9ecc)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    # -------------------------------------------------------------------------
-
     @constructor(0xdb9f9140, 'channel_admin_log_event_action_discard_group_call')
     def struct_0xdb9f9140(self):
         return ['call' / self.struct_0xd8aa840f()]
@@ -10405,82 +10375,6 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
-    @constructor(0xbe82db9c, 'stories_media_area_venue')
-    def struct_0xbe82db9c(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_venue'),
-            'signature' / Hex(Const(0xbe82db9c, Int32ul)),
-            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
-            'geo' / self.geo_point_structures('geo'),
-            'title' / TString,
-            'address' / TString,
-            'provider' / TString,
-            'venue_id' / TString,
-            'venue_type' / TString)
-
-    @constructor(0xdf8b3b22, 'stories_media_area_geo_point_layer181')
-    def struct_0xdf8b3b22(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_geo_point_layer181'),
-            'signature' / Hex(Const(0xdf8b3b22, Int32ul)),
-            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
-            'geo' / self.geo_point_structures('geo'))
-
-    @constructor(0xb282217f, 'stories_input_media_area_venue')
-    def struct_0xb282217f(self):
-        return Struct(
-            'sname' / Computed('stories_input_media_area_venue'),
-            'signature' / Hex(Const(0xb282217f, Int32ul)),
-            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
-            'query_id' / Int64ul,
-            'result_id' / TString)
-
-    @constructor(0x2271f2bf, 'stories_input_media_area_channel_post')
-    def struct_0x2271f2bf(self):
-        return Struct(
-            'sname' / Computed('stories_input_media_area_channel_post'),
-            'signature' / Hex(Const(0x2271f2bf, Int32ul)),
-            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
-            'channel' / self.input_channel_structures('channel'),
-            'msg_id' / Int32ul)
-
-    @constructor(0x14455871, 'stories_media_area_suggested_reaction')
-    def struct_0x14455871(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_suggested_reaction'),
-            'signature' / Hex(Const(0x14455871, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_dark=1,
-                                is_flipped=2),
-            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
-            'reaction' / self.reaction_structures('reaction'))
-
-    @constructor(0x770416af, 'stories_media_area_channel_post')
-    def struct_0x770416af(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_channel_post'),
-            'signature' / Hex(Const(0x770416af, Int32ul)),
-            'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
-            'channel_id' / Int64ul,
-            'msg_id' / Int32ul)
-
-    @structures
-    def media_area_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0xbe82db9c: LazyBound(self.struct_0xbe82db9c),
-            0xdf8b3b22: LazyBound(self.struct_0xdf8b3b22),
-            0xb282217f: LazyBound(self.struct_0xb282217f),
-            0x2271f2bf: LazyBound(self.struct_0x2271f2bf),
-            0x14455871: LazyBound(self.struct_0x14455871),
-            0x770416af: LazyBound(self.struct_0x770416af)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    # -------------------------------------------------------------------------
-
     @constructor(0x555555f5, 'message_action_login_unknown_location')
     def struct_0x555555f5(self):
         return Struct(
@@ -15956,41 +15850,6 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
-    @constructor(0x9a35e999, 'stories_peer_stories')
-    def struct_0x9a35e999(self):
-        return Struct(
-            'sname' / Computed('stories_peer_stories'),
-            'signature' / Hex(Const(0x9a35e999, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_max_read_id=1),
-            'peer' / self.peer_structures('peer'),
-            'max_read_id' / If(this.flags.has_max_read_id, Int32ul),
-            'stories' / self.vector(self.story_item_structures('stories'), 'stories'))
-
-    @constructor(0x8611a200, 'stories_peer_stories_layer162')
-    def struct_0x8611a200(self):
-        return Struct(
-            'sname' / Computed('stories_peer_stories_layer162'),
-            'signature' / Hex(Const(0x8611a200, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                has_max_read_id=1),
-            'peer_user_id' / Int64ul,
-            'max_read_id' / If(this.flags.has_max_read_id, Int32ul),
-            'stories' / self.vector(self.story_item_structures('stories'), 'stories'))
-
-    @structures
-    def peer_stories_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x9a35e999: LazyBound(self.struct_0x9a35e999),
-            0x8611a200: LazyBound(self.struct_0x8611a200)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    # -------------------------------------------------------------------------
-
     @constructor(0xa2a5371e, 'peer_channel')
     def struct_0xa2a5371e(self):
         return ['channel_id' / Int64ul]
@@ -16802,39 +16661,6 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
-    @constructor(0x8a480e27, 'stats_post_interaction_counters_story')
-    def struct_0x8a480e27(self):
-        return Struct(
-            'sname' / Computed('stats_post_interaction_counters_story'),
-            'signature' / Hex(Const(0x8a480e27, Int32ul)),
-            'story_id' / Int32ul,
-            'views' / Int32ul,
-            'forwards' / Int32ul,
-            'reactions' / Int32ul)
-
-    @constructor(0xe7058e7f, 'stats_post_interaction_counters_message')
-    def struct_0xe7058e7f(self):
-        return Struct(
-            'sname' / Computed('stats_post_interaction_counters_message'),
-            'signature' / Hex(Const(0xe7058e7f, Int32ul)),
-            'msg_id' / Int32ul,
-            'views' / Int32ul,
-            'forwards' / Int32ul,
-            'reactions' / Int32ul)
-
-    @structures
-    def post_interaction_counters_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x8a480e27: LazyBound(self.struct_0x8a480e27),
-            0xe7058e7f: LazyBound(self.struct_0xe7058e7f)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    # -------------------------------------------------------------------------
-
     @constructor(0x5f2d1df2, 'premium_subscription_option')
     def struct_0x5f2d1df2(self):
         return Struct(
@@ -17013,31 +16839,6 @@ class TLStruct:  # pylint: disable=C0103
             0xece9814b: LazyBound(self.struct_0xece9814b),
             0x21461b5d: LazyBound(self.struct_0x21461b5d),
             0xf6a5f82f: LazyBound(self.struct_0xf6a5f82f)
-        }
-        return Struct(
-            '_signature' / Peek(Int32ul),
-            name / Switch(this._signature, tag_map))
-
-    # -------------------------------------------------------------------------
-
-    @constructor(0x01f2bf4a, 'stats_public_forward_message')
-    def struct_0x01f2bf4a(self):
-        return ['message' / self.message_structures('message')]
-
-    @constructor(0xedf3add0, 'stories_public_forward_story')
-    def struct_0xedf3add0(self):
-        return Struct(
-            'sname' / Computed('stories_public_forward_story'),
-            'signature' / Hex(Const(0xedf3add0, Int32ul)),
-            'peer' / self.peer_structures('peer'),
-            'story' / self.story_item_structures('story'))
-
-    @structures
-    def public_forward_structures(self, name):
-        # pylint: disable=C0301
-        tag_map = {
-            0x01f2bf4a: LazyBound(self.struct_0x01f2bf4a),
-            0xedf3add0: LazyBound(self.struct_0xedf3add0)
         }
         return Struct(
             '_signature' / Peek(Int32ul),
@@ -24264,8 +24065,6 @@ class TLStruct:  # pylint: disable=C0103
 
     # -------------------------------------------------------------------------
 
-
-###############################################################################
     @constructor(0x65a4c7d5, 'messages_sponsored_messages_layer147')
     def struct_0x65a4c7d5(self):
         return Struct(

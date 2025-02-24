@@ -1842,10 +1842,8 @@ class JavaParser(BaseParser):
                 f.write(c[start:])
 
 def test():
-    # path = r"utils\files\TLRPC-9.4.5-152-810bc4ae.java"
-    # path = r"utils\files\TLRPC-10.9.1-176-d62d2ed5.java"
-    # path = r"utils\files\TLRPC-11.7.0-198-eee720ef.java"
-    path = r"E:\Project\Godsix\teleparser\utils\Telegram\TMessagesProj\src\main\java\org\telegram\tgnet"
+    git_path = r'E:\Project\Godsix\teleparser\utils\Telegram'
+    path = osp.join(git_path, r"TMessagesProj\src\main\java\org\telegram\tgnet")
     parser = JavaParser(path, level=logging.INFO, strict=True)
     debug = False
     # debug = True
@@ -1855,53 +1853,8 @@ def test():
         if GDATA:
             print('GDATA:', GDATA)
     else:
-        # for k, v in parser.tlobj_info.items():
-        #     methods = parser.get_methods(v)
-        #     if not (method := methods.get('serializeToStream')):
-        #         continue
-        #     for item in method.body:
-        #         if (BaseParser.is_statement_expression(item) and
-        #             BaseParser.is_method_invocation(item.expression)):
-        #             qualifier = item.expression.qualifier
-        #             member = item.expression.member
-        #             arguments = item.expression.arguments
-        #             if qualifier == 'stream':
-        #                 argument = arguments[0]
-        #                 if BaseParser.is_member_reference(argument):
-        #                     pass
-        #                 elif BaseParser.is_cast(argument):
-        #                     if not argument.type.name == 'int':
-        #                         print('+' * 20, v.get_line(item))
-        #                         print(item)
-        #                     pass
-        #                 elif BaseParser.is_this(argument):
-        #                     # print(v.get_line(item), item)
-        #                     pass
-        #                 elif BaseParser.is_ternary_expression(argument):
-        #                     if BaseParser.is_literal(argument.if_false):
-        #                         argument = argument.if_true
-        #                     else:
-        #                         argument = argument.if_false
-        #                     # print(v.get_line(item), argument)
-        #                     pass
-        #                 elif BaseParser.is_literal(argument):
-        #                     # print(v.get_line(item))
-        #                     pass
-
-
-        # return
         # fqn = 'org.telegram.tgnet.TLRPC.TL_messagePeerReaction_layer144'
         fqn = 'org.telegram.tgnet.TLRPC.Update'
-        # obj = ClassParser(fqn, parser, parser.logger_level)
-        # for item in obj.user_class.methods:
-        #     print(item.name)
-        # res = obj.methods['serializeToStream']
-        # print(res)
-        # for i, item in enumerate(res.body):
-        #     print(i, item, dir(item), item.__firstlineno__, item._position)
-        #     if isinstance(item, IfStatement):
-        #         print(item.then_statement)
-        # return
         content = parser.get_class_struct(fqn)
         if content:
             print(content[0])
