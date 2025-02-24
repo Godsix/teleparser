@@ -16,6 +16,14 @@ from .models import (Chats, Dialogs, EncChats, MediaV4, MessagesV2,
 class TelegramDB(BaseDB):
 
     @lru_cache()
+    def get_blob_columns(self, table_name):
+        columns = self.inspect.get_columns(table_name)
+        result = {x['name']: x for x in columns if isinstance(x['type'], BLOB)}
+        if 'unread' in result:
+            del result['unread']
+        return result
+
+    @lru_cache()
     def get_table_model(self, name, blob=True):
         pattern = re.compile(rf'{name}(?:$|_v\d+)', re.M)
         for table in self.inspect.get_table_names():
@@ -24,12 +32,8 @@ class TelegramDB(BaseDB):
                 break  # pylint: disable=E501
         else:
             return None
-        columns = self.inspect.get_columns(table_name)
-        attrs = {}
-        for column in columns:
-            if isinstance(column['type'], BLOB):
-                col_name = column['name']
-                attrs[f'{col_name}_blob'] = property(get_parser(col_name))
+        columns = self.get_blob_columns(table_name)
+        attrs = {f'{x}_blob': property(get_parser(x)) for x in columns}
         return self.get_model(table_name, parents=[TModel], attrs=attrs)
 
     def get_chats(self) -> list:

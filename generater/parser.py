@@ -1190,6 +1190,10 @@ class ClassParser(BaseParser):
                                                    'content': content}))
 
             else:
+                # if 'sname' in self.struct:
+                #     del self.struct['sname']
+                # if 'signature' in self.struct:
+                #     del self.struct['signature']
                 content = get_struct_content(self.info)
                 if len(self.flags) > 0:
                     content = autopep8.fix_code(content,
@@ -1872,9 +1876,9 @@ def test3():
 
 
 def main():
-    # test()
+    test()
     # test2()
-    test3()
+    # test3()
 
 
 # ------------------------------------------------------------------------------

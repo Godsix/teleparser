@@ -51,37 +51,59 @@ structures = lru_cache()
 # -----------------------------------------------------------------------------
 
 class TLStruct:  # pylint: disable=C0103
-    LAYER = 176
+    LAYER = 198
 
     def __init__(self):
         setGlobalPrintFullStrings(True)
         setGlobalPrintPrivateEntries(False)
 
     def parse_blob(self, data):
-        pblob = None
-        signature = int.from_bytes(data[:4], 'little')
-        struct_name = f'struct_0x{signature:08x}'
-        if hasattr(self, struct_name):
-            blob_parser = getattr(self, struct_name)
-            name = INFO.get(signature)
-            if blob_parser:
-                pblob = blob_parser().parse(data)
-                data_len = len(data)
-                object_len = pblob._io.tell()
-                if data_len != object_len:
-                    logger.error('Not all data parsed for object: %s [0x%x], '
-                                 'input: %d, parsed: %d, missed: %s',
-                                 name, signature, data_len, object_len,
-                                 data[object_len:])
-                    # raise ValueError('Not all data parsed for object')
+        result = self.parse(data)
+        if not result:
+            return None
+        elif len(result) == 1:
+            return result[0]
         else:
-            try:
-                pblob_parser = self.struct_list()
-                pblob = pblob_parser.parse(data)
-            except Exception:
-                print(f'unknown signature: 0x{signature:08x}')
-                # raise ValueError('unknown signature')
-        return pblob
+            return result
+
+    def get_parser(self, data):
+        signature = int.from_bytes(data[:4], 'little')
+        return getattr(self, f'struct_0x{signature:08x}', None)
+
+    def parse(self, data):
+        result = []
+        parser = self.get_parser(data)
+        if parser is None:
+            count = int.from_bytes(data[:4], 'little')
+            unparsed = data[4:]
+            parsed_len = 4
+        else:
+            count = 256
+            unparsed = data
+            parsed_len = 0
+        data_len = len(data)
+        for _ in range(count):
+            parser = self.get_parser(unparsed)
+            if parser:
+                ret = parser().parse(unparsed)
+                result.append(ret)
+                parsed_len += ret._io.tell()
+                if data_len == parsed_len:
+                    break
+                unparsed = data[parsed_len:]
+            else:
+                signature = int.from_bytes(unparsed[:4], 'little')
+                if signature in INFO:
+                    name = INFO.get(signature)
+                    logger.error('Not all data parsed for object: %s [0x%08x], '
+                                'input: %d, parsed: %d, missed: %s',
+                                name, signature, data_len, parsed_len,
+                                data[parsed_len:])
+                else:
+                    logger.error('unknown signature: 0x%08x,'
+                                 'data: %s',
+                                 signature, data)
+        return result
 
     # ---------------------------- Common start -------------------------------
 
@@ -92,22 +114,6 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0x1cb5c415, Int32ul)),
             'count' / Int32ul,
             'content' / Array(this.count, datatype))
-
-    @structures
-    def struct_list(self):
-        # pylint: disable=C0301
-        tag_map = {
-            0xc077ec01: LazyBound(self.struct_0xc077ec01),
-            0x40d13c0e: LazyBound(self.struct_0x40d13c0e),
-            0xfb197a65: LazyBound(self.struct_0xfb197a65),
-            0x2b085862: LazyBound(self.struct_0x2b085862),
-        }
-        return Struct(
-            'sname' / Computed('list'),
-            'count' / Int32ul,
-            'content' / Array(this.count, Struct(
-                '_signature' / Peek(Int32ul),
-                'item' / Switch(this._signature, tag_map))))
 
     # ---------------------------- Common end ---------------------------------
 
@@ -15837,12 +15843,31 @@ class TLStruct:  # pylint: disable=C0103
             'request_chat_title' / If(this.flags.has_request_chat_title, TString),
             'request_chat_date' / If(this.flags.has_request_chat_title, TTimestamp))
 
+    @constructor(0x733f2961, 'peer_settings_layer134')
+    def struct_0x733f2961(self):
+        return Struct(
+            'sname' / Computed('peer_settings_layer134'),
+            'signature' / Hex(Const(0x733f2961, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_report_spam=1,
+                                is_add_contact=2,
+                                is_block_contact=4,
+                                is_share_contact=8,
+                                is_need_contacts_exception=16,
+                                is_report_geo=32,
+                                is_autoarchived=128,
+                                is_invite_members=256,
+                                is_request_chat_broadcast=1024,
+                                has_geo_distance=64),
+            'geo_distance' / If(this.flags.has_geo_distance, Int32ul))
+
     @structures
     def peer_settings_structures(self, name):
         # pylint: disable=C0301
         tag_map = {
             0xacd66c5e: LazyBound(self.struct_0xacd66c5e),
-            0xa518110d: LazyBound(self.struct_0xa518110d)
+            0xa518110d: LazyBound(self.struct_0xa518110d),
+            0x733f2961: LazyBound(self.struct_0x733f2961)
         }
         return Struct(
             '_signature' / Peek(Int32ul),
@@ -29378,8 +29403,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xcacacaca, 'messages_send_encrypted_multi_media')
     def struct_0xcacacaca(self):
-        return Struct(
-            'sname' / Computed('messages_send_encrypted_multi_media'))
+        return []
 
     @constructor(0x44fa7a15, 'messages_send_encrypted')
     def struct_0x44fa7a15(self):
