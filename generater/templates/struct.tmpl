@@ -6,7 +6,7 @@
             {% if key in flags %}
             {{-','}}
             {% for subkey, subvalue in flags[key].items() %}
-                                {{subkey}}={{subvalue-}}
+                           {{' ' * key | length }}{{subkey}}={{subvalue-}}
                                 {% if not loop.last %}
                                 {{-','}}
                                 {% else %}

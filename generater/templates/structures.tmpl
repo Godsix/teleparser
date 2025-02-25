@@ -1,6 +1,5 @@
     @structures
     def {{sname}}_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             {% for item in switch %}
             {{item}}: LazyBound(self.struct_{{item}}){{',' if not loop.last else ''}}

@@ -8,13 +8,20 @@ import os.path as osp
 from datetime import datetime
 import getpass
 from .utils import load_data, save_code
-from .common import STRUCT_TEMPLATE, MODEL_TEMPLATE, STRUCTURES_TEMPLATE
+from .common import (STRUCT_TEMPLATE, MODEL_TEMPLATE, STRUCTURES_TEMPLATE,
+                     SIMPLE_STRUCT_TEMPLATE)
 
 
 def get_struct_content(data):
     if isinstance(data, (str, bytes)) and osp.isfile(data):
         data = load_data(data)
     return STRUCT_TEMPLATE.render(data)
+
+
+def get_simple_struct_content(data):
+    if isinstance(data, (str, bytes)) and osp.isfile(data):
+        data = load_data(data)
+    return SIMPLE_STRUCT_TEMPLATE.render(data)
 
 
 def generate_struct_code(path, data, **kwargs):

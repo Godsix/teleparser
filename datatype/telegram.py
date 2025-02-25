@@ -129,15 +129,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xcc4d9ecc, 'account_business_away_message_schedule_custom')
     def struct_0xcc4d9ecc(self):
-        return Struct(
-            'sname' / Computed('account_business_away_message_schedule_custom'),
-            'signature' / Hex(Const(0xcc4d9ecc, Int32ul)),
+        return (
             'start_date' / TTimestamp,
             'end_date' / TTimestamp)
 
     @structures
     def account_business_away_message_schedule_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xc9b9e2b9: LazyBound(self.struct_0xc9b9e2b9),
             0xc3f2f501: LazyBound(self.struct_0xc3f2f501),
@@ -155,15 +152,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe1bb0d61, 'account_email_verified_login')
     def struct_0xe1bb0d61(self):
-        return Struct(
-            'sname' / Computed('account_email_verified_login'),
-            'signature' / Hex(Const(0xe1bb0d61, Int32ul)),
+        return (
             'email' / TString,
             'sent_code' / self.auth_sent_code_structures('sent_code'))
 
     @structures
     def account_email_verified_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x2b96cd1b: LazyBound(self.struct_0x2b96cd1b),
             0xe1bb0d61: LazyBound(self.struct_0xe1bb0d61)
@@ -180,15 +174,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x90c467d1, 'account_emoji_statuses')
     def struct_0x90c467d1(self):
-        return Struct(
-            'sname' / Computed('account_emoji_statuses'),
-            'signature' / Hex(Const(0x90c467d1, Int32ul)),
+        return (
             'hash' / Int64ul,
             'statuses' / self.vector(self.emoji_status_structures('statuses'), 'statuses'))
 
     @structures
     def account_emoji_statuses_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xd08ce645: LazyBound(self.struct_0xd08ce645),
             0x90c467d1: LazyBound(self.struct_0x90c467d1)
@@ -247,7 +238,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def account_password_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x957b50fb: LazyBound(self.struct_0x957b50fb),
             0x185b184f: LazyBound(self.struct_0x185b184f)
@@ -268,7 +258,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def account_reaction_notifications_from_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xbac3a61a: LazyBound(self.struct_0xbac3a61a),
             0x4b9e22a0: LazyBound(self.struct_0x4b9e22a0)
@@ -293,7 +282,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def account_reset_password_result_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xe3779861: LazyBound(self.struct_0xe3779861),
             0xe9effc7d: LazyBound(self.struct_0xe9effc7d),
@@ -315,7 +303,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def account_saved_ringtone_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x1f307eb7: LazyBound(self.struct_0x1f307eb7),
             0xb7263f6d: LazyBound(self.struct_0xb7263f6d)
@@ -332,15 +319,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc1e92cc5, 'account_saved_ringtones')
     def struct_0xc1e92cc5(self):
-        return Struct(
-            'sname' / Computed('account_saved_ringtones'),
-            'signature' / Hex(Const(0xc1e92cc5, Int32ul)),
+        return (
             'hash' / Int64ul,
             'ringtones' / self.vector(self.document_structures('ringtones'), 'ringtones'))
 
     @structures
     def account_saved_ringtones_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xfbf6e8b1: LazyBound(self.struct_0xfbf6e8b1),
             0xc1e92cc5: LazyBound(self.struct_0xc1e92cc5)
@@ -353,9 +337,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x9a3d8c6d, 'account_themes')
     def struct_0x9a3d8c6d(self):
-        return Struct(
-            'sname' / Computed('account_themes'),
-            'signature' / Hex(Const(0x9a3d8c6d, Int32ul)),
+        return (
             'hash' / Int64ul,
             'themes' / self.vector(self.theme_structures('themes'), 'themes'))
 
@@ -365,7 +347,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def account_themes_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x9a3d8c6d: LazyBound(self.struct_0x9a3d8c6d),
             0xf41eb622: LazyBound(self.struct_0xf41eb622)
@@ -382,15 +363,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xcdc3858c, 'account_wall_papers')
     def struct_0xcdc3858c(self):
-        return Struct(
-            'sname' / Computed('account_wall_papers'),
-            'signature' / Hex(Const(0xcdc3858c, Int32ul)),
+        return (
             'hash' / Int64ul,
             'wallpapers' / self.vector(self.wall_paper_structures('wallpapers'), 'wallpapers'))
 
     @structures
     def account_wall_papers_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x1c199183: LazyBound(self.struct_0x1c199183),
             0xcdc3858c: LazyBound(self.struct_0xcdc3858c)
@@ -445,7 +423,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def attach_menu_bot_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xd90d8dfe: LazyBound(self.struct_0xd90d8dfe),
             0xc8aa2cd2: LazyBound(self.struct_0xc8aa2cd2),
@@ -463,16 +440,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3c4301c0, 'attach_menu_bots')
     def struct_0x3c4301c0(self):
-        return Struct(
-            'sname' / Computed('attach_menu_bots'),
-            'signature' / Hex(Const(0x3c4301c0, Int32ul)),
+        return (
             'hash' / Int64ul,
             'bots' / self.vector(self.attach_menu_bot_structures('bots'), 'bots'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @structures
     def attach_menu_bots_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xf1d88a5c: LazyBound(self.struct_0xf1d88a5c),
             0x3c4301c0: LazyBound(self.struct_0x3c4301c0)
@@ -505,7 +479,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def attach_menu_peer_type_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xc32bfa1a: LazyBound(self.struct_0xc32bfa1a),
             0xf146d31f: LazyBound(self.struct_0xf146d31f),
@@ -525,9 +498,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf9e35055, 'audio_layer45')
     def struct_0xf9e35055(self):
-        return Struct(
-            'sname' / Computed('audio_layer45'),
-            'signature' / Hex(Const(0xf9e35055, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'date' / TTimestamp,
@@ -538,9 +509,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x427425e7, 'audio_old')
     def struct_0x427425e7(self):
-        return Struct(
-            'sname' / Computed('audio_old'),
-            'signature' / Hex(Const(0x427425e7, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'user_id' / Int32ul,
@@ -551,9 +520,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x555555f6, 'audio_encrypted')
     def struct_0x555555f6(self):
-        return Struct(
-            'sname' / Computed('audio_encrypted'),
-            'signature' / Hex(Const(0x555555f6, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'user_id' / Int32ul,
@@ -566,9 +533,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc7ac6496, 'audio_old2')
     def struct_0xc7ac6496(self):
-        return Struct(
-            'sname' / Computed('audio_old2'),
-            'signature' / Hex(Const(0xc7ac6496, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'user_id' / Int32ul,
@@ -580,7 +545,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def audio_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x586988d8: LazyBound(self.struct_0x586988d8),
             0xf9e35055: LazyBound(self.struct_0xf9e35055),
@@ -631,7 +595,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def auth_authorization_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x44747e9a: LazyBound(self.struct_0x44747e9a),
             0x33fb7bb8: LazyBound(self.struct_0x33fb7bb8),
@@ -665,7 +628,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def auth_code_type_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x72a3158c: LazyBound(self.struct_0x72a3158c),
             0x741cd3e3: LazyBound(self.struct_0x741cd3e3),
@@ -681,17 +643,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x629f1980, 'auth_login_token')
     def struct_0x629f1980(self):
-        return Struct(
-            'sname' / Computed('auth_login_token'),
-            'signature' / Hex(Const(0x629f1980, Int32ul)),
+        return (
             'expires' / Int32ul,
             'token' / TBytes)
 
     @constructor(0x068e9916, 'auth_login_token_migrate_to')
     def struct_0x068e9916(self):
-        return Struct(
-            'sname' / Computed('auth_login_token_migrate_to'),
-            'signature' / Hex(Const(0x068e9916, Int32ul)),
+        return (
             'dc_id' / Int32ul,
             'token' / TBytes)
 
@@ -701,7 +659,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def auth_login_token_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x629f1980: LazyBound(self.struct_0x629f1980),
             0x068e9916: LazyBound(self.struct_0x068e9916),
@@ -732,7 +689,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def auth_sent_code_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x2390fe44: LazyBound(self.struct_0x2390fe44),
             0x5e002502: LazyBound(self.struct_0x5e002502)
@@ -781,9 +737,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x82006484, 'auth_sent_code_type_missed_call')
     def struct_0x82006484(self):
-        return Struct(
-            'sname' / Computed('auth_sent_code_type_missed_call'),
-            'signature' / Hex(Const(0x82006484, Int32ul)),
+        return (
             'prefix' / TString,
             'length' / Int32ul)
 
@@ -793,9 +747,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xd9565c39, 'auth_sent_code_type_fragment_sms')
     def struct_0xd9565c39(self):
-        return Struct(
-            'sname' / Computed('auth_sent_code_type_fragment_sms'),
-            'signature' / Hex(Const(0xd9565c39, Int32ul)),
+        return (
             'url' / TString,
             'length' / Int32ul)
 
@@ -834,7 +786,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def auth_sent_code_type_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x3dbb5986: LazyBound(self.struct_0x3dbb5986),
             0x5353e5a7: LazyBound(self.struct_0x5353e5a7),
@@ -876,7 +827,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def base_theme_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x5b11125a: LazyBound(self.struct_0x5b11125a),
             0xb7b31ea8: LazyBound(self.struct_0xb7b31ea8),
@@ -900,7 +850,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def bool_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x997275b5: LazyBound(self.struct_0x997275b5),
             0xbc799737: LazyBound(self.struct_0xbc799737)
@@ -933,7 +882,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def bot_app_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x5da674b7: LazyBound(self.struct_0x5da674b7),
             0x95fcd1d6: LazyBound(self.struct_0x95fcd1d6)
@@ -946,9 +894,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe4169b5d, 'bot_info_layer140')
     def struct_0xe4169b5d(self):
-        return Struct(
-            'sname' / Computed('bot_info_layer140'),
-            'signature' / Hex(Const(0xe4169b5d, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'description' / TString,
             'commands' / self.vector(self.struct_0xc27ac8c7(), 'commands'),
@@ -960,18 +906,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x98e81d3a, 'bot_info_layer131')
     def struct_0x98e81d3a(self):
-        return Struct(
-            'sname' / Computed('bot_info_layer131'),
-            'signature' / Hex(Const(0x98e81d3a, Int32ul)),
+        return (
             'user_id' / Int32ul,
             'description' / TString,
             'commands' / self.vector(self.struct_0xc27ac8c7(), 'commands'))
 
     @constructor(0x09cf585d, 'bot_info_layer48')
     def struct_0x09cf585d(self):
-        return Struct(
-            'sname' / Computed('bot_info_layer48'),
-            'signature' / Hex(Const(0x09cf585d, Int32ul)),
+        return (
             'user_id' / Int32ul,
             'version' / Int32ul,
             'restriction_reason' / TString,
@@ -980,9 +922,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1b74b335, 'bot_info_layer139')
     def struct_0x1b74b335(self):
-        return Struct(
-            'sname' / Computed('bot_info_layer139'),
-            'signature' / Hex(Const(0x1b74b335, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'description' / TString,
             'commands' / self.vector(self.struct_0xc27ac8c7(), 'commands'))
@@ -1081,7 +1021,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def bot_info_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xe4169b5d: LazyBound(self.struct_0xe4169b5d),
             0xbb2e37ce: LazyBound(self.struct_0xbb2e37ce),
@@ -1262,7 +1201,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def bot_inline_message_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x4366232e: LazyBound(self.struct_0x4366232e),
             0x8a86659c: LazyBound(self.struct_0x8a86659c),
@@ -1323,7 +1261,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def bot_inline_result_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x11965f3a: LazyBound(self.struct_0x11965f3a),
             0x17db940b: LazyBound(self.struct_0x17db940b)
@@ -1336,9 +1273,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc7b57ce6, 'bot_menu_button')
     def struct_0xc7b57ce6(self):
-        return Struct(
-            'sname' / Computed('bot_menu_button'),
-            'signature' / Hex(Const(0xc7b57ce6, Int32ul)),
+        return (
             'text' / TString,
             'url' / TString)
 
@@ -1352,7 +1287,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def bot_menu_button_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xc7b57ce6: LazyBound(self.struct_0xc7b57ce6),
             0x7533a588: LazyBound(self.struct_0x7533a588),
@@ -1377,16 +1311,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x8438f1c6, 'broadcast_revenue_balances_layer186')
     def struct_0x8438f1c6(self):
-        return Struct(
-            'sname' / Computed('broadcast_revenue_balances_layer186'),
-            'signature' / Hex(Const(0x8438f1c6, Int32ul)),
+        return (
             'current_balance' / Int64ul,
             'available_balance' / Int64ul,
             'overall_revenue' / Int64ul)
 
     @structures
     def broadcast_revenue_balances_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xc3ff71e7: LazyBound(self.struct_0xc3ff71e7),
             0x8438f1c6: LazyBound(self.struct_0x8438f1c6)
@@ -1403,17 +1334,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb1c3caa7, 'channel_admin_log_event_action_change_sticker_set')
     def struct_0xb1c3caa7(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_change_sticker_set'),
-            'signature' / Hex(Const(0xb1c3caa7, Int32ul)),
+        return (
             'prev_stickerset' / self.input_sticker_set_structures('prev_stickerset'),
             'new_stickerset' / self.input_sticker_set_structures('new_stickerset'))
 
     @constructor(0x46d840ab, 'channel_admin_log_event_action_change_emoji_sticker_set')
     def struct_0x46d840ab(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_change_emoji_sticker_set'),
-            'signature' / Hex(Const(0x46d840ab, Int32ul)),
+        return (
             'prev_stickerset' / self.input_sticker_set_structures('prev_stickerset'),
             'new_stickerset' / self.input_sticker_set_structures('new_stickerset'))
 
@@ -1423,17 +1350,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x2df5fc0a, 'channel_admin_log_event_action_default_banned_rights')
     def struct_0x2df5fc0a(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_default_banned_rights'),
-            'signature' / Hex(Const(0x2df5fc0a, Int32ul)),
+        return (
             'prev_banned_rights' / self.struct_0x9f120418(),
             'new_banned_rights' / self.struct_0x9f120418())
 
     @constructor(0xfe69018d, 'channel_admin_log_event_action_change_theme')
     def struct_0xfe69018d(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_change_theme'),
-            'signature' / Hex(Const(0xfe69018d, Int32ul)),
+        return (
             'prev_value' / TString,
             'new_value' / TString)
 
@@ -1443,57 +1366,43 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x709b2405, 'channel_admin_log_event_action_edit_message')
     def struct_0x709b2405(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_edit_message'),
-            'signature' / Hex(Const(0x709b2405, Int32ul)),
+        return (
             'prev_message' / self.message_structures('prev_message'),
             'new_message' / self.message_structures('new_message'))
 
     @constructor(0xe90ebb59, 'channel_admin_log_event_action_exported_invite_edit')
     def struct_0xe90ebb59(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_exported_invite_edit'),
-            'signature' / Hex(Const(0xe90ebb59, Int32ul)),
+        return (
             'prev_invite' / self.exported_chat_invite_structures('prev_invite'),
             'new_invite' / self.exported_chat_invite_structures('new_invite'))
 
     @constructor(0x6a4afc38, 'channel_admin_log_event_action_change_username')
     def struct_0x6a4afc38(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_change_username'),
-            'signature' / Hex(Const(0x6a4afc38, Int32ul)),
+        return (
             'prev_value' / TString,
             'new_value' / TString)
 
     @constructor(0x0e6b76ae, 'channel_admin_log_event_action_change_location')
     def struct_0x0e6b76ae(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_change_location'),
-            'signature' / Hex(Const(0x0e6b76ae, Int32ul)),
+        return (
             'prev_value' / self.channel_location_structures('prev_value'),
             'new_value' / self.channel_location_structures('new_value'))
 
     @constructor(0x434bd2af, 'channel_admin_log_event_action_change_photo')
     def struct_0x434bd2af(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_change_photo'),
-            'signature' / Hex(Const(0x434bd2af, Int32ul)),
+        return (
             'prev_photo' / self.photo_structures('prev_photo'),
             'new_photo' / self.photo_structures('new_photo'))
 
     @constructor(0xd5676710, 'channel_admin_log_event_action_participant_toggle_admin')
     def struct_0xd5676710(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_participant_toggle_admin'),
-            'signature' / Hex(Const(0xd5676710, Int32ul)),
+        return (
             'prev_participant' / self.channel_participant_structures('prev_participant'),
             'new_participant' / self.channel_participant_structures('new_participant'))
 
     @constructor(0x53909779, 'channel_admin_log_event_action_toggle_slow_mode')
     def struct_0x53909779(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_toggle_slow_mode'),
-            'signature' / Hex(Const(0x53909779, Int32ul)),
+        return (
             'prev_value' / Int32ul,
             'new_value' / Int32ul)
 
@@ -1532,9 +1441,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf06fe208, 'channel_admin_log_event_action_edit_topic')
     def struct_0xf06fe208(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_edit_topic'),
-            'signature' / Hex(Const(0xf06fe208, Int32ul)),
+        return (
             'prev_topic' / self.forum_topic_structures('prev_topic'),
             'new_topic' / self.forum_topic_structures('new_topic'))
 
@@ -1551,9 +1458,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe6d83d7e, 'channel_admin_log_event_action_participant_toggle_ban')
     def struct_0xe6d83d7e(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_participant_toggle_ban'),
-            'signature' / Hex(Const(0xe6d83d7e, Int32ul)),
+        return (
             'prev_participant' / self.channel_participant_structures('prev_participant'),
             'new_participant' / self.channel_participant_structures('new_participant'))
 
@@ -1567,9 +1472,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xafb6144a, 'channel_admin_log_event_action_participant_join_by_request')
     def struct_0xafb6144a(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_participant_join_by_request'),
-            'signature' / Hex(Const(0xafb6144a, Int32ul)),
+        return (
             'invite' / self.exported_chat_invite_structures('invite'),
             'approved_by' / Int64ul)
 
@@ -1587,9 +1490,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x55188a2e, 'channel_admin_log_event_action_change_about')
     def struct_0x55188a2e(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_change_about'),
-            'signature' / Hex(Const(0x55188a2e, Int32ul)),
+        return (
             'prev_value' / TString,
             'new_value' / TString)
 
@@ -1599,17 +1500,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xbe4e0ef8, 'channel_admin_log_event_action_change_available_reactions')
     def struct_0xbe4e0ef8(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_change_available_reactions'),
-            'signature' / Hex(Const(0xbe4e0ef8, Int32ul)),
+        return (
             'prev_value' / self.chat_reactions_structures('prev_value'),
             'new_value' / self.chat_reactions_structures('new_value'))
 
     @constructor(0x050c7ac8, 'channel_admin_log_event_action_change_linked_chat')
     def struct_0x050c7ac8(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_change_linked_chat'),
-            'signature' / Hex(Const(0x050c7ac8, Int32ul)),
+        return (
             'prev_value' / Int64ul,
             'new_value' / Int64ul)
 
@@ -1627,17 +1524,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe6dfb825, 'channel_admin_log_event_action_change_title')
     def struct_0xe6dfb825(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_change_title'),
-            'signature' / Hex(Const(0xe6dfb825, Int32ul)),
+        return (
             'prev_value' / TString,
             'new_value' / TString)
 
     @constructor(0x6e941a38, 'channel_admin_log_event_action_change_history_ttl')
     def struct_0x6e941a38(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_change_history_ttl'),
-            'signature' / Hex(Const(0x6e941a38, Int32ul)),
+        return (
             'prev_value' / Int32ul,
             'new_value' / Int32ul)
 
@@ -1647,9 +1540,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf04fb3a9, 'channel_admin_log_event_action_change_usernames')
     def struct_0xf04fb3a9(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_change_usernames'),
-            'signature' / Hex(Const(0xf04fb3a9, Int32ul)),
+        return (
             'prev_value' / self.vector(TString, 'prev_value'),
             'new_value' / self.vector(TString, 'new_value'))
 
@@ -1667,49 +1558,37 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3c2b247b, 'channel_admin_log_event_action_change_color')
     def struct_0x3c2b247b(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_change_color'),
-            'signature' / Hex(Const(0x3c2b247b, Int32ul)),
+        return (
             'prev_value' / Int32ul,
             'new_value' / Int32ul)
 
     @constructor(0x445fc434, 'channel_admin_log_event_action_change_background_emoji')
     def struct_0x445fc434(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_change_background_emoji'),
-            'signature' / Hex(Const(0x445fc434, Int32ul)),
+        return (
             'prev_value' / Int64ul,
             'new_value' / Int64ul)
 
     @constructor(0x5796e780, 'channel_admin_log_event_action_change_peer_color')
     def struct_0x5796e780(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_change_peer_color'),
-            'signature' / Hex(Const(0x5796e780, Int32ul)),
+        return (
             'prev_value' / self.struct_0xb54b5acf(),
             'new_value' / self.struct_0xb54b5acf())
 
     @constructor(0x5e477b25, 'channel_admin_log_event_action_change_profile_peer_color')
     def struct_0x5e477b25(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_change_profile_peer_color'),
-            'signature' / Hex(Const(0x5e477b25, Int32ul)),
+        return (
             'prev_value' / self.struct_0xb54b5acf(),
             'new_value' / self.struct_0xb54b5acf())
 
     @constructor(0x31bb5d52, 'channel_admin_log_event_action_change_wallpaper')
     def struct_0x31bb5d52(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_change_wallpaper'),
-            'signature' / Hex(Const(0x31bb5d52, Int32ul)),
+        return (
             'prev_value' / self.wall_paper_structures('prev_value'),
             'new_value' / self.wall_paper_structures('new_value'))
 
     @constructor(0x3ea9feb1, 'channel_admin_log_event_action_change_emoji_status')
     def struct_0x3ea9feb1(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_change_emoji_status'),
-            'signature' / Hex(Const(0x3ea9feb1, Int32ul)),
+        return (
             'prev_value' / self.emoji_status_structures('prev_value'),
             'new_value' / self.emoji_status_structures('new_value'))
 
@@ -1719,15 +1598,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x64642db3, 'channel_admin_log_event_action_participant_sub_extend')
     def struct_0x64642db3(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event_action_participant_sub_extend'),
-            'signature' / Hex(Const(0x64642db3, Int32ul)),
+        return (
             'prev_participant' / self.channel_participant_structures('prev_participant'),
             'new_participant' / self.channel_participant_structures('new_participant'))
 
     @structures
     def channel_admin_log_event_action_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xdb9f9140: LazyBound(self.struct_0xdb9f9140),
             0xb1c3caa7: LazyBound(self.struct_0xb1c3caa7),
@@ -1794,15 +1670,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x209b82db, 'channel_location')
     def struct_0x209b82db(self):
-        return Struct(
-            'sname' / Computed('channel_location'),
-            'signature' / Hex(Const(0x209b82db, Int32ul)),
+        return (
             'geo_point' / self.geo_point_structures('geo_point'),
             'address' / TString)
 
     @structures
     def channel_location_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xbfb5ad8b: LazyBound(self.struct_0xbfb5ad8b),
             0x209b82db: LazyBound(self.struct_0x209b82db)
@@ -1828,7 +1701,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def channel_messages_filter_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x94d42ee7: LazyBound(self.struct_0x94d42ee7),
             0xcd77d957: LazyBound(self.struct_0xcd77d957)
@@ -1853,9 +1725,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x15ebac1d, 'channel_participant_layer131')
     def struct_0x15ebac1d(self):
-        return Struct(
-            'sname' / Computed('channel_participant_layer131'),
-            'signature' / Hex(Const(0x15ebac1d, Int32ul)),
+        return (
             'peer_user_id' / Int32ul,
             'date' / TTimestamp)
 
@@ -1886,9 +1756,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa3289a6d, 'channel_participant_self_layer131')
     def struct_0xa3289a6d(self):
-        return Struct(
-            'sname' / Computed('channel_participant_self_layer131'),
-            'signature' / Hex(Const(0xa3289a6d, Int32ul)),
+        return (
             'peer_user_id' / Int32ul,
             'inviter_id' / Int32ul,
             'date' / TTimestamp)
@@ -1934,9 +1802,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc00c07c0, 'channel_participant_layer185')
     def struct_0xc00c07c0(self):
-        return Struct(
-            'sname' / Computed('channel_participant_layer185'),
-            'signature' / Hex(Const(0xc00c07c0, Int32ul)),
+        return (
             'peer_user_id' / Int64ul,
             'date' / TTimestamp)
 
@@ -2006,9 +1872,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x28a8bc67, 'channel_participant_self_layer133')
     def struct_0x28a8bc67(self):
-        return Struct(
-            'sname' / Computed('channel_participant_self_layer133'),
-            'signature' / Hex(Const(0x28a8bc67, Int32ul)),
+        return (
             'peer_user_id' / Int64ul,
             'inviter_id' / Int64ul,
             'date' / TTimestamp)
@@ -2027,9 +1891,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x98192d61, 'channel_participant_editor_layer67')
     def struct_0x98192d61(self):
-        return Struct(
-            'sname' / Computed('channel_participant_editor_layer67'),
-            'signature' / Hex(Const(0x98192d61, Int32ul)),
+        return (
             'peer_user_id' / Int32ul,
             'inviter_id' / Int32ul,
             'date' / TTimestamp)
@@ -2070,25 +1932,20 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x91057fef, 'channel_participant_moderator_layer67')
     def struct_0x91057fef(self):
-        return Struct(
-            'sname' / Computed('channel_participant_moderator_layer67'),
-            'signature' / Hex(Const(0x91057fef, Int32ul)),
+        return (
             'peer_user_id' / Int32ul,
             'inviter_id' / Int32ul,
             'date' / TTimestamp)
 
     @constructor(0x8cc5e69a, 'channel_participant_kicked_layer67')
     def struct_0x8cc5e69a(self):
-        return Struct(
-            'sname' / Computed('channel_participant_kicked_layer67'),
-            'signature' / Hex(Const(0x8cc5e69a, Int32ul)),
+        return (
             'peer_user_id' / Int32ul,
             'kicked_by' / Int32ul,
             'date' / TTimestamp)
 
     @structures
     def channel_participant_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x222c1886: LazyBound(self.struct_0x222c1886),
             0x15ebac1d: LazyBound(self.struct_0x15ebac1d),
@@ -2162,7 +2019,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def channel_participants_filter_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xe04b5ceb: LazyBound(self.struct_0xe04b5ceb),
             0xbb6ae88d: LazyBound(self.struct_0xbb6ae88d),
@@ -2181,9 +2037,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x9ab0feaf, 'channels_channel_participants')
     def struct_0x9ab0feaf(self):
-        return Struct(
-            'sname' / Computed('channels_channel_participants'),
-            'signature' / Hex(Const(0x9ab0feaf, Int32ul)),
+        return (
             'count' / Int32ul,
             'participants' / self.vector(self.channel_participant_structures('participants'), 'participants'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
@@ -2195,7 +2049,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def channels_channel_participants_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x9ab0feaf: LazyBound(self.struct_0x9ab0feaf),
             0xf0173fe9: LazyBound(self.struct_0xf0173fe9)
@@ -2208,9 +2061,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x846f9e42, 'channels_sponsored_message_report_result_choose_option')
     def struct_0x846f9e42(self):
-        return Struct(
-            'sname' / Computed('channels_sponsored_message_report_result_choose_option'),
-            'signature' / Hex(Const(0x846f9e42, Int32ul)),
+        return (
             'title' / TString,
             'options' / self.vector(self.struct_0x430d3150(), 'options'))
 
@@ -2224,7 +2075,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def channels_sponsored_message_report_result_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x846f9e42: LazyBound(self.struct_0x846f9e42),
             0x3e3bcf2f: LazyBound(self.struct_0x3e3bcf2f),
@@ -3442,9 +3292,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x2e02a614, 'chat_full_layer87')
     def struct_0x2e02a614(self):
-        return Struct(
-            'sname' / Computed('chat_full_layer87'),
-            'signature' / Hex(Const(0x2e02a614, Int32ul)),
+        return (
             'id' / Int32ul,
             'participants' / self.chat_participants_structures('participants'),
             'chat_photo' / self.photo_structures('chat_photo'),
@@ -4526,7 +4374,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def chat_full_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x2633421b: LazyBound(self.struct_0x2633421b),
             0xc9d31138: LazyBound(self.struct_0xc9d31138),
@@ -4688,9 +4535,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x61695cb0, 'chat_invite_peek')
     def struct_0x61695cb0(self):
-        return Struct(
-            'sname' / Computed('chat_invite_peek'),
-            'signature' / Hex(Const(0x61695cb0, Int32ul)),
+        return (
             'chat' / self.chat_structures('chat'),
             'expires' / Int32ul)
 
@@ -4700,7 +4545,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def chat_invite_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x5c9d3702: LazyBound(self.struct_0x5c9d3702),
             0xfe65389d: LazyBound(self.struct_0xfe65389d),
@@ -4717,27 +4561,21 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe2d6e436, 'chat_participant_admin_layer131')
     def struct_0xe2d6e436(self):
-        return Struct(
-            'sname' / Computed('chat_participant_admin_layer131'),
-            'signature' / Hex(Const(0xe2d6e436, Int32ul)),
+        return (
             'user_id' / Int32ul,
             'inviter_id' / Int32ul,
             'date' / TTimestamp)
 
     @constructor(0xa0933f5b, 'chat_participant_admin')
     def struct_0xa0933f5b(self):
-        return Struct(
-            'sname' / Computed('chat_participant_admin'),
-            'signature' / Hex(Const(0xa0933f5b, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'inviter_id' / Int64ul,
             'date' / TTimestamp)
 
     @constructor(0xc8d7493e, 'chat_participant_layer131')
     def struct_0xc8d7493e(self):
-        return Struct(
-            'sname' / Computed('chat_participant_layer131'),
-            'signature' / Computed(Hex(Const(0xc8d7493e, Int32ul))),
+        return (
             'user_id' / Int32ul,
             'inviter_id' / Int32ul,
             'date' / TTimestamp)
@@ -4748,9 +4586,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc02d4007, 'chat_participant')
     def struct_0xc02d4007(self):
-        return Struct(
-            'sname' / Computed('chat_participant'),
-            'signature' / Hex(Const(0xc02d4007, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'inviter_id' / Int64ul,
             'date' / TTimestamp)
@@ -4761,7 +4597,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def chat_participant_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xe2d6e436: LazyBound(self.struct_0xe2d6e436),
             0xa0933f5b: LazyBound(self.struct_0xa0933f5b),
@@ -4788,9 +4623,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3f460fed, 'chat_participants_layer131')
     def struct_0x3f460fed(self):
-        return Struct(
-            'sname' / Computed('chat_participants_layer131'),
-            'signature' / Hex(Const(0x3f460fed, Int32ul)),
+        return (
             'chat_id' / Int32ul,
             'participants' / self.vector(self.chat_participant_structures('participants'), 'participants'),
             'version' / Int32ul)
@@ -4807,18 +4640,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3cbc93f8, 'chat_participants')
     def struct_0x3cbc93f8(self):
-        return Struct(
-            'sname' / Computed('chat_participants'),
-            'signature' / Hex(Const(0x3cbc93f8, Int32ul)),
+        return (
             'chat_id' / Int64ul,
             'participants' / self.vector(self.chat_participant_structures('participants'), 'participants'),
             'version' / Int32ul)
 
     @constructor(0x7841b415, 'chat_participants_old')
     def struct_0x7841b415(self):
-        return Struct(
-            'sname' / Computed('chat_participants_old'),
-            'signature' / Hex(Const(0x7841b415, Int32ul)),
+        return (
             'chat_id' / Int32ul,
             'admin_id' / Int32ul,
             'participants' / self.vector(self.chat_participant_structures('participants'), 'participants'),
@@ -4830,7 +4659,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def chat_participants_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xfc900c2b: LazyBound(self.struct_0xfc900c2b),
             0x3f460fed: LazyBound(self.struct_0x3f460fed),
@@ -4859,9 +4687,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x475cdbd5, 'chat_photo_layer115')
     def struct_0x475cdbd5(self):
-        return Struct(
-            'sname' / Computed('chat_photo_layer115'),
-            'signature' / Hex(Const(0x475cdbd5, Int32ul)),
+        return (
             'photo_small' / self.file_location_structures('photo_small'),
             'photo_big' / self.file_location_structures('photo_big'),
             'dc_id' / Int32ul)
@@ -4872,9 +4698,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x6153276a, 'chat_photo_layer97')
     def struct_0x6153276a(self):
-        return Struct(
-            'sname' / Computed('chat_photo_layer97'),
-            'signature' / Hex(Const(0x6153276a, Int32ul)),
+        return (
             'photo_small' / self.file_location_structures('photo_small'),
             'photo_big' / self.file_location_structures('photo_big'))
 
@@ -4904,7 +4728,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def chat_photo_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x1c6e1c11: LazyBound(self.struct_0x1c6e1c11),
             0x475cdbd5: LazyBound(self.struct_0x475cdbd5),
@@ -4937,7 +4760,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def chat_reactions_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x661d4037: LazyBound(self.struct_0x661d4037),
             0xeafc32bc: LazyBound(self.struct_0xeafc32bc),
@@ -4951,9 +4773,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x2d85832c, 'channel_forbidden_layer52')
     def struct_0x2d85832c(self):
-        return Struct(
-            'sname' / Computed('channel_forbidden_layer52'),
-            'signature' / Hex(Const(0x2d85832c, Int32ul)),
+        return (
             'id' / Int32ul,
             'access_hash' / Int64ul,
             'title' / TString)
@@ -4964,9 +4784,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x07328bdb, 'chat_forbidden_layer131')
     def struct_0x07328bdb(self):
-        return Struct(
-            'sname' / Computed('chat_forbidden_layer131'),
-            'signature' / Hex(Const(0x07328bdb, Int32ul)),
+        return (
             'id' / Int32ul,
             'title' / TString)
 
@@ -5970,18 +5788,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xfb0ccc41, 'chat_forbidden_old')
     def struct_0xfb0ccc41(self):
-        return Struct(
-            'sname' / Computed('chat_forbidden_old'),
-            'signature' / Hex(Const(0xfb0ccc41, Int32ul)),
+        return (
             'id' / Int32ul,
             'title' / TString,
             'date' / TTimestamp)
 
     @constructor(0x6e9c9bc7, 'chat_old')
     def struct_0x6e9c9bc7(self):
-        return Struct(
-            'sname' / Computed('chat_old'),
-            'signature' / Hex(Const(0x6e9c9bc7, Int32ul)),
+        return (
             'id' / Int32ul,
             'title' / TString,
             'photo' / self.chat_photo_structures('photo'),
@@ -5992,15 +5806,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x6592a1a7, 'chat_forbidden')
     def struct_0x6592a1a7(self):
-        return Struct(
-            'sname' / Computed('chat_forbidden'),
-            'signature' / Hex(Const(0x6592a1a7, Int32ul)),
+        return (
             'id' / Int64ul,
             'title' / TString)
 
     @structures
     def chat_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x2d85832c: LazyBound(self.struct_0x2d85832c),
             0x9ba2d800: LazyBound(self.struct_0x9ba2d800),
@@ -6044,9 +5855,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xfa87f659, 'chatlists_chatlist_invite_already')
     def struct_0xfa87f659(self):
-        return Struct(
-            'sname' / Computed('chatlists_chatlist_invite_already'),
-            'signature' / Hex(Const(0xfa87f659, Int32ul)),
+        return (
             'filter_id' / Int32ul,
             'missing_peers' / self.vector(self.peer_structures('missing_peers'), 'missing_peers'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
@@ -6067,7 +5876,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def chatlist_chatlist_invite_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xfa87f659: LazyBound(self.struct_0xfa87f659),
             0x1dcd839d: LazyBound(self.struct_0x1dcd839d)
@@ -6092,7 +5900,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def contact_link_layer101_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xfeedd3ad: LazyBound(self.struct_0xfeedd3ad),
             0xd502c2d0: LazyBound(self.struct_0xd502c2d0),
@@ -6106,18 +5913,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x0ade1591, 'contacts_blocked')
     def struct_0x0ade1591(self):
-        return Struct(
-            'sname' / Computed('contacts_blocked'),
-            'signature' / Hex(Const(0x0ade1591, Int32ul)),
+        return (
             'blocked' / self.vector(self.struct_0xe8fd8014(), 'blocked'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0xe1664194, 'contacts_blocked_slice')
     def struct_0xe1664194(self):
-        return Struct(
-            'sname' / Computed('contacts_blocked_slice'),
-            'signature' / Hex(Const(0xe1664194, Int32ul)),
+        return (
             'count' / Int32ul,
             'blocked' / self.vector(self.struct_0xe8fd8014(), 'blocked'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
@@ -6125,7 +5928,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def contacts_blocked_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x0ade1591: LazyBound(self.struct_0x0ade1591),
             0xe1664194: LazyBound(self.struct_0xe1664194)
@@ -6142,16 +5944,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xeae87e42, 'contacts_contacts')
     def struct_0xeae87e42(self):
-        return Struct(
-            'sname' / Computed('contacts_contacts'),
-            'signature' / Hex(Const(0xeae87e42, Int32ul)),
+        return (
             'contacts' / self.vector(self.struct_0x145ade0b(), 'contacts'),
             'saved_count' / Int32ul,
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @structures
     def contacts_contacts_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xb74ba9d2: LazyBound(self.struct_0xb74ba9d2),
             0xeae87e42: LazyBound(self.struct_0xeae87e42)
@@ -6164,9 +5963,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x70b772a8, 'contacts_top_peers')
     def struct_0x70b772a8(self):
-        return Struct(
-            'sname' / Computed('contacts_top_peers'),
-            'signature' / Hex(Const(0x70b772a8, Int32ul)),
+        return (
             'categories' / self.vector(self.struct_0xfb834291(), 'categories'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
@@ -6181,7 +5978,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def contacts_top_peers_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x70b772a8: LazyBound(self.struct_0x70b772a8),
             0xb52c939d: LazyBound(self.struct_0xb52c939d),
@@ -6207,9 +6003,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xec2e0b9b, 'decrypted_message_action_commit_key')
     def struct_0xec2e0b9b(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_action_commit_key'),
-            'signature' / Hex(Const(0xec2e0b9b, Int32ul)),
+        return (
             'exchange_id' / Int64ul,
             'key_fingerprint' / Int64ul)
 
@@ -6227,9 +6021,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x6fe1735b, 'decrypted_message_action_accept_key')
     def struct_0x6fe1735b(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_action_accept_key'),
-            'signature' / Hex(Const(0x6fe1735b, Int32ul)),
+        return (
             'exchange_id' / Int64ul,
             'g_b' / TBytes,
             'key_fingerprint' / Int64ul)
@@ -6240,17 +6032,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x511110b0, 'decrypted_message_action_resend')
     def struct_0x511110b0(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_action_resend'),
-            'signature' / Hex(Const(0x511110b0, Int32ul)),
+        return (
             'start_seq_no' / Int32ul,
             'end_seq_no' / Int32ul)
 
     @constructor(0xf3c9611b, 'decrypted_message_action_request_key')
     def struct_0xf3c9611b(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_action_request_key'),
-            'signature' / Hex(Const(0xf3c9611b, Int32ul)),
+        return (
             'exchange_id' / Int64ul,
             'g_a' / TBytes)
 
@@ -6264,7 +6052,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def decrypted_message_action_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xa1733aec: LazyBound(self.struct_0xa1733aec),
             0xf3048883: LazyBound(self.struct_0xf3048883),
@@ -6288,9 +6075,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x57e0a9cb, 'decrypted_message_media_audio')
     def struct_0x57e0a9cb(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_media_audio'),
-            'signature' / Hex(Const(0x57e0a9cb, Int32ul)),
+        return (
             'duration' / Int32ul,
             'mime_type' / TString,
             'size' / Int32ul,
@@ -6299,17 +6084,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x35480a59, 'decrypted_message_media_geo_point')
     def struct_0x35480a59(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_media_geo_point'),
-            'signature' / Hex(Const(0x35480a59, Int32ul)),
+        return (
             'lat' / Double,
-            '_long' / Double)
+            'long' / Double)
 
     @constructor(0x588a0a97, 'decrypted_message_media_contact')
     def struct_0x588a0a97(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_media_contact'),
-            'signature' / Hex(Const(0x588a0a97, Int32ul)),
+        return (
             'phone_number' / TString,
             'first_name' / TString,
             'last_name' / TString,
@@ -6321,9 +6102,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x6abd9782, 'decrypted_message_media_document')
     def struct_0x6abd9782(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_media_document'),
-            'signature' / Hex(Const(0x6abd9782, Int32ul)),
+        return (
             'thumb' / TBytes,
             'thumb_w' / Int32ul,
             'thumb_h' / Int32ul,
@@ -6336,9 +6115,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7afe8ae2, 'decrypted_message_media_document_layer101')
     def struct_0x7afe8ae2(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_media_document_layer101'),
-            'signature' / Hex(Const(0x7afe8ae2, Int32ul)),
+        return (
             'thumb' / TBytes,
             'thumb_w' / Int32ul,
             'thumb_h' / Int32ul,
@@ -6355,9 +6132,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf1fa8d78, 'decrypted_message_media_photo')
     def struct_0xf1fa8d78(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_media_photo'),
-            'signature' / Hex(Const(0xf1fa8d78, Int32ul)),
+        return (
             'thumb' / TBytes,
             'thumb_w' / Int32ul,
             'thumb_h' / Int32ul,
@@ -6370,9 +6145,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x970c8c0e, 'decrypted_message_media_video')
     def struct_0x970c8c0e(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_media_video'),
-            'signature' / Hex(Const(0x970c8c0e, Int32ul)),
+        return (
             'thumb' / TBytes,
             'thumb_w' / Int32ul,
             'thumb_h' / Int32ul,
@@ -6387,9 +6160,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb095434b, 'decrypted_message_media_document_layer8')
     def struct_0xb095434b(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_media_document_layer8'),
-            'signature' / Hex(Const(0xb095434b, Int32ul)),
+        return (
             'thumb' / TBytes,
             'thumb_w' / Int32ul,
             'thumb_h' / Int32ul,
@@ -6401,9 +6172,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x4cee6ef3, 'decrypted_message_media_video_layer8')
     def struct_0x4cee6ef3(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_media_video_layer8'),
-            'signature' / Hex(Const(0x4cee6ef3, Int32ul)),
+        return (
             'thumb' / TBytes,
             'thumb_w' / Int32ul,
             'thumb_h' / Int32ul,
@@ -6416,11 +6185,9 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x8a0df56f, 'decrypted_message_media_venue')
     def struct_0x8a0df56f(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_media_venue'),
-            'signature' / Hex(Const(0x8a0df56f, Int32ul)),
+        return (
             'lat' / Double,
-            '_long' / Double,
+            'long' / Double,
             'title' / TString,
             'address' / TString,
             'provider' / TString,
@@ -6428,9 +6195,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xfa95b0dd, 'decrypted_message_media_external_document')
     def struct_0xfa95b0dd(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_media_external_document'),
-            'signature' / Hex(Const(0xfa95b0dd, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'date' / TTimestamp,
@@ -6442,9 +6207,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x524a415d, 'decrypted_message_media_video_layer17')
     def struct_0x524a415d(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_media_video_layer17'),
-            'signature' / Hex(Const(0x524a415d, Int32ul)),
+        return (
             'thumb' / TBytes,
             'thumb_w' / Int32ul,
             'thumb_h' / Int32ul,
@@ -6458,9 +6221,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x6080758f, 'decrypted_message_media_audio_layer8')
     def struct_0x6080758f(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_media_audio_layer8'),
-            'signature' / Hex(Const(0x6080758f, Int32ul)),
+        return (
             'duration' / Int32ul,
             'size' / Int32ul,
             'key' / TBytes,
@@ -6468,9 +6229,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x32798a8c, 'decrypted_message_media_photo_layer8')
     def struct_0x32798a8c(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_media_photo_layer8'),
-            'signature' / Hex(Const(0x32798a8c, Int32ul)),
+        return (
             'thumb' / TBytes,
             'thumb_w' / Int32ul,
             'thumb_h' / Int32ul,
@@ -6482,7 +6241,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def decrypted_message_media_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x57e0a9cb: LazyBound(self.struct_0x57e0a9cb),
             0x35480a59: LazyBound(self.struct_0x35480a59),
@@ -6509,9 +6267,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x204d3878, 'decrypted_message_layer17')
     def struct_0x204d3878(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_layer17'),
-            'signature' / Hex(Const(0x204d3878, Int32ul)),
+        return (
             'random_id' / Int64ul,
             'ttl' / Int32ul,
             'message' / TString,
@@ -6519,26 +6275,20 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x73164160, 'decrypted_message_service')
     def struct_0x73164160(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_service'),
-            'signature' / Hex(Const(0x73164160, Int32ul)),
+        return (
             'random_id' / Int64ul,
             'action' / self.decrypted_message_action_structures('action'))
 
     @constructor(0xaa48327d, 'decrypted_message_service_layer8')
     def struct_0xaa48327d(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_service_layer8'),
-            'signature' / Hex(Const(0xaa48327d, Int32ul)),
+        return (
             'random_id' / Int64ul,
             'random_bytes' / TBytes,
             'action' / self.decrypted_message_action_structures('action'))
 
     @constructor(0x1f814f1f, 'decrypted_message_layer8')
     def struct_0x1f814f1f(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_layer8'),
-            'signature' / Hex(Const(0x1f814f1f, Int32ul)),
+        return (
             'random_id' / Int64ul,
             'random_bytes' / TBytes,
             'message' / TString,
@@ -6585,7 +6335,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def decrypted_message_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x204d3878: LazyBound(self.struct_0x204d3878),
             0x73164160: LazyBound(self.struct_0x73164160),
@@ -6723,7 +6472,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def dialog_filter_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x363293ae: LazyBound(self.struct_0x363293ae),
             0xaa472651: LazyBound(self.struct_0xaa472651),
@@ -6749,7 +6497,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def dialog_peer_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xe56dbf05: LazyBound(self.struct_0xe56dbf05),
             0x514519e2: LazyBound(self.struct_0x514519e2)
@@ -6828,7 +6575,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def dialog_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xd58a08c6: LazyBound(self.struct_0xd58a08c6),
             0xa8edd0f5: LazyBound(self.struct_0xa8edd0f5),
@@ -6842,9 +6588,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3a556302, 'document_attribute_sticker_layer55')
     def struct_0x3a556302(self):
-        return Struct(
-            'sname' / Computed('document_attribute_sticker_layer55'),
-            'signature' / Hex(Const(0x3a556302, Int32ul)),
+        return (
             'alt' / TString,
             'stickerset' / self.input_sticker_set_structures('stickerset'))
 
@@ -6937,18 +6681,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5910cccb, 'document_attribute_video_layer65')
     def struct_0x5910cccb(self):
-        return Struct(
-            'sname' / Computed('document_attribute_video_layer65'),
-            'signature' / Hex(Const(0x5910cccb, Int32ul)),
+        return (
             'duration' / Int32ul,
             'w' / Int32ul,
             'h' / Int32ul)
 
     @constructor(0xded218e0, 'document_attribute_audio_layer45')
     def struct_0xded218e0(self):
-        return Struct(
-            'sname' / Computed('document_attribute_audio_layer45'),
-            'signature' / Hex(Const(0xded218e0, Int32ul)),
+        return (
             'duration' / Int32ul,
             'title' / TString,
             'performer' / TString)
@@ -6967,9 +6707,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x6c37c15c, 'document_attribute_image_size')
     def struct_0x6c37c15c(self):
-        return Struct(
-            'sname' / Computed('document_attribute_image_size'),
-            'signature' / Hex(Const(0x6c37c15c, Int32ul)),
+        return (
             'w' / Int32ul,
             'h' / Int32ul)
 
@@ -7001,7 +6739,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def document_attribute_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x3a556302: LazyBound(self.struct_0x3a556302),
             0x0ef02ce6: LazyBound(self.struct_0x0ef02ce6),
@@ -7046,9 +6783,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x59534e4c, 'document_layer92')
     def struct_0x59534e4c(self):
-        return Struct(
-            'sname' / Computed('document_layer92'),
-            'signature' / Hex(Const(0x59534e4c, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'file_reference' / TBytes,
@@ -7061,9 +6796,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x87232bc7, 'document_layer82')
     def struct_0x87232bc7(self):
-        return Struct(
-            'sname' / Computed('document_layer82'),
-            'signature' / Hex(Const(0x87232bc7, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'date' / TTimestamp,
@@ -7076,9 +6809,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x55555556, 'document_encrypted_old')
     def struct_0x55555556(self):
-        return Struct(
-            'sname' / Computed('document_encrypted_old'),
-            'signature' / Hex(Const(0x55555556, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'user_id' / Int32ul,
@@ -7131,9 +6862,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x9efc6326, 'document_old')
     def struct_0x9efc6326(self):
-        return Struct(
-            'sname' / Computed('document_old'),
-            'signature' / Hex(Const(0x9efc6326, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'user_id' / Int32ul,
@@ -7150,9 +6879,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x55555558, 'document_encrypted')
     def struct_0x55555558(self):
-        return Struct(
-            'sname' / Computed('document_encrypted'),
-            'signature' / Hex(Const(0x55555558, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'date' / TTimestamp,
@@ -7166,9 +6893,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf9a39f4f, 'document_layer53')
     def struct_0xf9a39f4f(self):
-        return Struct(
-            'sname' / Computed('document_layer53'),
-            'signature' / Hex(Const(0xf9a39f4f, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'date' / TTimestamp,
@@ -7180,7 +6905,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def document_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x9ba29cc1: LazyBound(self.struct_0x9ba29cc1),
             0x59534e4c: LazyBound(self.struct_0x59534e4c),
@@ -7264,7 +6988,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def draft_message_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x1b0c841a: LazyBound(self.struct_0x1b0c841a),
             0xba4baec5: LazyBound(self.struct_0xba4baec5),
@@ -7292,7 +7015,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def email_verification_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x922e55a9: LazyBound(self.struct_0x922e55a9),
             0xdb909ec2: LazyBound(self.struct_0xdb909ec2),
@@ -7306,9 +7028,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x4345be73, 'email_verify_purpose_login_setup')
     def struct_0x4345be73(self):
-        return Struct(
-            'sname' / Computed('email_verify_purpose_login_setup'),
-            'signature' / Hex(Const(0x4345be73, Int32ul)),
+        return (
             'phone_number' / TString,
             'phone_code_hash' / TString)
 
@@ -7322,7 +7042,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def email_verify_purpose_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x4345be73: LazyBound(self.struct_0x4345be73),
             0x527d22eb: LazyBound(self.struct_0x527d22eb),
@@ -7336,33 +7055,26 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7a9abda9, 'emoji_group')
     def struct_0x7a9abda9(self):
-        return Struct(
-            'sname' / Computed('emoji_group'),
-            'signature' / Hex(Const(0x7a9abda9, Int32ul)),
+        return (
             'title' / TString,
             'icon_emoji_id' / Int64ul,
             'emoticons' / self.vector(TString, 'emoticons'))
 
     @constructor(0x80d26cc7, 'emoji_group_greeting')
     def struct_0x80d26cc7(self):
-        return Struct(
-            'sname' / Computed('emoji_group_greeting'),
-            'signature' / Hex(Const(0x80d26cc7, Int32ul)),
+        return (
             'title' / TString,
             'icon_emoji_id' / Int64ul,
             'emoticons' / self.vector(TString, 'emoticons'))
 
     @constructor(0x093bcf34, 'emoji_group_premium')
     def struct_0x093bcf34(self):
-        return Struct(
-            'sname' / Computed('emoji_group_premium'),
-            'signature' / Hex(Const(0x093bcf34, Int32ul)),
+        return (
             'title' / TString,
             'icon_emoji_id' / Int64ul)
 
     @structures
     def emoji_group_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x7a9abda9: LazyBound(self.struct_0x7a9abda9),
             0x80d26cc7: LazyBound(self.struct_0x80d26cc7),
@@ -7376,23 +7088,18 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x236df622, 'emoji_keyword_deleted')
     def struct_0x236df622(self):
-        return Struct(
-            'sname' / Computed('emoji_keyword_deleted'),
-            'signature' / Hex(Const(0x236df622, Int32ul)),
+        return (
             'keyword' / TString,
             'emoticons' / self.vector(TString, 'emoticons'))
 
     @constructor(0xd5b3b9f9, 'emoji_keyword')
     def struct_0xd5b3b9f9(self):
-        return Struct(
-            'sname' / Computed('emoji_keyword'),
-            'signature' / Hex(Const(0xd5b3b9f9, Int32ul)),
+        return (
             'keyword' / TString,
             'emoticons' / self.vector(TString, 'emoticons'))
 
     @structures
     def emoji_keyword_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x236df622: LazyBound(self.struct_0x236df622),
             0xd5b3b9f9: LazyBound(self.struct_0xd5b3b9f9)
@@ -7405,9 +7112,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7a1e11d1, 'emoji_list')
     def struct_0x7a1e11d1(self):
-        return Struct(
-            'sname' / Computed('emoji_list'),
-            'signature' / Hex(Const(0x7a1e11d1, Int32ul)),
+        return (
             'hash' / Int64ul,
             'document_id' / self.vector(Int64ul, 'document_id'))
 
@@ -7417,7 +7122,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def emoji_list_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x7a1e11d1: LazyBound(self.struct_0x7a1e11d1),
             0x481eadfa: LazyBound(self.struct_0x481eadfa)
@@ -7476,15 +7180,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xfa30a8c7, 'emoji_status_until_layer197')
     def struct_0xfa30a8c7(self):
-        return Struct(
-            'sname' / Computed('emoji_status_until_layer197'),
-            'signature' / Hex(Const(0xfa30a8c7, Int32ul)),
+        return (
             'document_id' / Int64ul,
             'until' / Int32ul)
 
     @structures
     def emoji_status_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x2de11aae: LazyBound(self.struct_0x2de11aae),
             0xe7ff068a: LazyBound(self.struct_0xe7ff068a),
@@ -7501,9 +7202,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xfda9a7b7, 'encrypted_chat_requested_old')
     def struct_0xfda9a7b7(self):
-        return Struct(
-            'sname' / Computed('encrypted_chat_requested_old'),
-            'signature' / Hex(Const(0xfda9a7b7, Int32ul)),
+        return (
             'id' / Int32ul,
             'access_hash' / Int64ul,
             'date' / TTimestamp,
@@ -7514,9 +7213,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc878527e, 'encrypted_chat_requested_layer115')
     def struct_0xc878527e(self):
-        return Struct(
-            'sname' / Computed('encrypted_chat_requested_layer115'),
-            'signature' / Hex(Const(0xc878527e, Int32ul)),
+        return (
             'id' / Int32ul,
             'access_hash' / Int64ul,
             'date' / TTimestamp,
@@ -7526,9 +7223,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xfa56ce36, 'encrypted_chat_layer131')
     def struct_0xfa56ce36(self):
-        return Struct(
-            'sname' / Computed('encrypted_chat_layer131'),
-            'signature' / Hex(Const(0xfa56ce36, Int32ul)),
+        return (
             'id' / Int32ul,
             'access_hash' / Int64ul,
             'date' / TTimestamp,
@@ -7554,9 +7249,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x6601d14f, 'encrypted_chat_old')
     def struct_0x6601d14f(self):
-        return Struct(
-            'sname' / Computed('encrypted_chat_old'),
-            'signature' / Hex(Const(0x6601d14f, Int32ul)),
+        return (
             'id' / Int32ul,
             'access_hash' / Int64ul,
             'date' / TTimestamp,
@@ -7572,9 +7265,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3bf703dc, 'encrypted_chat_waiting_layer131')
     def struct_0x3bf703dc(self):
-        return Struct(
-            'sname' / Computed('encrypted_chat_waiting_layer131'),
-            'signature' / Hex(Const(0x3bf703dc, Int32ul)),
+        return (
             'id' / Int32ul,
             'access_hash' / Int64ul,
             'date' / TTimestamp,
@@ -7596,9 +7287,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x66b25953, 'encrypted_chat_waiting')
     def struct_0x66b25953(self):
-        return Struct(
-            'sname' / Computed('encrypted_chat_waiting'),
-            'signature' / Hex(Const(0x66b25953, Int32ul)),
+        return (
             'id' / Int32ul,
             'access_hash' / Int64ul,
             'date' / TTimestamp,
@@ -7622,9 +7311,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x61f0d4c7, 'encrypted_chat')
     def struct_0x61f0d4c7(self):
-        return Struct(
-            'sname' / Computed('encrypted_chat'),
-            'signature' / Hex(Const(0x61f0d4c7, Int32ul)),
+        return (
             'id' / Int32ul,
             'access_hash' / Int64ul,
             'date' / TTimestamp,
@@ -7635,7 +7322,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def encrypted_chat_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xfda9a7b7: LazyBound(self.struct_0xfda9a7b7),
             0xc878527e: LazyBound(self.struct_0xc878527e),
@@ -7658,9 +7344,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa8008cd8, 'encrypted_file')
     def struct_0xa8008cd8(self):
-        return Struct(
-            'sname' / Computed('encrypted_file'),
-            'signature' / Hex(Const(0xa8008cd8, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'size' / Int64ul,
@@ -7669,9 +7353,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x4a70994c, 'encrypted_file_layer142')
     def struct_0x4a70994c(self):
-        return Struct(
-            'sname' / Computed('encrypted_file_layer142'),
-            'signature' / Hex(Const(0x4a70994c, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'size' / Int32ul,
@@ -7684,7 +7366,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def encrypted_file_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xa8008cd8: LazyBound(self.struct_0xa8008cd8),
             0x4a70994c: LazyBound(self.struct_0x4a70994c),
@@ -7698,9 +7379,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x23734b06, 'encrypted_message_service')
     def struct_0x23734b06(self):
-        return Struct(
-            'sname' / Computed('encrypted_message_service'),
-            'signature' / Hex(Const(0x23734b06, Int32ul)),
+        return (
             'random_id' / Int64ul,
             'chat_id' / Int32ul,
             'date' / TTimestamp,
@@ -7708,9 +7387,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xed18c118, 'encrypted_message')
     def struct_0xed18c118(self):
-        return Struct(
-            'sname' / Computed('encrypted_message'),
-            'signature' / Hex(Const(0xed18c118, Int32ul)),
+        return (
             'random_id' / Int64ul,
             'chat_id' / Int32ul,
             'date' / TTimestamp,
@@ -7719,7 +7396,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def encrypted_message_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x23734b06: LazyBound(self.struct_0x23734b06),
             0xed18c118: LazyBound(self.struct_0xed18c118)
@@ -7838,7 +7514,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def exported_chat_invite_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xa22cbd96: LazyBound(self.struct_0xa22cbd96),
             0x0ab4a819: LazyBound(self.struct_0x0ab4a819),
@@ -7856,18 +7531,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7c596b46, 'file_location_unavailable')
     def struct_0x7c596b46(self):
-        return Struct(
-            'sname' / Computed('file_location_unavailable'),
-            'signature' / Hex(Const(0x7c596b46, Int32ul)),
+        return (
             'volume_id' / Int64ul,
             'local_id' / Int32ul,
             'secret' / Int64ul)
 
     @constructor(0x53d69076, 'file_location_layer82')
     def struct_0x53d69076(self):
-        return Struct(
-            'sname' / Computed('file_location_layer82'),
-            'signature' / Hex(Const(0x53d69076, Int32ul)),
+        return (
             'dc_id' / Int32ul,
             'volume_id' / Int64ul,
             'local_id' / Int32ul,
@@ -7875,9 +7546,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x091d11eb, 'file_location_layer97')
     def struct_0x091d11eb(self):
-        return Struct(
-            'sname' / Computed('file_location_layer97'),
-            'signature' / Hex(Const(0x091d11eb, Int32ul)),
+        return (
             'dc_id' / Int32ul,
             'volume_id' / Int64ul,
             'local_id' / Int32ul,
@@ -7886,17 +7555,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xbc7fc6cd, 'file_location_to_be_deprecated')
     def struct_0xbc7fc6cd(self):
-        return Struct(
-            'sname' / Computed('file_location_to_be_deprecated'),
-            'signature' / Hex(Const(0xbc7fc6cd, Int32ul)),
+        return (
             'volume_id' / Int64ul,
             'local_id' / Int32ul)
 
     @constructor(0x55555554, 'file_encrypted_location')
     def struct_0x55555554(self):
-        return Struct(
-            'sname' / Computed('file_encrypted_location'),
-            'signature' / Hex(Const(0x55555554, Int32ul)),
+        return (
             'dc_id' / Int32ul,
             'volume_id' / Int64ul,
             'local_id' / Int32ul,
@@ -7906,7 +7571,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def file_location_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x7c596b46: LazyBound(self.struct_0x7c596b46),
             0x53d69076: LazyBound(self.struct_0x53d69076),
@@ -7978,7 +7642,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def forum_topic_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x023f109b: LazyBound(self.struct_0x023f109b),
             0x5920d6dc: LazyBound(self.struct_0x5920d6dc),
@@ -7992,18 +7655,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x0296f104, 'geo_point_layer119')
     def struct_0x0296f104(self):
-        return Struct(
-            'sname' / Computed('geo_point_layer119'),
-            'signature' / Hex(Const(0x0296f104, Int32ul)),
+        return (
             'long' / Double,
             'lat' / Double,
             'access_hash' / Int64ul)
 
     @constructor(0x2049d70c, 'geo_point_layer81')
     def struct_0x2049d70c(self):
-        return Struct(
-            'sname' / Computed('geo_point_layer81'),
-            'signature' / Hex(Const(0x2049d70c, Int32ul)),
+        return (
             'long' / Double,
             'lat' / Double)
 
@@ -8018,14 +7677,13 @@ class TLStruct:  # pylint: disable=C0103
             'signature' / Hex(Const(0xb2a2f663, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 has_accuracy_radius=1),
-            '_long' / Double,
+            'long' / Double,
             'lat' / Double,
             'access_hash' / Int64ul,
             'accuracy_radius' / If(this.flags.has_accuracy_radius, Int32ul))
 
     @structures
     def geo_point_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x0296f104: LazyBound(self.struct_0x0296f104),
             0x2049d70c: LazyBound(self.struct_0x2049d70c),
@@ -8040,9 +7698,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7780bcb4, 'group_call_discarded')
     def struct_0x7780bcb4(self):
-        return Struct(
-            'sname' / Computed('group_call_discarded'),
-            'signature' / Hex(Const(0x7780bcb4, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'duration' / Int32ul)
@@ -8111,7 +7767,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def group_call_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x7780bcb4: LazyBound(self.struct_0x7780bcb4),
             0xcdf8d3e3: LazyBound(self.struct_0xcdf8d3e3),
@@ -8125,9 +7780,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xdd18782e, 'help_app_config')
     def struct_0xdd18782e(self):
-        return Struct(
-            'sname' / Computed('help_app_config'),
-            'signature' / Hex(Const(0xdd18782e, Int32ul)),
+        return (
             'hash' / Int32ul,
             'config' / self.json_value_structures('config'))
 
@@ -8137,7 +7790,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def help_app_config_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xdd18782e: LazyBound(self.struct_0xdd18782e),
             0x7cde641d: LazyBound(self.struct_0x7cde641d)
@@ -8172,7 +7824,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def help_app_update_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xccbbce30: LazyBound(self.struct_0xccbbce30),
             0xc45a6536: LazyBound(self.struct_0xc45a6536)
@@ -8189,15 +7840,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x87d0759e, 'help_countries_list')
     def struct_0x87d0759e(self):
-        return Struct(
-            'sname' / Computed('help_countries_list'),
-            'signature' / Hex(Const(0x87d0759e, Int32ul)),
+        return (
             'countries' / self.vector(self.struct_0xc3878e23(), 'countries'),
             'hash' / Int32ul)
 
     @structures
     def help_countries_list_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x93cc1f32: LazyBound(self.struct_0x93cc1f32),
             0x87d0759e: LazyBound(self.struct_0x87d0759e)
@@ -8225,7 +7873,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def help_deep_link_info_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x66afa166: LazyBound(self.struct_0x66afa166),
             0x6a4ee832: LazyBound(self.struct_0x6a4ee832)
@@ -8242,15 +7889,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa098d6af, 'help_passport_config')
     def struct_0xa098d6af(self):
-        return Struct(
-            'sname' / Computed('help_passport_config'),
-            'signature' / Hex(Const(0xa098d6af, Int32ul)),
+        return (
             'hash' / Int32ul,
             'countries_langs' / self.struct_0x7d748d04())
 
     @structures
     def help_passport_config_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xbfb9f457: LazyBound(self.struct_0xbfb9f457),
             0xa098d6af: LazyBound(self.struct_0xa098d6af)
@@ -8267,16 +7911,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x767d61eb, 'help_peer_color_profile_set')
     def struct_0x767d61eb(self):
-        return Struct(
-            'sname' / Computed('help_peer_color_profile_set'),
-            'signature' / Hex(Const(0x767d61eb, Int32ul)),
+        return (
             'palette_colors' / self.vector(Int32ul, 'palette_colors'),
             'bg_colors' / self.vector(Int32ul, 'bg_colors'),
             'story_colors' / self.vector(Int32ul, 'story_colors'))
 
     @structures
     def help_peer_color_set_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x26219a58: LazyBound(self.struct_0x26219a58),
             0x767d61eb: LazyBound(self.struct_0x767d61eb)
@@ -8293,15 +7934,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x00f8ed08, 'help_peer_colors')
     def struct_0x00f8ed08(self):
-        return Struct(
-            'sname' / Computed('help_peer_colors'),
-            'signature' / Hex(Const(0x00f8ed08, Int32ul)),
+        return (
             'hash' / Int32ul,
             'colors' / self.vector(self.struct_0xadec6ebe(), 'colors'))
 
     @structures
     def help_peer_colors_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x2ba1f5ce: LazyBound(self.struct_0x2ba1f5ce),
             0x00f8ed08: LazyBound(self.struct_0x00f8ed08)
@@ -8314,9 +7952,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5334759c, 'help_premium_promo')
     def struct_0x5334759c(self):
-        return Struct(
-            'sname' / Computed('help_premium_promo'),
-            'signature' / Hex(Const(0x5334759c, Int32ul)),
+        return (
             'status_text' / TString,
             'status_entities' / self.vector(self.message_entity_structures('status_entities'), 'status_entities'),
             'video_sections' / self.vector(TString, 'video_sections'),
@@ -8326,9 +7962,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x8a4f3c29, 'help_premium_promo_layer144')
     def struct_0x8a4f3c29(self):
-        return Struct(
-            'sname' / Computed('help_premium_promo_layer144'),
-            'signature' / Hex(Const(0x8a4f3c29, Int32ul)),
+        return (
             'status_text' / TString,
             'status_entities' / self.vector(self.message_entity_structures('status_entities'), 'status_entities'),
             'video_sections' / self.vector(TString, 'video_sections'),
@@ -8339,9 +7973,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe0360f1b, 'help_premium_promo_layer140')
     def struct_0xe0360f1b(self):
-        return Struct(
-            'sname' / Computed('help_premium_promo_layer140'),
-            'signature' / Hex(Const(0xe0360f1b, Int32ul)),
+        return (
             'status_text' / TString,
             'status_entities' / self.vector(self.message_entity_structures('status_entities'), 'status_entities'),
             'video_sections' / self.vector(TString, 'video_sections'),
@@ -8351,7 +7983,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def help_premium_promo_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x5334759c: LazyBound(self.struct_0x5334759c),
             0x8a4f3c29: LazyBound(self.struct_0x8a4f3c29),
@@ -8385,7 +8016,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def help_promo_data_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x8c39793f: LazyBound(self.struct_0x8c39793f),
             0x98f6ac75: LazyBound(self.struct_0x98f6ac75)
@@ -8398,9 +8028,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x28ecf961, 'help_terms_of_service_update')
     def struct_0x28ecf961(self):
-        return Struct(
-            'sname' / Computed('help_terms_of_service_update'),
-            'signature' / Hex(Const(0x28ecf961, Int32ul)),
+        return (
             'expires' / Int32ul,
             'terms_of_service' / self.struct_0x780a0310())
 
@@ -8410,7 +8038,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def help_terms_of_service_update_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x28ecf961: LazyBound(self.struct_0x28ecf961),
             0xe3309f7f: LazyBound(self.struct_0xe3309f7f)
@@ -8427,15 +8054,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7b74ed71, 'help_timezones_list')
     def struct_0x7b74ed71(self):
-        return Struct(
-            'sname' / Computed('help_timezones_list'),
-            'signature' / Hex(Const(0x7b74ed71, Int32ul)),
+        return (
             'timezones' / self.vector(self.struct_0xff9289f5(), 'timezones'),
             'hash' / Int32ul)
 
     @structures
     def help_timezones_list_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x970708cc: LazyBound(self.struct_0x970708cc),
             0x7b74ed71: LazyBound(self.struct_0x7b74ed71)
@@ -8452,9 +8076,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x01eb3758, 'help_user_info')
     def struct_0x01eb3758(self):
-        return Struct(
-            'sname' / Computed('help_user_info'),
-            'signature' / Hex(Const(0x01eb3758, Int32ul)),
+        return (
             'message' / TString,
             'entities' / self.vector(self.message_entity_structures('entities'), 'entities'),
             'author' / TString,
@@ -8462,7 +8084,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def help_user_info_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xf3ae2eed: LazyBound(self.struct_0xf3ae2eed),
             0x01eb3758: LazyBound(self.struct_0x01eb3758)
@@ -8499,7 +8120,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def inline_query_peer_type_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x6334ee9a: LazyBound(self.struct_0x6334ee9a),
             0xd766c50a: LazyBound(self.struct_0xd766c50a),
@@ -8516,23 +8136,18 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa920bd7a, 'input_bot_app_id')
     def struct_0xa920bd7a(self):
-        return Struct(
-            'sname' / Computed('input_bot_app_id'),
-            'signature' / Hex(Const(0xa920bd7a, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul)
 
     @constructor(0x908c0407, 'input_bot_app_short_name')
     def struct_0x908c0407(self):
-        return Struct(
-            'sname' / Computed('input_bot_app_short_name'),
-            'signature' / Hex(Const(0x908c0407, Int32ul)),
+        return (
             'bot_id' / self.input_user_structures('bot_id'),
             'short_name' / TString)
 
     @structures
     def input_bot_app_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xa920bd7a: LazyBound(self.struct_0xa920bd7a),
             0x908c0407: LazyBound(self.struct_0x908c0407)
@@ -8545,26 +8160,20 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x2a286531, 'input_channel_from_message_layer131')
     def struct_0x2a286531(self):
-        return Struct(
-            'sname' / Computed('input_channel_from_message_layer131'),
-            'signature' / Hex(Const(0x2a286531, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul,
             'channel_id' / Int32ul)
 
     @constructor(0xafeb712e, 'input_channel_layer131')
     def struct_0xafeb712e(self):
-        return Struct(
-            'sname' / Computed('input_channel_layer131'),
-            'signature' / Hex(Const(0xafeb712e, Int32ul)),
+        return (
             'channel_id' / Int32ul,
             'access_hash' / Int64ul)
 
     @constructor(0xf35aec28, 'input_channel')
     def struct_0xf35aec28(self):
-        return Struct(
-            'sname' / Computed('input_channel'),
-            'signature' / Hex(Const(0xf35aec28, Int32ul)),
+        return (
             'channel_id' / Int64ul,
             'access_hash' / Int64ul)
 
@@ -8574,16 +8183,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5b934f9d, 'input_channel_from_message')
     def struct_0x5b934f9d(self):
-        return Struct(
-            'sname' / Computed('input_channel_from_message'),
-            'signature' / Hex(Const(0x5b934f9d, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul,
             'channel_id' / Int64ul)
 
     @structures
     def input_channel_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x2a286531: LazyBound(self.struct_0x2a286531),
             0xafeb712e: LazyBound(self.struct_0xafeb712e),
@@ -8622,7 +8228,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def input_chat_photo_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x8953ad37: LazyBound(self.struct_0x8953ad37),
             0x1ca48f57: LazyBound(self.struct_0x1ca48f57),
@@ -8640,16 +8245,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xd27ff082, 'input_check_password_srp')
     def struct_0xd27ff082(self):
-        return Struct(
-            'sname' / Computed('input_check_password_srp'),
-            'signature' / Hex(Const(0xd27ff082, Int32ul)),
+        return (
             'srp_id' / Int64ul,
             'a' / TBytes,
             'm1' / TBytes)
 
     @structures
     def input_check_password_srp_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x9880f658: LazyBound(self.struct_0x9880f658),
             0xd27ff082: LazyBound(self.struct_0xd27ff082)
@@ -8670,7 +8272,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def input_dialog_peer_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xfcaafeb7: LazyBound(self.struct_0xfcaafeb7),
             0x64600527: LazyBound(self.struct_0x64600527)
@@ -8687,16 +8288,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1abfb575, 'input_document')
     def struct_0x1abfb575(self):
-        return Struct(
-            'sname' / Computed('input_document'),
-            'signature' / Hex(Const(0x1abfb575, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'file_reference' / TBytes)
 
     @structures
     def input_document_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x72f0eaae: LazyBound(self.struct_0x72f0eaae),
             0x1abfb575: LazyBound(self.struct_0x1abfb575)
@@ -8709,17 +8307,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5a17b5e5, 'input_encrypted_file')
     def struct_0x5a17b5e5(self):
-        return Struct(
-            'sname' / Computed('input_encrypted_file'),
-            'signature' / Hex(Const(0x5a17b5e5, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul)
 
     @constructor(0x2dc173c8, 'input_encrypted_file_big_uploaded')
     def struct_0x2dc173c8(self):
-        return Struct(
-            'sname' / Computed('input_encrypted_file_big_uploaded'),
-            'signature' / Hex(Const(0x2dc173c8, Int32ul)),
+        return (
             'id' / Int64ul,
             'parts' / Int32ul,
             'key_fingerprint' / Int32ul)
@@ -8730,9 +8324,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x64bd0306, 'input_encrypted_file_uploaded')
     def struct_0x64bd0306(self):
-        return Struct(
-            'sname' / Computed('input_encrypted_file_uploaded'),
-            'signature' / Hex(Const(0x64bd0306, Int32ul)),
+        return (
             'id' / Int64ul,
             'parts' / Int32ul,
             'md5_checksum' / TString,
@@ -8740,7 +8332,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def input_encrypted_file_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x5a17b5e5: LazyBound(self.struct_0x5a17b5e5),
             0x2dc173c8: LazyBound(self.struct_0x2dc173c8),
@@ -8755,9 +8346,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x40181ffe, 'input_photo_file_location')
     def struct_0x40181ffe(self):
-        return Struct(
-            'sname' / Computed('input_photo_file_location'),
-            'signature' / Hex(Const(0x40181ffe, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'file_reference' / TBytes,
@@ -8765,9 +8354,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xbad07584, 'input_document_file_location')
     def struct_0xbad07584(self):
-        return Struct(
-            'sname' / Computed('input_document_file_location'),
-            'signature' / Hex(Const(0xbad07584, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'file_reference' / TBytes,
@@ -8785,17 +8372,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf5235d55, 'input_encrypted_file_location')
     def struct_0xf5235d55(self):
-        return Struct(
-            'sname' / Computed('input_encrypted_file_location'),
-            'signature' / Hex(Const(0xf5235d55, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul)
 
     @constructor(0x9d84f3db, 'input_sticker_set_thumb')
     def struct_0x9d84f3db(self):
-        return Struct(
-            'sname' / Computed('input_sticker_set_thumb'),
-            'signature' / Hex(Const(0x9d84f3db, Int32ul)),
+        return (
             'stickerset' / self.input_sticker_set_structures('stickerset'),
             'thumb_version' / Int32ul)
 
@@ -8814,9 +8397,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xdfdaabe1, 'input_file_location')
     def struct_0xdfdaabe1(self):
-        return Struct(
-            'sname' / Computed('input_file_location'),
-            'signature' / Hex(Const(0xdfdaabe1, Int32ul)),
+        return (
             'volume_id' / Int64ul,
             'local_id' / Int32ul,
             'secret' / Int64ul,
@@ -8824,15 +8405,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xcbc7ee28, 'input_secure_file_location')
     def struct_0xcbc7ee28(self):
-        return Struct(
-            'sname' / Computed('input_secure_file_location'),
-            'signature' / Hex(Const(0xcbc7ee28, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul)
 
     @structures
     def input_file_location_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x40181ffe: LazyBound(self.struct_0x40181ffe),
             0xbad07584: LazyBound(self.struct_0xbad07584),
@@ -8851,18 +8429,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xfa4f0bb5, 'input_file_big')
     def struct_0xfa4f0bb5(self):
-        return Struct(
-            'sname' / Computed('input_file_big'),
-            'signature' / Hex(Const(0xfa4f0bb5, Int32ul)),
+        return (
             'id' / Int64ul,
             'parts' / Int32ul,
             'name' / TString)
 
     @constructor(0xf52ff27f, 'input_file')
     def struct_0xf52ff27f(self):
-        return Struct(
-            'sname' / Computed('input_file'),
-            'signature' / Hex(Const(0xf52ff27f, Int32ul)),
+        return (
             'id' / Int64ul,
             'parts' / Int32ul,
             'name' / TString,
@@ -8874,7 +8448,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def input_file_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xfa4f0bb5: LazyBound(self.struct_0xfa4f0bb5),
             0xf52ff27f: LazyBound(self.struct_0xf52ff27f),
@@ -8888,23 +8461,18 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc331e80a, 'input_game_short_name')
     def struct_0xc331e80a(self):
-        return Struct(
-            'sname' / Computed('input_game_short_name'),
-            'signature' / Hex(Const(0xc331e80a, Int32ul)),
+        return (
             'bot_id' / self.input_user_structures('bot_id'),
             'short_name' / TString)
 
     @constructor(0x032c3e77, 'input_game_id')
     def struct_0x032c3e77(self):
-        return Struct(
-            'sname' / Computed('input_game_id'),
-            'signature' / Hex(Const(0x032c3e77, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul)
 
     @structures
     def input_game_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xc331e80a: LazyBound(self.struct_0xc331e80a),
             0x032c3e77: LazyBound(self.struct_0x032c3e77)
@@ -8923,7 +8491,7 @@ class TLStruct:  # pylint: disable=C0103
             'flags' / FlagsEnum(Int32ul,
                                 has_accuracy_radius=1),
             'lat' / Double,
-            '_long' / Double,
+            'long' / Double,
             'accuracy_radius' / If(this.flags.has_accuracy_radius, Int32ul))
 
     @constructor(0xe4c123d6, 'input_geo_point_empty')
@@ -8932,7 +8500,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def input_geo_point_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x48222faf: LazyBound(self.struct_0x48222faf),
             0xe4c123d6: LazyBound(self.struct_0xe4c123d6)
@@ -8945,17 +8512,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x98986c0d, 'input_invoice_premium_gift_code')
     def struct_0x98986c0d(self):
-        return Struct(
-            'sname' / Computed('input_invoice_premium_gift_code'),
-            'signature' / Hex(Const(0x98986c0d, Int32ul)),
+        return (
             'purpose' / self.input_store_payment_purpose_structures('purpose'),
             'option' / self.struct_0x257e962b())
 
     @constructor(0xc5b56859, 'input_invoice_message')
     def struct_0xc5b56859(self):
-        return Struct(
-            'sname' / Computed('input_invoice_message'),
-            'signature' / Hex(Const(0xc5b56859, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul)
 
@@ -8995,15 +8558,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x4a5f5bd9, 'input_invoice_star_gift_transfer')
     def struct_0x4a5f5bd9(self):
-        return Struct(
-            'sname' / Computed('input_invoice_star_gift_transfer'),
-            'signature' / Hex(Const(0x4a5f5bd9, Int32ul)),
+        return (
             'stargift' / self.stars_input_saved_star_gift_structures('stargift'),
             'to_id' / self.input_peer_structures('to_id'))
 
     @structures
     def input_invoice_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x98986c0d: LazyBound(self.struct_0x98986c0d),
             0xc5b56859: LazyBound(self.struct_0xc5b56859),
@@ -9022,9 +8582,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf8ab7dfb, 'input_media_contact')
     def struct_0xf8ab7dfb(self):
-        return Struct(
-            'sname' / Computed('input_media_contact'),
-            'signature' / Hex(Const(0xf8ab7dfb, Int32ul)),
+        return (
             'phone_number' / TString,
             'first_name' / TString,
             'last_name' / TString,
@@ -9106,9 +8664,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc13d1c11, 'input_media_venue')
     def struct_0xc13d1c11(self):
-        return Struct(
-            'sname' / Computed('input_media_venue'),
-            'signature' / Hex(Const(0xc13d1c11, Int32ul)),
+        return (
             'geo_point' / self.input_geo_point_structures('geo_point'),
             'title' / TString,
             'address' / TString,
@@ -9189,9 +8745,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xaa661fc3, 'input_media_paid_media_layer186')
     def struct_0xaa661fc3(self):
-        return Struct(
-            'sname' / Computed('input_media_paid_media_layer186'),
-            'signature' / Hex(Const(0xaa661fc3, Int32ul)),
+        return (
             'stars_amount' / Int64ul,
             'extended_media' / self.vector(self.input_media_structures('extended_media'), 'extended_media'))
 
@@ -9208,7 +8762,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def input_media_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xf8ab7dfb: LazyBound(self.struct_0xf8ab7dfb),
             0xa8763ab5: LazyBound(self.struct_0xa8763ab5),
@@ -9252,15 +8805,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5c467992, 'input_notify_forum_topic')
     def struct_0x5c467992(self):
-        return Struct(
-            'sname' / Computed('input_notify_forum_topic'),
-            'signature' / Hex(Const(0x5c467992, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'top_msg_id' / Int32ul)
 
     @structures
     def input_notify_peer_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x4a95e84e: LazyBound(self.struct_0x4a95e84e),
             0xb8bc5b0c: LazyBound(self.struct_0xb8bc5b0c),
@@ -9289,15 +8839,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc10eb2cf, 'input_payment_credentials_saved')
     def struct_0xc10eb2cf(self):
-        return Struct(
-            'sname' / Computed('input_payment_credentials_saved'),
-            'signature' / Hex(Const(0xc10eb2cf, Int32ul)),
+        return (
             'id' / TString,
             'tmp_password' / TBytes)
 
     @structures
     def input_payment_credentials_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x3417d728: LazyBound(self.struct_0x3417d728),
             0x8ac32801: LazyBound(self.struct_0x8ac32801),
@@ -9315,18 +8862,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa87b0a1c, 'input_peer_user_from_message')
     def struct_0xa87b0a1c(self):
-        return Struct(
-            'sname' / Computed('input_peer_user_from_message'),
-            'signature' / Hex(Const(0xa87b0a1c, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul,
             'user_id' / Int64ul)
 
     @constructor(0xdde8a54c, 'input_peer_user')
     def struct_0xdde8a54c(self):
-        return Struct(
-            'sname' / Computed('input_peer_user'),
-            'signature' / Hex(Const(0xdde8a54c, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'access_hash' / Int64ul)
 
@@ -9336,17 +8879,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x27bcbbfc, 'input_peer_channel')
     def struct_0x27bcbbfc(self):
-        return Struct(
-            'sname' / Computed('input_peer_channel'),
-            'signature' / Hex(Const(0x27bcbbfc, Int32ul)),
+        return (
             'channel_id' / Int64ul,
             'access_hash' / Int64ul)
 
     @constructor(0x7b8e7de6, 'input_peer_user_layer131')
     def struct_0x7b8e7de6(self):
-        return Struct(
-            'sname' / Computed('input_peer_user_layer131'),
-            'signature' / Hex(Const(0x7b8e7de6, Int32ul)),
+        return (
             'user_id' / Int32ul,
             'access_hash' / Int64ul)
 
@@ -9356,9 +8895,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xbd2a0840, 'input_peer_channel_from_message')
     def struct_0xbd2a0840(self):
-        return Struct(
-            'sname' / Computed('input_peer_channel_from_message'),
-            'signature' / Hex(Const(0xbd2a0840, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul,
             'channel_id' / Int64ul)
@@ -9369,33 +8906,26 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x20adaef8, 'input_peer_channel_layer131')
     def struct_0x20adaef8(self):
-        return Struct(
-            'sname' / Computed('input_peer_channel_layer131'),
-            'signature' / Hex(Const(0x20adaef8, Int32ul)),
+        return (
             'channel_id' / Int32ul,
             'access_hash' / Int64ul)
 
     @constructor(0x9c95f7bb, 'input_peer_channel_from_message_layer131')
     def struct_0x9c95f7bb(self):
-        return Struct(
-            'sname' / Computed('input_peer_channel_from_message_layer131'),
-            'signature' / Hex(Const(0x9c95f7bb, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul,
             'channel_id' / Int32ul)
 
     @constructor(0x17bae2e6, 'input_peer_user_from_message_layer131')
     def struct_0x17bae2e6(self):
-        return Struct(
-            'sname' / Computed('input_peer_user_from_message_layer131'),
-            'signature' / Hex(Const(0x17bae2e6, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul,
             'user_id' / Int32ul)
 
     @structures
     def input_peer_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x7da07ec9: LazyBound(self.struct_0x7da07ec9),
             0xa87b0a1c: LazyBound(self.struct_0xa87b0a1c),
@@ -9422,16 +8952,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3bb3b94a, 'input_photo')
     def struct_0x3bb3b94a(self):
-        return Struct(
-            'sname' / Computed('input_photo'),
-            'signature' / Hex(Const(0x3bb3b94a, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'file_reference' / TBytes)
 
     @structures
     def input_photo_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x1cd7bf0d: LazyBound(self.struct_0x1cd7bf0d),
             0x3bb3b94a: LazyBound(self.struct_0x3bb3b94a)
@@ -9492,7 +9019,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def input_privacy_key_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x4f96cb18: LazyBound(self.struct_0x4f96cb18),
             0xbdfb0426: LazyBound(self.struct_0xbdfb0426),
@@ -9563,7 +9089,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def input_privacy_rule_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xd66b66c9: LazyBound(self.struct_0xd66b66c9),
             0x90110467: LazyBound(self.struct_0x90110467),
@@ -9594,7 +9119,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def input_quick_reply_shortcut_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x24596d41: LazyBound(self.struct_0x24596d41),
             0x01190cf1: LazyBound(self.struct_0x01190cf1)
@@ -9641,15 +9165,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5881323a, 'input_reply_to_story')
     def struct_0x5881323a(self):
-        return Struct(
-            'sname' / Computed('input_reply_to_story'),
-            'signature' / Hex(Const(0x5881323a, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'story_id' / Int32ul)
 
     @structures
     def input_reply_to_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x22c0f6d5: LazyBound(self.struct_0x22c0f6d5),
             0x073ec805: LazyBound(self.struct_0x073ec805),
@@ -9663,9 +9184,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3334b0f0, 'input_secure_file_uploaded')
     def struct_0x3334b0f0(self):
-        return Struct(
-            'sname' / Computed('input_secure_file_uploaded'),
-            'signature' / Hex(Const(0x3334b0f0, Int32ul)),
+        return (
             'id' / Int64ul,
             'parts' / Int32ul,
             'md5_checksum' / TString,
@@ -9674,15 +9193,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5367e5be, 'input_secure_file')
     def struct_0x5367e5be(self):
-        return Struct(
-            'sname' / Computed('input_secure_file'),
-            'signature' / Hex(Const(0x5367e5be, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul)
 
     @structures
     def input_secure_file_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x3334b0f0: LazyBound(self.struct_0x3334b0f0),
             0x5367e5be: LazyBound(self.struct_0x5367e5be)
@@ -9699,9 +9215,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x9de7a269, 'input_sticker_set_id')
     def struct_0x9de7a269(self):
-        return Struct(
-            'sname' / Computed('input_sticker_set_id'),
-            'signature' / Hex(Const(0x9de7a269, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul)
 
@@ -9739,7 +9253,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def input_sticker_set_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xffb62b95: LazyBound(self.struct_0xffb62b95),
             0x9de7a269: LazyBound(self.struct_0x9de7a269),
@@ -9768,7 +9281,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def input_stickered_media_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x0438865b: LazyBound(self.struct_0x0438865b),
             0x4a992157: LazyBound(self.struct_0x4a992157)
@@ -9781,9 +9293,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x616f7fe8, 'input_store_payment_gift_premium')
     def struct_0x616f7fe8(self):
-        return Struct(
-            'sname' / Computed('input_store_payment_gift_premium'),
-            'signature' / Hex(Const(0x616f7fe8, Int32ul)),
+        return (
             'user_id' / self.input_user_structures('user_id'),
             'currency' / TString,
             'amount' / Int64ul)
@@ -9833,9 +9343,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1d741ef7, 'input_store_payment_stars_gift')
     def struct_0x1d741ef7(self):
-        return Struct(
-            'sname' / Computed('input_store_payment_stars_gift'),
-            'signature' / Hex(Const(0x1d741ef7, Int32ul)),
+        return (
             'user_id' / self.input_user_structures('user_id'),
             'stars' / Int64ul,
             'currency' / TString,
@@ -9843,9 +9351,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xdddd0f56, 'input_store_payment_stars_topup')
     def struct_0xdddd0f56(self):
-        return Struct(
-            'sname' / Computed('input_store_payment_stars_topup'),
-            'signature' / Hex(Const(0xdddd0f56, Int32ul)),
+        return (
             'stars' / Int64ul,
             'currency' / TString,
             'amount' / Int64ul)
@@ -9874,7 +9380,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def input_store_payment_purpose_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x616f7fe8: LazyBound(self.struct_0x616f7fe8),
             0xfb790393: LazyBound(self.struct_0xfb790393),
@@ -9896,15 +9401,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3c5693e9, 'input_theme')
     def struct_0x3c5693e9(self):
-        return Struct(
-            'sname' / Computed('input_theme'),
-            'signature' / Hex(Const(0x3c5693e9, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul)
 
     @structures
     def input_theme_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xf5890df1: LazyBound(self.struct_0xf5890df1),
             0x3c5693e9: LazyBound(self.struct_0x3c5693e9)
@@ -9921,9 +9423,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf21158c6, 'input_user')
     def struct_0xf21158c6(self):
-        return Struct(
-            'sname' / Computed('input_user'),
-            'signature' / Hex(Const(0xf21158c6, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'access_hash' / Int64ul)
 
@@ -9933,16 +9433,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1da448e2, 'input_user_from_message')
     def struct_0x1da448e2(self):
-        return Struct(
-            'sname' / Computed('input_user_from_message'),
-            'signature' / Hex(Const(0x1da448e2, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul,
             'user_id' / Int64ul)
 
     @structures
     def input_user_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xf7c1b13f: LazyBound(self.struct_0xf7c1b13f),
             0xf21158c6: LazyBound(self.struct_0xf21158c6),
@@ -9957,9 +9454,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe630b979, 'input_wall_paper')
     def struct_0xe630b979(self):
-        return Struct(
-            'sname' / Computed('input_wall_paper'),
-            'signature' / Hex(Const(0xe630b979, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul)
 
@@ -9973,7 +9468,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def input_wall_paper_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xe630b979: LazyBound(self.struct_0xe630b979),
             0x967a462e: LazyBound(self.struct_0x967a462e),
@@ -9987,9 +9481,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x9f2221c9, 'input_web_file_geo_point_location')
     def struct_0x9f2221c9(self):
-        return Struct(
-            'sname' / Computed('input_web_file_geo_point_location'),
-            'signature' / Hex(Const(0x9f2221c9, Int32ul)),
+        return (
             'geo_point' / self.input_geo_point_structures('geo_point'),
             'access_hash' / Int64ul,
             'w' / Int32ul,
@@ -9999,15 +9491,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc239d686, 'input_web_file_location')
     def struct_0xc239d686(self):
-        return Struct(
-            'sname' / Computed('input_web_file_location'),
-            'signature' / Hex(Const(0xc239d686, Int32ul)),
+        return (
             'url' / TString,
             'access_hash' / Int64ul)
 
     @structures
     def input_web_file_location_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x9f2221c9: LazyBound(self.struct_0x9f2221c9),
             0xc239d686: LazyBound(self.struct_0xc239d686)
@@ -10090,7 +9579,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def invoice_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x049ee584: LazyBound(self.struct_0x049ee584),
             0x5db95a15: LazyBound(self.struct_0x5db95a15),
@@ -10128,7 +9616,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def json_value_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xc7345e6a: LazyBound(self.struct_0xc7345e6a),
             0x3f6d7b68: LazyBound(self.struct_0x3f6d7b68),
@@ -10145,9 +9632,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa0c0505c, 'keyboard_button_simple_web_view')
     def struct_0xa0c0505c(self):
-        return Struct(
-            'sname' / Computed('keyboard_button_simple_web_view'),
-            'signature' / Hex(Const(0xa0c0505c, Int32ul)),
+        return (
             'text' / TString,
             'url' / TString)
 
@@ -10161,9 +9646,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x258aff05, 'keyboard_button_url')
     def struct_0x258aff05(self):
-        return Struct(
-            'sname' / Computed('keyboard_button_url'),
-            'signature' / Hex(Const(0x258aff05, Int32ul)),
+        return (
             'text' / TString,
             'url' / TString)
 
@@ -10222,9 +9705,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x683a5e46, 'keyboard_button_callback_layer117')
     def struct_0x683a5e46(self):
-        return Struct(
-            'sname' / Computed('keyboard_button_callback_layer117'),
-            'signature' / Hex(Const(0x683a5e46, Int32ul)),
+        return (
             'text' / TString,
             'data' / TBytes)
 
@@ -10256,42 +9737,32 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe988037b, 'input_keyboard_button_user_profile')
     def struct_0xe988037b(self):
-        return Struct(
-            'sname' / Computed('input_keyboard_button_user_profile'),
-            'signature' / Hex(Const(0xe988037b, Int32ul)),
+        return (
             'text' / TString,
             'input_user' / self.input_user_structures('input_user'))
 
     @constructor(0x308660c1, 'keyboard_button_user_profile')
     def struct_0x308660c1(self):
-        return Struct(
-            'sname' / Computed('keyboard_button_user_profile'),
-            'signature' / Hex(Const(0x308660c1, Int32ul)),
+        return (
             'text' / TString,
             'user_id' / Int64ul)
 
     @constructor(0x13767230, 'keyboard_button_web_view')
     def struct_0x13767230(self):
-        return Struct(
-            'sname' / Computed('keyboard_button_web_view'),
-            'signature' / Hex(Const(0x13767230, Int32ul)),
+        return (
             'text' / TString,
             'url' / TString)
 
     @constructor(0x0d0b468c, 'keyboard_button_request_peer_layer168')
     def struct_0x0d0b468c(self):
-        return Struct(
-            'sname' / Computed('keyboard_button_request_peer_layer168'),
-            'signature' / Hex(Const(0x0d0b468c, Int32ul)),
+        return (
             'text' / TString,
             'button_id' / Int32ul,
             'peer_type' / self.request_peer_type_structures('peer_type'))
 
     @constructor(0x53d7bfd8, 'keyboard_button_request_peer')
     def struct_0x53d7bfd8(self):
-        return Struct(
-            'sname' / Computed('keyboard_button_request_peer'),
-            'signature' / Hex(Const(0x53d7bfd8, Int32ul)),
+        return (
             'text' / TString,
             'button_id' / Int32ul,
             'peer_type' / self.request_peer_type_structures('peer_type'),
@@ -10299,15 +9770,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x75d2698e, 'keyboard_button_copy')
     def struct_0x75d2698e(self):
-        return Struct(
-            'sname' / Computed('keyboard_button_copy'),
-            'signature' / Hex(Const(0x75d2698e, Int32ul)),
+        return (
             'text' / TString,
             'copy_text' / TString)
 
     @structures
     def keyboard_button_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xa0c0505c: LazyBound(self.struct_0xa0c0505c),
             0xb16a6c29: LazyBound(self.struct_0xb16a6c29),
@@ -10357,9 +9825,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xcad181f6, 'lang_pack_string')
     def struct_0xcad181f6(self):
-        return Struct(
-            'sname' / Computed('lang_pack_string'),
-            'signature' / Hex(Const(0xcad181f6, Int32ul)),
+        return (
             'key' / TString,
             'value' / TString)
 
@@ -10369,7 +9835,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def lang_pack_string_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x6c47ac9f: LazyBound(self.struct_0x6c47ac9f),
             0xcad181f6: LazyBound(self.struct_0xcad181f6),
@@ -10383,9 +9848,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x555555f5, 'message_action_login_unknown_location')
     def struct_0x555555f5(self):
-        return Struct(
-            'sname' / Computed('message_action_login_unknown_location'),
-            'signature' / Hex(Const(0x555555f5, Int32ul)),
+        return (
             'title' / TString,
             'address' / TString)
 
@@ -10399,25 +9862,19 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa6638b9a, 'message_action_chat_create_layer131')
     def struct_0xa6638b9a(self):
-        return Struct(
-            'sname' / Computed('message_action_chat_create_layer131'),
-            'signature' / Hex(Const(0xa6638b9a, Int32ul)),
+        return (
             'title' / TString,
             'users' / self.vector(Int32ul, 'users'))
 
     @constructor(0xbd47cbad, 'message_action_chat_create')
     def struct_0xbd47cbad(self):
-        return Struct(
-            'sname' / Computed('message_action_chat_create'),
-            'signature' / Hex(Const(0xbd47cbad, Int32ul)),
+        return (
             'title' / TString,
             'users' / self.vector(Int64ul, 'users'))
 
     @constructor(0x502f92f7, 'message_action_invite_to_group_call')
     def struct_0x502f92f7(self):
-        return Struct(
-            'sname' / Computed('message_action_invite_to_group_call'),
-            'signature' / Hex(Const(0x502f92f7, Int32ul)),
+        return (
             'call' / self.struct_0xd8aa840f(),
             'users' / self.vector(Int64ul, 'users'))
 
@@ -10462,17 +9919,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x2a9fadc5, 'message_action_giveaway_results_layer186')
     def struct_0x2a9fadc5(self):
-        return Struct(
-            'sname' / Computed('message_action_giveaway_results_layer186'),
-            'signature' / Hex(Const(0x2a9fadc5, Int32ul)),
+        return (
             'winners_count' / Int32ul,
             'unclaimed_count' / Int32ul)
 
     @constructor(0xea3948e9, 'message_action_channel_migrate_from')
     def struct_0xea3948e9(self):
-        return Struct(
-            'sname' / Computed('message_action_channel_migrate_from'),
-            'signature' / Hex(Const(0xea3948e9, Int32ul)),
+        return (
             'title' / TString,
             'chat_id' / Int64ul)
 
@@ -10516,9 +9969,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb055eaee, 'message_action_channel_migrate_from_layer131')
     def struct_0xb055eaee(self):
-        return Struct(
-            'sname' / Computed('message_action_channel_migrate_from_layer131'),
-            'signature' / Hex(Const(0xb055eaee, Int32ul)),
+        return (
             'title' / TString,
             'chat_id' / Int32ul)
 
@@ -10663,9 +10114,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x47dd8079, 'message_action_web_view_data_sent_me')
     def struct_0x47dd8079(self):
-        return Struct(
-            'sname' / Computed('message_action_web_view_data_sent_me'),
-            'signature' / Hex(Const(0x47dd8079, Int32ul)),
+        return (
             'text' / TString,
             'data' / TString)
 
@@ -10691,9 +10140,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x98e0d697, 'message_action_geo_proximity_reached')
     def struct_0x98e0d697(self):
-        return Struct(
-            'sname' / Computed('message_action_geo_proximity_reached'),
-            'signature' / Hex(Const(0x98e0d697, Int32ul)),
+        return (
             'from_id' / self.peer_structures('from_id'),
             'to_id' / self.peer_structures('to_id'),
             'distance' / Int32ul)
@@ -10716,9 +10163,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x76b9f11a, 'message_action_invite_to_group_call_layer131')
     def struct_0x76b9f11a(self):
-        return Struct(
-            'sname' / Computed('message_action_invite_to_group_call_layer131'),
-            'signature' / Hex(Const(0x76b9f11a, Int32ul)),
+        return (
             'call' / self.struct_0xd8aa840f(),
             'users' / self.vector(Int32ul, 'users'))
 
@@ -10797,9 +10242,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x40699cd0, 'message_action_payment_sent_layer140')
     def struct_0x40699cd0(self):
-        return Struct(
-            'sname' / Computed('message_action_payment_sent_layer140'),
-            'signature' / Hex(Const(0x40699cd0, Int32ul)),
+        return (
             'currency' / TString,
             'total_amount' / Int64ul)
 
@@ -10809,17 +10252,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x92a72876, 'message_action_game_score')
     def struct_0x92a72876(self):
-        return Struct(
-            'sname' / Computed('message_action_game_score'),
-            'signature' / Hex(Const(0x92a72876, Int32ul)),
+        return (
             'game_id' / Int64ul,
             'score' / Int32ul)
 
     @constructor(0xb3a07661, 'message_action_group_call_scheduled')
     def struct_0xb3a07661(self):
-        return Struct(
-            'sname' / Computed('message_action_group_call_scheduled'),
-            'signature' / Hex(Const(0xb3a07661, Int32ul)),
+        return (
             'call' / self.struct_0xd8aa840f(),
             'schedule_date' / TTimestamp)
 
@@ -10893,17 +10332,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xfe77345d, 'message_action_requested_peer_layer168')
     def struct_0xfe77345d(self):
-        return Struct(
-            'sname' / Computed('message_action_requested_peer_layer168'),
-            'signature' / Hex(Const(0xfe77345d, Int32ul)),
+        return (
             'button_id' / Int32ul,
             'peer' / self.peer_structures('peer'))
 
     @constructor(0x31518e9b, 'message_action_requested_peer')
     def struct_0x31518e9b(self):
-        return Struct(
-            'sname' / Computed('message_action_requested_peer'),
-            'signature' / Hex(Const(0x31518e9b, Int32ul)),
+        return (
             'button_id' / Int32ul,
             'peers' / self.vector(self.peer_structures('peers'), 'peers'))
 
@@ -11064,7 +10499,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def message_action_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x555555f5: LazyBound(self.struct_0x555555f5),
             0x555555f7: LazyBound(self.struct_0x555555f7),
@@ -11155,133 +10589,101 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x76a6d327, 'message_entity_text_url')
     def struct_0x76a6d327(self):
-        return Struct(
-            'sname' / Computed('message_entity_text_url'),
-            'signature' / Hex(Const(0x76a6d327, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul,
             'url' / TString)
 
     @constructor(0x6cef8ac7, 'message_entity_bot_command')
     def struct_0x6cef8ac7(self):
-        return Struct(
-            'sname' / Computed('message_entity_bot_command'),
-            'signature' / Hex(Const(0x6cef8ac7, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul)
 
     @constructor(0x64e475c2, 'message_entity_email')
     def struct_0x64e475c2(self):
-        return Struct(
-            'sname' / Computed('message_entity_email'),
-            'signature' / Hex(Const(0x64e475c2, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul)
 
     @constructor(0x73924be0, 'message_entity_pre')
     def struct_0x73924be0(self):
-        return Struct(
-            'sname' / Computed('message_entity_pre'),
-            'signature' / Hex(Const(0x73924be0, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul,
             'language' / TString)
 
     @constructor(0xbb92ba95, 'message_entity_unknown')
     def struct_0xbb92ba95(self):
-        return Struct(
-            'sname' / Computed('message_entity_unknown'),
-            'signature' / Hex(Const(0xbb92ba95, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul)
 
     @constructor(0x6ed02538, 'message_entity_url')
     def struct_0x6ed02538(self):
-        return Struct(
-            'sname' / Computed('message_entity_url'),
-            'signature' / Hex(Const(0x6ed02538, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul)
 
     @constructor(0x826f8b60, 'message_entity_italic')
     def struct_0x826f8b60(self):
-        return Struct(
-            'sname' / Computed('message_entity_italic'),
-            'signature' / Hex(Const(0x826f8b60, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul)
 
     @constructor(0xfa04579d, 'message_entity_mention')
     def struct_0xfa04579d(self):
-        return Struct(
-            'sname' / Computed('message_entity_mention'),
-            'signature' / Hex(Const(0xfa04579d, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul)
 
     @constructor(0x32ca960f, 'message_entity_spoiler')
     def struct_0x32ca960f(self):
-        return Struct(
-            'sname' / Computed('message_entity_spoiler'),
-            'signature' / Hex(Const(0x32ca960f, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul)
 
     @constructor(0x352dca58, 'message_entity_mention_name_layer131')
     def struct_0x352dca58(self):
-        return Struct(
-            'sname' / Computed('message_entity_mention_name_layer131'),
-            'signature' / Hex(Const(0x352dca58, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul,
             'user_id' / Int32ul)
 
     @constructor(0x208e68c9, 'input_message_entity_mention_name')
     def struct_0x208e68c9(self):
-        return Struct(
-            'sname' / Computed('input_message_entity_mention_name'),
-            'signature' / Hex(Const(0x208e68c9, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul,
             'user_id' / self.input_user_structures('user_id'))
 
     @constructor(0x4c4e743f, 'message_entity_cashtag')
     def struct_0x4c4e743f(self):
-        return Struct(
-            'sname' / Computed('message_entity_cashtag'),
-            'signature' / Hex(Const(0x4c4e743f, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul)
 
     @constructor(0xbd610bc9, 'message_entity_bold')
     def struct_0xbd610bc9(self):
-        return Struct(
-            'sname' / Computed('message_entity_bold'),
-            'signature' / Hex(Const(0xbd610bc9, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul)
 
     @constructor(0x6f635b0d, 'message_entity_hashtag')
     def struct_0x6f635b0d(self):
-        return Struct(
-            'sname' / Computed('message_entity_hashtag'),
-            'signature' / Hex(Const(0x6f635b0d, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul)
 
     @constructor(0x28a20571, 'message_entity_code')
     def struct_0x28a20571(self):
-        return Struct(
-            'sname' / Computed('message_entity_code'),
-            'signature' / Hex(Const(0x28a20571, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul)
 
     @constructor(0xbf0693d4, 'message_entity_strike')
     def struct_0xbf0693d4(self):
-        return Struct(
-            'sname' / Computed('message_entity_strike'),
-            'signature' / Hex(Const(0xbf0693d4, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul)
 
@@ -11297,57 +10699,44 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x020df5d0, 'message_entity_blockquote_layer180')
     def struct_0x020df5d0(self):
-        return Struct(
-            'sname' / Computed('message_entity_blockquote_layer180'),
-            'signature' / Hex(Const(0x020df5d0, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul)
 
     @constructor(0x9c4e7e8b, 'message_entity_underline')
     def struct_0x9c4e7e8b(self):
-        return Struct(
-            'sname' / Computed('message_entity_underline'),
-            'signature' / Hex(Const(0x9c4e7e8b, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul)
 
     @constructor(0x761e6af4, 'message_entity_bank_card')
     def struct_0x761e6af4(self):
-        return Struct(
-            'sname' / Computed('message_entity_bank_card'),
-            'signature' / Hex(Const(0x761e6af4, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul)
 
     @constructor(0x9b69e34b, 'message_entity_phone')
     def struct_0x9b69e34b(self):
-        return Struct(
-            'sname' / Computed('message_entity_phone'),
-            'signature' / Hex(Const(0x9b69e34b, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul)
 
     @constructor(0xdc7b1140, 'message_entity_mention_name')
     def struct_0xdc7b1140(self):
-        return Struct(
-            'sname' / Computed('message_entity_mention_name'),
-            'signature' / Hex(Const(0xdc7b1140, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul,
             'user_id' / Int64ul)
 
     @constructor(0xc8cf05f8, 'message_entity_custom_emoji')
     def struct_0xc8cf05f8(self):
-        return Struct(
-            'sname' / Computed('message_entity_custom_emoji'),
-            'signature' / Hex(Const(0xc8cf05f8, Int32ul)),
+        return (
             'offset' / Int32ul,
             'length' / Int32ul,
             'document_id' / Int64ul)
 
     @structures
     def message_entity_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x76a6d327: LazyBound(self.struct_0x76a6d327),
             0x6cef8ac7: LazyBound(self.struct_0x6cef8ac7),
@@ -11399,7 +10788,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def message_extended_media_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xad628cc8: LazyBound(self.struct_0xad628cc8),
             0xee479c64: LazyBound(self.struct_0xee479c64)
@@ -11556,7 +10944,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def message_fwd_header_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xc786ddcb: LazyBound(self.struct_0xc786ddcb),
             0x353a686b: LazyBound(self.struct_0x353a686b),
@@ -11657,9 +11044,7 @@ class TLStruct:  # pylint: disable=C0103
     @constructor(0xc79aee1d, 'message_media_story_full')
     def struct_0xc79aee1d(self):
         '''custom'''
-        return Struct(
-            'sname' / Computed('message_media_story_full'),
-            'signature' / Hex(Const(0xc79aee1d, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'id' / Int32ul,
             'story_item' / self.story_item_structures('story_item'),
@@ -11668,18 +11053,14 @@ class TLStruct:  # pylint: disable=C0103
     @constructor(0xc79aee1f, 'message_media_story_full_old')
     def struct_0xc79aee1f(self):
         '''custom'''
-        return Struct(
-            'sname' / Computed('message_media_story_full_old'),
-            'signature' / Hex(Const(0xc79aee1f, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'id' / Int32ul,
             'story_item' / self.story_item_structures('story_item'))
 
     @constructor(0x7912b71f, 'message_media_venue_layer71')
     def struct_0x7912b71f(self):
-        return Struct(
-            'sname' / Computed('message_media_venue_layer71'),
-            'signature' / Hex(Const(0x7912b71f, Int32ul)),
+        return (
             'geo' / self.geo_point_structures('geo'),
             'title' / TString,
             'address' / TString,
@@ -11701,17 +11082,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7c3c2609, 'message_media_geo_live_layer119')
     def struct_0x7c3c2609(self):
-        return Struct(
-            'sname' / Computed('message_media_geo_live_layer119'),
-            'signature' / Hex(Const(0x7c3c2609, Int32ul)),
+        return (
             'geo' / self.geo_point_structures('geo'),
             'period' / Int32ul)
 
     @constructor(0x2ec0533f, 'message_media_venue')
     def struct_0x2ec0533f(self):
-        return Struct(
-            'sname' / Computed('message_media_venue'),
-            'signature' / Hex(Const(0x2ec0533f, Int32ul)),
+        return (
             'geo' / self.geo_point_structures('geo'),
             'title' / TString,
             'address' / TString,
@@ -11729,9 +11106,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf3e02ea8, 'message_media_document_layer68')
     def struct_0xf3e02ea8(self):
-        return Struct(
-            'sname' / Computed('message_media_document_layer68'),
-            'signature' / Hex(Const(0xf3e02ea8, Int32ul)),
+        return (
             'document' / self.document_structures('document'),
             'caption_legacy' / TString)
 
@@ -11754,9 +11129,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5e7d2f39, 'message_media_contact_layer81')
     def struct_0x5e7d2f39(self):
-        return Struct(
-            'sname' / Computed('message_media_contact_layer81'),
-            'signature' / Hex(Const(0x5e7d2f39, Int32ul)),
+        return (
             'phone_number' / TString,
             'first_name' / TString,
             'last_name' / TString,
@@ -11776,9 +11149,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x4bd6e798, 'message_media_poll')
     def struct_0x4bd6e798(self):
-        return Struct(
-            'sname' / Computed('message_media_poll'),
-            'signature' / Hex(Const(0x4bd6e798, Int32ul)),
+        return (
             'poll' / self.poll_structures('poll'),
             'results' / self.poll_results_structures('results'))
 
@@ -11878,9 +11249,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa8852491, 'message_media_paid_media')
     def struct_0xa8852491(self):
-        return Struct(
-            'sname' / Computed('message_media_paid_media'),
-            'signature' / Hex(Const(0xa8852491, Int32ul)),
+        return (
             'stars_amount' / Int64ul,
             'extended_media' / self.vector(self.message_extended_media_structures('extended_media'), 'extended_media'))
 
@@ -11899,25 +11268,19 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3d8ce53d, 'message_media_photo_layer68')
     def struct_0x3d8ce53d(self):
-        return Struct(
-            'sname' / Computed('message_media_photo_layer68'),
-            'signature' / Hex(Const(0x3d8ce53d, Int32ul)),
+        return (
             'photo' / self.photo_structures('photo'),
             'caption_legacy' / TString)
 
     @constructor(0x5bcf1675, 'message_media_video_layer45')
     def struct_0x5bcf1675(self):
-        return Struct(
-            'sname' / Computed('message_media_video_layer45'),
-            'signature' / Hex(Const(0x5bcf1675, Int32ul)),
+        return (
             'video_unused' / self.video_structures('video_unused'),
             'caption_legacy' / TString)
 
     @constructor(0x3f7ee58b, 'message_media_dice')
     def struct_0x3f7ee58b(self):
-        return Struct(
-            'sname' / Computed('message_media_dice'),
-            'signature' / Hex(Const(0x3f7ee58b, Int32ul)),
+        return (
             'value' / Int32ul,
             'emoticon' / TString)
 
@@ -12038,9 +11401,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xcbf24940, 'message_media_contact_layer131')
     def struct_0xcbf24940(self):
-        return Struct(
-            'sname' / Computed('message_media_contact_layer131'),
-            'signature' / Hex(Const(0xcbf24940, Int32ul)),
+        return (
             'phone_number' / TString,
             'first_name' / TString,
             'last_name' / TString,
@@ -12049,9 +11410,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x70322949, 'message_media_contact')
     def struct_0x70322949(self):
-        return Struct(
-            'sname' / Computed('message_media_contact'),
-            'signature' / Hex(Const(0x70322949, Int32ul)),
+        return (
             'phone_number' / TString,
             'first_name' / TString,
             'last_name' / TString,
@@ -12060,7 +11419,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def message_media_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x29632a36: LazyBound(self.struct_0x29632a36),
             0xc6b68300: LazyBound(self.struct_0xc6b68300),
@@ -12149,15 +11507,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x932844fa, 'message_peer_reaction_layer137')
     def struct_0x932844fa(self):
-        return Struct(
-            'sname' / Computed('message_peer_reaction_layer137'),
-            'signature' / Hex(Const(0x932844fa, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'reaction' / TString)
 
     @structures
     def message_peer_reaction_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x8c79b63c: LazyBound(self.struct_0x8c79b63c),
             0xb156fe9c: LazyBound(self.struct_0xb156fe9c),
@@ -12172,33 +11527,26 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x4628f6e6, 'message_peer_vote_multiple')
     def struct_0x4628f6e6(self):
-        return Struct(
-            'sname' / Computed('message_peer_vote_multiple'),
-            'signature' / Hex(Const(0x4628f6e6, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'options' / self.vector(TBytes, 'options'),
             'date' / TTimestamp)
 
     @constructor(0xb6cc2d5c, 'message_peer_vote')
     def struct_0xb6cc2d5c(self):
-        return Struct(
-            'sname' / Computed('message_peer_vote'),
-            'signature' / Hex(Const(0xb6cc2d5c, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'option' / TBytes,
             'date' / TTimestamp)
 
     @constructor(0x74cda504, 'message_peer_vote_input_option')
     def struct_0x74cda504(self):
-        return Struct(
-            'sname' / Computed('message_peer_vote_input_option'),
-            'signature' / Hex(Const(0x74cda504, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'date' / TTimestamp)
 
     @structures
     def message_peer_vote_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x4628f6e6: LazyBound(self.struct_0x4628f6e6),
             0xb6cc2d5c: LazyBound(self.struct_0xb6cc2d5c),
@@ -12261,7 +11609,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def message_reactions_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x087b6e36: LazyBound(self.struct_0x087b6e36),
             0x0a339f0b: LazyBound(self.struct_0x0a339f0b),
@@ -12300,7 +11647,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def message_reactor_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x4ba3a95a: LazyBound(self.struct_0x4ba3a95a),
             0xef00d448: LazyBound(self.struct_0xef00d448)
@@ -12347,7 +11693,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def message_replies_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x4128faac: LazyBound(self.struct_0x4128faac),
             0x83d60fc2: LazyBound(self.struct_0x83d60fc2)
@@ -12360,17 +11705,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x0e5af939, 'message_reply_story_header')
     def struct_0x0e5af939(self):
-        return Struct(
-            'sname' / Computed('message_reply_story_header'),
-            'signature' / Hex(Const(0x0e5af939, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'story_id' / Int32ul)
 
     @constructor(0x9c98bfc1, 'message_reply_story_header_layer174')
     def struct_0x9c98bfc1(self):
-        return Struct(
-            'sname' / Computed('message_reply_story_header_layer174'),
-            'signature' / Hex(Const(0x9c98bfc1, Int32ul)),
+        return (
             'peer_user_id' / Int64ul,
             'story_id' / Int32ul)
 
@@ -12461,7 +11802,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def message_reply_header_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x0e5af939: LazyBound(self.struct_0x0e5af939),
             0x9c98bfc1: LazyBound(self.struct_0x9c98bfc1),
@@ -12897,9 +12237,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x05f46804, 'message_forwarded_old')
     def struct_0x05f46804(self):
-        return Struct(
-            'sname' / Computed('message_forwarded_old'),
-            'signature' / Hex(Const(0x05f46804, Int32ul)),
+        return (
             'id' / Int32ul,
             'fwd_from_user_id' / Int32ul,
             'fwd_from_date' / TTimestamp,
@@ -12932,9 +12270,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x9f8d60bb, 'message_service_old')
     def struct_0x9f8d60bb(self):
-        return Struct(
-            'sname' / Computed('message_service_old'),
-            'signature' / Hex(Const(0x9f8d60bb, Int32ul)),
+        return (
             'id' / Int32ul,
             'from_user_id' / Int32ul,
             'peer_id' / self.peer_structures('peer_id'),
@@ -12945,9 +12281,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x22eb6aba, 'message_old')
     def struct_0x22eb6aba(self):
-        return Struct(
-            'sname' / Computed('message_old'),
-            'signature' / Hex(Const(0x22eb6aba, Int32ul)),
+        return (
             'id' / Int32ul,
             'from_user_id' / Int32ul,
             'peer_id' / self.peer_structures('peer_id'),
@@ -13946,7 +13280,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def message_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x1d86f70e: LazyBound(self.struct_0x1d86f70e),
             0xa7ab1991: LazyBound(self.struct_0xa7ab1991),
@@ -13998,9 +13331,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xcdbbcebb, 'messages_all_stickers')
     def struct_0xcdbbcebb(self):
-        return Struct(
-            'sname' / Computed('messages_all_stickers'),
-            'signature' / Hex(Const(0xcdbbcebb, Int32ul)),
+        return (
             'hash2' / Int64ul,
             'sets' / self.vector(self.sticker_set_structures('sets'), 'sets'))
 
@@ -14010,7 +13341,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def messages_all_stickers_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xcdbbcebb: LazyBound(self.struct_0xcdbbcebb),
             0xe86602c3: LazyBound(self.struct_0xe86602c3)
@@ -14027,16 +13357,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xbddb616e, 'messages_available_effects')
     def struct_0xbddb616e(self):
-        return Struct(
-            'sname' / Computed('messages_available_effects'),
-            'signature' / Hex(Const(0xbddb616e, Int32ul)),
+        return (
             'hash' / Int32ul,
             'effects' / self.vector(self.struct_0x93c3e27e(), 'effects'),
             'documents' / self.vector(self.document_structures('documents'), 'documents'))
 
     @structures
     def messages_available_effects_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xd1ed9a5b: LazyBound(self.struct_0xd1ed9a5b),
             0xbddb616e: LazyBound(self.struct_0xbddb616e)
@@ -14053,15 +13380,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x768e3aad, 'messages_available_reactions')
     def struct_0x768e3aad(self):
-        return Struct(
-            'sname' / Computed('messages_available_reactions'),
-            'signature' / Hex(Const(0x768e3aad, Int32ul)),
+        return (
             'hash' / Int32ul,
             'reactions' / self.vector(self.struct_0xc077ec01(), 'reactions'))
 
     @structures
     def messages_available_reactions_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x9f071957: LazyBound(self.struct_0x9f071957),
             0x768e3aad: LazyBound(self.struct_0x768e3aad)
@@ -14123,7 +13447,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def messages_bot_results_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xccd3563d: LazyBound(self.struct_0xccd3563d),
             0x947ca848: LazyBound(self.struct_0x947ca848),
@@ -14141,15 +13464,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x9cd81144, 'messages_chats_slice')
     def struct_0x9cd81144(self):
-        return Struct(
-            'sname' / Computed('messages_chats_slice'),
-            'signature' / Hex(Const(0x9cd81144, Int32ul)),
+        return (
             'count' / Int32ul,
             'chats' / self.vector(self.chat_structures('chats'), 'chats'))
 
     @structures
     def messages_chats_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x64ff9fd5: LazyBound(self.struct_0x64ff9fd5),
             0x9cd81144: LazyBound(self.struct_0x9cd81144)
@@ -14166,9 +13486,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x2c221edd, 'messages_dh_config')
     def struct_0x2c221edd(self):
-        return Struct(
-            'sname' / Computed('messages_dh_config'),
-            'signature' / Hex(Const(0x2c221edd, Int32ul)),
+        return (
             'g' / Int32ul,
             'p' / TBytes,
             'version' / Int32ul,
@@ -14176,7 +13494,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def messages_dh_config_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xc0e24635: LazyBound(self.struct_0xc0e24635),
             0x2c221edd: LazyBound(self.struct_0x2c221edd)
@@ -14189,9 +13506,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x15ba6c40, 'messages_dialogs')
     def struct_0x15ba6c40(self):
-        return Struct(
-            'sname' / Computed('messages_dialogs'),
-            'signature' / Hex(Const(0x15ba6c40, Int32ul)),
+        return (
             'dialogs' / self.vector(self.dialog_structures('dialogs'), 'dialogs'),
             'messages' / self.vector(self.message_structures('messages'), 'messages'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
@@ -14199,9 +13514,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x71e094f3, 'messages_dialogs_slice')
     def struct_0x71e094f3(self):
-        return Struct(
-            'sname' / Computed('messages_dialogs_slice'),
-            'signature' / Hex(Const(0x71e094f3, Int32ul)),
+        return (
             'count' / Int32ul,
             'dialogs' / self.vector(self.dialog_structures('dialogs'), 'dialogs'),
             'messages' / self.vector(self.message_structures('messages'), 'messages'),
@@ -14214,7 +13527,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def messages_dialogs_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x15ba6c40: LazyBound(self.struct_0x15ba6c40),
             0x71e094f3: LazyBound(self.struct_0x71e094f3),
@@ -14232,15 +13544,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x881fb94b, 'messages_emoji_groups')
     def struct_0x881fb94b(self):
-        return Struct(
-            'sname' / Computed('messages_emoji_groups'),
-            'signature' / Hex(Const(0x881fb94b, Int32ul)),
+        return (
             'hash' / Int32ul,
             'groups' / self.vector(self.emoji_group_structures('groups'), 'groups'))
 
     @structures
     def messages_emoji_groups_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x6fb4ad87: LazyBound(self.struct_0x6fb4ad87),
             0x881fb94b: LazyBound(self.struct_0x881fb94b)
@@ -14253,24 +13562,19 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x222600ef, 'messages_exported_chat_invite_replaced')
     def struct_0x222600ef(self):
-        return Struct(
-            'sname' / Computed('messages_exported_chat_invite_replaced'),
-            'signature' / Hex(Const(0x222600ef, Int32ul)),
+        return (
             'invite' / self.exported_chat_invite_structures('invite'),
             'new_invite' / self.exported_chat_invite_structures('new_invite'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0x1871be50, 'messages_exported_chat_invite')
     def struct_0x1871be50(self):
-        return Struct(
-            'sname' / Computed('messages_exported_chat_invite'),
-            'signature' / Hex(Const(0x1871be50, Int32ul)),
+        return (
             'invite' / self.exported_chat_invite_structures('invite'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @structures
     def messages_exported_chat_invite_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x222600ef: LazyBound(self.struct_0x222600ef),
             0x1871be50: LazyBound(self.struct_0x1871be50)
@@ -14287,16 +13591,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x2cb51097, 'messages_faved_stickers')
     def struct_0x2cb51097(self):
-        return Struct(
-            'sname' / Computed('messages_faved_stickers'),
-            'signature' / Hex(Const(0x2cb51097, Int32ul)),
+        return (
             'hash' / Int64ul,
             'packs' / self.vector(self.struct_0x12b299d4(), 'packs'),
             'stickers' / self.vector(self.document_structures('stickers'), 'stickers'))
 
     @structures
     def messages_faved_stickers_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x9e8fa6d3: LazyBound(self.struct_0x9e8fa6d3),
             0x2cb51097: LazyBound(self.struct_0x2cb51097)
@@ -14325,7 +13626,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def messages_featured_stickers_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xbe382906: LazyBound(self.struct_0xbe382906),
             0xc6dc0c66: LazyBound(self.struct_0xc6dc0c66)
@@ -14414,7 +13714,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def messages_filter_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xffc86587: LazyBound(self.struct_0xffc86587),
             0x3751b49e: LazyBound(self.struct_0x3751b49e),
@@ -14447,15 +13746,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x8af09dd2, 'messages_found_sticker_sets')
     def struct_0x8af09dd2(self):
-        return Struct(
-            'sname' / Computed('messages_found_sticker_sets'),
-            'signature' / Hex(Const(0x8af09dd2, Int32ul)),
+        return (
             'hash' / Int64ul,
             'sets' / self.vector(self.sticker_set_covered_structures('sets'), 'sets'))
 
     @structures
     def messages_found_sticker_sets_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x0d54b65d: LazyBound(self.struct_0x0d54b65d),
             0x8af09dd2: LazyBound(self.struct_0x8af09dd2)
@@ -14488,7 +13784,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def messages_found_stickers_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x82c9e290: LazyBound(self.struct_0x82c9e290),
             0x6010c534: LazyBound(self.struct_0x6010c534)
@@ -14517,9 +13812,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x8c718e87, 'messages_messages')
     def struct_0x8c718e87(self):
-        return Struct(
-            'sname' / Computed('messages_messages'),
-            'signature' / Hex(Const(0x8c718e87, Int32ul)),
+        return (
             'messages' / self.vector(self.message_structures('messages'), 'messages'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
@@ -14546,7 +13839,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def messages_messages_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x3a54685e: LazyBound(self.struct_0x3a54685e),
             0x8c718e87: LazyBound(self.struct_0x8c718e87),
@@ -14561,9 +13853,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc68d6695, 'messages_quick_replies')
     def struct_0xc68d6695(self):
-        return Struct(
-            'sname' / Computed('messages_quick_replies'),
-            'signature' / Hex(Const(0xc68d6695, Int32ul)),
+        return (
             'quick_replies' / self.vector(self.struct_0x0697102b(), 'quick_replies'),
             'messages' / self.vector(self.message_structures('messages'), 'messages'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
@@ -14575,7 +13865,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def messages_quick_replies_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xc68d6695: LazyBound(self.struct_0xc68d6695),
             0x5f91eb5b: LazyBound(self.struct_0x5f91eb5b)
@@ -14592,15 +13881,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xeafdf716, 'messages_reactions')
     def struct_0xeafdf716(self):
-        return Struct(
-            'sname' / Computed('messages_reactions'),
-            'signature' / Hex(Const(0xeafdf716, Int32ul)),
+        return (
             'hash' / Int64ul,
             'reactions' / self.vector(self.reaction_structures('reactions'), 'reactions'))
 
     @structures
     def messages_reactions_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xb06fdbdf: LazyBound(self.struct_0xb06fdbdf),
             0xeafdf716: LazyBound(self.struct_0xeafdf716)
@@ -14613,9 +13899,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x88d37c56, 'messages_recent_stickers')
     def struct_0x88d37c56(self):
-        return Struct(
-            'sname' / Computed('messages_recent_stickers'),
-            'signature' / Hex(Const(0x88d37c56, Int32ul)),
+        return (
             'hash' / Int64ul,
             'packs' / self.vector(self.struct_0x12b299d4(), 'packs'),
             'stickers' / self.vector(self.document_structures('stickers'), 'stickers'),
@@ -14627,7 +13911,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def messages_recent_stickers_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x88d37c56: LazyBound(self.struct_0x88d37c56),
             0x0b17f890: LazyBound(self.struct_0x0b17f890)
@@ -14640,9 +13923,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf83ae221, 'messages_saved_dialogs')
     def struct_0xf83ae221(self):
-        return Struct(
-            'sname' / Computed('messages_saved_dialogs'),
-            'signature' / Hex(Const(0xf83ae221, Int32ul)),
+        return (
             'dialogs' / self.vector(self.struct_0xbd87cb6c(), 'dialogs'),
             'messages' / self.vector(self.message_structures('messages'), 'messages'),
             'users' / self.vector(self.user_structures('users'), 'users'),
@@ -14650,9 +13931,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x44ba9dd9, 'messages_saved_dialogs_slice')
     def struct_0x44ba9dd9(self):
-        return Struct(
-            'sname' / Computed('messages_saved_dialogs_slice'),
-            'signature' / Hex(Const(0x44ba9dd9, Int32ul)),
+        return (
             'count' / Int32ul,
             'dialogs' / self.vector(self.struct_0xbd87cb6c(), 'dialogs'),
             'messages' / self.vector(self.message_structures('messages'), 'messages'),
@@ -14665,7 +13944,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def messages_saved_dialogs_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xf83ae221: LazyBound(self.struct_0xf83ae221),
             0x44ba9dd9: LazyBound(self.struct_0x44ba9dd9),
@@ -14683,15 +13961,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x84a02a0d, 'messages_saved_gifs')
     def struct_0x84a02a0d(self):
-        return Struct(
-            'sname' / Computed('messages_saved_gifs'),
-            'signature' / Hex(Const(0x84a02a0d, Int32ul)),
+        return (
             'hash' / Int64ul,
             'gifs' / self.vector(self.document_structures('gifs'), 'gifs'))
 
     @structures
     def messages_saved_gifs_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xe8025ca2: LazyBound(self.struct_0xe8025ca2),
             0x84a02a0d: LazyBound(self.struct_0x84a02a0d)
@@ -14708,15 +13983,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3259950a, 'messages_saved_reactions_tags')
     def struct_0x3259950a(self):
-        return Struct(
-            'sname' / Computed('messages_saved_reactions_tags'),
-            'signature' / Hex(Const(0x3259950a, Int32ul)),
+        return (
             'tags' / self.vector(self.struct_0xcb6ff828(), 'tags'),
             'hash' / Int64ul)
 
     @structures
     def messages_saved_reaction_tags_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x889b59ef: LazyBound(self.struct_0x889b59ef),
             0x3259950a: LazyBound(self.struct_0x3259950a)
@@ -14733,15 +14005,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x9493ff32, 'messages_sent_encrypted_file')
     def struct_0x9493ff32(self):
-        return Struct(
-            'sname' / Computed('messages_sent_encrypted_file'),
-            'signature' / Hex(Const(0x9493ff32, Int32ul)),
+        return (
             'date' / TTimestamp,
             'file' / self.encrypted_file_structures('file'))
 
     @structures
     def messages_sent_encrypted_message_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x560f8935: LazyBound(self.struct_0x560f8935),
             0x9493ff32: LazyBound(self.struct_0x9493ff32)
@@ -14770,7 +14039,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def messages_sponsored_messages_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x1839490f: LazyBound(self.struct_0x1839490f),
             0xc9ee1d87: LazyBound(self.struct_0xc9ee1d87)
@@ -14791,7 +14059,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def messages_sticker_set_install_result_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x38641628: LazyBound(self.struct_0x38641628),
             0x35e410a8: LazyBound(self.struct_0x35e410a8)
@@ -14804,9 +14071,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x6e153f16, 'messages_sticker_set')
     def struct_0x6e153f16(self):
-        return Struct(
-            'sname' / Computed('messages_sticker_set'),
-            'signature' / Hex(Const(0x6e153f16, Int32ul)),
+        return (
             'set' / self.sticker_set_structures('set'),
             'packs' / self.vector(self.struct_0x12b299d4(), 'packs'),
             'keywords' / self.vector(self.struct_0xfcfeb29c(), 'keywords'),
@@ -14814,9 +14079,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb60a24a6, 'messages_sticker_set_layer146')
     def struct_0xb60a24a6(self):
-        return Struct(
-            'sname' / Computed('messages_sticker_set_layer146'),
-            'signature' / Hex(Const(0xb60a24a6, Int32ul)),
+        return (
             'set' / self.sticker_set_structures('set'),
             'packs' / self.vector(self.struct_0x12b299d4(), 'packs'),
             'documents' / self.vector(self.document_structures('documents'), 'documents'))
@@ -14827,7 +14090,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def messages_sticker_set_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x6e153f16: LazyBound(self.struct_0x6e153f16),
             0xb60a24a6: LazyBound(self.struct_0xb60a24a6),
@@ -14845,15 +14107,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x30a6ec7e, 'messages_stickers')
     def struct_0x30a6ec7e(self):
-        return Struct(
-            'sname' / Computed('messages_stickers'),
-            'signature' / Hex(Const(0x30a6ec7e, Int32ul)),
+        return (
             'hash' / Int64ul,
             'stickers' / self.vector(self.document_structures('stickers'), 'stickers'))
 
     @structures
     def messages_stickers_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xf1749a22: LazyBound(self.struct_0xf1749a22),
             0x30a6ec7e: LazyBound(self.struct_0x30a6ec7e)
@@ -14878,15 +14137,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x830b9ae4, 'notification_sound_local')
     def struct_0x830b9ae4(self):
-        return Struct(
-            'sname' / Computed('notification_sound_local'),
-            'signature' / Hex(Const(0x830b9ae4, Int32ul)),
+        return (
             'title' / TString,
             'data' / TString)
 
     @structures
     def notification_sound_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x97e8bebe: LazyBound(self.struct_0x97e8bebe),
             0x6f0c34df: LazyBound(self.struct_0x6f0c34df),
@@ -14901,9 +14157,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x226e6308, 'notify_forum_topic')
     def struct_0x226e6308(self):
-        return Struct(
-            'sname' / Computed('notify_forum_topic'),
-            'signature' / Hex(Const(0x226e6308, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'top_msg_id' / Int32ul)
 
@@ -14925,7 +14179,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def notify_peer_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x226e6308: LazyBound(self.struct_0x226e6308),
             0xd612e8ef: LazyBound(self.struct_0xd612e8ef),
@@ -14956,9 +14209,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf259a80b, 'page_block_embed_post')
     def struct_0xf259a80b(self):
-        return Struct(
-            'sname' / Computed('page_block_embed_post'),
-            'signature' / Hex(Const(0xf259a80b, Int32ul)),
+        return (
             'url' / TString,
             'webpage_id' / Int64ul,
             'author_photo_id' / Int64ul,
@@ -14985,17 +14236,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc070d93e, 'page_block_preformatted')
     def struct_0xc070d93e(self):
-        return Struct(
-            'sname' / Computed('page_block_preformatted'),
-            'signature' / Hex(Const(0xc070d93e, Int32ul)),
+        return (
             'text' / self.rich_text_structures('text'),
             'language' / TString)
 
     @constructor(0x16115a96, 'page_block_related_articles')
     def struct_0x16115a96(self):
-        return Struct(
-            'sname' / Computed('page_block_related_articles'),
-            'signature' / Hex(Const(0x16115a96, Int32ul)),
+        return (
             'title' / self.rich_text_structures('title'),
             'articles' / self.vector(self.struct_0xb390dc08(), 'articles'))
 
@@ -15005,9 +14252,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x031f9590, 'page_block_slideshow')
     def struct_0x031f9590(self):
-        return Struct(
-            'sname' / Computed('page_block_slideshow'),
-            'signature' / Hex(Const(0x031f9590, Int32ul)),
+        return (
             'items' / self.vector(self.page_block_structures('items'), 'items'),
             'caption' / self.struct_0x6f747657())
 
@@ -15017,9 +14262,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa44f3ef6, 'page_block_map')
     def struct_0xa44f3ef6(self):
-        return Struct(
-            'sname' / Computed('page_block_map'),
-            'signature' / Hex(Const(0xa44f3ef6, Int32ul)),
+        return (
             'geo' / self.geo_point_structures('geo'),
             'zoom' / Int32ul,
             'w' / Int32ul,
@@ -15052,25 +14295,19 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x65a0fa4d, 'page_block_collage')
     def struct_0x65a0fa4d(self):
-        return Struct(
-            'sname' / Computed('page_block_collage'),
-            'signature' / Hex(Const(0x65a0fa4d, Int32ul)),
+        return (
             'items' / self.vector(self.page_block_structures('items'), 'items'),
             'caption' / self.struct_0x6f747657())
 
     @constructor(0x3d5b64f2, 'page_block_author_date_layer60')
     def struct_0x3d5b64f2(self):
-        return Struct(
-            'sname' / Computed('page_block_author_date_layer60'),
-            'signature' / Hex(Const(0x3d5b64f2, Int32ul)),
+        return (
             'author' / TString,
             'published_date' / TTimestamp)
 
     @constructor(0x3a58c7f4, 'page_block_list_layer82')
     def struct_0x3a58c7f4(self):
-        return Struct(
-            'sname' / Computed('page_block_list_layer82'),
-            'signature' / Hex(Const(0x3a58c7f4, Int32ul)),
+        return (
             'ordered' / TBool,
             'items' / self.vector(self.page_list_item_structures('items'), 'items'))
 
@@ -15095,9 +14332,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x130c8963, 'page_block_slideshow_layer82')
     def struct_0x130c8963(self):
-        return Struct(
-            'sname' / Computed('page_block_slideshow_layer82'),
-            'signature' / Hex(Const(0x130c8963, Int32ul)),
+        return (
             'items' / self.vector(self.page_block_structures('items'), 'items'),
             'caption_text' / self.rich_text_structures('caption_text'))
 
@@ -15107,9 +14342,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x263d7c26, 'page_block_blockquote')
     def struct_0x263d7c26(self):
-        return Struct(
-            'sname' / Computed('page_block_blockquote'),
-            'signature' / Hex(Const(0x263d7c26, Int32ul)),
+        return (
             'text' / self.rich_text_structures('text'),
             'caption' / self.rich_text_structures('caption'))
 
@@ -15156,17 +14389,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x4f4456d3, 'page_block_pullquote')
     def struct_0x4f4456d3(self):
-        return Struct(
-            'sname' / Computed('page_block_pullquote'),
-            'signature' / Hex(Const(0x4f4456d3, Int32ul)),
+        return (
             'text' / self.rich_text_structures('text'),
             'caption' / self.rich_text_structures('caption'))
 
     @constructor(0x804361ea, 'page_block_audio')
     def struct_0x804361ea(self):
-        return Struct(
-            'sname' / Computed('page_block_audio'),
-            'signature' / Hex(Const(0x804361ea, Int32ul)),
+        return (
             'audio_id' / Int64ul,
             'caption' / self.struct_0x6f747657())
 
@@ -15183,9 +14412,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe9c69982, 'page_block_photo_layer82')
     def struct_0xe9c69982(self):
-        return Struct(
-            'sname' / Computed('page_block_photo_layer82'),
-            'signature' / Hex(Const(0xe9c69982, Int32ul)),
+        return (
             'photo_id' / Int64ul,
             'caption_text' / self.rich_text_structures('caption_text'))
 
@@ -15195,9 +14422,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x292c7be9, 'page_block_embed_post_layer82')
     def struct_0x292c7be9(self):
-        return Struct(
-            'sname' / Computed('page_block_embed_post_layer82'),
-            'signature' / Hex(Const(0x292c7be9, Int32ul)),
+        return (
             'url' / TString,
             'webpage_id' / Int64ul,
             'author_photo_id' / Int64ul,
@@ -15208,17 +14433,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x08b31c4f, 'page_block_collage_layer82')
     def struct_0x08b31c4f(self):
-        return Struct(
-            'sname' / Computed('page_block_collage_layer82'),
-            'signature' / Hex(Const(0x08b31c4f, Int32ul)),
+        return (
             'items' / self.vector(self.page_block_structures('items'), 'items'),
             'caption_text' / self.rich_text_structures('caption_text'))
 
     @constructor(0x31b81a7f, 'page_block_audio_layer82')
     def struct_0x31b81a7f(self):
-        return Struct(
-            'sname' / Computed('page_block_audio_layer82'),
-            'signature' / Hex(Const(0x31b81a7f, Int32ul)),
+        return (
             'audio_id' / Int64ul,
             'caption_text' / self.rich_text_structures('caption_text'))
 
@@ -15246,15 +14467,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xbaafe5e0, 'page_block_author_date')
     def struct_0xbaafe5e0(self):
-        return Struct(
-            'sname' / Computed('page_block_author_date'),
-            'signature' / Hex(Const(0xbaafe5e0, Int32ul)),
+        return (
             'author' / self.rich_text_structures('author'),
             'published_date' / TTimestamp)
 
     @structures
     def page_block_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x9a8ae1e1: LazyBound(self.struct_0x9a8ae1e1),
             0xd9d71866: LazyBound(self.struct_0xd9d71866),
@@ -15312,7 +14530,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def page_list_item_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x25e073fc: LazyBound(self.struct_0x25e073fc),
             0xb92fb6cd: LazyBound(self.struct_0xb92fb6cd)
@@ -15325,23 +14542,18 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5e068047, 'page_list_ordered_item_text')
     def struct_0x5e068047(self):
-        return Struct(
-            'sname' / Computed('page_list_ordered_item_text'),
-            'signature' / Hex(Const(0x5e068047, Int32ul)),
+        return (
             'num' / TString,
             'text' / self.rich_text_structures('text'))
 
     @constructor(0x98dd8936, 'page_list_ordered_item_blocks')
     def struct_0x98dd8936(self):
-        return Struct(
-            'sname' / Computed('page_list_ordered_item_blocks'),
-            'signature' / Hex(Const(0x98dd8936, Int32ul)),
+        return (
             'num' / TString,
             'blocks' / self.vector(self.page_block_structures('blocks'), 'blocks'))
 
     @structures
     def page_list_ordered_item_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x5e068047: LazyBound(self.struct_0x5e068047),
             0x98dd8936: LazyBound(self.struct_0x98dd8936)
@@ -15354,36 +14566,28 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x8dee6c44, 'page_part_layer67')
     def struct_0x8dee6c44(self):
-        return Struct(
-            'sname' / Computed('page_part_layer67'),
-            'signature' / Hex(Const(0x8dee6c44, Int32ul)),
+        return (
             'blocks' / self.vector(self.page_block_structures('blocks'), 'blocks'),
             'photos' / self.vector(self.photo_structures('photos'), 'photos'),
             'documents' / self.vector(self.document_structures('documents'), 'documents'))
 
     @constructor(0x8e3f9ebe, 'page_part_layer82')
     def struct_0x8e3f9ebe(self):
-        return Struct(
-            'sname' / Computed('page_part_layer82'),
-            'signature' / Hex(Const(0x8e3f9ebe, Int32ul)),
+        return (
             'blocks' / self.vector(self.page_block_structures('blocks'), 'blocks'),
             'photos' / self.vector(self.photo_structures('photos'), 'photos'),
             'documents' / self.vector(self.document_structures('documents'), 'documents'))
 
     @constructor(0xd7a19d69, 'page_full_layer67')
     def struct_0xd7a19d69(self):
-        return Struct(
-            'sname' / Computed('page_full_layer67'),
-            'signature' / Hex(Const(0xd7a19d69, Int32ul)),
+        return (
             'blocks' / self.vector(self.page_block_structures('blocks'), 'blocks'),
             'photos' / self.vector(self.photo_structures('photos'), 'photos'),
             'documents' / self.vector(self.document_structures('documents'), 'documents'))
 
     @constructor(0x556ec7aa, 'page_full_layer82')
     def struct_0x556ec7aa(self):
-        return Struct(
-            'sname' / Computed('page_full_layer82'),
-            'signature' / Hex(Const(0x556ec7aa, Int32ul)),
+        return (
             'blocks' / self.vector(self.page_block_structures('blocks'), 'blocks'),
             'photos' / self.vector(self.photo_structures('photos'), 'photos'),
             'documents' / self.vector(self.document_structures('documents'), 'documents'))
@@ -15419,7 +14623,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def page_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x8dee6c44: LazyBound(self.struct_0x8dee6c44),
             0x8e3f9ebe: LazyBound(self.struct_0x8e3f9ebe),
@@ -15440,9 +14643,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3a912d4a, 'password_kdf_algo_sha256sha256pbkdf2hmacsha512iter100000sha256mod_pow')
     def struct_0x3a912d4a(self):
-        return Struct(
-            'sname' / Computed('password_kdf_algo_sha256sha256pbkdf2hmacsha512iter100000sha256mod_pow'),
-            'signature' / Hex(Const(0x3a912d4a, Int32ul)),
+        return (
             'salt1' / TBytes,
             'salt2' / TBytes,
             'g' / Int32ul,
@@ -15450,7 +14651,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def password_kdf_algo_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xd45ab096: LazyBound(self.struct_0xd45ab096),
             0x3a912d4a: LazyBound(self.struct_0x3a912d4a)
@@ -15508,15 +14708,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb425cfe1, 'payments_payment_form_star_gift')
     def struct_0xb425cfe1(self):
-        return Struct(
-            'sname' / Computed('payments_payment_form_star_gift'),
-            'signature' / Hex(Const(0xb425cfe1, Int32ul)),
+        return (
             'form_id' / Int64ul,
             'invoice' / self.invoice_structures('invoice'))
 
     @structures
     def payment_form_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xa0058751: LazyBound(self.struct_0xa0058751),
             0x7bf6b15c: LazyBound(self.struct_0x7bf6b15c),
@@ -15573,7 +14770,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def payment_receipt_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x70c4fe03: LazyBound(self.struct_0x70c4fe03),
             0xdabbf83a: LazyBound(self.struct_0xdabbf83a)
@@ -15632,7 +14828,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def payments_giveaway_info_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xe175e66f: LazyBound(self.struct_0xe175e66f),
             0x00cd5570: LazyBound(self.struct_0x00cd5570),
@@ -15654,7 +14849,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def payments_payment_result_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xd8411139: LazyBound(self.struct_0xd8411139),
             0x4e5f810d: LazyBound(self.struct_0x4e5f810d)
@@ -15671,16 +14865,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xca461b5d, 'peer_located')
     def struct_0xca461b5d(self):
-        return Struct(
-            'sname' / Computed('peer_located'),
-            'signature' / Hex(Const(0xca461b5d, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'expires' / Int32ul,
             'distance' / Int32ul)
 
     @structures
     def peer_located_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xf8ec284b: LazyBound(self.struct_0xf8ec284b),
             0xca461b5d: LazyBound(self.struct_0xca461b5d)
@@ -15767,9 +14958,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x8d5e11ee, 'peer_notify_settings_layer47')
     def struct_0x8d5e11ee(self):
-        return Struct(
-            'sname' / Computed('peer_notify_settings_layer47'),
-            'signature' / Hex(Const(0x8d5e11ee, Int32ul)),
+        return (
             'mute_until' / Int32ul,
             'sound' / TString,
             'show_previews' / TBool,
@@ -15781,7 +14970,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def peer_notify_settings_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x99622c0c: LazyBound(self.struct_0x99622c0c),
             0xa83b0426: LazyBound(self.struct_0xa83b0426),
@@ -15863,7 +15051,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def peer_settings_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xacd66c5e: LazyBound(self.struct_0xacd66c5e),
             0xa518110d: LazyBound(self.struct_0xa518110d),
@@ -15901,7 +15088,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def peer_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xa2a5371e: LazyBound(self.struct_0xa2a5371e),
             0xbddde532: LazyBound(self.struct_0xbddde532),
@@ -15938,7 +15124,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def phone_call_discard_reason_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x57adc690: LazyBound(self.struct_0x57adc690),
             0xfaf7e8c9: LazyBound(self.struct_0xfaf7e8c9),
@@ -15977,7 +15162,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def phone_call_protocol_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xfc878fc8: LazyBound(self.struct_0xfc878fc8),
             0xa2bb35cb: LazyBound(self.struct_0xa2bb35cb)
@@ -16172,7 +15356,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def phone_call_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x45361c63: LazyBound(self.struct_0x45361c63),
             0x14b0ed0c: LazyBound(self.struct_0x14b0ed0c),
@@ -16222,7 +15405,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def phone_connection_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x9cc123c7: LazyBound(self.struct_0x9cc123c7),
             0x635fe375: LazyBound(self.struct_0x635fe375)
@@ -16235,9 +15417,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xd8214d41, 'photo_path_size')
     def struct_0xd8214d41(self):
-        return Struct(
-            'sname' / Computed('photo_path_size'),
-            'signature' / Hex(Const(0xd8214d41, Int32ul)),
+        return (
             'type' / TString,
             'bytes' / TBytes,
             'h' / Computed(50),
@@ -16245,9 +15425,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x77bfb61b, 'photo_size_layer127')
     def struct_0x77bfb61b(self):
-        return Struct(
-            'sname' / Computed('photo_size_layer127'),
-            'signature' / Hex(Const(0x77bfb61b, Int32ul)),
+        return (
             'type' / TString,
             'location' / self.file_location_structures('location'),
             'w' / Int32ul,
@@ -16260,9 +15438,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5aa86a51, 'photo_size_progressive_layer127')
     def struct_0x5aa86a51(self):
-        return Struct(
-            'sname' / Computed('photo_size_progressive_layer127'),
-            'signature' / Hex(Const(0x5aa86a51, Int32ul)),
+        return (
             'type' / TString,
             'location' / self.file_location_structures('location'),
             'w' / Int32ul,
@@ -16271,9 +15447,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe0b0bc2e, 'photo_stripped_size')
     def struct_0xe0b0bc2e(self):
-        return Struct(
-            'sname' / Computed('photo_stripped_size'),
-            'signature' / Hex(Const(0xe0b0bc2e, Int32ul)),
+        return (
             'type' / TString,
             'bytes' / TBytes,
             'h' / Computed(50),
@@ -16281,9 +15455,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe9a734fa, 'photo_cached_size_layer127')
     def struct_0xe9a734fa(self):
-        return Struct(
-            'sname' / Computed('photo_cached_size_layer127'),
-            'signature' / Hex(Const(0xe9a734fa, Int32ul)),
+        return (
             'type' / TString,
             'location' / self.file_location_structures('location'),
             'w' / Int32ul,
@@ -16292,9 +15464,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x75c78e60, 'photo_size')
     def struct_0x75c78e60(self):
-        return Struct(
-            'sname' / Computed('photo_size'),
-            'signature' / Hex(Const(0x75c78e60, Int32ul)),
+        return (
             'type' / TString,
             'w' / Int32ul,
             'h' / Int32ul,
@@ -16302,9 +15472,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x021e1ad6, 'photo_cached_size')
     def struct_0x021e1ad6(self):
-        return Struct(
-            'sname' / Computed('photo_cached_size'),
-            'signature' / Hex(Const(0x021e1ad6, Int32ul)),
+        return (
             'type' / TString,
             'w' / Int32ul,
             'h' / Int32ul,
@@ -16312,9 +15480,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xfa3efb95, 'photo_size_progressive')
     def struct_0xfa3efb95(self):
-        return Struct(
-            'sname' / Computed('photo_size_progressive'),
-            'signature' / Hex(Const(0xfa3efb95, Int32ul)),
+        return (
             'type' / TString,
             'w' / Int32ul,
             'h' / Int32ul,
@@ -16322,7 +15488,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def photo_size_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xd8214d41: LazyBound(self.struct_0xd8214d41),
             0x77bfb61b: LazyBound(self.struct_0x77bfb61b),
@@ -16355,9 +15520,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xcded42fe, 'photo_layer55')
     def struct_0xcded42fe(self):
-        return Struct(
-            'sname' / Computed('photo_layer55'),
-            'signature' / Hex(Const(0xcded42fe, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'date' / TTimestamp,
@@ -16365,9 +15528,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc3838076, 'photo_old2')
     def struct_0xc3838076(self):
-        return Struct(
-            'sname' / Computed('photo_old2'),
-            'signature' / Hex(Const(0xc3838076, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'user_id' / Int32ul,
@@ -16381,9 +15542,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x22b56751, 'photo_old')
     def struct_0x22b56751(self):
-        return Struct(
-            'sname' / Computed('photo_old'),
-            'signature' / Hex(Const(0x22b56751, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'user_id' / Int32ul,
@@ -16436,7 +15595,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def photo_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x9c477dd8: LazyBound(self.struct_0x9c477dd8),
             0xcded42fe: LazyBound(self.struct_0xcded42fe),
@@ -16455,24 +15613,19 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x8dca6aa5, 'photos_photos')
     def struct_0x8dca6aa5(self):
-        return Struct(
-            'sname' / Computed('photos_photos'),
-            'signature' / Hex(Const(0x8dca6aa5, Int32ul)),
+        return (
             'photos' / self.vector(self.photo_structures('photos'), 'photos'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0x15051f54, 'photos_photos_slice')
     def struct_0x15051f54(self):
-        return Struct(
-            'sname' / Computed('photos_photos_slice'),
-            'signature' / Hex(Const(0x15051f54, Int32ul)),
+        return (
             'count' / Int32ul,
             'photos' / self.vector(self.photo_structures('photos'), 'photos'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @structures
     def photos_photos_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x8dca6aa5: LazyBound(self.struct_0x8dca6aa5),
             0x15051f54: LazyBound(self.struct_0x15051f54)
@@ -16485,23 +15638,18 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xff16e2ca, 'poll_answer')
     def struct_0xff16e2ca(self):
-        return Struct(
-            'sname' / Computed('poll_answer'),
-            'signature' / Hex(Const(0xff16e2ca, Int32ul)),
+        return (
             'text' / self.struct_0x751f3146(),
             'option' / TBytes)
 
     @constructor(0x6ca9c2e9, 'poll_answer_layer178')
     def struct_0x6ca9c2e9(self):
-        return Struct(
-            'sname' / Computed('poll_answer_layer178'),
-            'signature' / Hex(Const(0x6ca9c2e9, Int32ul)),
+        return (
             'text' / TString,
             'option' / TBytes)
 
     @structures
     def poll_answer_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xff16e2ca: LazyBound(self.struct_0xff16e2ca),
             0x6ca9c2e9: LazyBound(self.struct_0x6ca9c2e9)
@@ -16591,7 +15739,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def poll_results_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x5755785a: LazyBound(self.struct_0x5755785a),
             0xc87024a2: LazyBound(self.struct_0xc87024a2),
@@ -16673,7 +15820,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def poll_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x58747131: LazyBound(self.struct_0x58747131),
             0x86e18161: LazyBound(self.struct_0x86e18161),
@@ -16718,7 +15864,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def premium_subscription_option_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x5f2d1df2: LazyBound(self.struct_0x5f2d1df2),
             0xb6f11ebe: LazyBound(self.struct_0xb6f11ebe)
@@ -16779,7 +15924,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def privacy_key_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xbc2eab30: LazyBound(self.struct_0xbc2eab30),
             0x39491cc8: LazyBound(self.struct_0x39491cc8),
@@ -16850,7 +15994,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def privacy_rule_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xf888fa1a: LazyBound(self.struct_0xf888fa1a),
             0xe4621141: LazyBound(self.struct_0xe4621141),
@@ -16894,7 +16037,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def reaction_count_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xa3d1cb80: LazyBound(self.struct_0xa3d1cb80),
             0x6fb250d1: LazyBound(self.struct_0x6fb250d1)
@@ -16923,7 +16065,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def reaction_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x8935fc73: LazyBound(self.struct_0x8935fc73),
             0x79f5d419: LazyBound(self.struct_0x79f5d419),
@@ -16938,17 +16079,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb2da71d2, 'recent_me_url_chat')
     def struct_0xb2da71d2(self):
-        return Struct(
-            'sname' / Computed('recent_me_url_chat'),
-            'signature' / Hex(Const(0xb2da71d2, Int32ul)),
+        return (
             'url' / TString,
             'chat_id' / Int64ul)
 
     @constructor(0xbc0a57dc, 'recent_me_url_sticker_set')
     def struct_0xbc0a57dc(self):
-        return Struct(
-            'sname' / Computed('recent_me_url_sticker_set'),
-            'signature' / Hex(Const(0xbc0a57dc, Int32ul)),
+        return (
             'url' / TString,
             'set' / self.sticker_set_covered_structures('set'))
 
@@ -16958,23 +16095,18 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xeb49081d, 'recent_me_url_chat_invite')
     def struct_0xeb49081d(self):
-        return Struct(
-            'sname' / Computed('recent_me_url_chat_invite'),
-            'signature' / Hex(Const(0xeb49081d, Int32ul)),
+        return (
             'url' / TString,
             'chat_invite' / self.chat_invite_structures('chat_invite'))
 
     @constructor(0xb92c09e2, 'recent_me_url_user')
     def struct_0xb92c09e2(self):
-        return Struct(
-            'sname' / Computed('recent_me_url_user'),
-            'signature' / Hex(Const(0xb92c09e2, Int32ul)),
+        return (
             'url' / TString,
             'user_id' / Int64ul)
 
     @structures
     def recent_me_url_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xb2da71d2: LazyBound(self.struct_0xb2da71d2),
             0xbc0a57dc: LazyBound(self.struct_0xbc0a57dc),
@@ -17047,7 +16179,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def reply_markup_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x85dd99d1: LazyBound(self.struct_0x85dd99d1),
             0xa03e5b85: LazyBound(self.struct_0xa03e5b85),
@@ -17096,7 +16227,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def report_reason_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xdbd4feed: LazyBound(self.struct_0xdbd4feed),
             0xc1e4a2b1: LazyBound(self.struct_0xc1e4a2b1),
@@ -17115,9 +16245,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf0e4e0b6, 'report_result_choose_option')
     def struct_0xf0e4e0b6(self):
-        return Struct(
-            'sname' / Computed('report_result_choose_option'),
-            'signature' / Hex(Const(0xf0e4e0b6, Int32ul)),
+        return (
             'title' / TString,
             'options' / self.vector(self.struct_0x7903e3d9(), 'options'))
 
@@ -17136,7 +16264,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def report_result_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xf0e4e0b6: LazyBound(self.struct_0xf0e4e0b6),
             0x6f09ac31: LazyBound(self.struct_0x6f09ac31),
@@ -17192,7 +16319,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def request_peer_type_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x5f3b8a00: LazyBound(self.struct_0x5f3b8a00),
             0xc9f06e1b: LazyBound(self.struct_0xc9f06e1b),
@@ -17206,16 +16332,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xd072acb4, 'restriction_reason')
     def struct_0xd072acb4(self):
-        return Struct(
-            'sname' / Computed('restriction_reason'),
-            'signature' / Hex(Const(0xd072acb4, Int32ul)),
+        return (
             'platform' / TString,
             'reason' / TString,
             'text' / TString)
 
     @structures
     def restriction_reason_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xd072acb4: LazyBound(self.struct_0xd072acb4)
         }
@@ -17227,9 +16350,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1ccb966a, 'text_phone')
     def struct_0x1ccb966a(self):
-        return Struct(
-            'sname' / Computed('text_phone'),
-            'signature' / Hex(Const(0x1ccb966a, Int32ul)),
+        return (
             'text' / self.rich_text_structures('text'),
             'phone' / TString)
 
@@ -17239,9 +16360,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x081ccf4f, 'text_image')
     def struct_0x081ccf4f(self):
-        return Struct(
-            'sname' / Computed('text_image'),
-            'signature' / Hex(Const(0x081ccf4f, Int32ul)),
+        return (
             'document_id' / Int64ul,
             'w' / Int32ul,
             'h' / Int32ul)
@@ -17256,18 +16375,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3c2884c1, 'text_url')
     def struct_0x3c2884c1(self):
-        return Struct(
-            'sname' / Computed('text_url'),
-            'signature' / Hex(Const(0x3c2884c1, Int32ul)),
+        return (
             'text' / self.rich_text_structures('text'),
             'url' / TString,
             'webpage_id' / Int64ul)
 
     @constructor(0x35553762, 'text_anchor')
     def struct_0x35553762(self):
-        return Struct(
-            'sname' / Computed('text_anchor'),
-            'signature' / Hex(Const(0x35553762, Int32ul)),
+        return (
             'text' / self.rich_text_structures('text'),
             'name' / TString)
 
@@ -17277,9 +16392,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xde5a0dd6, 'text_email')
     def struct_0xde5a0dd6(self):
-        return Struct(
-            'sname' / Computed('text_email'),
-            'signature' / Hex(Const(0xde5a0dd6, Int32ul)),
+        return (
             'text' / self.rich_text_structures('text'),
             'email' / TString)
 
@@ -17313,7 +16426,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def rich_text_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x1ccb966a: LazyBound(self.struct_0x1ccb966a),
             0xc7fb5e01: LazyBound(self.struct_0xc7fb5e01),
@@ -17344,9 +16456,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7d09c27e, 'secure_file')
     def struct_0x7d09c27e(self):
-        return Struct(
-            'sname' / Computed('secure_file'),
-            'signature' / Hex(Const(0x7d09c27e, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'size' / Int64ul,
@@ -17357,7 +16467,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def secure_file_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x64199744: LazyBound(self.struct_0x64199744),
             0x7d09c27e: LazyBound(self.struct_0x7d09c27e)
@@ -17382,7 +16491,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def secure_password_kdf_algo_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xbbf2dda0: LazyBound(self.struct_0xbbf2dda0),
             0x86471d92: LazyBound(self.struct_0x86471d92),
@@ -17404,7 +16512,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def secure_plain_data_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x21ec5a5f: LazyBound(self.struct_0x21ec5a5f),
             0x7d6099dd: LazyBound(self.struct_0x7d6099dd)
@@ -17432,7 +16539,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def secure_required_type_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x829d99da: LazyBound(self.struct_0x829d99da),
             0x027477b4: LazyBound(self.struct_0x027477b4)
@@ -17445,63 +16551,49 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7a700873, 'secure_value_error_file')
     def struct_0x7a700873(self):
-        return Struct(
-            'sname' / Computed('secure_value_error_file'),
-            'signature' / Hex(Const(0x7a700873, Int32ul)),
+        return (
             'type' / self.secure_value_type_structures('type'),
             'file_hash' / TBytes,
             'text' / TString)
 
     @constructor(0x00be3dfa, 'secure_value_error_front_side')
     def struct_0x00be3dfa(self):
-        return Struct(
-            'sname' / Computed('secure_value_error_front_side'),
-            'signature' / Hex(Const(0x00be3dfa, Int32ul)),
+        return (
             'type' / self.secure_value_type_structures('type'),
             'file_hash' / TBytes,
             'text' / TString)
 
     @constructor(0x666220e9, 'secure_value_error_files')
     def struct_0x666220e9(self):
-        return Struct(
-            'sname' / Computed('secure_value_error_files'),
-            'signature' / Hex(Const(0x666220e9, Int32ul)),
+        return (
             'type' / self.secure_value_type_structures('type'),
             'file_hash' / self.vector(TBytes, 'file_hash'),
             'text' / TString)
 
     @constructor(0x868a2aa5, 'secure_value_error_reverse_side')
     def struct_0x868a2aa5(self):
-        return Struct(
-            'sname' / Computed('secure_value_error_reverse_side'),
-            'signature' / Hex(Const(0x868a2aa5, Int32ul)),
+        return (
             'type' / self.secure_value_type_structures('type'),
             'file_hash' / TBytes,
             'text' / TString)
 
     @constructor(0xa1144770, 'secure_value_error_translation_file')
     def struct_0xa1144770(self):
-        return Struct(
-            'sname' / Computed('secure_value_error_translation_file'),
-            'signature' / Hex(Const(0xa1144770, Int32ul)),
+        return (
             'type' / self.secure_value_type_structures('type'),
             'file_hash' / TBytes,
             'text' / TString)
 
     @constructor(0x869d758f, 'secure_value_error')
     def struct_0x869d758f(self):
-        return Struct(
-            'sname' / Computed('secure_value_error'),
-            'signature' / Hex(Const(0x869d758f, Int32ul)),
+        return (
             'type' / self.secure_value_type_structures('type'),
             'hash' / TBytes,
             'text' / TString)
 
     @constructor(0xe8a40bd9, 'secure_value_error_data')
     def struct_0xe8a40bd9(self):
-        return Struct(
-            'sname' / Computed('secure_value_error_data'),
-            'signature' / Hex(Const(0xe8a40bd9, Int32ul)),
+        return (
             'type' / self.secure_value_type_structures('type'),
             'data_hash' / TBytes,
             'field' / TString,
@@ -17509,25 +16601,20 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x34636dd8, 'secure_value_error_translation_files')
     def struct_0x34636dd8(self):
-        return Struct(
-            'sname' / Computed('secure_value_error_translation_files'),
-            'signature' / Hex(Const(0x34636dd8, Int32ul)),
+        return (
             'type' / self.secure_value_type_structures('type'),
             'file_hash' / self.vector(TBytes, 'file_hash'),
             'text' / TString)
 
     @constructor(0xe537ced6, 'secure_value_error_selfie')
     def struct_0xe537ced6(self):
-        return Struct(
-            'sname' / Computed('secure_value_error_selfie'),
-            'signature' / Hex(Const(0xe537ced6, Int32ul)),
+        return (
             'type' / self.secure_value_type_structures('type'),
             'file_hash' / TBytes,
             'text' / TString)
 
     @structures
     def secure_value_error_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x7a700873: LazyBound(self.struct_0x7a700873),
             0x00be3dfa: LazyBound(self.struct_0x00be3dfa),
@@ -17599,7 +16686,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def secure_value_type_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xcbe31e26: LazyBound(self.struct_0xcbe31e26),
             0x99e3806a: LazyBound(self.struct_0x99e3806a),
@@ -17703,9 +16789,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x25972bcb, 'send_message_emoji_interaction')
     def struct_0x25972bcb(self):
-        return Struct(
-            'sname' / Computed('send_message_emoji_interaction'),
-            'signature' / Hex(Const(0x25972bcb, Int32ul)),
+        return (
             'emoticon' / TString,
             'msg_id' / Int32ul,
             'interaction' / self.struct_0x7d748d04())
@@ -17716,7 +16800,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def send_message_action_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xdd6a8f48: LazyBound(self.struct_0xdd6a8f48),
             0xd52f73f7: LazyBound(self.struct_0xd52f73f7),
@@ -17749,27 +16832,21 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x39d99013, 'star_gift_attribute_model')
     def struct_0x39d99013(self):
-        return Struct(
-            'sname' / Computed('star_gift_attribute_model'),
-            'signature' / Hex(Const(0x39d99013, Int32ul)),
+        return (
             'name' / TString,
             'document' / self.document_structures('document'),
             'rarity_permille' / Int32ul)
 
     @constructor(0x13acff19, 'star_gift_attribute_pattern')
     def struct_0x13acff19(self):
-        return Struct(
-            'sname' / Computed('star_gift_attribute_pattern'),
-            'signature' / Hex(Const(0x13acff19, Int32ul)),
+        return (
             'name' / TString,
             'document' / self.document_structures('document'),
             'rarity_permille' / Int32ul)
 
     @constructor(0x94271762, 'star_gift_attribute_backdrop')
     def struct_0x94271762(self):
-        return Struct(
-            'sname' / Computed('star_gift_attribute_backdrop'),
-            'signature' / Hex(Const(0x94271762, Int32ul)),
+        return (
             'name' / TString,
             'center_color' / Int32ul,
             'edge_color' / Int32ul,
@@ -17805,7 +16882,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def star_gift_attribute_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x39d99013: LazyBound(self.struct_0x39d99013),
             0x13acff19: LazyBound(self.struct_0x13acff19),
@@ -17879,9 +16955,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x6a1407cd, 'star_gift_unique_layer196')
     def struct_0x6a1407cd(self):
-        return Struct(
-            'sname' / Computed('star_gift_unique_layer196'),
-            'signature' / Hex(Const(0x6a1407cd, Int32ul)),
+        return (
             'id' / Int64ul,
             'title' / TString,
             'num' / Int32ul,
@@ -17924,7 +16998,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def star_gift_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x02cc73c8: LazyBound(self.struct_0x02cc73c8),
             0xf2fe7e4a: LazyBound(self.struct_0xf2fe7e4a),
@@ -17941,9 +17014,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x901689ea, 'star_gifts')
     def struct_0x901689ea(self):
-        return Struct(
-            'sname' / Computed('star_gifts'),
-            'signature' / Hex(Const(0x901689ea, Int32ul)),
+        return (
             'hash' / Int32ul,
             'gifts' / self.vector(self.star_gift_structures('gifts'), 'gifts'))
 
@@ -17953,7 +17024,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def star_gifts_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x901689ea: LazyBound(self.struct_0x901689ea),
             0xa388a368: LazyBound(self.struct_0xa388a368)
@@ -17970,15 +17040,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf101aa7f, 'stars_input_saved_star_gift_chat')
     def struct_0xf101aa7f(self):
-        return Struct(
-            'sname' / Computed('stars_input_saved_star_gift_chat'),
-            'signature' / Hex(Const(0xf101aa7f, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'saved_id' / Int64ul)
 
     @structures
     def stars_input_saved_star_gift_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x69279795: LazyBound(self.struct_0x69279795),
             0xf101aa7f: LazyBound(self.struct_0xf101aa7f)
@@ -18031,7 +17098,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def stars_status_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xbbfa316c: LazyBound(self.struct_0xbbfa316c),
             0x6c9ce8ed: LazyBound(self.struct_0x6c9ce8ed)
@@ -18097,7 +17163,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def stars_subscription_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x2e6eab1a: LazyBound(self.struct_0x2e6eab1a),
             0x538ecf18: LazyBound(self.struct_0x538ecf18),
@@ -18143,7 +17208,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def stars_transaction_peer_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xd80da15d: LazyBound(self.struct_0xd80da15d),
             0xb457b375: LazyBound(self.struct_0xb457b375),
@@ -18414,7 +17478,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def stars_transaction_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xcc7079b2: LazyBound(self.struct_0xcc7079b2),
             0xaa00c898: LazyBound(self.struct_0xaa00c898),
@@ -18433,9 +17496,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x557e2cc4, 'stats_broadcast_revenue_transaction_proceeds')
     def struct_0x557e2cc4(self):
-        return Struct(
-            'sname' / Computed('stats_broadcast_revenue_transaction_proceeds'),
-            'signature' / Hex(Const(0x557e2cc4, Int32ul)),
+        return (
             'amount' / Int64ul,
             'from_date' / TTimestamp,
             'to_date' / TTimestamp)
@@ -18457,16 +17518,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x42d30d2e, 'stats_broadcast_revenue_transaction_refund')
     def struct_0x42d30d2e(self):
-        return Struct(
-            'sname' / Computed('stats_broadcast_revenue_transaction_refund'),
-            'signature' / Hex(Const(0x42d30d2e, Int32ul)),
+        return (
             'amount' / Int64ul,
             'from_date' / TTimestamp,
             'provider' / TString)
 
     @structures
     def stats_broadcast_revenue_transaction_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x557e2cc4: LazyBound(self.struct_0x557e2cc4),
             0x5a590978: LazyBound(self.struct_0x5a590978),
@@ -18498,7 +17556,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def stats_graph_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x8ea464b6: LazyBound(self.struct_0x8ea464b6),
             0x4a27eb2d: LazyBound(self.struct_0x4a27eb2d),
@@ -18512,9 +17569,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x8a480e27, 'stats_post_interaction_counters_story')
     def struct_0x8a480e27(self):
-        return Struct(
-            'sname' / Computed('stats_post_interaction_counters_story'),
-            'signature' / Hex(Const(0x8a480e27, Int32ul)),
+        return (
             'story_id' / Int32ul,
             'views' / Int32ul,
             'forwards' / Int32ul,
@@ -18522,9 +17577,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe7058e7f, 'stats_post_interaction_counters_message')
     def struct_0xe7058e7f(self):
-        return Struct(
-            'sname' / Computed('stats_post_interaction_counters_message'),
-            'signature' / Hex(Const(0xe7058e7f, Int32ul)),
+        return (
             'msg_id' / Int32ul,
             'views' / Int32ul,
             'forwards' / Int32ul,
@@ -18532,7 +17585,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def stats_post_interaction_counters_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x8a480e27: LazyBound(self.struct_0x8a480e27),
             0xe7058e7f: LazyBound(self.struct_0xe7058e7f)
@@ -18549,15 +17601,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xedf3add0, 'stories_public_forward_story')
     def struct_0xedf3add0(self):
-        return Struct(
-            'sname' / Computed('stories_public_forward_story'),
-            'signature' / Hex(Const(0xedf3add0, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'story' / self.story_item_structures('story'))
 
     @structures
     def stats_public_forward_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x01f2bf4a: LazyBound(self.struct_0x01f2bf4a),
             0xedf3add0: LazyBound(self.struct_0xedf3add0)
@@ -18570,26 +17619,20 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3407e51b, 'sticker_set_multi_covered')
     def struct_0x3407e51b(self):
-        return Struct(
-            'sname' / Computed('sticker_set_multi_covered'),
-            'signature' / Hex(Const(0x3407e51b, Int32ul)),
+        return (
             'set' / self.sticker_set_structures('set'),
             'covers' / self.vector(self.document_structures('covers'), 'covers'))
 
     @constructor(0x1aed5ee5, 'sticker_set_full_covered_layer146')
     def struct_0x1aed5ee5(self):
-        return Struct(
-            'sname' / Computed('sticker_set_full_covered_layer146'),
-            'signature' / Hex(Const(0x1aed5ee5, Int32ul)),
+        return (
             'set' / self.sticker_set_structures('set'),
             'packs' / self.vector(self.struct_0x12b299d4(), 'packs'),
             'documents' / self.vector(self.document_structures('documents'), 'documents'))
 
     @constructor(0x40d13c0e, 'sticker_set_full_covered')
     def struct_0x40d13c0e(self):
-        return Struct(
-            'sname' / Computed('sticker_set_full_covered'),
-            'signature' / Hex(Const(0x40d13c0e, Int32ul)),
+        return (
             'set' / self.sticker_set_structures('set'),
             'packs' / self.vector(self.struct_0x12b299d4(), 'packs'),
             'keywords' / self.vector(self.struct_0xfcfeb29c(), 'keywords'),
@@ -18601,15 +17644,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x6410a5d2, 'sticker_set_covered')
     def struct_0x6410a5d2(self):
-        return Struct(
-            'sname' / Computed('sticker_set_covered'),
-            'signature' / Hex(Const(0x6410a5d2, Int32ul)),
+        return (
             'set' / self.sticker_set_structures('set'),
             'cover' / self.document_structures('cover'))
 
     @structures
     def sticker_set_covered_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x3407e51b: LazyBound(self.struct_0x3407e51b),
             0x1aed5ee5: LazyBound(self.struct_0x1aed5ee5),
@@ -18625,9 +17665,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa7a43b17, 'sticker_set_old')
     def struct_0xa7a43b17(self):
-        return Struct(
-            'sname' / Computed('sticker_set_old'),
-            'signature' / Hex(Const(0xa7a43b17, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'title' / TString,
@@ -18785,7 +17823,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def sticker_set_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xa7a43b17: LazyBound(self.struct_0xa7a43b17),
             0x5585a139: LazyBound(self.struct_0x5585a139),
@@ -18844,7 +17881,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def storage_file_type_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xaa963b05: LazyBound(self.struct_0xaa963b05),
             0xb3cea0e4: LazyBound(self.struct_0xb3cea0e4),
@@ -18865,9 +17901,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1158fe3e, 'stories_all_stories_not_modified')
     def struct_0x1158fe3e(self):
-        return Struct(
-            'sname' / Computed('stories_all_stories_not_modified'),
-            'signature' / Hex(Const(0x1158fe3e, Int32ul)),
+        return (
             'flags' / Int32ul,
             'state' / TString,
             'stealth_mode' / self.struct_0x712e27fd())
@@ -18888,7 +17922,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def stories_all_stories_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x1158fe3e: LazyBound(self.struct_0x1158fe3e),
             0x6efc5e81: LazyBound(self.struct_0x6efc5e81)
@@ -18943,7 +17976,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def stories_boost_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x4b3e14d6: LazyBound(self.struct_0x4b3e14d6),
             0x2a1c8c71: LazyBound(self.struct_0x2a1c8c71)
@@ -18970,9 +18002,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x03d1ea4e, 'stories_media_area_coordinates_layer181')
     def struct_0x03d1ea4e(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_coordinates_layer181'),
-            'signature' / Hex(Const(0x03d1ea4e, Int32ul)),
+        return (
             'x' / Double,
             'y' / Double,
             'w' / Double,
@@ -18981,7 +18011,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def stories_media_area_coordinates_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xcfc9e002: LazyBound(self.struct_0xcfc9e002),
             0x03d1ea4e: LazyBound(self.struct_0x03d1ea4e)
@@ -18994,25 +18023,19 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x37381085, 'stories_media_area_url')
     def struct_0x37381085(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_url'),
-            'signature' / Hex(Const(0x37381085, Int32ul)),
+        return (
             'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
             'url' / TString)
 
     @constructor(0x5787686d, 'stories_media_area_star_gift')
     def struct_0x5787686d(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_star_gift'),
-            'signature' / Hex(Const(0x5787686d, Int32ul)),
+        return (
             'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
             'slug' / TString)
 
     @constructor(0xbe82db9c, 'stories_media_area_venue')
     def struct_0xbe82db9c(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_venue'),
-            'signature' / Hex(Const(0xbe82db9c, Int32ul)),
+        return (
             'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
             'geo' / self.geo_point_structures('geo'),
             'title' / TString,
@@ -19034,9 +18057,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xdf8b3b22, 'stories_media_area_geo_point_layer181')
     def struct_0xdf8b3b22(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_geo_point_layer181'),
-            'signature' / Hex(Const(0xdf8b3b22, Int32ul)),
+        return (
             'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
             'geo' / self.geo_point_structures('geo'))
 
@@ -19053,36 +18074,28 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x770416af, 'stories_media_area_channel_post')
     def struct_0x770416af(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_channel_post'),
-            'signature' / Hex(Const(0x770416af, Int32ul)),
+        return (
             'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
             'channel_id' / Int64ul,
             'msg_id' / Int32ul)
 
     @constructor(0xb282217f, 'stories_input_media_area_venue')
     def struct_0xb282217f(self):
-        return Struct(
-            'sname' / Computed('stories_input_media_area_venue'),
-            'signature' / Hex(Const(0xb282217f, Int32ul)),
+        return (
             'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
             'query_id' / Int64ul,
             'result_id' / TString)
 
     @constructor(0x2271f2bf, 'stories_input_media_area_channel_post')
     def struct_0x2271f2bf(self):
-        return Struct(
-            'sname' / Computed('stories_input_media_area_channel_post'),
-            'signature' / Hex(Const(0x2271f2bf, Int32ul)),
+        return (
             'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
             'channel' / self.input_channel_structures('channel'),
             'msg_id' / Int32ul)
 
     @constructor(0x49a6549c, 'stories_media_area_weather')
     def struct_0x49a6549c(self):
-        return Struct(
-            'sname' / Computed('stories_media_area_weather'),
-            'signature' / Hex(Const(0x49a6549c, Int32ul)),
+        return (
             'coordinates' / self.stories_media_area_coordinates_structures('coordinates'),
             'emoji' / TString,
             'temperature_c' / Double,
@@ -19112,7 +18125,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def stories_media_area_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x37381085: LazyBound(self.struct_0x37381085),
             0x5787686d: LazyBound(self.struct_0x5787686d),
@@ -19157,7 +18169,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def stories_peer_stories_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x9a35e999: LazyBound(self.struct_0x9a35e999),
             0x8611a200: LazyBound(self.struct_0x8611a200)
@@ -19170,9 +18181,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb2539d54, 'stories_prepaid_giveaway')
     def struct_0xb2539d54(self):
-        return Struct(
-            'sname' / Computed('stories_prepaid_giveaway'),
-            'signature' / Hex(Const(0xb2539d54, Int32ul)),
+        return (
             'id' / Int64ul,
             'months' / Int32ul,
             'quantity' / Int32ul,
@@ -19180,9 +18189,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x9a9d77e0, 'stories_prepaid_stars_giveaway')
     def struct_0x9a9d77e0(self):
-        return Struct(
-            'sname' / Computed('stories_prepaid_stars_giveaway'),
-            'signature' / Hex(Const(0x9a9d77e0, Int32ul)),
+        return (
             'id' / Int64ul,
             'stars' / Int64ul,
             'quantity' / Int32ul,
@@ -19191,7 +18198,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def stories_prepaid_giveaway_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xb2539d54: LazyBound(self.struct_0xb2539d54),
             0x9a9d77e0: LazyBound(self.struct_0x9a9d77e0)
@@ -19218,7 +18224,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def story_fwd_header_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xb826e150: LazyBound(self.struct_0xb826e150)
         }
@@ -19374,7 +18379,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def story_item_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x79b26a24: LazyBound(self.struct_0x79b26a24),
             0xaf6365a1: LazyBound(self.struct_0xaf6365a1),
@@ -19391,9 +18395,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x6090d6d5, 'story_reaction')
     def struct_0x6090d6d5(self):
-        return Struct(
-            'sname' / Computed('story_reaction'),
-            'signature' / Hex(Const(0x6090d6d5, Int32ul)),
+        return (
             'peer_id' / self.peer_structures('peer_id'),
             'date' / TTimestamp,
             'reaction' / self.reaction_structures('reaction'))
@@ -19404,15 +18406,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xcfcd0f13, 'story_reaction_public_repost')
     def struct_0xcfcd0f13(self):
-        return Struct(
-            'sname' / Computed('story_reaction_public_repost'),
-            'signature' / Hex(Const(0xcfcd0f13, Int32ul)),
+        return (
             'peer_id' / self.peer_structures('peer_id'),
             'story' / self.story_item_structures('story'))
 
     @structures
     def story_reaction_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x6090d6d5: LazyBound(self.struct_0x6090d6d5),
             0xbbab2643: LazyBound(self.struct_0xbbab2643),
@@ -19460,7 +18459,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def story_view_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xb0bdeac5: LazyBound(self.struct_0xb0bdeac5),
             0x9083670b: LazyBound(self.struct_0x9083670b),
@@ -19503,7 +18501,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def story_views_list_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x59d78fc5: LazyBound(self.struct_0x59d78fc5),
             0x46e9b9ec: LazyBound(self.struct_0x46e9b9ec)
@@ -19554,7 +18551,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def story_views_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xd36760cf: LazyBound(self.struct_0xd36760cf),
             0xc64c0b97: LazyBound(self.struct_0xc64c0b97),
@@ -19612,7 +18608,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def theme_settings_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xfa58b6d4: LazyBound(self.struct_0xfa58b6d4),
             0x8db4e76c: LazyBound(self.struct_0x8db4e76c),
@@ -19706,7 +18701,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def theme_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x028f1114: LazyBound(self.struct_0x028f1114),
             0xf7d90ce0: LazyBound(self.struct_0xf7d90ce0),
@@ -19758,7 +18752,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def top_peer_category_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x161d9628: LazyBound(self.struct_0x161d9628),
             0x1e76a78c: LazyBound(self.struct_0x1e76a78c),
@@ -19778,9 +18771,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x24f40e77, 'update_message_poll_vote')
     def struct_0x24f40e77(self):
-        return Struct(
-            'sname' / Computed('update_message_poll_vote'),
-            'signature' / Hex(Const(0x24f40e77, Int32ul)),
+        return (
             'poll_id' / Int64ul,
             'peer' / self.peer_structures('peer'),
             'options' / self.vector(TBytes, 'options'),
@@ -19788,9 +18779,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xd5a41724, 'update_message_extended_media')
     def struct_0xd5a41724(self):
-        return Struct(
-            'sname' / Computed('update_message_extended_media'),
-            'signature' / Hex(Const(0xd5a41724, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'msg_id' / Int32ul,
             'extended_media' / self.vector(self.message_extended_media_structures('extended_media'), 'extended_media'))
@@ -19822,9 +18811,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa20db0e5, 'update_delete_messages')
     def struct_0xa20db0e5(self):
-        return Struct(
-            'sname' / Computed('update_delete_messages'),
-            'signature' / Hex(Const(0xa20db0e5, Int32ul)),
+        return (
             'messages' / self.vector(Int32ul, 'messages'),
             'pts' / Int32ul,
             'pts_count' / Int32ul)
@@ -19843,9 +18830,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf2ebdb4e, 'update_group_call_participants')
     def struct_0xf2ebdb4e(self):
-        return Struct(
-            'sname' / Computed('update_group_call_participants'),
-            'signature' / Hex(Const(0xf2ebdb4e, Int32ul)),
+        return (
             'call' / self.struct_0xd8aa840f(),
             'participants' / self.vector(self.struct_0xeba636fe(), 'participants'),
             'version' / Int32ul)
@@ -19873,9 +18858,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x2f2f21bf, 'update_read_history_outbox')
     def struct_0x2f2f21bf(self):
-        return Struct(
-            'sname' / Computed('update_read_history_outbox'),
-            'signature' / Hex(Const(0x2f2f21bf, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'max_id' / Int32ul,
             'pts' / Int32ul,
@@ -19883,9 +18866,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x62ba04d9, 'update_new_channel_message')
     def struct_0x62ba04d9(self):
-        return Struct(
-            'sname' / Computed('update_new_channel_message'),
-            'signature' / Hex(Const(0x62ba04d9, Int32ul)),
+        return (
             'message' / self.message_structures('message'),
             'pts' / Int32ul,
             'pts_count' / Int32ul)
@@ -19907,33 +18888,25 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x6a7e7366, 'update_peer_settings')
     def struct_0x6a7e7366(self):
-        return Struct(
-            'sname' / Computed('update_peer_settings'),
-            'signature' / Hex(Const(0x6a7e7366, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'settings' / self.peer_settings_structures('settings'))
 
     @constructor(0x05492a13, 'update_user_phone')
     def struct_0x05492a13(self):
-        return Struct(
-            'sname' / Computed('update_user_phone'),
-            'signature' / Hex(Const(0x05492a13, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'phone' / TString)
 
     @constructor(0x4e90bfd6, 'update_message_id')
     def struct_0x4e90bfd6(self):
-        return Struct(
-            'sname' / Computed('update_message_id'),
-            'signature' / Hex(Const(0x4e90bfd6, Int32ul)),
+        return (
             'id' / Int32ul,
             'random_id' / Int64ul)
 
     @constructor(0xb75f99a9, 'update_read_channel_outbox')
     def struct_0xb75f99a9(self):
-        return Struct(
-            'sname' / Computed('update_read_channel_outbox'),
-            'signature' / Hex(Const(0xb75f99a9, Int32ul)),
+        return (
             'channel_id' / Int64ul,
             'max_id' / Int32ul)
 
@@ -19951,9 +18924,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1bf335b9, 'update_story_id')
     def struct_0x1bf335b9(self):
-        return Struct(
-            'sname' / Computed('update_story_id'),
-            'signature' / Hex(Const(0x1bf335b9, Int32ul)),
+        return (
             'id' / Int32ul,
             'random_id' / Int64ul)
 
@@ -19968,18 +18939,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x19360dc0, 'update_folder_peers')
     def struct_0x19360dc0(self):
-        return Struct(
-            'sname' / Computed('update_folder_peers'),
-            'signature' / Hex(Const(0x19360dc0, Int32ul)),
+        return (
             'folder_peers' / self.vector(self.struct_0xe9baa668(), 'folder_peers'),
             'pts' / Int32ul,
             'pts_count' / Int32ul)
 
     @constructor(0x1f2b0afd, 'update_new_message')
     def struct_0x1f2b0afd(self):
-        return Struct(
-            'sname' / Computed('update_new_message'),
-            'signature' / Hex(Const(0x1f2b0afd, Int32ul)),
+        return (
             'message' / self.message_structures('message'),
             'pts' / Int32ul,
             'pts_count' / Int32ul)
@@ -19990,9 +18957,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x12bcbd9a, 'update_new_encrypted_message')
     def struct_0x12bcbd9a(self):
-        return Struct(
-            'sname' / Computed('update_new_encrypted_message'),
-            'signature' / Hex(Const(0x12bcbd9a, Int32ul)),
+        return (
             'message' / self.encrypted_message_structures('message'),
             'qts' / Int32ul)
 
@@ -20008,25 +18973,19 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe5bdf8de, 'update_user_status')
     def struct_0xe5bdf8de(self):
-        return Struct(
-            'sname' / Computed('update_user_status'),
-            'signature' / Hex(Const(0xe5bdf8de, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'status' / self.user_status_structures('status'))
 
     @constructor(0x28373599, 'update_user_emoji_status')
     def struct_0x28373599(self):
-        return Struct(
-            'sname' / Computed('update_user_emoji_status'),
-            'signature' / Hex(Const(0x28373599, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'emoji_status' / self.emoji_status_structures('emoji_status'))
 
     @constructor(0xf226ac08, 'update_channel_message_views')
     def struct_0xf226ac08(self):
-        return Struct(
-            'sname' / Computed('update_channel_message_views'),
-            'signature' / Hex(Const(0xf226ac08, Int32ul)),
+        return (
             'channel_id' / Int64ul,
             'id' / Int32ul,
             'views' / Int32ul)
@@ -20042,26 +19001,20 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x4d712f2e, 'update_bot_commands')
     def struct_0x4d712f2e(self):
-        return Struct(
-            'sname' / Computed('update_bot_commands'),
-            'signature' / Hex(Const(0x4d712f2e, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'bot_id' / Int64ul,
             'commands' / self.vector(self.struct_0xc27ac8c7(), 'commands'))
 
     @constructor(0x871fb939, 'update_geo_live_viewed')
     def struct_0x871fb939(self):
-        return Struct(
-            'sname' / Computed('update_geo_live_viewed'),
-            'signature' / Hex(Const(0x871fb939, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'msg_id' / Int32ul)
 
     @constructor(0xbec268ef, 'update_notify_settings')
     def struct_0xbec268ef(self):
-        return Struct(
-            'sname' / Computed('update_notify_settings'),
-            'signature' / Hex(Const(0xbec268ef, Int32ul)),
+        return (
             'peer' / self.notify_peer_structures('peer'),
             'notify_settings' / self.peer_notify_settings_structures('notify_settings'))
 
@@ -20086,18 +19039,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x695c9e7c, 'update_read_channel_discussion_outbox')
     def struct_0x695c9e7c(self):
-        return Struct(
-            'sname' / Computed('update_read_channel_discussion_outbox'),
-            'signature' / Hex(Const(0x695c9e7c, Int32ul)),
+        return (
             'channel_id' / Int64ul,
             'top_msg_id' / Int32ul,
             'read_max_id' / Int32ul)
 
     @constructor(0xe32f3d77, 'update_chat_participant_delete')
     def struct_0xe32f3d77(self):
-        return Struct(
-            'sname' / Computed('update_chat_participant_delete'),
-            'signature' / Hex(Const(0xe32f3d77, Int32ul)),
+        return (
             'chat_id' / Int64ul,
             'user_id' / Int64ul,
             'version' / Int32ul)
@@ -20108,9 +19057,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe40370a3, 'update_edit_message')
     def struct_0xe40370a3(self):
-        return Struct(
-            'sname' / Computed('update_edit_message'),
-            'signature' / Hex(Const(0xe40370a3, Int32ul)),
+        return (
             'message' / self.message_structures('message'),
             'pts' / Int32ul,
             'pts_count' / Int32ul)
@@ -20125,9 +19072,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7f891213, 'update_web_page')
     def struct_0x7f891213(self):
-        return Struct(
-            'sname' / Computed('update_web_page'),
-            'signature' / Hex(Const(0x7f891213, Int32ul)),
+        return (
             'webpage' / self.web_page_structures('webpage'),
             'pts' / Int32ul,
             'pts_count' / Int32ul)
@@ -20138,9 +19083,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3dda5451, 'update_chat_participant_add')
     def struct_0x3dda5451(self):
-        return Struct(
-            'sname' / Computed('update_chat_participant_add'),
-            'signature' / Hex(Const(0x3dda5451, Int32ul)),
+        return (
             'chat_id' / Int64ul,
             'user_id' / Int64ul,
             'inviter_id' / Int64ul,
@@ -20149,9 +19092,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x83487af0, 'update_chat_user_typing')
     def struct_0x83487af0(self):
-        return Struct(
-            'sname' / Computed('update_chat_user_typing'),
-            'signature' / Hex(Const(0x83487af0, Int32ul)),
+        return (
             'chat_id' / Int64ul,
             'from_id' / self.peer_structures('from_id'),
             'action' / self.send_message_action_structures('action'))
@@ -20162,9 +19103,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb4a2e88d, 'update_encryption')
     def struct_0xb4a2e88d(self):
-        return Struct(
-            'sname' / Computed('update_encryption'),
-            'signature' / Hex(Const(0xb4a2e88d, Int32ul)),
+        return (
             'chat' / self.encrypted_chat_structures('chat'),
             'date' / TTimestamp)
 
@@ -20190,17 +19129,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc01e857f, 'update_user_typing')
     def struct_0xc01e857f(self):
-        return Struct(
-            'sname' / Computed('update_user_typing'),
-            'signature' / Hex(Const(0xc01e857f, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'action' / self.send_message_action_structures('action'))
 
     @constructor(0xf74e932b, 'stories_update_read_stories')
     def struct_0xf74e932b(self):
-        return Struct(
-            'sname' / Computed('stories_update_read_stories'),
-            'signature' / Hex(Const(0xf74e932b, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'max_id' / Int32ul)
 
@@ -20225,17 +19160,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb23fc698, 'update_channel_available_messages')
     def struct_0xb23fc698(self):
-        return Struct(
-            'sname' / Computed('update_channel_available_messages'),
-            'signature' / Hex(Const(0xb23fc698, Int32ul)),
+        return (
             'channel_id' / Int64ul,
             'available_min_id' / Int32ul)
 
     @constructor(0xd7ca61a2, 'update_chat_participant_admin')
     def struct_0xd7ca61a2(self):
-        return Struct(
-            'sname' / Computed('update_chat_participant_admin'),
-            'signature' / Hex(Const(0xd7ca61a2, Int32ul)),
+        return (
             'chat_id' / Int64ul,
             'user_id' / Int64ul,
             'is_admin' / TBool,
@@ -20254,9 +19185,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xee3b272a, 'update_privacy')
     def struct_0xee3b272a(self):
-        return Struct(
-            'sname' / Computed('update_privacy'),
-            'signature' / Hex(Const(0xee3b272a, Int32ul)),
+        return (
             'key' / self.privacy_key_structures('key'),
             'rules' / self.vector(self.privacy_rule_structures('rules'), 'rules'))
 
@@ -20298,9 +19227,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa7848924, 'update_user_name')
     def struct_0xa7848924(self):
-        return Struct(
-            'sname' / Computed('update_user_name'),
-            'signature' / Hex(Const(0xa7848924, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'first_name' / TString,
             'last_name' / TString,
@@ -20356,9 +19283,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x2661bf09, 'update_phone_call_signaling_data')
     def struct_0x2661bf09(self):
-        return Struct(
-            'sname' / Computed('update_phone_call_signaling_data'),
-            'signature' / Hex(Const(0x2661bf09, Int32ul)),
+        return (
             'phone_call_id' / Int64ul,
             'data' / TBytes)
 
@@ -20443,9 +19368,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x2f2ba99f, 'update_channel_web_page')
     def struct_0x2f2ba99f(self):
-        return Struct(
-            'sname' / Computed('update_channel_web_page'),
-            'signature' / Hex(Const(0x2f2ba99f, Int32ul)),
+        return (
             'channel_id' / Int64ul,
             'webpage' / self.web_page_structures('webpage'),
             'pts' / Int32ul,
@@ -20464,18 +19387,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xd29a27f4, 'update_channel_message_forwards')
     def struct_0xd29a27f4(self):
-        return Struct(
-            'sname' / Computed('update_channel_message_forwards'),
-            'signature' / Hex(Const(0xd29a27f4, Int32ul)),
+        return (
             'channel_id' / Int64ul,
             'id' / Int32ul,
             'forwards' / Int32ul)
 
     @constructor(0xc32d5b12, 'update_delete_channel_messages')
     def struct_0xc32d5b12(self):
-        return Struct(
-            'sname' / Computed('update_delete_channel_messages'),
-            'signature' / Hex(Const(0xc32d5b12, Int32ul)),
+        return (
             'channel_id' / Int64ul,
             'messages' / self.vector(Int32ul, 'messages'),
             'pts' / Int32ul,
@@ -20483,18 +19402,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7d627683, 'update_sent_story_reaction')
     def struct_0x7d627683(self):
-        return Struct(
-            'sname' / Computed('update_sent_story_reaction'),
-            'signature' / Hex(Const(0x7d627683, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'story_id' / Int32ul,
             'reaction' / self.reaction_structures('reaction'))
 
     @constructor(0xf227868c, 'update_user_photo')
     def struct_0xf227868c(self):
-        return Struct(
-            'sname' / Computed('update_user_photo'),
-            'signature' / Hex(Const(0xf227868c, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'date' / TTimestamp,
             'photo' / self.user_profile_photo_structures('photo'),
@@ -20518,17 +19433,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x75b3b798, 'stories_update_story')
     def struct_0x75b3b798(self):
-        return Struct(
-            'sname' / Computed('stories_update_story'),
-            'signature' / Hex(Const(0x75b3b798, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'story' / self.story_item_structures('story'))
 
     @constructor(0x7063c3db, 'update_pending_join_requests')
     def struct_0x7063c3db(self):
-        return Struct(
-            'sname' / Computed('update_pending_join_requests'),
-            'signature' / Hex(Const(0x7063c3db, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'requests_pending' / Int32ul,
             'recent_requesters' / self.vector(Int64ul, 'recent_requesters'))
@@ -20539,9 +19450,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1b3f4df7, 'update_edit_channel_message')
     def struct_0x1b3f4df7(self):
-        return Struct(
-            'sname' / Computed('update_edit_channel_message'),
-            'signature' / Hex(Const(0x1b3f4df7, Int32ul)),
+        return (
             'message' / self.message_structures('message'),
             'pts' / Int32ul,
             'pts_count' / Int32ul)
@@ -20560,9 +19469,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x38fe25b7, 'update_encrypted_messages_read')
     def struct_0x38fe25b7(self):
-        return Struct(
-            'sname' / Computed('update_encrypted_messages_read'),
-            'signature' / Hex(Const(0x38fe25b7, Int32ul)),
+        return (
             'chat_id' / Int32ul,
             'max_date' / TTimestamp,
             'date' / TTimestamp)
@@ -20608,18 +19515,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x54c01850, 'update_chat_default_banned_rights')
     def struct_0x54c01850(self):
-        return Struct(
-            'sname' / Computed('update_chat_default_banned_rights'),
-            'signature' / Hex(Const(0x54c01850, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'default_banned_rights' / self.struct_0x9f120418(),
             'version' / Int32ul)
 
     @constructor(0x14b85813, 'bots_update_bot_menu_button')
     def struct_0x14b85813(self):
-        return Struct(
-            'sname' / Computed('bots_update_bot_menu_button'),
-            'signature' / Hex(Const(0x14b85813, Int32ul)),
+        return (
             'bot_id' / Int64ul,
             'button' / self.bot_menu_button_structures('button'))
 
@@ -20645,9 +19548,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x07b68920, 'update_channel_view_forum_as_messages')
     def struct_0x07b68920(self):
-        return Struct(
-            'sname' / Computed('update_channel_view_forum_as_messages'),
-            'signature' / Hex(Const(0x07b68920, Int32ul)),
+        return (
             'channel_id' / Int64ul,
             'enabled' / TBool)
 
@@ -20698,26 +19599,20 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x566fe7cd, 'update_delete_quick_reply_messages')
     def struct_0x566fe7cd(self):
-        return Struct(
-            'sname' / Computed('update_delete_quick_reply_messages'),
-            'signature' / Hex(Const(0x566fe7cd, Int32ul)),
+        return (
             'shortcut_id' / Int32ul,
             'messages' / self.vector(Int32ul, 'messages'))
 
     @constructor(0x1824e40b, 'update_new_story_reaction')
     def struct_0x1824e40b(self):
-        return Struct(
-            'sname' / Computed('update_new_story_reaction'),
-            'signature' / Hex(Const(0x1824e40b, Int32ul)),
+        return (
             'story_id' / Int32ul,
             'peer' / self.peer_structures('peer'),
             'reaction' / self.reaction_structures('reaction'))
 
     @constructor(0xdfd961f5, 'update_broadcast_revenue_transactions')
     def struct_0xdfd961f5(self):
-        return Struct(
-            'sname' / Computed('update_broadcast_revenue_transactions'),
-            'signature' / Hex(Const(0xdfd961f5, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'balances' / self.broadcast_revenue_balances_structures('balances'))
 
@@ -20727,17 +19622,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa584b019, 'update_stars_revenue_status')
     def struct_0xa584b019(self):
-        return Struct(
-            'sname' / Computed('update_stars_revenue_status'),
-            'signature' / Hex(Const(0xa584b019, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'status' / self.struct_0xfebe5491())
 
     @constructor(0x283bd312, 'update_bot_purchased_paid_media')
     def struct_0x283bd312(self):
-        return Struct(
-            'sname' / Computed('update_bot_purchased_paid_media'),
-            'signature' / Hex(Const(0x283bd312, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'payload' / TString,
             'qts' / Int32ul)
@@ -20748,9 +19639,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa8ae3eb1, 'update_bot_subscription_expire')
     def struct_0xa8ae3eb1(self):
-        return Struct(
-            'sname' / Computed('update_bot_subscription_expire'),
-            'signature' / Hex(Const(0xa8ae3eb1, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'payload' / TString,
             'until_date' / TTimestamp,
@@ -20758,7 +19647,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def update_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x24f40e77: LazyBound(self.struct_0x24f40e77),
             0xd5a41724: LazyBound(self.struct_0xd5a41724),
@@ -20931,7 +19819,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def updates_channel_difference_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x3e11affb: LazyBound(self.struct_0x3e11affb),
             0x2064674e: LazyBound(self.struct_0x2064674e),
@@ -20945,9 +19832,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x00f49ca0, 'updates_difference')
     def struct_0x00f49ca0(self):
-        return Struct(
-            'sname' / Computed('updates_difference'),
-            'signature' / Hex(Const(0x00f49ca0, Int32ul)),
+        return (
             'new_messages' / self.vector(self.message_structures('new_messages'), 'new_messages'),
             'new_encrypted_messages' / self.vector(self.encrypted_message_structures('new_encrypted_messages'), 'new_encrypted_messages'),
             'other_updates' / self.vector(self.update_structures('other_updates'), 'other_updates'),
@@ -20957,9 +19842,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa8fb1981, 'updates_difference_slice')
     def struct_0xa8fb1981(self):
-        return Struct(
-            'sname' / Computed('updates_difference_slice'),
-            'signature' / Hex(Const(0xa8fb1981, Int32ul)),
+        return (
             'new_messages' / self.vector(self.message_structures('new_messages'), 'new_messages'),
             'new_encrypted_messages' / self.vector(self.encrypted_message_structures('new_encrypted_messages'), 'new_encrypted_messages'),
             'other_updates' / self.vector(self.update_structures('other_updates'), 'other_updates'),
@@ -20973,15 +19856,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5d75a138, 'updates_difference_empty')
     def struct_0x5d75a138(self):
-        return Struct(
-            'sname' / Computed('updates_difference_empty'),
-            'signature' / Hex(Const(0x5d75a138, Int32ul)),
+        return (
             'date' / TTimestamp,
             'seq' / Int32ul)
 
     @structures
     def updates_difference_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x00f49ca0: LazyBound(self.struct_0x00f49ca0),
             0xa8fb1981: LazyBound(self.struct_0xa8fb1981),
@@ -20996,9 +19876,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x74ae4240, 'updates')
     def struct_0x74ae4240(self):
-        return Struct(
-            'sname' / Computed('updates'),
-            'signature' / Hex(Const(0x74ae4240, Int32ul)),
+        return (
             'updates' / self.vector(self.update_structures('updates'), 'updates'),
             'users' / self.vector(self.user_structures('users'), 'users'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
@@ -21052,9 +19930,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x78d4dec1, 'update_short')
     def struct_0x78d4dec1(self):
-        return Struct(
-            'sname' / Computed('update_short'),
-            'signature' / Hex(Const(0x78d4dec1, Int32ul)),
+        return (
             'update' / self.update_structures('update'),
             'date' / TTimestamp)
 
@@ -21088,9 +19964,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x725b04c3, 'updates_combined')
     def struct_0x725b04c3(self):
-        return Struct(
-            'sname' / Computed('updates_combined'),
-            'signature' / Hex(Const(0x725b04c3, Int32ul)),
+        return (
             'updates' / self.vector(self.update_structures('updates'), 'updates'),
             'users' / self.vector(self.user_structures('users'), 'users'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
@@ -21104,7 +19978,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def updates_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x74ae4240: LazyBound(self.struct_0x74ae4240),
             0x313bc7f8: LazyBound(self.struct_0x313bc7f8),
@@ -21130,7 +20003,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def upload_cdn_file_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xa99fca4f: LazyBound(self.struct_0xa99fca4f),
             0xeea8e46e: LazyBound(self.struct_0xeea8e46e)
@@ -21143,18 +20015,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x096a18d5, 'upload_file')
     def struct_0x096a18d5(self):
-        return Struct(
-            'sname' / Computed('upload_file'),
-            'signature' / Hex(Const(0x096a18d5, Int32ul)),
+        return (
             'type' / self.storage_file_type_structures('type'),
             'mtime' / Int32ul,
             'bytes' / TBytes)
 
     @constructor(0xf18cda44, 'upload_file_cdn_redirect')
     def struct_0xf18cda44(self):
-        return Struct(
-            'sname' / Computed('upload_file_cdn_redirect'),
-            'signature' / Hex(Const(0xf18cda44, Int32ul)),
+        return (
             'dc_id' / Int32ul,
             'file_token' / TBytes,
             'encryption_key' / TBytes,
@@ -21163,7 +20031,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def upload_file_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x096a18d5: LazyBound(self.struct_0x096a18d5),
             0xf18cda44: LazyBound(self.struct_0xf18cda44)
@@ -21194,7 +20061,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def url_auth_result_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xa9d6db1f: LazyBound(self.struct_0xa9d6db1f),
             0x92d33a0e: LazyBound(self.struct_0x92d33a0e),
@@ -22188,7 +21054,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def user_full_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x4d975bbc: LazyBound(self.struct_0x4d975bbc),
             0x979d2376: LazyBound(self.struct_0x979d2376),
@@ -22231,9 +21096,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xecd75d8c, 'user_profile_photo_layer115')
     def struct_0xecd75d8c(self):
-        return Struct(
-            'sname' / Computed('user_profile_photo_layer115'),
-            'signature' / Hex(Const(0xecd75d8c, Int32ul)),
+        return (
             'photo_id' / Int64ul,
             'photo_small' / self.file_location_structures('photo_small'),
             'photo_big' / self.file_location_structures('photo_big'),
@@ -22245,18 +21108,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xd559d8c8, 'user_profile_photo_layer97')
     def struct_0xd559d8c8(self):
-        return Struct(
-            'sname' / Computed('user_profile_photo_layer97'),
-            'signature' / Hex(Const(0xd559d8c8, Int32ul)),
+        return (
             'photo_id' / Int64ul,
             'photo_small' / self.file_location_structures('photo_small'),
             'photo_big' / self.file_location_structures('photo_big'))
 
     @constructor(0x990d1493, 'user_profile_photo_old')
     def struct_0x990d1493(self):
-        return Struct(
-            'sname' / Computed('user_profile_photo_old'),
-            'signature' / Hex(Const(0x990d1493, Int32ul)),
+        return (
             'photo_small' / self.file_location_structures('photo_small'),
             'photo_big' / self.file_location_structures('photo_big'))
 
@@ -22289,7 +21148,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def user_profile_photo_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x69d3ab26: LazyBound(self.struct_0x69d3ab26),
             0xecd75d8c: LazyBound(self.struct_0xecd75d8c),
@@ -22359,7 +21217,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def user_status_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x008c703f: LazyBound(self.struct_0x008c703f),
             0x541a1d1a: LazyBound(self.struct_0x541a1d1a),
@@ -22839,9 +21696,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xcab35e18, 'user_contact_old2')
     def struct_0xcab35e18(self):
-        return Struct(
-            'sname' / Computed('user_contact_old2'),
-            'signature' / Hex(Const(0xcab35e18, Int32ul)),
+        return (
             'id' / Int32ul,
             'first_name' / TString,
             'last_name' / TString,
@@ -22853,9 +21708,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf2fb8319, 'user_contact_old')
     def struct_0xf2fb8319(self):
-        return Struct(
-            'sname' / Computed('user_contact_old'),
-            'signature' / Hex(Const(0xf2fb8319, Int32ul)),
+        return (
             'id' / Int32ul,
             'first_name' / TString,
             'last_name' / TString,
@@ -23158,9 +22011,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x720535ec, 'user_self_old')
     def struct_0x720535ec(self):
-        return Struct(
-            'sname' / Computed('user_self_old'),
-            'signature' / Hex(Const(0x720535ec, Int32ul)),
+        return (
             'id' / Int32ul,
             'first_name' / TString,
             'last_name' / TString,
@@ -23171,9 +22022,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1c60e608, 'user_self_old3')
     def struct_0x1c60e608(self):
-        return Struct(
-            'sname' / Computed('user_self_old3'),
-            'signature' / Hex(Const(0x1c60e608, Int32ul)),
+        return (
             'id' / Int32ul,
             'first_name' / TString,
             'last_name' / TString,
@@ -23184,9 +22033,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xd6016d7a, 'user_deleted_old2')
     def struct_0xd6016d7a(self):
-        return Struct(
-            'sname' / Computed('user_deleted_old2'),
-            'signature' / Hex(Const(0xd6016d7a, Int32ul)),
+        return (
             'id' / Int32ul,
             'first_name' / TString,
             'last_name' / TString,
@@ -23198,9 +22045,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x22e8ceb0, 'user_request_old')
     def struct_0x22e8ceb0(self):
-        return Struct(
-            'sname' / Computed('user_request_old'),
-            'signature' / Hex(Const(0x22e8ceb0, Int32ul)),
+        return (
             'id' / Int32ul,
             'first_name' / TString,
             'last_name' / TString,
@@ -23211,9 +22056,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5214c89d, 'user_foreign_old')
     def struct_0x5214c89d(self):
-        return Struct(
-            'sname' / Computed('user_foreign_old'),
-            'signature' / Hex(Const(0x5214c89d, Int32ul)),
+        return (
             'id' / Int32ul,
             'first_name' / TString,
             'last_name' / TString,
@@ -23223,9 +22066,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x075cf7a8, 'user_foreign_old2')
     def struct_0x075cf7a8(self):
-        return Struct(
-            'sname' / Computed('user_foreign_old2'),
-            'signature' / Hex(Const(0x075cf7a8, Int32ul)),
+        return (
             'id' / Int32ul,
             'first_name' / TString,
             'last_name' / TString,
@@ -23236,9 +22077,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xd9ccc4ef, 'user_request_old2')
     def struct_0xd9ccc4ef(self):
-        return Struct(
-            'sname' / Computed('user_request_old2'),
-            'signature' / Hex(Const(0xd9ccc4ef, Int32ul)),
+        return (
             'id' / Int32ul,
             'first_name' / TString,
             'last_name' / TString,
@@ -23250,9 +22089,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb29ad7cc, 'user_deleted_old')
     def struct_0xb29ad7cc(self):
-        return Struct(
-            'sname' / Computed('user_deleted_old'),
-            'signature' / Hex(Const(0xb29ad7cc, Int32ul)),
+        return (
             'id' / Int32ul,
             'first_name' / TString,
             'last_name' / TString)
@@ -23328,9 +22165,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7007b451, 'user_self_old2')
     def struct_0x7007b451(self):
-        return Struct(
-            'sname' / Computed('user_self_old2'),
-            'signature' / Hex(Const(0x7007b451, Int32ul)),
+        return (
             'id' / Int32ul,
             'first_name' / TString,
             'last_name' / TString,
@@ -23342,7 +22177,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def user_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x4b46c37e: LazyBound(self.struct_0x4b46c37e),
             0x59476956: LazyBound(self.struct_0x59476956),
@@ -23385,15 +22219,12 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x315a4974, 'users_slice')
     def struct_0x315a4974(self):
-        return Struct(
-            'sname' / Computed('users_slice'),
-            'signature' / Hex(Const(0x315a4974, Int32ul)),
+        return (
             'count' / Int32ul,
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @structures
     def users_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x62d706b8: LazyBound(self.struct_0x62d706b8),
             0x315a4974: LazyBound(self.struct_0x315a4974)
@@ -23406,9 +22237,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x435bb987, 'video_size_layer115')
     def struct_0x435bb987(self):
-        return Struct(
-            'sname' / Computed('video_size_layer115'),
-            'signature' / Hex(Const(0x435bb987, Int32ul)),
+        return (
             'type' / TString,
             'location' / self.file_location_structures('location'),
             'w' / Int32ul,
@@ -23444,24 +22273,19 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x0da082fe, 'video_size_sticker_markup')
     def struct_0x0da082fe(self):
-        return Struct(
-            'sname' / Computed('video_size_sticker_markup'),
-            'signature' / Hex(Const(0x0da082fe, Int32ul)),
+        return (
             'stickerset' / self.input_sticker_set_structures('stickerset'),
             'sticker_id' / Int64ul,
             'background_colors' / self.vector(Int32ul, 'background_colors'))
 
     @constructor(0xf85c413c, 'video_size_emoji_markup')
     def struct_0xf85c413c(self):
-        return Struct(
-            'sname' / Computed('video_size_emoji_markup'),
-            'signature' / Hex(Const(0xf85c413c, Int32ul)),
+        return (
             'emoji_id' / Int64ul,
             'background_colors' / self.vector(Int32ul, 'background_colors'))
 
     @structures
     def video_size_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x435bb987: LazyBound(self.struct_0x435bb987),
             0xe831c556: LazyBound(self.struct_0xe831c556),
@@ -23477,9 +22301,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xee9f4a4d, 'video_old3')
     def struct_0xee9f4a4d(self):
-        return Struct(
-            'sname' / Computed('video_old3'),
-            'signature' / Hex(Const(0xee9f4a4d, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'user_id' / Int32ul,
@@ -23493,9 +22315,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf72887d3, 'video_layer45')
     def struct_0xf72887d3(self):
-        return Struct(
-            'sname' / Computed('video_layer45'),
-            'signature' / Hex(Const(0xf72887d3, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'date' / TTimestamp,
@@ -23509,9 +22329,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x55555553, 'video_encrypted')
     def struct_0x55555553(self):
-        return Struct(
-            'sname' / Computed('video_encrypted'),
-            'signature' / Hex(Const(0x55555553, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'user_id' / Int32ul,
@@ -23528,9 +22346,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5a04a49f, 'video_old')
     def struct_0x5a04a49f(self):
-        return Struct(
-            'sname' / Computed('video_old'),
-            'signature' / Hex(Const(0x5a04a49f, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'user_id' / Int32ul,
@@ -23545,9 +22361,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x388fa391, 'video_old2')
     def struct_0x388fa391(self):
-        return Struct(
-            'sname' / Computed('video_old2'),
-            'signature' / Hex(Const(0x388fa391, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'user_id' / Int32ul,
@@ -23567,7 +22381,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def video_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xee9f4a4d: LazyBound(self.struct_0xee9f4a4d),
             0xf72887d3: LazyBound(self.struct_0xf72887d3),
@@ -23655,7 +22468,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def wall_paper_settings_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xa12f40b8: LazyBound(self.struct_0xa12f40b8),
             0x05086cf8: LazyBound(self.struct_0x05086cf8),
@@ -23723,7 +22535,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def wall_paper_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xa437c3ed: LazyBound(self.struct_0xa437c3ed),
             0xf04f91ec: LazyBound(self.struct_0xf04f91ec),
@@ -23738,9 +22549,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf9c8bcc6, 'web_document_no_proxy')
     def struct_0xf9c8bcc6(self):
-        return Struct(
-            'sname' / Computed('web_document_no_proxy'),
-            'signature' / Hex(Const(0xf9c8bcc6, Int32ul)),
+        return (
             'url' / TString,
             'size' / Int32ul,
             'mime_type' / TString,
@@ -23748,9 +22557,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc61acbd8, 'web_document_layer81')
     def struct_0xc61acbd8(self):
-        return Struct(
-            'sname' / Computed('web_document_layer81'),
-            'signature' / Hex(Const(0xc61acbd8, Int32ul)),
+        return (
             'url' / TString,
             'access_hash' / Int64ul,
             'size' / Int32ul,
@@ -23760,9 +22567,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1c570ed1, 'web_document')
     def struct_0x1c570ed1(self):
-        return Struct(
-            'sname' / Computed('web_document'),
-            'signature' / Hex(Const(0x1c570ed1, Int32ul)),
+        return (
             'url' / TString,
             'access_hash' / Int64ul,
             'size' / Int32ul,
@@ -23771,7 +22576,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def web_document_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xf9c8bcc6: LazyBound(self.struct_0xf9c8bcc6),
             0xc61acbd8: LazyBound(self.struct_0xc61acbd8),
@@ -23832,7 +22636,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def web_page_attribute_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0x54b56617: LazyBound(self.struct_0x54b56617),
             0x939a4671: LazyBound(self.struct_0x939a4671),
@@ -24025,9 +22828,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc586da1c, 'web_page_pending_layer165')
     def struct_0xc586da1c(self):
-        return Struct(
-            'sname' / Computed('web_page_pending_layer165'),
-            'signature' / Hex(Const(0xc586da1c, Int32ul)),
+        return (
             'id' / Int64ul,
             'date' / TTimestamp)
 
@@ -24069,7 +22870,6 @@ class TLStruct:  # pylint: disable=C0103
 
     @structures
     def web_page_structures(self, name):
-        # pylint: disable=C0301
         tag_map = {
             0xe89c45b2: LazyBound(self.struct_0xe89c45b2),
             0xfa64e172: LazyBound(self.struct_0xfa64e172),
@@ -24092,43 +22892,33 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x65a4c7d5, 'messages_sponsored_messages_layer147')
     def struct_0x65a4c7d5(self):
-        return Struct(
-            'sname' / Computed('messages_sponsored_messages_layer147'),
-            'signature' / Hex(Const(0x65a4c7d5, Int32ul)),
+        return (
             'messages' / self.vector(self.struct_0xed5383f7(), 'messages'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0xde9eed1d, 'stories_story_views')
     def struct_0xde9eed1d(self):
-        return Struct(
-            'sname' / Computed('stories_story_views'),
-            'signature' / Hex(Const(0xde9eed1d, Int32ul)),
+        return (
             'views' / self.vector(self.story_views_structures('views'), 'views'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0x5a73a98c, 'update_message_extended_media')
     def struct_0x5a73a98c(self):
-        return Struct(
-            'sname' / Computed('update_message_extended_media'),
-            'signature' / Hex(Const(0x5a73a98c, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'msg_id' / Int32ul,
             'extended_media' / self.message_extended_media_structures('extended_media'))
 
     @constructor(0x14b24500, 'update_group_call')
     def struct_0x14b24500(self):
-        return Struct(
-            'sname' / Computed('update_group_call'),
-            'signature' / Hex(Const(0x14b24500, Int32ul)),
+        return (
             'chat_id' / Int64ul,
             'call' / self.group_call_structures('call'))
 
     @constructor(0x90866cee, 'update_delete_scheduled_messages')
     def struct_0x90866cee(self):
-        return Struct(
-            'sname' / Computed('update_delete_scheduled_messages'),
-            'signature' / Hex(Const(0x90866cee, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'messages' / self.vector(Int32ul, 'messages'))
 
@@ -24138,9 +22928,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xef7ff916, 'stats_megagroup_stats')
     def struct_0xef7ff916(self):
-        return Struct(
-            'sname' / Computed('stats_megagroup_stats'),
-            'signature' / Hex(Const(0xef7ff916, Int32ul)),
+        return (
             'period' / self.struct_0xb637edaf(),
             'members' / self.struct_0xcb43acde(),
             'messages' / self.struct_0xcb43acde(),
@@ -24206,18 +22994,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xafe5623f, 'phone_join_as_peers')
     def struct_0xafe5623f(self):
-        return Struct(
-            'sname' / Computed('phone_join_as_peers'),
-            'signature' / Hex(Const(0xafe5623f, Int32ul)),
+        return (
             'peers' / self.vector(self.peer_structures('peers'), 'peers'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0x5cc761bd, 'emoji_keywords_difference')
     def struct_0x5cc761bd(self):
-        return Struct(
-            'sname' / Computed('emoji_keywords_difference'),
-            'signature' / Hex(Const(0x5cc761bd, Int32ul)),
+        return (
             'lang_code' / TString,
             'from_version' / Int32ul,
             'version' / Int32ul,
@@ -24238,17 +23022,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc4b9f9bb, 'error')
     def struct_0xc4b9f9bb(self):
-        return Struct(
-            'sname' / Computed('error'),
-            'signature' / Hex(Const(0xc4b9f9bb, Int32ul)),
+        return (
             'code' / Int32ul,
             'text' / TString)
 
     @constructor(0xe5d7d19c, 'messages_chat_full')
     def struct_0xe5d7d19c(self):
-        return Struct(
-            'sname' / Computed('messages_chat_full'),
-            'signature' / Hex(Const(0xe5d7d19c, Int32ul)),
+        return (
             'full_chat' / self.chat_full_structures('full_chat'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
@@ -24270,9 +23050,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5ce14175, 'popular_contact')
     def struct_0x5ce14175(self):
-        return Struct(
-            'sname' / Computed('popular_contact'),
-            'signature' / Hex(Const(0x5ce14175, Int32ul)),
+        return (
             'client_id' / Int64ul,
             'importers' / Int32ul)
 
@@ -24297,9 +23075,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x16d9703b, 'contact_status')
     def struct_0x16d9703b(self):
-        return Struct(
-            'sname' / Computed('contact_status'),
-            'signature' / Hex(Const(0x16d9703b, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'status' / self.user_status_structures('status'))
 
@@ -24346,9 +23122,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xd7584c87, 'stats_group_top_admin')
     def struct_0xd7584c87(self):
-        return Struct(
-            'sname' / Computed('stats_group_top_admin'),
-            'signature' / Hex(Const(0xd7584c87, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'deleted' / Int32ul,
             'kicked' / Int32ul,
@@ -24356,34 +23130,26 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x88f8f21b, 'payment_form_method')
     def struct_0x88f8f21b(self):
-        return Struct(
-            'sname' / Computed('payment_form_method'),
-            'signature' / Hex(Const(0x88f8f21b, Int32ul)),
+        return (
             'url' / TString,
             'title' / TString)
 
     @constructor(0x3ace484c, 'contacts_link_layer101')
     def struct_0x3ace484c(self):
-        return Struct(
-            'sname' / Computed('contacts_link_layer101'),
-            'signature' / Hex(Const(0x3ace484c, Int32ul)),
+        return (
             'my_link' / self.contact_link_layer101_structures('my_link'),
             'foreign_link' / self.contact_link_layer101_structures('foreign_link'),
             'user' / self.user_structures('user'))
 
     @constructor(0xcb296bf8, 'labeled_price')
     def struct_0xcb296bf8(self):
-        return Struct(
-            'sname' / Computed('labeled_price'),
-            'signature' / Hex(Const(0xcb296bf8, Int32ul)),
+        return (
             'label' / TString,
             'amount' / Int64ul)
 
     @constructor(0xbdc62dcc, 'messages_exported_chat_invites')
     def struct_0xbdc62dcc(self):
-        return Struct(
-            'sname' / Computed('messages_exported_chat_invites'),
-            'signature' / Hex(Const(0xbdc62dcc, Int32ul)),
+        return (
             'count' / Int32ul,
             'invites' / self.vector(self.exported_chat_invite_structures('invites'), 'invites'),
             'users' / self.vector(self.user_structures('users'), 'users'))
@@ -24401,9 +23167,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf385c1f6, 'lang_pack_difference')
     def struct_0xf385c1f6(self):
-        return Struct(
-            'sname' / Computed('lang_pack_difference'),
-            'signature' / Hex(Const(0xf385c1f6, Int32ul)),
+        return (
             'lang_code' / TString,
             'from_version' / Int32ul,
             'version' / Int32ul,
@@ -24433,17 +23197,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xcb43acde, 'stats_abs_value_and_prev')
     def struct_0xcb43acde(self):
-        return Struct(
-            'sname' / Computed('stats_abs_value_and_prev'),
-            'signature' / Hex(Const(0xcb43acde, Int32ul)),
+        return (
             'current' / Double,
             'previous' / Double)
 
     @constructor(0xe0277a62, 'secure_file_layer142')
     def struct_0xe0277a62(self):
-        return Struct(
-            'sname' / Computed('secure_file_layer142'),
-            'signature' / Hex(Const(0xe0277a62, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul,
             'size' / Int32ul,
@@ -24454,17 +23214,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x84d19185, 'messages_affected_messages')
     def struct_0x84d19185(self):
-        return Struct(
-            'sname' / Computed('messages_affected_messages'),
-            'signature' / Hex(Const(0x84d19185, Int32ul)),
+        return (
             'pts' / Int32ul,
             'pts_count' / Int32ul)
 
     @constructor(0x81b6b00a, 'messages_chat_invite_importers')
     def struct_0x81b6b00a(self):
-        return Struct(
-            'sname' / Computed('messages_chat_invite_importers'),
-            'signature' / Hex(Const(0x81b6b00a, Int32ul)),
+        return (
             'count' / Int32ul,
             'importers' / self.vector(self.struct_0x8c5adfd9(), 'importers'),
             'users' / self.vector(self.user_structures('users'), 'users'))
@@ -24482,9 +23238,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xdfb80317, 'channels_channel_participant')
     def struct_0xdfb80317(self):
-        return Struct(
-            'sname' / Computed('channels_channel_participant'),
-            'signature' / Hex(Const(0xdfb80317, Int32ul)),
+        return (
             'participant' / self.channel_participant_structures('participant'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
@@ -24516,26 +23270,20 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x50a04e45, 'account_privacy_rules')
     def struct_0x50a04e45(self):
-        return Struct(
-            'sname' / Computed('account_privacy_rules'),
-            'signature' / Hex(Const(0x50a04e45, Int32ul)),
+        return (
             'rules' / self.vector(self.privacy_rule_structures('rules'), 'rules'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0xd8aa840f, 'input_group_call')
     def struct_0xd8aa840f(self):
-        return Struct(
-            'sname' / Computed('input_group_call'),
-            'signature' / Hex(Const(0xd8aa840f, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul)
 
     @constructor(0xef8d3e6c, 'messages_affected_found_messages')
     def struct_0xef8d3e6c(self):
-        return Struct(
-            'sname' / Computed('messages_affected_found_messages'),
-            'signature' / Hex(Const(0xef8d3e6c, Int32ul)),
+        return (
             'pts' / Int32ul,
             'pts_count' / Int32ul,
             'offset' / Int32ul,
@@ -24543,9 +23291,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1fad68cd, 'channel_admin_log_event')
     def struct_0x1fad68cd(self):
-        return Struct(
-            'sname' / Computed('channel_admin_log_event'),
-            'signature' / Hex(Const(0x1fad68cd, Int32ul)),
+        return (
             'id' / Int64ul,
             'date' / TTimestamp,
             'user_id' / Int64ul,
@@ -24586,34 +23332,26 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x4a4ff172, 'read_participant_date')
     def struct_0x4a4ff172(self):
-        return Struct(
-            'sname' / Computed('read_participant_date'),
-            'signature' / Hex(Const(0x4a4ff172, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'date' / TTimestamp)
 
     @constructor(0x535f779d, 'stats_group_top_inviter')
     def struct_0x535f779d(self):
-        return Struct(
-            'sname' / Computed('stats_group_top_inviter'),
-            'signature' / Hex(Const(0x535f779d, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'invitations' / Int32ul)
 
     @constructor(0xed8af74d, 'channels_admin_log_results')
     def struct_0xed8af74d(self):
-        return Struct(
-            'sname' / Computed('channels_admin_log_results'),
-            'signature' / Hex(Const(0xed8af74d, Int32ul)),
+        return (
             'events' / self.vector(self.struct_0x1fad68cd(), 'events'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0xf392b7f4, 'input_phone_contact')
     def struct_0xf392b7f4(self):
-        return Struct(
-            'sname' / Computed('input_phone_contact'),
-            'signature' / Hex(Const(0xf392b7f4, Int32ul)),
+        return (
             'client_id' / Int64ul,
             'phone' / TString,
             'first_name' / TString,
@@ -24621,9 +23359,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x6f747657, 'page_caption')
     def struct_0x6f747657(self):
-        return Struct(
-            'sname' / Computed('page_caption'),
-            'signature' / Hex(Const(0x6f747657, Int32ul)),
+        return (
             'text' / self.rich_text_structures('text'),
             'credit' / self.rich_text_structures('credit'))
 
@@ -24700,9 +23436,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xed1ecdb0, 'secure_value_hash')
     def struct_0xed1ecdb0(self):
-        return Struct(
-            'sname' / Computed('secure_value_hash'),
-            'signature' / Hex(Const(0xed1ecdb0, Int32ul)),
+        return (
             'type' / self.secure_value_type_structures('type'),
             'hash' / TBytes)
 
@@ -24755,17 +23489,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x9709b1c2, 'bots_reorder_usernames')
     def struct_0x9709b1c2(self):
-        return Struct(
-            'sname' / Computed('bots_reorder_usernames'),
-            'signature' / Hex(Const(0x9709b1c2, Int32ul)),
+        return (
             'bot' / self.input_user_structures('bot'),
             'order' / self.vector(TString, 'order'))
 
     @constructor(0x053ca973, 'bots_toggle_username')
     def struct_0x053ca973(self):
-        return Struct(
-            'sname' / Computed('bots_toggle_username'),
-            'signature' / Hex(Const(0x053ca973, Int32ul)),
+        return (
             'bot' / self.input_user_structures('bot'),
             'username' / TString,
             'active' / TBool)
@@ -24823,9 +23553,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7fe91c14, 'stats_message_stats')
     def struct_0x7fe91c14(self):
-        return Struct(
-            'sname' / Computed('stats_message_stats'),
-            'signature' / Hex(Const(0x7fe91c14, Int32ul)),
+        return (
             'views_graph' / self.stats_graph_structures('views_graph'),
             'reactions_by_emotion_graph' / self.stats_graph_structures('reactions_by_emotion_graph'))
 
@@ -24835,9 +23563,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xfb834291, 'top_peer_category_peers')
     def struct_0xfb834291(self):
-        return Struct(
-            'sname' / Computed('top_peer_category_peers'),
-            'signature' / Hex(Const(0xfb834291, Int32ul)),
+        return (
             'category' / self.top_peer_category_structures('category'),
             'count' / Int32ul,
             'peers' / self.vector(self.struct_0xedcdc05b(), 'peers'))
@@ -24875,9 +23601,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1d1b1245, 'input_app_event')
     def struct_0x1d1b1245(self):
-        return Struct(
-            'sname' / Computed('input_app_event'),
-            'signature' / Hex(Const(0x1d1b1245, Int32ul)),
+        return (
             'time' / Double,
             'type' / TString,
             'peer' / Int64ul,
@@ -24885,9 +23609,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb434e2b8, 'auth_exported_authorization')
     def struct_0xb434e2b8(self):
-        return Struct(
-            'sname' / Computed('auth_exported_authorization'),
-            'signature' / Hex(Const(0xb434e2b8, Int32ul)),
+        return (
             'id' / Int64ul,
             'bytes' / TBytes)
 
@@ -24920,41 +23642,31 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x41bf109b, 'exported_contact_token')
     def struct_0x41bf109b(self):
-        return Struct(
-            'sname' / Computed('exported_contact_token'),
-            'signature' / Hex(Const(0x41bf109b, Int32ul)),
+        return (
             'url' / TString,
             'expires' / Int32ul)
 
     @constructor(0xc27ac8c7, 'bot_command')
     def struct_0xc27ac8c7(self):
-        return Struct(
-            'sname' / Computed('bot_command'),
-            'signature' / Hex(Const(0xc27ac8c7, Int32ul)),
+        return (
             'command' / TString,
             'description' / TString)
 
     @constructor(0x20212ca8, 'photos_photo')
     def struct_0x20212ca8(self):
-        return Struct(
-            'sname' / Computed('photos_photo'),
-            'signature' / Hex(Const(0x20212ca8, Int32ul)),
+        return (
             'photo' / self.photo_structures('photo'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0xb69b72d7, 'messages_chat_admins_with_invites')
     def struct_0xb69b72d7(self):
-        return Struct(
-            'sname' / Computed('messages_chat_admins_with_invites'),
-            'signature' / Hex(Const(0xb69b72d7, Int32ul)),
+        return (
             'admins' / self.vector(self.struct_0xf2ecef23(), 'admins'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0x9e727aad, 'phone_group_call')
     def struct_0x9e727aad(self):
-        return Struct(
-            'sname' / Computed('phone_group_call'),
-            'signature' / Hex(Const(0x9e727aad, Int32ul)),
+        return (
             'call' / self.group_call_structures('call'),
             'participants' / self.vector(self.struct_0xeba636fe(), 'participants'),
             'participants_next_offset' / TString,
@@ -24963,66 +23675,50 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x2dbf3432, 'phone_group_call_stream_rtmp_url')
     def struct_0x2dbf3432(self):
-        return Struct(
-            'sname' / Computed('phone_group_call_stream_rtmp_url'),
-            'signature' / Hex(Const(0x2dbf3432, Int32ul)),
+        return (
             'url' / TString,
             'key' / TString)
 
     @constructor(0x9d04af9b, 'stats_group_top_poster')
     def struct_0x9d04af9b(self):
-        return Struct(
-            'sname' / Computed('stats_group_top_poster'),
-            'signature' / Hex(Const(0x9d04af9b, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'messages' / Int32ul,
             'avg_chars' / Int32ul)
 
     @constructor(0xb637edaf, 'stats_date_range_days')
     def struct_0xb637edaf(self):
-        return Struct(
-            'sname' / Computed('stats_date_range_days'),
-            'signature' / Hex(Const(0xb637edaf, Int32ul)),
+        return (
             'min_date' / TTimestamp,
             'max_date' / TTimestamp)
 
     @constructor(0x3e24e573, 'payments_bank_card_data')
     def struct_0x3e24e573(self):
-        return Struct(
-            'sname' / Computed('payments_bank_card_data'),
-            'signature' / Hex(Const(0x3e24e573, Int32ul)),
+        return (
             'title' / TString,
             'open_urls' / self.vector(self.struct_0xf568028a(), 'open_urls'))
 
     @constructor(0x9a3bfd99, 'messages_high_scores')
     def struct_0x9a3bfd99(self):
-        return Struct(
-            'sname' / Computed('messages_high_scores'),
-            'signature' / Hex(Const(0x9a3bfd99, Int32ul)),
+        return (
             'scores' / self.vector(self.struct_0x73a379eb(), 'scores'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0xec82e140, 'phone_phone_call')
     def struct_0xec82e140(self):
-        return Struct(
-            'sname' / Computed('phone_phone_call'),
-            'signature' / Hex(Const(0xec82e140, Int32ul)),
+        return (
             'phone_call' / self.phone_call_structures('phone_call'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0x84f80814, 'messages_get_extended_media')
     def struct_0x84f80814(self):
-        return Struct(
-            'sname' / Computed('messages_get_extended_media'),
-            'signature' / Hex(Const(0x84f80814, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / self.vector(Int32ul, 'id'))
 
     @constructor(0x31c1c44f, 'messages_get_message_read_participants')
     def struct_0x31c1c44f(self):
-        return Struct(
-            'sname' / Computed('messages_get_message_read_participants'),
-            'signature' / Hex(Const(0x31c1c44f, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul)
 
@@ -25036,17 +23732,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x4fcba9c8, 'messages_archived_stickers')
     def struct_0x4fcba9c8(self):
-        return Struct(
-            'sname' / Computed('messages_archived_stickers'),
-            'signature' / Hex(Const(0x4fcba9c8, Int32ul)),
+        return (
             'count' / Int32ul,
             'sets' / self.vector(self.sticker_set_covered_structures('sets'), 'sets'))
 
     @constructor(0x9bed434d, 'input_web_document')
     def struct_0x9bed434d(self):
-        return Struct(
-            'sname' / Computed('input_web_document'),
-            'signature' / Hex(Const(0x9bed434d, Int32ul)),
+        return (
             'url' / TString,
             'size' / Int32ul,
             'mime_type' / TString,
@@ -25069,9 +23761,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5dab1af4, 'exported_message_link')
     def struct_0x5dab1af4(self):
-        return Struct(
-            'sname' / Computed('exported_message_link'),
-            'signature' / Hex(Const(0x5dab1af4, Int32ul)),
+        return (
             'link' / TString,
             'html' / TString)
 
@@ -25100,43 +23790,33 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc0de1bd9, 'json_object_value')
     def struct_0xc0de1bd9(self):
-        return Struct(
-            'sname' / Computed('json_object_value'),
-            'signature' / Hex(Const(0xc0de1bd9, Int32ul)),
+        return (
             'key' / TString,
             'value' / self.json_value_structures('value'))
 
     @constructor(0x3b6d152e, 'users_user_full')
     def struct_0x3b6d152e(self):
-        return Struct(
-            'sname' / Computed('users_user_full'),
-            'signature' / Hex(Const(0x3b6d152e, Int32ul)),
+        return (
             'full_user' / self.user_full_structures('full_user'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0xb6213cdf, 'shipping_option')
     def struct_0xb6213cdf(self):
-        return Struct(
-            'sname' / Computed('shipping_option'),
-            'signature' / Hex(Const(0xb6213cdf, Int32ul)),
+        return (
             'id' / TString,
             'title' / TString,
             'prices' / self.vector(self.struct_0xcb296bf8(), 'prices'))
 
     @constructor(0xe9baa668, 'folder_peer')
     def struct_0xe9baa668(self):
-        return Struct(
-            'sname' / Computed('folder_peer'),
-            'signature' / Hex(Const(0xe9baa668, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'folder_id' / Int32ul)
 
     @constructor(0x396ca5fc, 'stats_broadcast_stats')
     def struct_0x396ca5fc(self):
-        return Struct(
-            'sname' / Computed('stats_broadcast_stats'),
-            'signature' / Hex(Const(0x396ca5fc, Int32ul)),
+        return (
             'period' / self.struct_0xb637edaf(),
             'followers' / self.struct_0xcb43acde(),
             'views_per_post' / self.struct_0xcb43acde(),
@@ -25162,26 +23842,20 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe8fd8014, 'peer_blocked')
     def struct_0xe8fd8014(self):
-        return Struct(
-            'sname' / Computed('peer_blocked'),
-            'signature' / Hex(Const(0xe8fd8014, Int32ul)),
+        return (
             'peer_id' / self.peer_structures('peer_id'),
             'date' / TTimestamp)
 
     @constructor(0xb45c69d1, 'messages_affected_history')
     def struct_0xb45c69d1(self):
-        return Struct(
-            'sname' / Computed('messages_affected_history'),
-            'signature' / Hex(Const(0xb45c69d1, Int32ul)),
+        return (
             'pts' / Int32ul,
             'pts_count' / Int32ul,
             'offset' / Int32ul)
 
     @constructor(0xaed6dbb2, 'mask_coords')
     def struct_0xaed6dbb2(self):
-        return Struct(
-            'sname' / Computed('mask_coords'),
-            'signature' / Hex(Const(0xaed6dbb2, Int32ul)),
+        return (
             'n' / Int32ul,
             'x' / Double,
             'y' / Double,
@@ -25202,18 +23876,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x73a379eb, 'high_score')
     def struct_0x73a379eb(self):
-        return Struct(
-            'sname' / Computed('high_score'),
-            'signature' / Hex(Const(0x73a379eb, Int32ul)),
+        return (
             'pos' / Int32ul,
             'user_id' / Int64ul,
             'score' / Int32ul)
 
     @constructor(0xfcfeb29c, 'sticker_keyword')
     def struct_0xfcfeb29c(self):
-        return Struct(
-            'sname' / Computed('sticker_keyword'),
-            'signature' / Hex(Const(0xfcfeb29c, Int32ul)),
+        return (
             'document_id' / Int64ul,
             'keyword' / self.vector(TString, 'keyword'))
 
@@ -25245,9 +23915,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x6880b94d, 'messages_peer_settings')
     def struct_0x6880b94d(self):
-        return Struct(
-            'sname' / Computed('messages_peer_settings'),
-            'signature' / Hex(Const(0x6880b94d, Int32ul)),
+        return (
             'settings' / self.peer_settings_structures('settings'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
@@ -25266,9 +23934,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x77d01c3b, 'contacts_imported_contacts')
     def struct_0x77d01c3b(self):
-        return Struct(
-            'sname' / Computed('contacts_imported_contacts'),
-            'signature' / Hex(Const(0x77d01c3b, Int32ul)),
+        return (
             'imported' / self.vector(self.struct_0xc13e3c50(), 'imported'),
             'popular_invites' / self.vector(self.struct_0x5ce14175(), 'popular_invites'),
             'retry_contacts' / self.vector(Int64ul, 'retry_contacts'),
@@ -25276,42 +23942,32 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x77744d4a, 'dialog_filter_suggested')
     def struct_0x77744d4a(self):
-        return Struct(
-            'sname' / Computed('dialog_filter_suggested'),
-            'signature' / Hex(Const(0x77744d4a, Int32ul)),
+        return (
             'filter' / self.dialog_filter_structures('filter'),
             'description' / TString)
 
     @constructor(0x3c20629f, 'inline_bot_switch_pm')
     def struct_0x3c20629f(self):
-        return Struct(
-            'sname' / Computed('inline_bot_switch_pm'),
-            'signature' / Hex(Const(0x3c20629f, Int32ul)),
+        return (
             'text' / TString,
             'start_param' / TString)
 
     @constructor(0xa384b779, 'received_notify_message')
     def struct_0xa384b779(self):
-        return Struct(
-            'sname' / Computed('received_notify_message'),
-            'signature' / Hex(Const(0xa384b779, Int32ul)),
+        return (
             'id' / Int32ul,
             'flags' / Int32ul)
 
     @constructor(0xb6c4f543, 'messages_message_views')
     def struct_0xb6c4f543(self):
-        return Struct(
-            'sname' / Computed('messages_message_views'),
-            'signature' / Hex(Const(0xb6c4f543, Int32ul)),
+        return (
             'views' / self.vector(self.struct_0x455b853d(), 'views'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0xf2ecef23, 'chat_admin_with_invites')
     def struct_0xf2ecef23(self):
-        return Struct(
-            'sname' / Computed('chat_admin_with_invites'),
-            'signature' / Hex(Const(0xf2ecef23, Int32ul)),
+        return (
             'admin_id' / Int64ul,
             'invites_count' / Int32ul,
             'revoked_invites_count' / Int32ul)
@@ -25327,17 +23983,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x145ade0b, 'contact')
     def struct_0x145ade0b(self):
-        return Struct(
-            'sname' / Computed('contact'),
-            'signature' / Hex(Const(0x145ade0b, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'mutual' / TBool)
 
     @constructor(0xdcb118b7, 'group_call_participant_video_source_group')
     def struct_0xdcb118b7(self):
-        return Struct(
-            'sname' / Computed('group_call_participant_video_source_group'),
-            'signature' / Hex(Const(0xdcb118b7, Int32ul)),
+        return (
             'semantics' / TString,
             'sources' / self.vector(Int32ul, 'sources'))
 
@@ -25355,9 +24007,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x8aeabec3, 'secure_data')
     def struct_0x8aeabec3(self):
-        return Struct(
-            'sname' / Computed('secure_data'),
-            'signature' / Hex(Const(0x8aeabec3, Int32ul)),
+        return (
             'data' / TBytes,
             'data_hash' / TBytes,
             'secret' / TBytes)
@@ -25427,50 +24077,38 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x17c6b5f6, 'help_support')
     def struct_0x17c6b5f6(self):
-        return Struct(
-            'sname' / Computed('help_support'),
-            'signature' / Hex(Const(0x17c6b5f6, Int32ul)),
+        return (
             'phone_number' / TString,
             'user' / self.user_structures('user'))
 
     @constructor(0xdb64fd34, 'account_tmp_password')
     def struct_0xdb64fd34(self):
-        return Struct(
-            'sname' / Computed('account_tmp_password'),
-            'signature' / Hex(Const(0xdb64fd34, Int32ul)),
+        return (
             'tmp_password' / TBytes,
             'valid_until' / Int32ul)
 
     @constructor(0x0ae30253, 'message_range')
     def struct_0x0ae30253(self):
-        return Struct(
-            'sname' / Computed('message_range'),
-            'signature' / Hex(Const(0x0ae30253, Int32ul)),
+        return (
             'min_id' / Int32ul,
             'max_id' / Int32ul)
 
     @constructor(0xfbd2c296, 'input_folder_peer')
     def struct_0xfbd2c296(self):
-        return Struct(
-            'sname' / Computed('input_folder_peer'),
-            'signature' / Hex(Const(0xfbd2c296, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'folder_id' / Int32ul)
 
     @constructor(0x890c3d89, 'input_bot_inline_message_id')
     def struct_0x890c3d89(self):
-        return Struct(
-            'sname' / Computed('input_bot_inline_message_id'),
-            'signature' / Hex(Const(0x890c3d89, Int32ul)),
+        return (
             'dc_id' / Int32ul,
             'id' / Int64ul,
             'access_hash' / Int64ul)
 
     @constructor(0x1527bcac, 'secure_secret_settings')
     def struct_0x1527bcac(self):
-        return Struct(
-            'sname' / Computed('secure_secret_settings'),
-            'signature' / Hex(Const(0x1527bcac, Int32ul)),
+        return (
             'secure_algo' / self.secure_password_kdf_algo_structures('secure_algo'),
             'secure_secret' / TBytes,
             'secure_secret_id' / Int64ul)
@@ -25537,52 +24175,40 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x0e0310d7, 'help_recent_me_urls')
     def struct_0x0e0310d7(self):
-        return Struct(
-            'sname' / Computed('help_recent_me_urls'),
-            'signature' / Hex(Const(0x0e0310d7, Int32ul)),
+        return (
             'urls' / self.vector(self.recent_me_url_structures('urls'), 'urls'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0xf568028a, 'bank_card_open_url')
     def struct_0xf568028a(self):
-        return Struct(
-            'sname' / Computed('bank_card_open_url'),
-            'signature' / Hex(Const(0xf568028a, Int32ul)),
+        return (
             'url' / TString,
             'name' / TString)
 
     @constructor(0x7f077ad9, 'contacts_resolved_peer')
     def struct_0x7f077ad9(self):
-        return Struct(
-            'sname' / Computed('contacts_resolved_peer'),
-            'signature' / Hex(Const(0x7f077ad9, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0x7f648b67, 'search_result_position')
     def struct_0x7f648b67(self):
-        return Struct(
-            'sname' / Computed('search_result_position'),
-            'signature' / Hex(Const(0x7f648b67, Int32ul)),
+        return (
             'msg_id' / Int32ul,
             'date' / TTimestamp,
             'offset' / Int32ul)
 
     @constructor(0x53b22baf, 'messages_search_results_positions')
     def struct_0x53b22baf(self):
-        return Struct(
-            'sname' / Computed('messages_search_results_positions'),
-            'signature' / Hex(Const(0x53b22baf, Int32ul)),
+        return (
             'count' / Int32ul,
             'positions' / self.vector(self.struct_0x7f648b67(), 'positions'))
 
     @constructor(0xc9b0539f, 'search_results_calendar_period')
     def struct_0xc9b0539f(self):
-        return Struct(
-            'sname' / Computed('search_results_calendar_period'),
-            'signature' / Hex(Const(0xc9b0539f, Int32ul)),
+        return (
             'date' / TTimestamp,
             'min_msg_id' / Int32ul,
             'max_msg_id' / Int32ul,
@@ -25602,17 +24228,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1e36fded, 'input_phone_call')
     def struct_0x1e36fded(self):
-        return Struct(
-            'sname' / Computed('input_phone_call'),
-            'signature' / Hex(Const(0x1e36fded, Int32ul)),
+        return (
             'id' / Int64ul,
             'access_hash' / Int64ul)
 
     @constructor(0xb3134d9d, 'contacts_found')
     def struct_0xb3134d9d(self):
-        return Struct(
-            'sname' / Computed('contacts_found'),
-            'signature' / Hex(Const(0xb3134d9d, Int32ul)),
+        return (
             'my_results' / self.vector(self.peer_structures('my_results'), 'my_results'),
             'results' / self.vector(self.peer_structures('results'), 'results'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
@@ -25635,9 +24257,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x63cacf26, 'account_auto_download_settings')
     def struct_0x63cacf26(self):
-        return Struct(
-            'sname' / Computed('account_auto_download_settings'),
-            'signature' / Hex(Const(0x63cacf26, Int32ul)),
+        return (
             'low' / self.struct_0xbaa57628(),
             'medium' / self.struct_0xbaa57628(),
             'high' / self.struct_0xbaa57628())
@@ -25663,9 +24283,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa6f8f452, 'web_authorization')
     def struct_0xa6f8f452(self):
-        return Struct(
-            'sname' / Computed('web_authorization'),
-            'signature' / Hex(Const(0xa6f8f452, Int32ul)),
+        return (
             'hash' / Int64ul,
             'bot_id' / Int64ul,
             'domain' / TString,
@@ -25678,9 +24296,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1e8caaeb, 'post_address')
     def struct_0x1e8caaeb(self):
-        return Struct(
-            'sname' / Computed('post_address'),
-            'signature' / Hex(Const(0x1e8caaeb, Int32ul)),
+        return (
             'street_line1' / TString,
             'street_line2' / TString,
             'city' / TString,
@@ -25694,9 +24310,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xcbce2fe0, 'stats_percent_value')
     def struct_0xcbce2fe0(self):
-        return Struct(
-            'sname' / Computed('stats_percent_value'),
-            'signature' / Hex(Const(0xcbce2fe0, Int32ul)),
+        return (
             'part' / Double,
             'total' / Double)
 
@@ -25719,17 +24333,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x811f854f, 'account_sent_email_code')
     def struct_0x811f854f(self):
-        return Struct(
-            'sname' / Computed('account_sent_email_code'),
-            'signature' / Hex(Const(0x811f854f, Int32ul)),
+        return (
             'email_pattern' / TString,
             'length' / Int32ul)
 
     @constructor(0xa927fec5, 'messages_inactive_chats')
     def struct_0xa927fec5(self):
-        return Struct(
-            'sname' / Computed('messages_inactive_chats'),
-            'signature' / Hex(Const(0xa927fec5, Int32ul)),
+        return (
             'dates' / self.vector(Int32ul, 'dates'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
@@ -25756,9 +24366,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf47751b6, 'phone_group_participants')
     def struct_0xf47751b6(self):
-        return Struct(
-            'sname' / Computed('phone_group_participants'),
-            'signature' / Hex(Const(0xf47751b6, Int32ul)),
+        return (
             'count' / Int32ul,
             'participants' / self.vector(self.struct_0xeba636fe(), 'participants'),
             'next_offset' / TString,
@@ -25772,34 +24380,26 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x33f0ea47, 'secure_credentials_encrypted')
     def struct_0x33f0ea47(self):
-        return Struct(
-            'sname' / Computed('secure_credentials_encrypted'),
-            'signature' / Hex(Const(0x33f0ea47, Int32ul)),
+        return (
             'data' / TBytes,
             'hash' / TBytes,
             'secret' / TBytes)
 
     @constructor(0x751f3146, 'text_with_entities')
     def struct_0x751f3146(self):
-        return Struct(
-            'sname' / Computed('text_with_entities'),
-            'signature' / Hex(Const(0x751f3146, Int32ul)),
+        return (
             'text' / TString,
             'entities' / self.vector(self.message_entity_structures('entities'), 'entities'))
 
     @constructor(0xed56c9fc, 'account_web_authorizations')
     def struct_0xed56c9fc(self):
-        return Struct(
-            'sname' / Computed('account_web_authorizations'),
-            'signature' / Hex(Const(0xed56c9fc, Int32ul)),
+        return (
             'authorizations' / self.vector(self.struct_0xa6f8f452(), 'authorizations'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0xa56c2a3e, 'updates_state')
     def struct_0xa56c2a3e(self):
-        return Struct(
-            'sname' / Computed('updates_state'),
-            'signature' / Hex(Const(0xa56c2a3e, Int32ul)),
+        return (
             'pts' / Int32ul,
             'qts' / Int32ul,
             'date' / TTimestamp,
@@ -25808,33 +24408,25 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xcdc27a1f, 'payment_saved_credentials_card')
     def struct_0xcdc27a1f(self):
-        return Struct(
-            'sname' / Computed('payment_saved_credentials_card'),
-            'signature' / Hex(Const(0xcdc27a1f, Int32ul)),
+        return (
             'id' / TString,
             'title' / TString)
 
     @constructor(0x12b299d4, 'sticker_pack')
     def struct_0x12b299d4(self):
-        return Struct(
-            'sname' / Computed('sticker_pack'),
-            'signature' / Hex(Const(0x12b299d4, Int32ul)),
+        return (
             'emoticon' / TString,
             'documents' / self.vector(Int64ul, 'documents'))
 
     @constructor(0xf141b5e1, 'input_encrypted_chat')
     def struct_0xf141b5e1(self):
-        return Struct(
-            'sname' / Computed('input_encrypted_chat'),
-            'signature' / Hex(Const(0xf141b5e1, Int32ul)),
+        return (
             'chat_id' / Int32ul,
             'access_hash' / Int64ul)
 
     @constructor(0x8e1a1775, 'nearest_dc')
     def struct_0x8e1a1775(self):
-        return Struct(
-            'sname' / Computed('nearest_dc'),
-            'signature' / Hex(Const(0x8e1a1775, Int32ul)),
+        return (
             'country' / TString,
             'this_dc' / Int32ul,
             'nearest_dc' / Int32ul)
@@ -25864,9 +24456,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc13e3c50, 'imported_contact')
     def struct_0xc13e3c50(self):
-        return Struct(
-            'sname' / Computed('imported_contact'),
-            'signature' / Hex(Const(0xc13e3c50, Int32ul)),
+        return (
             'user_id' / Int64ul,
             'client_id' / Int64ul)
 
@@ -25943,9 +24533,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1be31789, 'decrypted_message_layer')
     def struct_0x1be31789(self):
-        return Struct(
-            'sname' / Computed('decrypted_message_layer'),
-            'signature' / Hex(Const(0x1be31789, Int32ul)),
+        return (
             'random_bytes' / TBytes,
             'layer' / Int32ul,
             'in_seq_no' / Int32ul,
@@ -25986,18 +24574,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf39b035c, 'file_hash')
     def struct_0xf39b035c(self):
-        return Struct(
-            'sname' / Computed('file_hash'),
-            'signature' / Hex(Const(0xf39b035c, Int32ul)),
+        return (
             'offset' / Int64ul,
             'limit' / Int32ul,
             'hash' / TBytes)
 
     @constructor(0x3371c354, 'messages_peer_dialogs')
     def struct_0x3371c354(self):
-        return Struct(
-            'sname' / Computed('messages_peer_dialogs'),
-            'signature' / Hex(Const(0x3371c354, Int32ul)),
+        return (
             'dialogs' / self.vector(self.dialog_structures('dialogs'), 'dialogs'),
             'messages' / self.vector(self.message_structures('messages'), 'messages'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
@@ -26006,17 +24590,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xedcdc05b, 'top_peer')
     def struct_0xedcdc05b(self):
-        return Struct(
-            'sname' / Computed('top_peer'),
-            'signature' / Hex(Const(0xedcdc05b, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'rating' / Double)
 
     @constructor(0x4bff8ea0, 'account_authorizations')
     def struct_0x4bff8ea0(self):
-        return Struct(
-            'sname' / Computed('account_authorizations'),
-            'signature' / Hex(Const(0x4bff8ea0, Int32ul)),
+        return (
             'authorization_ttl_days' / Int32ul,
             'authorizations' / self.vector(self.struct_0xad01d61d(), 'authorizations'))
 
@@ -26049,9 +24629,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x2c11c0d7, 'messages_search_custom_emoji')
     def struct_0x2c11c0d7(self):
-        return Struct(
-            'sname' / Computed('messages_search_custom_emoji'),
-            'signature' / Hex(Const(0x2c11c0d7, Int32ul)),
+        return (
             'emoticon' / TString,
             'hash' / Int64ul)
 
@@ -26066,9 +24644,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa677244f, 'auth_send_code')
     def struct_0xa677244f(self):
-        return Struct(
-            'sname' / Computed('auth_send_code'),
-            'signature' / Hex(Const(0xa677244f, Int32ul)),
+        return (
             'phone_number' / TString,
             'api_id' / Int32ul,
             'api_hash' / TString,
@@ -26076,9 +24652,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x80eee427, 'auth_sign_up')
     def struct_0x80eee427(self):
-        return Struct(
-            'sname' / Computed('auth_sign_up'),
-            'signature' / Hex(Const(0x80eee427, Int32ul)),
+        return (
             'phone_number' / TString,
             'phone_code_hash' / TString,
             'first_name' / TString,
@@ -26086,9 +24660,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xbcd51581, 'auth_sign_in_old')
     def struct_0xbcd51581(self):
-        return Struct(
-            'sname' / Computed('auth_sign_in_old'),
-            'signature' / Hex(Const(0xbcd51581, Int32ul)),
+        return (
             'phone_number' / TString,
             'phone_code_hash' / TString,
             'phone_code' / TString)
@@ -26112,9 +24684,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7e960193, 'auth_reset_login_email')
     def struct_0x7e960193(self):
-        return Struct(
-            'sname' / Computed('auth_reset_login_email'),
-            'signature' / Hex(Const(0x7e960193, Int32ul)),
+        return (
             'phone_number' / TString,
             'phone_code_hash' / TString)
 
@@ -26128,17 +24698,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa57a7dad, 'auth_import_authorization')
     def struct_0xa57a7dad(self):
-        return Struct(
-            'sname' / Computed('auth_import_authorization'),
-            'signature' / Hex(Const(0xa57a7dad, Int32ul)),
+        return (
             'id' / Int64ul,
             'bytes' / TBytes)
 
     @constructor(0xb7e085fe, 'auth_export_login_token')
     def struct_0xb7e085fe(self):
-        return Struct(
-            'sname' / Computed('auth_export_login_token'),
-            'signature' / Hex(Const(0xb7e085fe, Int32ul)),
+        return (
             'api_id' / Int32ul,
             'api_hash' / TString,
             'except_ids' / self.vector(Int64ul, 'except_ids'))
@@ -26183,18 +24749,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x6a0d3206, 'account_unregister_device')
     def struct_0x6a0d3206(self):
-        return Struct(
-            'sname' / Computed('account_unregister_device'),
-            'signature' / Hex(Const(0x6a0d3206, Int32ul)),
+        return (
             'token_type' / Int32ul,
             'token' / TString,
             'other_uids' / self.vector(Int64ul, 'other_uids'))
 
     @constructor(0x84be5b93, 'account_update_notify_settings')
     def struct_0x84be5b93(self):
-        return Struct(
-            'sname' / Computed('account_update_notify_settings'),
-            'signature' / Hex(Const(0x84be5b93, Int32ul)),
+        return (
             'peer' / self.input_notify_peer_structures('peer'),
             'settings' / self.struct_0xcacb6ae2())
 
@@ -26233,9 +24795,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc5ba3d86, 'account_report_peer')
     def struct_0xc5ba3d86(self):
-        return Struct(
-            'sname' / Computed('account_report_peer'),
-            'signature' / Hex(Const(0xc5ba3d86, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'reason' / self.report_reason_structures('reason'),
             'message' / TString)
@@ -26404,9 +24964,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x4423e6c5, 'messages_get_history')
     def struct_0x4423e6c5(self):
-        return Struct(
-            'sname' / Computed('messages_get_history'),
-            'signature' / Hex(Const(0x4423e6c5, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'offset_id' / Int32ul,
             'offset_date' / TTimestamp,
@@ -26468,9 +25026,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x66b91b70, 'help_edit_user_info')
     def struct_0x66b91b70(self):
-        return Struct(
-            'sname' / Computed('help_edit_user_info'),
-            'signature' / Hex(Const(0x66b91b70, Int32ul)),
+        return (
             'user_id' / self.input_user_structures('user_id'),
             'message' / TString,
             'entities' / self.vector(self.message_entity_structures('entities'), 'entities'))
@@ -26485,25 +25041,19 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf50dbaa1, 'help_dismiss_suggestion')
     def struct_0xf50dbaa1(self):
-        return Struct(
-            'sname' / Computed('help_dismiss_suggestion'),
-            'signature' / Hex(Const(0xf50dbaa1, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'suggestion' / TString)
 
     @constructor(0x735787a8, 'help_get_countries_list')
     def struct_0x735787a8(self):
-        return Struct(
-            'sname' / Computed('help_get_countries_list'),
-            'signature' / Hex(Const(0x735787a8, Int32ul)),
+        return (
             'lang_code' / TString,
             'hash' / Int32ul)
 
     @constructor(0x0e306d3a, 'messages_read_history')
     def struct_0x0e306d3a(self):
-        return Struct(
-            'sname' / Computed('messages_read_history'),
-            'signature' / Hex(Const(0x0e306d3a, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'max_id' / Int32ul)
 
@@ -26537,9 +25087,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xeabbb94c, 'channels_toggle_pre_history_hidden')
     def struct_0xeabbb94c(self):
-        return Struct(
-            'sname' / Computed('channels_toggle_pre_history_hidden'),
-            'signature' / Hex(Const(0xeabbb94c, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'enabled' / TBool)
 
@@ -26549,35 +25097,27 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x40582bb2, 'channels_set_discussion_group')
     def struct_0x40582bb2(self):
-        return Struct(
-            'sname' / Computed('channels_set_discussion_group'),
-            'signature' / Hex(Const(0x40582bb2, Int32ul)),
+        return (
             'broadcast' / self.input_channel_structures('broadcast'),
             'group' / self.input_channel_structures('group'))
 
     @constructor(0x8f38cd1f, 'channels_edit_creator')
     def struct_0x8f38cd1f(self):
-        return Struct(
-            'sname' / Computed('channels_edit_creator'),
-            'signature' / Hex(Const(0x8f38cd1f, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'user_id' / self.input_user_structures('user_id'),
             'password' / self.input_check_password_srp_structures('password'))
 
     @constructor(0x58e63f6d, 'channels_edit_location')
     def struct_0x58e63f6d(self):
-        return Struct(
-            'sname' / Computed('channels_edit_location'),
-            'signature' / Hex(Const(0x58e63f6d, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'geo_point' / self.input_geo_point_structures('geo_point'),
             'address' / TString)
 
     @constructor(0xa85bd1c2, 'messages_edit_chat_admin')
     def struct_0xa85bd1c2(self):
-        return Struct(
-            'sname' / Computed('messages_edit_chat_admin'),
-            'signature' / Hex(Const(0xa85bd1c2, Int32ul)),
+        return (
             'chat_id' / Int64ul,
             'user_id' / self.input_user_structures('user_id'),
             'is_admin' / TBool)
@@ -26723,9 +25263,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x8953ab4e, 'messages_report')
     def struct_0x8953ab4e(self):
-        return Struct(
-            'sname' / Computed('messages_report'),
-            'signature' / Hex(Const(0x8953ab4e, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / self.vector(Int32ul, 'id'),
             'reason' / self.report_reason_structures('reason'),
@@ -26741,25 +25279,19 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x73783ffd, 'messages_edit_chat_title')
     def struct_0x73783ffd(self):
-        return Struct(
-            'sname' / Computed('messages_edit_chat_title'),
-            'signature' / Hex(Const(0x73783ffd, Int32ul)),
+        return (
             'chat_id' / Int64ul,
             'title' / TString)
 
     @constructor(0x35ddd674, 'messages_edit_chat_photo')
     def struct_0x35ddd674(self):
-        return Struct(
-            'sname' / Computed('messages_edit_chat_photo'),
-            'signature' / Hex(Const(0x35ddd674, Int32ul)),
+        return (
             'chat_id' / Int64ul,
             'photo' / self.input_chat_photo_structures('photo'))
 
     @constructor(0xf24753e3, 'messages_add_chat_user')
     def struct_0xf24753e3(self):
-        return Struct(
-            'sname' / Computed('messages_add_chat_user'),
-            'signature' / Hex(Const(0xf24753e3, Int32ul)),
+        return (
             'chat_id' / Int64ul,
             'user_id' / self.input_user_structures('user_id'),
             'fwd_limit' / Int32ul)
@@ -26897,9 +25429,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x91cd32a8, 'photos_get_user_photos')
     def struct_0x91cd32a8(self):
-        return Struct(
-            'sname' / Computed('photos_get_user_photos'),
-            'signature' / Hex(Const(0x91cd32a8, Int32ul)),
+        return (
             'user_id' / self.input_user_structures('user_id'),
             'offset' / Int32ul,
             'max_id' / Int64ul,
@@ -26907,35 +25437,27 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x33963bf9, 'messages_forward_message')
     def struct_0x33963bf9(self):
-        return Struct(
-            'sname' / Computed('messages_forward_message'),
-            'signature' / Hex(Const(0x33963bf9, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / Int32ul,
             'random_id' / Int64ul)
 
     @constructor(0x26cf8950, 'messages_get_dh_config')
     def struct_0x26cf8950(self):
-        return Struct(
-            'sname' / Computed('messages_get_dh_config'),
-            'signature' / Hex(Const(0x26cf8950, Int32ul)),
+        return (
             'version' / Int32ul,
             'random_length' / Int32ul)
 
     @constructor(0xf64daf43, 'messages_request_encryption')
     def struct_0xf64daf43(self):
-        return Struct(
-            'sname' / Computed('messages_request_encryption'),
-            'signature' / Hex(Const(0xf64daf43, Int32ul)),
+        return (
             'user_id' / self.input_user_structures('user_id'),
             'random_id' / Int32ul,
             'g_a' / TBytes)
 
     @constructor(0x3dbc0415, 'messages_accept_encryption')
     def struct_0x3dbc0415(self):
-        return Struct(
-            'sname' / Computed('messages_accept_encryption'),
-            'signature' / Hex(Const(0x3dbc0415, Int32ul)),
+        return (
             'peer' / self.struct_0xf141b5e1(),
             'g_b' / TBytes,
             'key_fingerprint' / Int64ul)
@@ -26951,17 +25473,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x791451ed, 'messages_set_encrypted_typing')
     def struct_0x791451ed(self):
-        return Struct(
-            'sname' / Computed('messages_set_encrypted_typing'),
-            'signature' / Hex(Const(0x791451ed, Int32ul)),
+        return (
             'peer' / self.struct_0xf141b5e1(),
             'typing' / TBool)
 
     @constructor(0x7f4b690a, 'messages_read_encrypted_history')
     def struct_0x7f4b690a(self):
-        return Struct(
-            'sname' / Computed('messages_read_encrypted_history'),
-            'signature' / Hex(Const(0x7f4b690a, Int32ul)),
+        return (
             'peer' / self.struct_0xf141b5e1(),
             'max_date' / TTimestamp)
 
@@ -26991,9 +25509,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x11f812d8, 'contacts_search')
     def struct_0x11f812d8(self):
-        return Struct(
-            'sname' / Computed('contacts_search'),
-            'signature' / Hex(Const(0x11f812d8, Int32ul)),
+        return (
             'q' / TString,
             'limit' / Int32ul)
 
@@ -27003,9 +25519,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc9f81ce8, 'account_set_privacy')
     def struct_0xc9f81ce8(self):
-        return Struct(
-            'sname' / Computed('account_set_privacy'),
-            'signature' / Hex(Const(0xc9f81ce8, Int32ul)),
+        return (
             'key' / self.input_privacy_key_structures('key'),
             'rules' / self.vector(self.input_privacy_rule_structures('rules'), 'rules'))
 
@@ -27046,25 +25560,19 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1ae373ac, 'contacts_reset_top_peer_rating')
     def struct_0x1ae373ac(self):
-        return Struct(
-            'sname' / Computed('contacts_reset_top_peer_rating'),
-            'signature' / Hex(Const(0x1ae373ac, Int32ul)),
+        return (
             'category' / self.top_peer_category_structures('category'),
             'peer' / self.input_peer_structures('peer'))
 
     @constructor(0x82574ae5, 'account_send_change_phone_code')
     def struct_0x82574ae5(self):
-        return Struct(
-            'sname' / Computed('account_send_change_phone_code'),
-            'signature' / Hex(Const(0x82574ae5, Int32ul)),
+        return (
             'phone_number' / TString,
             'settings' / self.struct_0xad253d78())
 
     @constructor(0x70c32edb, 'account_change_phone')
     def struct_0x70c32edb(self):
-        return Struct(
-            'sname' / Computed('account_change_phone'),
-            'signature' / Hex(Const(0x70c32edb, Int32ul)),
+        return (
             'phone_number' / TString,
             'phone_code_hash' / TString,
             'phone_code' / TString)
@@ -27095,9 +25603,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xfa8cc6f5, 'account_report_profile_photo')
     def struct_0xfa8cc6f5(self):
-        return Struct(
-            'sname' / Computed('account_report_profile_photo'),
-            'signature' / Hex(Const(0xfa8cc6f5, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'photo_id' / self.input_photo_structures('photo_id'),
             'reason' / self.report_reason_structures('reason'),
@@ -27113,9 +25619,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x899fe31d, 'account_save_secure_value')
     def struct_0x899fe31d(self):
-        return Struct(
-            'sname' / Computed('account_save_secure_value'),
-            'signature' / Hex(Const(0x899fe31d, Int32ul)),
+        return (
             'value' / self.struct_0xdb21d0a7(),
             'secure_secret_id' / Int64ul)
 
@@ -27125,18 +25629,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa929597a, 'account_get_authorization_form')
     def struct_0xa929597a(self):
-        return Struct(
-            'sname' / Computed('account_get_authorization_form'),
-            'signature' / Hex(Const(0xa929597a, Int32ul)),
+        return (
             'bot_id' / Int64ul,
             'scope' / TString,
             'public_key' / TString)
 
     @constructor(0xf3ed4c73, 'account_accept_authorization')
     def struct_0xf3ed4c73(self):
-        return Struct(
-            'sname' / Computed('account_accept_authorization'),
-            'signature' / Hex(Const(0xf3ed4c73, Int32ul)),
+        return (
             'bot_id' / Int64ul,
             'scope' / TString,
             'public_key' / TString,
@@ -27145,34 +25645,26 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa5a356f9, 'account_send_verify_phone_code')
     def struct_0xa5a356f9(self):
-        return Struct(
-            'sname' / Computed('account_send_verify_phone_code'),
-            'signature' / Hex(Const(0xa5a356f9, Int32ul)),
+        return (
             'phone_number' / TString,
             'settings' / self.struct_0xad253d78())
 
     @constructor(0x4dd3a7f6, 'account_verify_phone')
     def struct_0x4dd3a7f6(self):
-        return Struct(
-            'sname' / Computed('account_verify_phone'),
-            'signature' / Hex(Const(0x4dd3a7f6, Int32ul)),
+        return (
             'phone_number' / TString,
             'phone_code_hash' / TString,
             'phone_code' / TString)
 
     @constructor(0x98e037bb, 'account_send_verify_email_code')
     def struct_0x98e037bb(self):
-        return Struct(
-            'sname' / Computed('account_send_verify_email_code'),
-            'signature' / Hex(Const(0x98e037bb, Int32ul)),
+        return (
             'purpose' / self.email_verify_purpose_structures('purpose'),
             'email' / TString)
 
     @constructor(0x032da4cf, 'account_verify_email')
     def struct_0x032da4cf(self):
-        return Struct(
-            'sname' / Computed('account_verify_email'),
-            'signature' / Hex(Const(0x032da4cf, Int32ul)),
+        return (
             'purpose' / self.email_verify_purpose_structures('purpose'),
             'verification' / self.email_verification_structures('verification'))
 
@@ -27212,27 +25704,21 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xdd853661, 'account_upload_wall_paper')
     def struct_0xdd853661(self):
-        return Struct(
-            'sname' / Computed('account_upload_wall_paper'),
-            'signature' / Hex(Const(0xdd853661, Int32ul)),
+        return (
             'file' / self.input_file_structures('file'),
             'mime_type' / TString,
             'settings' / self.wall_paper_settings_structures('settings'))
 
     @constructor(0x6c5a5b37, 'account_save_wall_paper')
     def struct_0x6c5a5b37(self):
-        return Struct(
-            'sname' / Computed('account_save_wall_paper'),
-            'signature' / Hex(Const(0x6c5a5b37, Int32ul)),
+        return (
             'wallpaper' / self.input_wall_paper_structures('wallpaper'),
             'unsave' / TBool,
             'settings' / self.wall_paper_settings_structures('settings'))
 
     @constructor(0xfeed5769, 'account_install_wall_paper')
     def struct_0xfeed5769(self):
-        return Struct(
-            'sname' / Computed('account_install_wall_paper'),
-            'signature' / Hex(Const(0xfeed5769, Int32ul)),
+        return (
             'wallpaper' / self.input_wall_paper_structures('wallpaper'),
             'settings' / self.wall_paper_settings_structures('settings'))
 
@@ -27298,9 +25784,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf257106c, 'account_save_theme')
     def struct_0xf257106c(self):
-        return Struct(
-            'sname' / Computed('account_save_theme'),
-            'signature' / Hex(Const(0xf257106c, Int32ul)),
+        return (
             'theme' / self.input_theme_structures('theme'),
             'unsave' / TBool)
 
@@ -27317,18 +25801,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x8d9d742b, 'account_get_theme')
     def struct_0x8d9d742b(self):
-        return Struct(
-            'sname' / Computed('account_get_theme'),
-            'signature' / Hex(Const(0x8d9d742b, Int32ul)),
+        return (
             'format' / TString,
             'theme' / self.input_theme_structures('theme'),
             'document_id' / Int64ul)
 
     @constructor(0x7206e458, 'account_get_themes')
     def struct_0x7206e458(self):
-        return Struct(
-            'sname' / Computed('account_get_themes'),
-            'signature' / Hex(Const(0x7206e458, Int32ul)),
+        return (
             'format' / TString,
             'hash' / Int64ul)
 
@@ -27388,33 +25868,25 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa59b102f, 'account_update_password_settings')
     def struct_0xa59b102f(self):
-        return Struct(
-            'sname' / Computed('account_update_password_settings'),
-            'signature' / Hex(Const(0xa59b102f, Int32ul)),
+        return (
             'password' / self.input_check_password_srp_structures('password'),
             'new_settings' / self.struct_0xc23727c9())
 
     @constructor(0x1b3faa88, 'account_send_confirm_phone_code')
     def struct_0x1b3faa88(self):
-        return Struct(
-            'sname' / Computed('account_send_confirm_phone_code'),
-            'signature' / Hex(Const(0x1b3faa88, Int32ul)),
+        return (
             'hash' / TString,
             'settings' / self.struct_0xad253d78())
 
     @constructor(0x5f2178c3, 'account_confirm_phone')
     def struct_0x5f2178c3(self):
-        return Struct(
-            'sname' / Computed('account_confirm_phone'),
-            'signature' / Hex(Const(0x5f2178c3, Int32ul)),
+        return (
             'phone_code_hash' / TString,
             'phone_code' / TString)
 
     @constructor(0x449e0b51, 'account_get_tmp_password')
     def struct_0x449e0b51(self):
-        return Struct(
-            'sname' / Computed('account_get_tmp_password'),
-            'signature' / Hex(Const(0x449e0b51, Int32ul)),
+        return (
             'password' / self.input_check_password_srp_structures('password'),
             'period' / Int32ul)
 
@@ -27438,17 +25910,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3ef1a9bf, 'auth_resend_code')
     def struct_0x3ef1a9bf(self):
-        return Struct(
-            'sname' / Computed('auth_resend_code'),
-            'signature' / Hex(Const(0x3ef1a9bf, Int32ul)),
+        return (
             'phone_number' / TString,
             'phone_code_hash' / TString)
 
     @constructor(0x1f040578, 'auth_cancel_code')
     def struct_0x1f040578(self):
-        return Struct(
-            'sname' / Computed('auth_cancel_code'),
-            'signature' / Hex(Const(0x1f040578, Int32ul)),
+        return (
             'phone_number' / TString,
             'phone_code_hash' / TString)
 
@@ -27478,17 +25946,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc8a0ec74, 'messages_get_sticker_set')
     def struct_0xc8a0ec74(self):
-        return Struct(
-            'sname' / Computed('messages_get_sticker_set'),
-            'signature' / Hex(Const(0xc8a0ec74, Int32ul)),
+        return (
             'stickerset' / self.input_sticker_set_structures('stickerset'),
             'hash' / Int32ul)
 
     @constructor(0xc78fe460, 'messages_install_sticker_set')
     def struct_0xc78fe460(self):
-        return Struct(
-            'sname' / Computed('messages_install_sticker_set'),
-            'signature' / Hex(Const(0xc78fe460, Int32ul)),
+        return (
             'stickerset' / self.input_sticker_set_structures('stickerset'),
             'archived' / TBool)
 
@@ -27498,9 +25962,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe6df7378, 'messages_start_bot')
     def struct_0xe6df7378(self):
-        return Struct(
-            'sname' / Computed('messages_start_bot'),
-            'signature' / Hex(Const(0xe6df7378, Int32ul)),
+        return (
             'bot' / self.input_user_structures('bot'),
             'peer' / self.input_peer_structures('peer'),
             'random_id' / Int64ul,
@@ -27508,9 +25970,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5784d3e1, 'messages_get_messages_views')
     def struct_0x5784d3e1(self):
-        return Struct(
-            'sname' / Computed('messages_get_messages_views'),
-            'signature' / Hex(Const(0x5784d3e1, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / self.vector(Int32ul, 'id'),
             'increment' / TBool)
@@ -27521,9 +25981,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x327a30cb, 'messages_save_gif')
     def struct_0x327a30cb(self):
-        return Struct(
-            'sname' / Computed('messages_save_gif'),
-            'signature' / Hex(Const(0x327a30cb, Int32ul)),
+        return (
             'id' / self.input_document_structures('id'),
             'unsave' / TBool)
 
@@ -27565,9 +26023,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xfda68d36, 'messages_get_message_edit_data')
     def struct_0xfda68d36(self):
-        return Struct(
-            'sname' / Computed('messages_get_message_edit_data'),
-            'signature' / Hex(Const(0xfda68d36, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / Int32ul)
 
@@ -27724,18 +26180,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe822649d, 'messages_get_game_high_scores')
     def struct_0xe822649d(self):
-        return Struct(
-            'sname' / Computed('messages_get_game_high_scores'),
-            'signature' / Hex(Const(0xe822649d, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / Int32ul,
             'user_id' / self.input_user_structures('user_id'))
 
     @constructor(0x0f635e1b, 'messages_get_inline_game_high_scores')
     def struct_0x0f635e1b(self):
-        return Struct(
-            'sname' / Computed('messages_get_inline_game_high_scores'),
-            'signature' / Hex(Const(0x0f635e1b, Int32ul)),
+        return (
             'id' / self.struct_0x890c3d89(),
             'user_id' / self.input_user_structures('user_id'))
 
@@ -27745,9 +26197,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe40ca104, 'messages_get_common_chats')
     def struct_0xe40ca104(self):
-        return Struct(
-            'sname' / Computed('messages_get_common_chats'),
-            'signature' / Hex(Const(0xe40ca104, Int32ul)),
+        return (
             'user_id' / self.input_user_structures('user_id'),
             'max_id' / Int64ul,
             'limit' / Int32ul)
@@ -27758,9 +26208,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x8d9692a3, 'messages_get_web_page')
     def struct_0x8d9692a3(self):
-        return Struct(
-            'sname' / Computed('messages_get_web_page'),
-            'signature' / Hex(Const(0x8d9692a3, Int32ul)),
+        return (
             'url' / TString,
             'hash' / Int32ul)
 
@@ -27789,17 +26237,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x519bc2b1, 'messages_upload_media')
     def struct_0x519bc2b1(self):
-        return Struct(
-            'sname' / Computed('messages_upload_media'),
-            'signature' / Hex(Const(0x519bc2b1, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'media' / self.input_media_structures('media'))
 
     @constructor(0xa1405817, 'messages_send_screenshot_notification')
     def struct_0xa1405817(self):
-        return Struct(
-            'sname' / Computed('messages_send_screenshot_notification'),
-            'signature' / Hex(Const(0xa1405817, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'reply_to' / self.input_reply_to_structures('reply_to'),
             'random_id' / Int64ul)
@@ -27810,9 +26254,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb9ffc55b, 'messages_fave_sticker')
     def struct_0xb9ffc55b(self):
-        return Struct(
-            'sname' / Computed('messages_fave_sticker'),
-            'signature' / Hex(Const(0xb9ffc55b, Int32ul)),
+        return (
             'id' / self.input_document_structures('id'),
             'unfave' / TBool)
 
@@ -27843,9 +26285,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x702a40e0, 'messages_get_recent_locations')
     def struct_0x702a40e0(self):
-        return Struct(
-            'sname' / Computed('messages_get_recent_locations'),
-            'signature' / Hex(Const(0x702a40e0, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'limit' / Int32ul,
             'hash' / Int64ul)
@@ -27891,18 +26331,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x10ea6184, 'messages_send_vote')
     def struct_0x10ea6184(self):
-        return Struct(
-            'sname' / Computed('messages_send_vote'),
-            'signature' / Hex(Const(0x10ea6184, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul,
             'options' / self.vector(TBytes, 'options'))
 
     @constructor(0x73bb643b, 'messages_get_poll_results')
     def struct_0x73bb643b(self):
-        return Struct(
-            'sname' / Computed('messages_get_poll_results'),
-            'signature' / Hex(Const(0x73bb643b, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul)
 
@@ -27922,17 +26358,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xdef60797, 'messages_edit_chat_about')
     def struct_0xdef60797(self):
-        return Struct(
-            'sname' / Computed('messages_edit_chat_about'),
-            'signature' / Hex(Const(0xdef60797, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'about' / TString)
 
     @constructor(0xa5866b41, 'messages_edit_chat_default_banned_rights')
     def struct_0xa5866b41(self):
-        return Struct(
-            'sname' / Computed('messages_edit_chat_default_banned_rights'),
-            'signature' / Hex(Const(0xa5866b41, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'banned_rights' / self.struct_0x9f120418())
 
@@ -27942,9 +26374,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1508b6af, 'messages_get_emoji_keywords_difference')
     def struct_0x1508b6af(self):
-        return Struct(
-            'sname' / Computed('messages_get_emoji_keywords_difference'),
-            'signature' / Hex(Const(0x1508b6af, Int32ul)),
+        return (
             'lang_code' / TString,
             'from_version' / Int32ul)
 
@@ -28002,33 +26432,25 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf516760b, 'messages_get_scheduled_history')
     def struct_0xf516760b(self):
-        return Struct(
-            'sname' / Computed('messages_get_scheduled_history'),
-            'signature' / Hex(Const(0xf516760b, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'hash' / Int64ul)
 
     @constructor(0xbdbb0464, 'messages_get_scheduled_messages')
     def struct_0xbdbb0464(self):
-        return Struct(
-            'sname' / Computed('messages_get_scheduled_messages'),
-            'signature' / Hex(Const(0xbdbb0464, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / self.vector(Int32ul, 'id'))
 
     @constructor(0xbd38850a, 'messages_send_scheduled_messages')
     def struct_0xbd38850a(self):
-        return Struct(
-            'sname' / Computed('messages_send_scheduled_messages'),
-            'signature' / Hex(Const(0xbd38850a, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / self.vector(Int32ul, 'id'))
 
     @constructor(0x59ae2b16, 'messages_delete_scheduled_messages')
     def struct_0x59ae2b16(self):
-        return Struct(
-            'sname' / Computed('messages_delete_scheduled_messages'),
-            'signature' / Hex(Const(0x59ae2b16, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / self.vector(Int32ul, 'id'))
 
@@ -28089,9 +26511,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xdc0242c8, 'messages_send_web_view_data')
     def struct_0xdc0242c8(self):
-        return Struct(
-            'sname' / Computed('messages_send_web_view_data'),
-            'signature' / Hex(Const(0xdc0242c8, Int32ul)),
+        return (
             'bot' / self.input_user_structures('bot'),
             'random_id' / Int64ul,
             'button_text' / TString,
@@ -28099,9 +26519,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x8bba90e6, 'messages_get_messages_reactions')
     def struct_0x8bba90e6(self):
-        return Struct(
-            'sname' / Computed('messages_get_messages_reactions'),
-            'signature' / Hex(Const(0x8bba90e6, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / self.vector(Int32ul, 'id'))
 
@@ -28121,9 +26539,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xfeb16771, 'messages_set_chat_available_reactions')
     def struct_0xfeb16771(self):
-        return Struct(
-            'sname' / Computed('messages_set_chat_available_reactions'),
-            'signature' / Hex(Const(0xfeb16771, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'available_reactions' / self.chat_reactions_structures('available_reactions'))
 
@@ -28195,18 +26611,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7ed094a1, 'messages_get_old_featured_stickers')
     def struct_0x7ed094a1(self):
-        return Struct(
-            'sname' / Computed('messages_get_old_featured_stickers'),
-            'signature' / Hex(Const(0x7ed094a1, Int32ul)),
+        return (
             'offset' / Int32ul,
             'limit' / Int32ul,
             'hash' / Int64ul)
 
     @constructor(0x22ddd30c, 'messages_get_replies')
     def struct_0x22ddd30c(self):
-        return Struct(
-            'sname' / Computed('messages_get_replies'),
-            'signature' / Hex(Const(0x22ddd30c, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul,
             'offset_id' / Int32ul,
@@ -28219,17 +26631,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x446972fd, 'messages_get_discussion_message')
     def struct_0x446972fd(self):
-        return Struct(
-            'sname' / Computed('messages_get_discussion_message'),
-            'signature' / Hex(Const(0x446972fd, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul)
 
     @constructor(0xf731a9f4, 'messages_read_discussion')
     def struct_0xf731a9f4(self):
-        return Struct(
-            'sname' / Computed('messages_read_discussion'),
-            'signature' / Hex(Const(0xf731a9f4, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul,
             'read_max_id' / Int32ul)
@@ -28254,9 +26662,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x73746f5c, 'messages_get_exported_chat_invite')
     def struct_0x73746f5c(self):
-        return Struct(
-            'sname' / Computed('messages_get_exported_chat_invite'),
-            'signature' / Hex(Const(0x73746f5c, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'link' / TString)
 
@@ -28280,17 +26686,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x56987bd5, 'messages_delete_revoked_exported_chat_invites')
     def struct_0x56987bd5(self):
-        return Struct(
-            'sname' / Computed('messages_delete_revoked_exported_chat_invites'),
-            'signature' / Hex(Const(0x56987bd5, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'admin_id' / self.input_user_structures('admin_id'))
 
     @constructor(0xd464a42b, 'messages_delete_exported_chat_invite')
     def struct_0xd464a42b(self):
-        return Struct(
-            'sname' / Computed('messages_delete_exported_chat_invite'),
-            'signature' / Hex(Const(0xd464a42b, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'link' / TString)
 
@@ -28338,25 +26740,19 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb11eafa2, 'messages_toggle_no_forwards')
     def struct_0xb11eafa2(self):
-        return Struct(
-            'sname' / Computed('messages_toggle_no_forwards'),
-            'signature' / Hex(Const(0xb11eafa2, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'enabled' / TBool)
 
     @constructor(0xccfddf96, 'messages_save_default_send_as')
     def struct_0xccfddf96(self):
-        return Struct(
-            'sname' / Computed('messages_save_default_send_as'),
-            'signature' / Hex(Const(0xccfddf96, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'send_as' / self.input_peer_structures('send_as'))
 
     @constructor(0xb80e5fe4, 'messages_set_history_ttl')
     def struct_0xb80e5fe4(self):
-        return Struct(
-            'sname' / Computed('messages_set_history_ttl'),
-            'signature' / Hex(Const(0xb80e5fe4, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'period' / Int32ul)
 
@@ -28378,18 +26774,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x34090c3b, 'messages_init_history_import')
     def struct_0x34090c3b(self):
-        return Struct(
-            'sname' / Computed('messages_init_history_import'),
-            'signature' / Hex(Const(0x34090c3b, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'file' / self.input_file_structures('file'),
             'media_count' / Int32ul)
 
     @constructor(0x2a862092, 'messages_upload_imported_media')
     def struct_0x2a862092(self):
-        return Struct(
-            'sname' / Computed('messages_upload_imported_media'),
-            'signature' / Hex(Const(0x2a862092, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'import_id' / Int64ul,
             'file_name' / TString,
@@ -28397,9 +26789,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb43df344, 'messages_start_history_import')
     def struct_0xb43df344(self):
-        return Struct(
-            'sname' / Computed('messages_start_history_import'),
-            'signature' / Hex(Const(0xb43df344, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'import_id' / Int64ul)
 
@@ -28409,9 +26799,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe63be13f, 'messages_set_chat_theme')
     def struct_0xe63be13f(self):
-        return Struct(
-            'sname' / Computed('messages_set_chat_theme'),
-            'signature' / Hex(Const(0xe63be13f, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'emoticon' / TString)
 
@@ -28432,9 +26820,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5057c497, 'messages_upload_encrypted_file')
     def struct_0x5057c497(self):
-        return Struct(
-            'sname' / Computed('messages_upload_encrypted_file'),
-            'signature' / Hex(Const(0x5057c497, Int32ul)),
+        return (
             'peer' / self.struct_0xf141b5e1(),
             'file' / self.input_encrypted_file_structures('file'))
 
@@ -28473,9 +26859,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xec22cfcd, 'help_set_bot_updates_status')
     def struct_0xec22cfcd(self):
-        return Struct(
-            'sname' / Computed('help_set_bot_updates_status'),
-            'signature' / Hex(Const(0xec22cfcd, Int32ul)),
+        return (
             'pending_updates_count' / Int32ul,
             'message' / TString)
 
@@ -28499,9 +26883,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x338e2464, 'messages_get_document_by_hash')
     def struct_0x338e2464(self):
-        return Struct(
-            'sname' / Computed('messages_get_document_by_hash'),
-            'signature' / Hex(Const(0x338e2464, Int32ul)),
+        return (
             'sha256' / TBytes,
             'size' / Int32ul,
             'mime_type' / TString)
@@ -28516,50 +26898,38 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xcc104937, 'channels_read_history')
     def struct_0xcc104937(self):
-        return Struct(
-            'sname' / Computed('channels_read_history'),
-            'signature' / Hex(Const(0xcc104937, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'max_id' / Int32ul)
 
     @constructor(0x84c1fd4e, 'channels_delete_messages')
     def struct_0x84c1fd4e(self):
-        return Struct(
-            'sname' / Computed('channels_delete_messages'),
-            'signature' / Hex(Const(0x84c1fd4e, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'id' / self.vector(Int32ul, 'id'))
 
     @constructor(0x367544db, 'channels_delete_participant_history')
     def struct_0x367544db(self):
-        return Struct(
-            'sname' / Computed('channels_delete_participant_history'),
-            'signature' / Hex(Const(0x367544db, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'participant' / self.input_peer_structures('participant'))
 
     @constructor(0xf44a8315, 'channels_report_spam')
     def struct_0xf44a8315(self):
-        return Struct(
-            'sname' / Computed('channels_report_spam'),
-            'signature' / Hex(Const(0xf44a8315, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'participant' / self.input_peer_structures('participant'),
             'id' / self.vector(Int32ul, 'id'))
 
     @constructor(0x93d7b347, 'channels_get_messages')
     def struct_0x93d7b347(self):
-        return Struct(
-            'sname' / Computed('channels_get_messages'),
-            'signature' / Hex(Const(0x93d7b347, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'id' / self.vector(Int32ul, 'id'))
 
     @constructor(0x77ced9d0, 'channels_get_participants')
     def struct_0x77ced9d0(self):
-        return Struct(
-            'sname' / Computed('channels_get_participants'),
-            'signature' / Hex(Const(0x77ced9d0, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'filter' / self.channel_participants_filter_structures('filter'),
             'offset' / Int32ul,
@@ -28568,9 +26938,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa0ab6cc6, 'channels_get_participant')
     def struct_0xa0ab6cc6(self):
-        return Struct(
-            'sname' / Computed('channels_get_participant'),
-            'signature' / Hex(Const(0xa0ab6cc6, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'participant' / self.input_peer_structures('participant'))
 
@@ -28602,9 +26970,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xd33c8902, 'channels_edit_admin')
     def struct_0xd33c8902(self):
-        return Struct(
-            'sname' / Computed('channels_edit_admin'),
-            'signature' / Hex(Const(0xd33c8902, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'user_id' / self.input_user_structures('user_id'),
             'admin_rights' / self.struct_0x5fb224d5(),
@@ -28612,33 +26978,25 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x566decd0, 'channels_edit_title')
     def struct_0x566decd0(self):
-        return Struct(
-            'sname' / Computed('channels_edit_title'),
-            'signature' / Hex(Const(0x566decd0, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'title' / TString)
 
     @constructor(0xf12e57c9, 'channels_edit_photo')
     def struct_0xf12e57c9(self):
-        return Struct(
-            'sname' / Computed('channels_edit_photo'),
-            'signature' / Hex(Const(0xf12e57c9, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'photo' / self.input_chat_photo_structures('photo'))
 
     @constructor(0x10e6bd2c, 'channels_check_username')
     def struct_0x10e6bd2c(self):
-        return Struct(
-            'sname' / Computed('channels_check_username'),
-            'signature' / Hex(Const(0x10e6bd2c, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'username' / TString)
 
     @constructor(0x3514b3de, 'channels_update_username')
     def struct_0x3514b3de(self):
-        return Struct(
-            'sname' / Computed('channels_update_username'),
-            'signature' / Hex(Const(0x3514b3de, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'username' / TString)
 
@@ -28652,9 +27010,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x199f3a6c, 'channels_invite_to_channel')
     def struct_0x199f3a6c(self):
-        return Struct(
-            'sname' / Computed('channels_invite_to_channel'),
-            'signature' / Hex(Const(0x199f3a6c, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'users' / self.vector(self.input_user_structures('users'), 'users'))
 
@@ -28675,9 +27031,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1f69b606, 'channels_toggle_signatures')
     def struct_0x1f69b606(self):
-        return Struct(
-            'sname' / Computed('channels_toggle_signatures'),
-            'signature' / Hex(Const(0x1f69b606, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'enabled' / TBool)
 
@@ -28693,9 +27047,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x96e6cd81, 'channels_edit_banned')
     def struct_0x96e6cd81(self):
-        return Struct(
-            'sname' / Computed('channels_edit_banned'),
-            'signature' / Hex(Const(0x96e6cd81, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'participant' / self.input_peer_structures('participant'),
             'banned_rights' / self.struct_0x9f120418())
@@ -28718,17 +27070,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xea8ca4f9, 'channels_set_stickers')
     def struct_0xea8ca4f9(self):
-        return Struct(
-            'sname' / Computed('channels_set_stickers'),
-            'signature' / Hex(Const(0xea8ca4f9, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'stickerset' / self.input_sticker_set_structures('stickerset'))
 
     @constructor(0xeab5dc38, 'channels_read_message_contents')
     def struct_0xeab5dc38(self):
-        return Struct(
-            'sname' / Computed('channels_read_message_contents'),
-            'signature' / Hex(Const(0xeab5dc38, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'id' / self.vector(Int32ul, 'id'))
 
@@ -28744,9 +27092,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x43a0a7e2, 'channels_search_posts')
     def struct_0x43a0a7e2(self):
-        return Struct(
-            'sname' / Computed('channels_search_posts'),
-            'signature' / Hex(Const(0x43a0a7e2, Int32ul)),
+        return (
             'q' / TString,
             'offset_rate' / Int32ul,
             'offset_peer' / self.input_peer_structures('offset_peer'),
@@ -28755,9 +27101,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xedd49ef0, 'channels_toggle_slow_mode')
     def struct_0xedd49ef0(self):
-        return Struct(
-            'sname' / Computed('channels_toggle_slow_mode'),
-            'signature' / Hex(Const(0xedd49ef0, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'seconds' / Int32ul)
 
@@ -28771,9 +27115,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xbeaedb94, 'channels_view_sponsored_message')
     def struct_0xbeaedb94(self):
-        return Struct(
-            'sname' / Computed('channels_view_sponsored_message'),
-            'signature' / Hex(Const(0xbeaedb94, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'random_id' / TBytes)
 
@@ -28828,18 +27170,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3bd2b4a0, 'phone_accept_call')
     def struct_0x3bd2b4a0(self):
-        return Struct(
-            'sname' / Computed('phone_accept_call'),
-            'signature' / Hex(Const(0x3bd2b4a0, Int32ul)),
+        return (
             'peer' / self.struct_0x1e36fded(),
             'g_b' / TBytes,
             'protocol' / self.phone_call_protocol_structures('protocol'))
 
     @constructor(0x2efe1722, 'phone_confirm_call')
     def struct_0x2efe1722(self):
-        return Struct(
-            'sname' / Computed('phone_confirm_call'),
-            'signature' / Hex(Const(0x2efe1722, Int32ul)),
+        return (
             'peer' / self.struct_0x1e36fded(),
             'g_a' / TBytes,
             'key_fingerprint' / Int64ul,
@@ -28874,17 +27212,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x277add7e, 'phone_save_call_debug')
     def struct_0x277add7e(self):
-        return Struct(
-            'sname' / Computed('phone_save_call_debug'),
-            'signature' / Hex(Const(0x277add7e, Int32ul)),
+        return (
             'peer' / self.struct_0x1e36fded(),
             'debug' / self.struct_0x7d748d04())
 
     @constructor(0xff7a9383, 'phone_send_signaling_data')
     def struct_0xff7a9383(self):
-        return Struct(
-            'sname' / Computed('phone_send_signaling_data'),
-            'signature' / Hex(Const(0xff7a9383, Int32ul)),
+        return (
             'peer' / self.struct_0x1e36fded(),
             'data' / TBytes)
 
@@ -28917,17 +27251,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x500377f9, 'phone_leave_group_call')
     def struct_0x500377f9(self):
-        return Struct(
-            'sname' / Computed('phone_leave_group_call'),
-            'signature' / Hex(Const(0x500377f9, Int32ul)),
+        return (
             'call' / self.struct_0xd8aa840f(),
             'source' / Int32ul)
 
     @constructor(0x7b393160, 'phone_invite_to_group_call')
     def struct_0x7b393160(self):
-        return Struct(
-            'sname' / Computed('phone_invite_to_group_call'),
-            'signature' / Hex(Const(0x7b393160, Int32ul)),
+        return (
             'call' / self.struct_0xd8aa840f(),
             'users' / self.vector(self.input_user_structures('users'), 'users'))
 
@@ -28948,17 +27278,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x041845db, 'phone_get_group_call')
     def struct_0x041845db(self):
-        return Struct(
-            'sname' / Computed('phone_get_group_call'),
-            'signature' / Hex(Const(0x041845db, Int32ul)),
+        return (
             'call' / self.struct_0xd8aa840f(),
             'limit' / Int32ul)
 
     @constructor(0xc558d8ab, 'phone_get_group_participants')
     def struct_0xc558d8ab(self):
-        return Struct(
-            'sname' / Computed('phone_get_group_participants'),
-            'signature' / Hex(Const(0xc558d8ab, Int32ul)),
+        return (
             'call' / self.struct_0xd8aa840f(),
             'ids' / self.vector(self.input_peer_structures('ids'), 'ids'),
             'sources' / self.vector(Int32ul, 'sources'),
@@ -28967,9 +27293,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb59cf977, 'phone_check_group_call')
     def struct_0xb59cf977(self):
-        return Struct(
-            'sname' / Computed('phone_check_group_call'),
-            'signature' / Hex(Const(0xb59cf977, Int32ul)),
+        return (
             'call' / self.struct_0xd8aa840f(),
             'sources' / self.vector(Int32ul, 'sources'))
 
@@ -29009,9 +27333,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1ca6ac0a, 'phone_edit_group_call_title')
     def struct_0x1ca6ac0a(self):
-        return Struct(
-            'sname' / Computed('phone_edit_group_call_title'),
-            'signature' / Hex(Const(0x1ca6ac0a, Int32ul)),
+        return (
             'call' / self.struct_0xd8aa840f(),
             'title' / TString)
 
@@ -29030,9 +27352,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x219c34e6, 'phone_toggle_group_call_start_subscription')
     def struct_0x219c34e6(self):
-        return Struct(
-            'sname' / Computed('phone_toggle_group_call_start_subscription'),
-            'signature' / Hex(Const(0x219c34e6, Int32ul)),
+        return (
             'call' / self.struct_0xd8aa840f(),
             'subscribed' / TBool)
 
@@ -29042,25 +27362,19 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x575e1f8c, 'phone_save_default_group_call_join_as')
     def struct_0x575e1f8c(self):
-        return Struct(
-            'sname' / Computed('phone_save_default_group_call_join_as'),
-            'signature' / Hex(Const(0x575e1f8c, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'join_as' / self.input_peer_structures('join_as'))
 
     @constructor(0xcbea6bc4, 'phone_join_group_call_presentation')
     def struct_0xcbea6bc4(self):
-        return Struct(
-            'sname' / Computed('phone_join_group_call_presentation'),
-            'signature' / Hex(Const(0xcbea6bc4, Int32ul)),
+        return (
             'call' / self.struct_0xd8aa840f(),
             'params' / self.struct_0x7d748d04())
 
     @constructor(0x80eb48af, 'phone_group_call_stream_channel')
     def struct_0x80eb48af(self):
-        return Struct(
-            'sname' / Computed('phone_group_call_stream_channel'),
-            'signature' / Hex(Const(0x80eb48af, Int32ul)),
+        return (
             'channel' / Int32ul,
             'scale' / Int32ul,
             'last_timestamp_ms' / Int64ul)
@@ -29079,9 +27393,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xdeb3abbf, 'phone_get_group_call_stream_rtmp_url')
     def struct_0xdeb3abbf(self):
-        return Struct(
-            'sname' / Computed('phone_get_group_call_stream_rtmp_url'),
-            'signature' / Hex(Const(0xdeb3abbf, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'revoke' / TBool)
 
@@ -29097,9 +27409,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x2478d1cc, 'payments_get_payment_receipt')
     def struct_0x2478d1cc(self):
-        return Struct(
-            'sname' / Computed('payments_get_payment_receipt'),
-            'signature' / Hex(Const(0x2478d1cc, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul)
 
@@ -29152,9 +27462,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xdffd50d3, 'payments_assign_play_market_transaction')
     def struct_0xdffd50d3(self):
-        return Struct(
-            'sname' / Computed('payments_assign_play_market_transaction'),
-            'signature' / Hex(Const(0xdffd50d3, Int32ul)),
+        return (
             'receipt' / self.struct_0x7d748d04(),
             'purpose' / self.input_store_payment_purpose_structures('purpose'))
 
@@ -29181,17 +27489,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x2e1ee318, 'langpack_get_strings')
     def struct_0x2e1ee318(self):
-        return Struct(
-            'sname' / Computed('langpack_get_strings'),
-            'signature' / Hex(Const(0x2e1ee318, Int32ul)),
+        return (
             'lang_code' / TString,
             'keys' / self.vector(TString, 'keys'))
 
     @constructor(0xcd984aa5, 'langpack_get_difference')
     def struct_0xcd984aa5(self):
-        return Struct(
-            'sname' / Computed('langpack_get_difference'),
-            'signature' / Hex(Const(0xcd984aa5, Int32ul)),
+        return (
             'lang_pack' / TString,
             'lang_code' / TString,
             'from_version' / Int32ul)
@@ -29202,9 +27506,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x6a596502, 'langpack_get_language')
     def struct_0x6a596502(self):
-        return Struct(
-            'sname' / Computed('langpack_get_language'),
-            'signature' / Hex(Const(0x6a596502, Int32ul)),
+        return (
             'lang_pack' / TString,
             'lang_code' / TString)
 
@@ -29246,9 +27548,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5f150144, 'stats_get_message_public_forwards')
     def struct_0x5f150144(self):
-        return Struct(
-            'sname' / Computed('stats_get_message_public_forwards'),
-            'signature' / Hex(Const(0x5f150144, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'msg_id' / Int32ul,
             'offset' / TString,
@@ -29266,9 +27566,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa6437ef6, 'stats_get_story_public_forwards')
     def struct_0xa6437ef6(self):
-        return Struct(
-            'sname' / Computed('stats_get_story_public_forwards'),
-            'signature' / Hex(Const(0xa6437ef6, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / Int32ul,
             'offset' / TString,
@@ -29289,9 +27587,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf496b0c6, 'channels_send_as_peers')
     def struct_0xf496b0c6(self):
-        return Struct(
-            'sname' / Computed('channels_send_as_peers'),
-            'signature' / Hex(Const(0xf496b0c6, Int32ul)),
+        return (
             'peers' / self.vector(self.struct_0xb81c7034(), 'peers'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
@@ -29307,18 +27603,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb304a621, 'upload_save_file_part')
     def struct_0xb304a621(self):
-        return Struct(
-            'sname' / Computed('upload_save_file_part'),
-            'signature' / Hex(Const(0xb304a621, Int32ul)),
+        return (
             'file_id' / Int64ul,
             'file_part' / Int32ul,
             'bytes' / TBytes)
 
     @constructor(0xd5a5d3a1, 'messages_get_stickers')
     def struct_0xd5a5d3a1(self):
-        return Struct(
-            'sname' / Computed('messages_get_stickers'),
-            'signature' / Hex(Const(0xd5a5d3a1, Int32ul)),
+        return (
             'emoticon' / TString,
             'hash' / Int64ul)
 
@@ -29328,9 +27620,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xde7b673d, 'upload_save_big_file_part')
     def struct_0xde7b673d(self):
-        return Struct(
-            'sname' / Computed('upload_save_big_file_part'),
-            'signature' / Hex(Const(0xde7b673d, Int32ul)),
+        return (
             'file_id' / Int64ul,
             'file_part' / Int32ul,
             'file_total_parts' / Int32ul,
@@ -29338,51 +27628,39 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x24e6818d, 'upload_get_web_file')
     def struct_0x24e6818d(self):
-        return Struct(
-            'sname' / Computed('upload_get_web_file'),
-            'signature' / Hex(Const(0x24e6818d, Int32ul)),
+        return (
             'location' / self.input_web_file_location_structures('location'),
             'offset' / Int32ul,
             'limit' / Int32ul)
 
     @constructor(0x395f69da, 'upload_get_cdn_file')
     def struct_0x395f69da(self):
-        return Struct(
-            'sname' / Computed('upload_get_cdn_file'),
-            'signature' / Hex(Const(0x395f69da, Int32ul)),
+        return (
             'file_token' / TBytes,
             'offset' / Int64ul,
             'limit' / Int32ul)
 
     @constructor(0x9b2754a8, 'upload_reupload_cdn_file')
     def struct_0x9b2754a8(self):
-        return Struct(
-            'sname' / Computed('upload_reupload_cdn_file'),
-            'signature' / Hex(Const(0x9b2754a8, Int32ul)),
+        return (
             'file_token' / TBytes,
             'request_token' / TBytes)
 
     @constructor(0x91dc3f31, 'upload_get_cdn_file_hashes')
     def struct_0x91dc3f31(self):
-        return Struct(
-            'sname' / Computed('upload_get_cdn_file_hashes'),
-            'signature' / Hex(Const(0x91dc3f31, Int32ul)),
+        return (
             'file_token' / TBytes,
             'offset' / Int64ul)
 
     @constructor(0xc7025931, 'upload_get_file_hashes')
     def struct_0xc7025931(self):
-        return Struct(
-            'sname' / Computed('upload_get_file_hashes'),
-            'signature' / Hex(Const(0xc7025931, Int32ul)),
+        return (
             'location' / self.input_file_location_structures('location'),
             'offset' / Int32ul)
 
     @constructor(0x21e753bc, 'upload_web_file')
     def struct_0x21e753bc(self):
-        return Struct(
-            'sname' / Computed('upload_web_file'),
-            'signature' / Hex(Const(0x21e753bc, Int32ul)),
+        return (
             'size' / Int32ul,
             'mime_type' / TString,
             'file_type' / self.storage_file_type_structures('file_type'),
@@ -29418,9 +27696,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x32d439a4, 'messages_send_encrypted_service')
     def struct_0x32d439a4(self):
-        return Struct(
-            'sname' / Computed('messages_send_encrypted_service'),
-            'signature' / Hex(Const(0x32d439a4, Int32ul)),
+        return (
             'peer' / self.struct_0xf141b5e1(),
             'random_id' / Int64ul,
             'data' / TBytes)
@@ -29440,9 +27716,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xaadf159b, 'messages_web_view_result')
     def struct_0xaadf159b(self):
-        return Struct(
-            'sname' / Computed('messages_web_view_result'),
-            'signature' / Hex(Const(0xaadf159b, Int32ul)),
+        return (
             'result' / self.bot_inline_result_structures('result'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
@@ -29462,9 +27736,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x0c14557c, 'web_view_result_url')
     def struct_0x0c14557c(self):
-        return Struct(
-            'sname' / Computed('web_view_result_url'),
-            'signature' / Hex(Const(0x0c14557c, Int32ul)),
+        return (
             'query_id' / Int64ul,
             'url' / TString)
 
@@ -29509,9 +27781,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x34fdc5c3, 'messages_get_bot_app')
     def struct_0x34fdc5c3(self):
-        return Struct(
-            'sname' / Computed('messages_get_bot_app'),
-            'signature' / Hex(Const(0x34fdc5c3, Int32ul)),
+        return (
             'app' / self.input_bot_app_structures('app'),
             'hash' / Int64ul)
 
@@ -29557,18 +27827,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x22b6c214, 'messages_get_web_view_result')
     def struct_0x22b6c214(self):
-        return Struct(
-            'sname' / Computed('messages_get_web_view_result'),
-            'signature' / Hex(Const(0x22b6c214, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'bot' / self.input_user_structures('bot'),
             'query_id' / Int64ul)
 
     @constructor(0x93bf667f, 'attach_menu_bots_bot')
     def struct_0x93bf667f(self):
-        return Struct(
-            'sname' / Computed('attach_menu_bots_bot'),
-            'signature' / Hex(Const(0x93bf667f, Int32ul)),
+        return (
             'bot' / self.attach_menu_bot_structures('bot'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
@@ -29591,9 +27857,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x831a83a2, 'account_upload_ringtone')
     def struct_0x831a83a2(self):
-        return Struct(
-            'sname' / Computed('account_upload_ringtone'),
-            'signature' / Hex(Const(0x831a83a2, Int32ul)),
+        return (
             'file' / self.input_file_structures('file'),
             'file_name' / TString,
             'mime_type' / TString)
@@ -29604,17 +27868,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3dea5b03, 'account_save_ringtone')
     def struct_0x3dea5b03(self):
-        return Struct(
-            'sname' / Computed('account_save_ringtone'),
-            'signature' / Hex(Const(0x3dea5b03, Int32ul)),
+        return (
             'id' / self.input_document_structures('id'),
             'unsave' / TBool)
 
     @constructor(0x4576f3f0, 'attach_menu_bot_icon_color')
     def struct_0x4576f3f0(self):
-        return Struct(
-            'sname' / Computed('attach_menu_bot_icon_color'),
-            'signature' / Hex(Const(0x4576f3f0, Int32ul)),
+        return (
             'name' / TString,
             'color' / Int32ul)
 
@@ -29631,9 +27891,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x4504d54f, 'bots_set_bot_menu_button')
     def struct_0x4504d54f(self):
-        return Struct(
-            'sname' / Computed('bots_set_bot_menu_button'),
-            'signature' / Hex(Const(0x4504d54f, Int32ul)),
+        return (
             'user_id' / self.input_user_structures('user_id'),
             'button' / self.bot_menu_button_structures('button'))
 
@@ -29657,33 +27915,25 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb57295d5, 'inline_bot_web_view')
     def struct_0xb57295d5(self):
-        return Struct(
-            'sname' / Computed('inline_bot_web_view'),
-            'signature' / Hex(Const(0xb57295d5, Int32ul)),
+        return (
             'text' / TString,
             'url' / TString)
 
     @constructor(0xe4cb9580, 'channels_toggle_join_to_send')
     def struct_0xe4cb9580(self):
-        return Struct(
-            'sname' / Computed('channels_toggle_join_to_send'),
-            'signature' / Hex(Const(0xe4cb9580, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'enabled' / TBool)
 
     @constructor(0x4c2985b6, 'channels_toggle_join_request')
     def struct_0x4c2985b6(self):
-        return Struct(
-            'sname' / Computed('channels_toggle_join_request'),
-            'signature' / Hex(Const(0x4c2985b6, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'enabled' / TBool)
 
     @constructor(0x41248786, 'phone_save_call_log')
     def struct_0x41248786(self):
-        return Struct(
-            'sname' / Computed('phone_save_call_log'),
-            'signature' / Hex(Const(0x41248786, Int32ul)),
+        return (
             'peer' / self.struct_0x1e36fded(),
             'file' / self.input_file_structures('file'))
 
@@ -29697,17 +27947,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x269e9a49, 'messages_transcribe_audio')
     def struct_0x269e9a49(self):
-        return Struct(
-            'sname' / Computed('messages_transcribe_audio'),
-            'signature' / Hex(Const(0x269e9a49, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul)
 
     @constructor(0x7f1d072f, 'messages_rate_transcribed_audio')
     def struct_0x7f1d072f(self):
-        return Struct(
-            'sname' / Computed('messages_rate_transcribed_audio'),
-            'signature' / Hex(Const(0x7f1d072f, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul,
             'transcription_id' / Int64ul,
@@ -29732,9 +27978,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x146e958d, 'payments_request_recurring_payment')
     def struct_0x146e958d(self):
-        return Struct(
-            'sname' / Computed('payments_request_recurring_payment'),
-            'signature' / Hex(Const(0x146e958d, Int32ul)),
+        return (
             'user_id' / self.input_user_structures('user_id'),
             'recurring_init_charge' / TString,
             'invoice_media' / self.input_media_structures('invoice_media'))
@@ -29745,9 +27989,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x61422a48, 'messages_report_reaction')
     def struct_0x61422a48(self):
-        return Struct(
-            'sname' / Computed('messages_report_reaction'),
-            'signature' / Hex(Const(0x61422a48, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / Int32ul,
             'user_id' / self.input_user_structures('user_id'))
@@ -29758,17 +28000,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xbb8125ba, 'messages_get_top_reactions')
     def struct_0xbb8125ba(self):
-        return Struct(
-            'sname' / Computed('messages_get_top_reactions'),
-            'signature' / Hex(Const(0xbb8125ba, Int32ul)),
+        return (
             'limit' / Int32ul,
             'hash' / Int64ul)
 
     @constructor(0x39461db2, 'messages_get_recent_reactions')
     def struct_0x39461db2(self):
-        return Struct(
-            'sname' / Computed('messages_get_recent_reactions'),
-            'signature' / Hex(Const(0x39461db2, Int32ul)),
+        return (
             'limit' / Int32ul,
             'hash' / Int64ul)
 
@@ -29792,9 +28030,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa4298b29, 'channels_toggle_forum')
     def struct_0xa4298b29(self):
-        return Struct(
-            'sname' / Computed('channels_toggle_forum'),
-            'signature' / Hex(Const(0xa4298b29, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'enabled' / TBool)
 
@@ -29833,9 +28069,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x6c2d9026, 'channels_update_pinned_forum_topic')
     def struct_0x6c2d9026(self):
-        return Struct(
-            'sname' / Computed('channels_update_pinned_forum_topic'),
-            'signature' / Hex(Const(0x6c2d9026, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'topic_id' / Int32ul,
             'pinned' / TBool)
@@ -29856,9 +28090,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb0831eb9, 'channels_get_forum_topics_by_id')
     def struct_0xb0831eb9(self):
-        return Struct(
-            'sname' / Computed('channels_get_forum_topics_by_id'),
-            'signature' / Hex(Const(0xb0831eb9, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'topics' / self.vector(Int32ul, 'topics'))
 
@@ -29874,25 +28106,19 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x34435f2d, 'channels_delete_topic_history')
     def struct_0x34435f2d(self):
-        return Struct(
-            'sname' / Computed('channels_delete_topic_history'),
-            'signature' / Hex(Const(0x34435f2d, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'top_msg_id' / Int32ul)
 
     @constructor(0x3cd930b7, 'channels_set_emoji_stickers')
     def struct_0x3cd930b7(self):
-        return Struct(
-            'sname' / Computed('channels_set_emoji_stickers'),
-            'signature' / Hex(Const(0x3cd930b7, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'stickerset' / self.input_sticker_set_structures('stickerset'))
 
     @constructor(0xad399cee, 'channels_set_boosts_to_unblock_restrictions')
     def struct_0xad399cee(self):
-        return Struct(
-            'sname' / Computed('channels_set_boosts_to_unblock_restrictions'),
-            'signature' / Hex(Const(0xad399cee, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'boosts' / Int32ul)
 
@@ -29902,25 +28128,19 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x58d6b376, 'account_toggle_username')
     def struct_0x58d6b376(self):
-        return Struct(
-            'sname' / Computed('account_toggle_username'),
-            'signature' / Hex(Const(0x58d6b376, Int32ul)),
+        return (
             'username' / TString,
             'active' / TBool)
 
     @constructor(0xb45ced1d, 'channels_reorder_usernames')
     def struct_0xb45ced1d(self):
-        return Struct(
-            'sname' / Computed('channels_reorder_usernames'),
-            'signature' / Hex(Const(0xb45ced1d, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'order' / self.vector(TString, 'order'))
 
     @constructor(0x50f24105, 'channels_toggle_username')
     def struct_0x50f24105(self):
-        return Struct(
-            'sname' / Computed('channels_toggle_username'),
-            'signature' / Hex(Const(0x50f24105, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'username' / TString,
             'active' / TBool)
@@ -29941,33 +28161,25 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x68f3e4eb, 'channels_toggle_anti_spam')
     def struct_0x68f3e4eb(self):
-        return Struct(
-            'sname' / Computed('channels_toggle_anti_spam'),
-            'signature' / Hex(Const(0x68f3e4eb, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'enabled' / TBool)
 
     @constructor(0xa850a693, 'channels_report_anti_spam_false_positive')
     def struct_0xa850a693(self):
-        return Struct(
-            'sname' / Computed('channels_report_anti_spam_false_positive'),
-            'signature' / Hex(Const(0xa850a693, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'msg_id' / Int32ul)
 
     @constructor(0x6a6e7854, 'channels_toggle_participants_hidden')
     def struct_0x6a6e7854(self):
-        return Struct(
-            'sname' / Computed('channels_toggle_participants_hidden'),
-            'signature' / Hex(Const(0x6a6e7854, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'enabled' / TBool)
 
     @constructor(0x18afbc93, 'channels_click_sponsored_message')
     def struct_0x18afbc93(self):
-        return Struct(
-            'sname' / Computed('channels_click_sponsored_message'),
-            'signature' / Hex(Const(0x18afbc93, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'random_id' / TBytes)
 
@@ -29985,9 +28197,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x91b2d060, 'messages_send_bot_requested_peer')
     def struct_0x91b2d060(self):
-        return Struct(
-            'sname' / Computed('messages_send_bot_requested_peer'),
-            'signature' / Hex(Const(0x91b2d060, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul,
             'button_id' / Int32ul,
@@ -30088,9 +28298,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x89fdd778, 'input_media_story')
     def struct_0x89fdd778(self):
-        return Struct(
-            'sname' / Computed('input_media_story'),
-            'signature' / Hex(Const(0x89fdd778, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / Int32ul)
 
@@ -30104,18 +28312,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x087fc5e7, 'bots_invoke_web_view_custom_method')
     def struct_0x087fc5e7(self):
-        return Struct(
-            'sname' / Computed('bots_invoke_web_view_custom_method'),
-            'signature' / Hex(Const(0x087fc5e7, Int32ul)),
+        return (
             'bot' / self.input_user_structures('bot'),
             'custom_method' / TString,
             'params' / self.struct_0x7d748d04())
 
     @constructor(0xfd5e12bd, 'messages_web_page')
     def struct_0xfd5e12bd(self):
-        return Struct(
-            'sname' / Computed('messages_web_page'),
-            'signature' / Hex(Const(0xfd5e12bd, Int32ul)),
+        return (
             'webpage' / self.web_page_structures('webpage'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
@@ -30154,9 +28358,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf4239425, 'payments_get_giveaway_info')
     def struct_0xf4239425(self):
-        return Struct(
-            'sname' / Computed('payments_get_giveaway_info'),
-            'signature' / Hex(Const(0xf4239425, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul)
 
@@ -30182,18 +28384,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5ff58f20, 'payments_launch_prepaid_giveaway')
     def struct_0x5ff58f20(self):
-        return Struct(
-            'sname' / Computed('payments_launch_prepaid_giveaway'),
-            'signature' / Hex(Const(0x5ff58f20, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'giveaway_id' / Int64ul,
             'purpose' / self.input_store_payment_purpose_structures('purpose'))
 
     @constructor(0xf0d3e6a8, 'channels_update_emoji_status')
     def struct_0xf0d3e6a8(self):
-        return Struct(
-            'sname' / Computed('channels_update_emoji_status'),
-            'signature' / Hex(Const(0xf0d3e6a8, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'emoji_status' / self.emoji_status_structures('emoji_status'))
 
@@ -30203,9 +28401,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x9738bb15, 'channels_toggle_view_forum_as_messages')
     def struct_0x9738bb15(self):
-        return Struct(
-            'sname' / Computed('channels_toggle_view_forum_as_messages'),
-            'signature' / Hex(Const(0x9738bb15, Int32ul)),
+        return (
             'channel_id' / self.input_channel_structures('channel_id'),
             'enabled' / TBool)
 
@@ -30274,9 +28470,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x3d9a414d, 'messages_get_saved_history')
     def struct_0x3d9a414d(self):
-        return Struct(
-            'sname' / Computed('messages_get_saved_history'),
-            'signature' / Hex(Const(0x3d9a414d, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'offset_id' / Int32ul,
             'offset_date' / TTimestamp,
@@ -30326,17 +28520,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x8c4bfe5d, 'messages_get_outbox_read_date')
     def struct_0x8c4bfe5d(self):
-        return Struct(
-            'sname' / Computed('messages_get_outbox_read_date'),
-            'signature' / Hex(Const(0x8c4bfe5d, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul)
 
     @constructor(0x120b1ab9, 'account_business_weekly_open')
     def struct_0x120b1ab9(self):
-        return Struct(
-            'sname' / Computed('account_business_weekly_open'),
-            'signature' / Hex(Const(0x120b1ab9, Int32ul)),
+        return (
             'start_minute' / Int32ul,
             'end_minute' / Int32ul)
 
@@ -30362,9 +28552,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xff9289f5, 'timezone')
     def struct_0xff9289f5(self):
-        return Struct(
-            'sname' / Computed('timezone'),
-            'signature' / Hex(Const(0xff9289f5, Int32ul)),
+        return (
             'id' / TString,
             'name' / TString,
             'utc_offset' / Int32ul)
@@ -30395,9 +28583,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x0697102b, 'quick_reply')
     def struct_0x0697102b(self):
-        return Struct(
-            'sname' / Computed('quick_reply'),
-            'signature' / Hex(Const(0x0697102b, Int32ul)),
+        return (
             'shortcut_id' / Int32ul,
             'shortcut' / TString,
             'top_message' / Int32ul,
@@ -30417,9 +28603,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5c003cef, 'messages_edit_quick_reply_shortcut')
     def struct_0x5c003cef(self):
-        return Struct(
-            'sname' / Computed('messages_edit_quick_reply_shortcut'),
-            'signature' / Hex(Const(0x5c003cef, Int32ul)),
+        return (
             'shortcut_id' / Int32ul,
             'shortcut' / TString)
 
@@ -30436,17 +28620,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x33153ad4, 'messages_send_quick_reply_messages')
     def struct_0x33153ad4(self):
-        return Struct(
-            'sname' / Computed('messages_send_quick_reply_messages'),
-            'signature' / Hex(Const(0x33153ad4, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'shortcut_id' / Int32ul)
 
     @constructor(0xe105e910, 'messages_delete_quick_reply_messages')
     def struct_0xe105e910(self):
-        return Struct(
-            'sname' / Computed('messages_delete_quick_reply_messages'),
-            'signature' / Hex(Const(0xe105e910, Int32ul)),
+        return (
             'shortcut_id' / Int32ul,
             'id' / self.vector(Int32ul, 'id'))
 
@@ -30456,18 +28636,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x0194cb3b, 'account_input_business_greeting_message')
     def struct_0x0194cb3b(self):
-        return Struct(
-            'sname' / Computed('account_input_business_greeting_message'),
-            'signature' / Hex(Const(0x0194cb3b, Int32ul)),
+        return (
             'shortcut_id' / Int32ul,
             'recipients' / self.struct_0x6f8b32aa(),
             'no_activity_days' / Int32ul)
 
     @constructor(0xe519abab, 'account_business_greeting_message')
     def struct_0xe519abab(self):
-        return Struct(
-            'sname' / Computed('account_business_greeting_message'),
-            'signature' / Hex(Const(0xe519abab, Int32ul)),
+        return (
             'shortcut_id' / Int32ul,
             'recipients' / self.struct_0x21108ff7(),
             'no_activity_days' / Int32ul)
@@ -30552,9 +28728,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x17d7f87b, 'account_connected_bots')
     def struct_0x17d7f87b(self):
-        return Struct(
-            'sname' / Computed('account_connected_bots'),
-            'signature' / Hex(Const(0x17d7f87b, Int32ul)),
+        return (
             'connected_bots' / self.vector(self.struct_0xbd068601(), 'connected_bots'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
@@ -30583,9 +28757,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x10e6e3a6, 'chatlists_exported_chatlist_invite')
     def struct_0x10e6e3a6(self):
-        return Struct(
-            'sname' / Computed('chatlists_exported_chatlist_invite'),
-            'signature' / Hex(Const(0x10e6e3a6, Int32ul)),
+        return (
             'filter' / self.dialog_filter_structures('filter'),
             'invite' / self.struct_0x0c5181ac())
 
@@ -30602,36 +28774,28 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x10ab6dc7, 'chatlists_exported_invites')
     def struct_0x10ab6dc7(self):
-        return Struct(
-            'sname' / Computed('chatlists_exported_invites'),
-            'signature' / Hex(Const(0x10ab6dc7, Int32ul)),
+        return (
             'invites' / self.vector(self.struct_0x0c5181ac(), 'invites'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0x93bd878d, 'chatlists_chatlist_updates')
     def struct_0x93bd878d(self):
-        return Struct(
-            'sname' / Computed('chatlists_chatlist_updates'),
-            'signature' / Hex(Const(0x93bd878d, Int32ul)),
+        return (
             'missing_peers' / self.vector(self.peer_structures('missing_peers'), 'missing_peers'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
     @constructor(0x8472478e, 'chatlists_export_chatlist_invite')
     def struct_0x8472478e(self):
-        return Struct(
-            'sname' / Computed('chatlists_export_chatlist_invite'),
-            'signature' / Hex(Const(0x8472478e, Int32ul)),
+        return (
             'chatlist' / self.struct_0xf3e0da33(),
             'title' / TString,
             'peers' / self.vector(self.input_peer_structures('peers'), 'peers'))
 
     @constructor(0x719c5c5e, 'chatlists_delete_exported_invite')
     def struct_0x719c5c5e(self):
-        return Struct(
-            'sname' / Computed('chatlists_delete_exported_invite'),
-            'signature' / Hex(Const(0x719c5c5e, Int32ul)),
+        return (
             'chatlist' / self.struct_0xf3e0da33(),
             'slug' / TString)
 
@@ -30659,9 +28823,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xa6b1e39a, 'chatlists_join_chatlist_invite')
     def struct_0xa6b1e39a(self):
-        return Struct(
-            'sname' / Computed('chatlists_join_chatlist_invite'),
-            'signature' / Hex(Const(0xa6b1e39a, Int32ul)),
+        return (
             'slug' / TString,
             'peers' / self.vector(self.input_peer_structures('peers'), 'peers'))
 
@@ -30671,9 +28833,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xe089f8f5, 'chatlists_join_chatlist_updates')
     def struct_0xe089f8f5(self):
-        return Struct(
-            'sname' / Computed('chatlists_join_chatlist_updates'),
-            'signature' / Hex(Const(0xe089f8f5, Int32ul)),
+        return (
             'chatlist' / self.struct_0xf3e0da33(),
             'peers' / self.vector(self.input_peer_structures('peers'), 'peers'))
 
@@ -30687,17 +28847,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x74fae13a, 'chatlists_leave_chatlist')
     def struct_0x74fae13a(self):
-        return Struct(
-            'sname' / Computed('chatlists_leave_chatlist'),
-            'signature' / Hex(Const(0x74fae13a, Int32ul)),
+        return (
             'chatlist' / self.struct_0xf3e0da33(),
             'peers' / self.vector(self.input_peer_structures('peers'), 'peers'))
 
     @constructor(0xcae68768, 'stories_peer_stories')
     def struct_0xcae68768(self):
-        return Struct(
-            'sname' / Computed('stories_peer_stories'),
-            'signature' / Hex(Const(0xcae68768, Int32ul)),
+        return (
             'stories' / self.stories_peer_stories_structures('stories'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
@@ -30733,17 +28889,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xae59db5f, 'stories_delete_stories')
     def struct_0xae59db5f(self):
-        return Struct(
-            'sname' / Computed('stories_delete_stories'),
-            'signature' / Hex(Const(0xae59db5f, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / self.vector(Int32ul, 'id'))
 
     @constructor(0x9a75a1ef, 'stories_toggle_pinned')
     def struct_0x9a75a1ef(self):
-        return Struct(
-            'sname' / Computed('stories_toggle_pinned'),
-            'signature' / Hex(Const(0x9a75a1ef, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / self.vector(Int32ul, 'id'),
             'pinned' / TBool)
@@ -30779,17 +28931,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xbd0415c4, 'stories_toggle_peer_stories_hidden')
     def struct_0xbd0415c4(self):
-        return Struct(
-            'sname' / Computed('stories_toggle_peer_stories_hidden'),
-            'signature' / Hex(Const(0xbd0415c4, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'hidden' / TBool)
 
     @constructor(0x5dd8c3c8, 'stories_stories')
     def struct_0x5dd8c3c8(self):
-        return Struct(
-            'sname' / Computed('stories_stories'),
-            'signature' / Hex(Const(0x5dd8c3c8, Int32ul)),
+        return (
             'count' / Int32ul,
             'stories' / self.vector(self.story_item_structures('stories'), 'stories'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
@@ -30801,27 +28949,21 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5821a5dc, 'stories_get_pinned_stories')
     def struct_0x5821a5dc(self):
-        return Struct(
-            'sname' / Computed('stories_get_pinned_stories'),
-            'signature' / Hex(Const(0x5821a5dc, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'offset_id' / Int32ul,
             'limit' / Int32ul)
 
     @constructor(0xb4352016, 'stories_get_stories_archive')
     def struct_0xb4352016(self):
-        return Struct(
-            'sname' / Computed('stories_get_stories_archive'),
-            'signature' / Hex(Const(0xb4352016, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'offset_id' / Int32ul,
             'limit' / Int32ul)
 
     @constructor(0xa556dac8, 'stories_read_stories')
     def struct_0xa556dac8(self):
-        return Struct(
-            'sname' / Computed('stories_read_stories'),
-            'signature' / Hex(Const(0xa556dac8, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'max_id' / Int32ul)
 
@@ -30843,17 +28985,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x5774ca74, 'stories_get_stories_by_id')
     def struct_0x5774ca74(self):
-        return Struct(
-            'sname' / Computed('stories_get_stories_by_id'),
-            'signature' / Hex(Const(0x5774ca74, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / self.vector(Int32ul, 'id'))
 
     @constructor(0x28e16cc8, 'stories_get_stories_views')
     def struct_0x28e16cc8(self):
-        return Struct(
-            'sname' / Computed('stories_get_stories_views'),
-            'signature' / Hex(Const(0x28e16cc8, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / self.vector(Int32ul, 'id'))
 
@@ -30863,17 +29001,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7b8def20, 'stories_export_story_link')
     def struct_0x7b8def20(self):
-        return Struct(
-            'sname' / Computed('stories_export_story_link'),
-            'signature' / Hex(Const(0x7b8def20, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / Int32ul)
 
     @constructor(0x1923fa8c, 'stories_report')
     def struct_0x1923fa8c(self):
-        return Struct(
-            'sname' / Computed('stories_report'),
-            'signature' / Hex(Const(0x1923fa8c, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / self.vector(Int32ul, 'id'),
             'reason' / self.report_reason_structures('reason'),
@@ -30938,9 +29072,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x9ae228e2, 'stories_premium_my_boosts')
     def struct_0x9ae228e2(self):
-        return Struct(
-            'sname' / Computed('stories_premium_my_boosts'),
-            'signature' / Hex(Const(0x9ae228e2, Int32ul)),
+        return (
             'my_boosts' / self.vector(self.struct_0xc448415c(), 'my_boosts'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
@@ -31009,9 +29141,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x50cd067c, 'stories_stats_story_stats')
     def struct_0x50cd067c(self):
-        return Struct(
-            'sname' / Computed('stories_stats_story_stats'),
-            'signature' / Hex(Const(0x50cd067c, Int32ul)),
+        return (
             'views_graph' / self.stats_graph_structures('views_graph'),
             'reactions_by_emotion_graph' / self.stats_graph_structures('reactions_by_emotion_graph'))
 
@@ -31100,17 +29230,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x430d3150, 'sponsored_message_report_option')
     def struct_0x430d3150(self):
-        return Struct(
-            'sname' / Computed('sponsored_message_report_option'),
-            'signature' / Hex(Const(0x430d3150, Int32ul)),
+        return (
             'text' / TString,
             'option' / TBytes)
 
     @constructor(0x1af3dbb8, 'messages_report_sponsored_message')
     def struct_0x1af3dbb8(self):
-        return Struct(
-            'sname' / Computed('messages_report_sponsored_message'),
-            'signature' / Hex(Const(0x1af3dbb8, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'random_id' / TBytes,
             'option' / TBytes)
@@ -31229,17 +29355,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7903e3d9, 'message_report_option')
     def struct_0x7903e3d9(self):
-        return Struct(
-            'sname' / Computed('message_report_option'),
-            'signature' / Hex(Const(0x7903e3d9, Int32ul)),
+        return (
             'text' / TString,
             'option' / TBytes)
 
     @constructor(0xfc78af9b, 'messages_report')
     def struct_0xfc78af9b(self):
-        return Struct(
-            'sname' / Computed('messages_report'),
-            'signature' / Hex(Const(0xfc78af9b, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / self.vector(Int32ul, 'id'),
             'option' / TBytes,
@@ -31347,9 +29469,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x849ad397, 'messages_toggle_paid_reaction_privacy')
     def struct_0x849ad397(self):
-        return Struct(
-            'sname' / Computed('messages_toggle_paid_reaction_privacy'),
-            'signature' / Hex(Const(0x849ad397, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul,
             'is_private' / TBool)
@@ -31379,9 +29499,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xd19f987b, 'channels_search_posts')
     def struct_0xd19f987b(self):
-        return Struct(
-            'sname' / Computed('channels_search_posts'),
-            'signature' / Hex(Const(0xd19f987b, Int32ul)),
+        return (
             'hashtag' / TString,
             'offset_rate' / Int32ul,
             'offset_peer' / self.input_peer_structures('offset_peer'),
@@ -31390,9 +29508,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x673ad8f1, 'messages_view_sponsored_message')
     def struct_0x673ad8f1(self):
-        return Struct(
-            'sname' / Computed('messages_view_sponsored_message'),
-            'signature' / Hex(Const(0x673ad8f1, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'random_id' / TBytes)
 
@@ -31406,17 +29522,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xffb6d4ca, 'stickers_change_sticker_position')
     def struct_0xffb6d4ca(self):
-        return Struct(
-            'sname' / Computed('stickers_change_sticker_position'),
-            'signature' / Hex(Const(0xffb6d4ca, Int32ul)),
+        return (
             'sticker' / self.input_document_structures('sticker'),
             'position' / Int32ul)
 
     @constructor(0x8653febe, 'stickers_add_sticker_to_set')
     def struct_0x8653febe(self):
-        return Struct(
-            'sname' / Computed('stickers_add_sticker_to_set'),
-            'signature' / Hex(Const(0x8653febe, Int32ul)),
+        return (
             'stickerset' / self.input_sticker_set_structures('stickerset'),
             'sticker' / self.struct_0xffa0a496())
 
@@ -31448,9 +29560,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x124b1c00, 'stickers_rename_sticker_set')
     def struct_0x124b1c00(self):
-        return Struct(
-            'sname' / Computed('stickers_rename_sticker_set'),
-            'signature' / Hex(Const(0x124b1c00, Int32ul)),
+        return (
             'stickerset' / self.input_sticker_set_structures('stickerset'),
             'title' / TString)
 
@@ -31460,25 +29570,19 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x4696459a, 'stickers_replace_sticker')
     def struct_0x4696459a(self):
-        return Struct(
-            'sname' / Computed('stickers_replace_sticker'),
-            'signature' / Hex(Const(0x4696459a, Int32ul)),
+        return (
             'sticker' / self.input_document_structures('sticker'),
             'new_sticker' / self.struct_0xffa0a496())
 
     @constructor(0xd0b5e1fc, 'messages_get_my_stickers')
     def struct_0xd0b5e1fc(self):
-        return Struct(
-            'sname' / Computed('messages_get_my_stickers'),
-            'signature' / Hex(Const(0xd0b5e1fc, Int32ul)),
+        return (
             'offset_id' / Int64ul,
             'limit' / Int32ul)
 
     @constructor(0xfaff629d, 'messages_my_stickers')
     def struct_0xfaff629d(self):
-        return Struct(
-            'sname' / Computed('messages_my_stickers'),
-            'signature' / Hex(Const(0xfaff629d, Int32ul)),
+        return (
             'count' / Int32ul,
             'sets' / self.vector(self.sticker_set_covered_structures('sets'), 'sets'))
 
@@ -31563,9 +29667,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x767cde44, 'update_star_gift_upgraded')
     def struct_0x767cde44(self):
-        return Struct(
-            'sname' / Computed('update_star_gift_upgraded'),
-            'signature' / Hex(Const(0x767cde44, Int32ul)),
+        return (
             'gift' / self.struct_0x6056dba5(),
             'to_gift' / self.struct_0x6056dba5())
 
@@ -31580,9 +29682,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x6c750de1, 'messages_send_quick_reply_messages')
     def struct_0x6c750de1(self):
-        return Struct(
-            'sname' / Computed('messages_send_quick_reply_messages'),
-            'signature' / Hex(Const(0x6c750de1, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'shortcut_id' / Int32ul,
             'id' / self.vector(Int32ul, 'id'),
@@ -31600,25 +29700,19 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7f5defa6, 'messages_invited_users')
     def struct_0x7f5defa6(self):
-        return Struct(
-            'sname' / Computed('messages_invited_users'),
-            'signature' / Hex(Const(0x7f5defa6, Int32ul)),
+        return (
             'updates' / self.updates_structures('updates'),
             'missing_invitees' / self.vector(self.struct_0x628c9224(), 'missing_invitees'))
 
     @constructor(0x9ae91519, 'channels_restrict_sponsored_messages')
     def struct_0x9ae91519(self):
-        return Struct(
-            'sname' / Computed('channels_restrict_sponsored_messages'),
-            'signature' / Hex(Const(0x9ae91519, Int32ul)),
+        return (
             'channel' / self.input_channel_structures('channel'),
             'restricted' / TBool)
 
     @constructor(0xcb9deff6, 'auth_report_missing_code')
     def struct_0xcb9deff6(self):
-        return Struct(
-            'sname' / Computed('auth_report_missing_code'),
-            'signature' / Hex(Const(0xcb9deff6, Int32ul)),
+        return (
             'phone_number' / TString,
             'phone_code_hash' / TString,
             'mnc' / TString)
@@ -31652,26 +29746,20 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x0589ee75, 'edit_fact_check')
     def struct_0x0589ee75(self):
-        return Struct(
-            'sname' / Computed('edit_fact_check'),
-            'signature' / Hex(Const(0x0589ee75, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul,
             'text' / self.struct_0x751f3146())
 
     @constructor(0xd1da940c, 'delete_fact_check')
     def struct_0xd1da940c(self):
-        return Struct(
-            'sname' / Computed('delete_fact_check'),
-            'signature' / Hex(Const(0xd1da940c, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / Int32ul)
 
     @constructor(0xb9cdc5ee, 'get_fact_check')
     def struct_0xb9cdc5ee(self):
-        return Struct(
-            'sname' / Computed('get_fact_check'),
-            'signature' / Hex(Const(0xb9cdc5ee, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'msg_id' / self.vector(Int32ul, 'msg_id'))
 
@@ -31690,9 +29778,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xc92bb73b, 'payments_stars_revenue_stats')
     def struct_0xc92bb73b(self):
-        return Struct(
-            'sname' / Computed('payments_stars_revenue_stats'),
-            'signature' / Hex(Const(0xc92bb73b, Int32ul)),
+        return (
             'revenue_graph' / self.stats_graph_structures('revenue_graph'),
             'status' / self.struct_0xfebe5491(),
             'usd_rate' / Double)
@@ -31716,9 +29802,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x13bbe8b3, 'payments_get_stars_revenue_withdrawal_url')
     def struct_0x13bbe8b3(self):
-        return Struct(
-            'sname' / Computed('payments_get_stars_revenue_withdrawal_url'),
-            'signature' / Hex(Const(0x13bbe8b3, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'stars' / Int64ul,
             'password' / self.input_check_password_srp_structures('password'))
@@ -31729,17 +29813,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xea02c27e, 'payment_charge')
     def struct_0xea02c27e(self):
-        return Struct(
-            'sname' / Computed('payment_charge'),
-            'signature' / Hex(Const(0xea02c27e, Int32ul)),
+        return (
             'id' / TString,
             'provider_charge_id' / TString)
 
     @constructor(0xff57708d, 'messages_prepared_inline_message')
     def struct_0xff57708d(self):
-        return Struct(
-            'sname' / Computed('messages_prepared_inline_message'),
-            'signature' / Hex(Const(0xff57708d, Int32ul)),
+        return (
             'query_id' / Int64ul,
             'result' / self.bot_inline_result_structures('result'),
             'peer_types' / self.vector(self.inline_query_peer_type_structures('peer_types'), 'peer_types'),
@@ -31748,9 +29828,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x857ebdb8, 'messages_get_prepared_inline_message')
     def struct_0x857ebdb8(self):
-        return Struct(
-            'sname' / Computed('messages_get_prepared_inline_message'),
-            'signature' / Hex(Const(0x857ebdb8, Int32ul)),
+        return (
             'bot' / self.input_user_structures('bot'),
             'id' / TString)
 
@@ -31801,9 +29879,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb53e8b21, 'account_web_page_preview')
     def struct_0xb53e8b21(self):
-        return Struct(
-            'sname' / Computed('account_web_page_preview'),
-            'signature' / Hex(Const(0xb53e8b21, Int32ul)),
+        return (
             'media' / self.message_media_structures('media'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
@@ -31872,9 +29948,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x646e1097, 'account_toggle_connected_bot_paused')
     def struct_0x646e1097(self):
-        return Struct(
-            'sname' / Computed('account_toggle_connected_bot_paused'),
-            'signature' / Hex(Const(0x646e1097, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'paused' / TBool)
 
@@ -31895,17 +29969,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x1d998733, 'account_contact_birthday')
     def struct_0x1d998733(self):
-        return Struct(
-            'sname' / Computed('account_contact_birthday'),
-            'signature' / Hex(Const(0x1d998733, Int32ul)),
+        return (
             'contact_id' / Int64ul,
             'birthday' / self.struct_0x6c8e1e06())
 
     @constructor(0x114ff30d, 'account_contact_birthdays')
     def struct_0x114ff30d(self):
-        return Struct(
-            'sname' / Computed('account_contact_birthdays'),
-            'signature' / Hex(Const(0x114ff30d, Int32ul)),
+        return (
             'contacts' / self.vector(self.struct_0x1d998733(), 'contacts'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
@@ -31950,9 +30020,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xec43a2d1, 'account_business_chat_links')
     def struct_0xec43a2d1(self):
-        return Struct(
-            'sname' / Computed('account_business_chat_links'),
-            'signature' / Hex(Const(0xec43a2d1, Int32ul)),
+        return (
             'links' / self.vector(self.struct_0xb4ae666f(), 'links'),
             'chats' / self.vector(self.chat_structures('chats'), 'chats'),
             'users' / self.vector(self.user_structures('users'), 'users'))
@@ -31976,9 +30044,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x8c3410af, 'account_edit_business_chat_link')
     def struct_0x8c3410af(self):
-        return Struct(
-            'sname' / Computed('account_edit_business_chat_link'),
-            'signature' / Hex(Const(0x8c3410af, Int32ul)),
+        return (
             'slug' / TString,
             'link' / self.struct_0x11679fa7())
 
@@ -32056,26 +30122,20 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x23e91ba3, 'bot_preview_media')
     def struct_0x23e91ba3(self):
-        return Struct(
-            'sname' / Computed('bot_preview_media'),
-            'signature' / Hex(Const(0x23e91ba3, Int32ul)),
+        return (
             'date' / TTimestamp,
             'media' / self.message_media_structures('media'))
 
     @constructor(0x17aeb75a, 'bots_add_preview_media')
     def struct_0x17aeb75a(self):
-        return Struct(
-            'sname' / Computed('bots_add_preview_media'),
-            'signature' / Hex(Const(0x17aeb75a, Int32ul)),
+        return (
             'bot' / self.input_user_structures('bot'),
             'lang_code' / TString,
             'media' / self.input_media_structures('media'))
 
     @constructor(0x8525606f, 'bots_edit_preview_media')
     def struct_0x8525606f(self):
-        return Struct(
-            'sname' / Computed('bots_edit_preview_media'),
-            'signature' / Hex(Const(0x8525606f, Int32ul)),
+        return (
             'bot' / self.input_user_structures('bot'),
             'lang_code' / TString,
             'media' / self.input_media_structures('media'),
@@ -32083,18 +30143,14 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x2d0135b3, 'bots_delete_preview_media')
     def struct_0x2d0135b3(self):
-        return Struct(
-            'sname' / Computed('bots_delete_preview_media'),
-            'signature' / Hex(Const(0x2d0135b3, Int32ul)),
+        return (
             'bot' / self.input_user_structures('bot'),
             'lang_code' / TString,
             'media' / self.vector(self.input_media_structures('media'), 'media'))
 
     @constructor(0xb627f3aa, 'bots_reorder_preview_medias')
     def struct_0xb627f3aa(self):
-        return Struct(
-            'sname' / Computed('bots_reorder_preview_medias'),
-            'signature' / Hex(Const(0xb627f3aa, Int32ul)),
+        return (
             'bot' / self.input_user_structures('bot'),
             'lang_code' / TString,
             'order' / self.vector(self.input_media_structures('order'), 'order'))
@@ -32105,25 +30161,19 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x423ab3ad, 'bots_get_preview_info')
     def struct_0x423ab3ad(self):
-        return Struct(
-            'sname' / Computed('bots_get_preview_info'),
-            'signature' / Hex(Const(0x423ab3ad, Int32ul)),
+        return (
             'bot' / self.input_user_structures('bot'),
             'lang_code' / TString)
 
     @constructor(0x0ca71d64, 'bots_preview_info')
     def struct_0x0ca71d64(self):
-        return Struct(
-            'sname' / Computed('bots_preview_info'),
-            'signature' / Hex(Const(0x0ca71d64, Int32ul)),
+        return (
             'media' / self.vector(self.struct_0x23e91ba3(), 'media'),
             'lang_codes' / self.vector(TString, 'lang_codes'))
 
     @constructor(0xc2510192, 'bots_get_popular_app_bots')
     def struct_0xc2510192(self):
-        return Struct(
-            'sname' / Computed('bots_get_popular_app_bots'),
-            'signature' / Hex(Const(0xc2510192, Int32ul)),
+        return (
             'offset' / TString,
             'limit' / Int32ul)
 
@@ -32156,17 +30206,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x06de6392, 'bots_toggle_user_emoji_status_permission')
     def struct_0x06de6392(self):
-        return Struct(
-            'sname' / Computed('bots_toggle_user_emoji_status_permission'),
-            'signature' / Hex(Const(0x06de6392, Int32ul)),
+        return (
             'bot' / self.input_user_structures('bot'),
             'enabled' / TBool)
 
     @constructor(0x50077589, 'bots_check_download_file_params')
     def struct_0x50077589(self):
-        return Struct(
-            'sname' / Computed('bots_check_download_file_params'),
-            'signature' / Hex(Const(0x50077589, Int32ul)),
+        return (
             'bot' / self.input_user_structures('bot'),
             'file_name' / TString,
             'url' / TString)
@@ -32199,9 +30245,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xf93cd45c, 'bot_verification')
     def struct_0xf93cd45c(self):
-        return Struct(
-            'sname' / Computed('bot_verification'),
-            'signature' / Hex(Const(0xf93cd45c, Int32ul)),
+        return (
             'bot_id' / Int64ul,
             'icon' / Int64ul,
             'description' / TString)
@@ -32241,9 +30285,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x98d5ea1d, 'payments_connected_star_ref_bots')
     def struct_0x98d5ea1d(self):
-        return Struct(
-            'sname' / Computed('payments_connected_star_ref_bots'),
-            'signature' / Hex(Const(0x98d5ea1d, Int32ul)),
+        return (
             'count' / Int32ul,
             'connected_bots' / self.vector(self.struct_0x19a13f71(), 'connected_bots'),
             'users' / self.vector(self.user_structures('users'), 'users'))
@@ -32277,9 +30319,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7ed5348a, 'payments_connect_star_ref_bot')
     def struct_0x7ed5348a(self):
-        return Struct(
-            'sname' / Computed('payments_connect_star_ref_bot'),
-            'signature' / Hex(Const(0x7ed5348a, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'bot' / self.input_user_structures('bot'))
 
@@ -32309,9 +30349,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb7d998f0, 'payments_get_connected_star_ref_bot')
     def struct_0xb7d998f0(self):
-        return Struct(
-            'sname' / Computed('payments_get_connected_star_ref_bot'),
-            'signature' / Hex(Const(0xb7d998f0, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'bot' / self.input_user_structures('bot'))
 
@@ -32341,9 +30379,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xdfc909ab, 'phone_create_conference_call')
     def struct_0xdfc909ab(self):
-        return Struct(
-            'sname' / Computed('phone_create_conference_call'),
-            'signature' / Hex(Const(0xdfc909ab, Int32ul)),
+        return (
             'peer' / self.struct_0xd8aa840f(),
             'key_fingerprint' / Int64ul)
 
@@ -32395,9 +30431,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7f18176a, 'stars_transfer_star_gift')
     def struct_0x7f18176a(self):
-        return Struct(
-            'sname' / Computed('stars_transfer_star_gift'),
-            'signature' / Hex(Const(0x7f18176a, Int32ul)),
+        return (
             'stargift' / self.stars_input_saved_star_gift_structures('stargift'),
             'to_id' / self.input_peer_structures('to_id'))
 
@@ -32463,9 +30497,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xbbb6b4a3, 'stars_amount')
     def struct_0xbbb6b4a3(self):
-        return Struct(
-            'sname' / Computed('stars_amount'),
-            'signature' / Hex(Const(0xbbb6b4a3, Int32ul)),
+        return (
             'amount' / Int64ul,
             'nanos' / Int32ul)
 
@@ -32503,17 +30535,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x7998c914, 'stars_payments_send_stars_form')
     def struct_0x7998c914(self):
-        return Struct(
-            'sname' / Computed('stars_payments_send_stars_form'),
-            'signature' / Hex(Const(0x7998c914, Int32ul)),
+        return (
             'form_id' / Int64ul,
             'invoice' / self.input_invoice_structures('invoice'))
 
     @constructor(0x05416d58, 'stars_subscription_pricing')
     def struct_0x05416d58(self):
-        return Struct(
-            'sname' / Computed('stars_subscription_pricing'),
-            'signature' / Hex(Const(0x05416d58, Int32ul)),
+        return (
             'period' / Int32ul,
             'amount' / Int64ul)
 
@@ -32540,17 +30568,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xcc5bebb3, 'stars_fulfill_stars_subscription')
     def struct_0xcc5bebb3(self):
-        return Struct(
-            'sname' / Computed('stars_fulfill_stars_subscription'),
-            'signature' / Hex(Const(0xcc5bebb3, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'subscription_id' / TString)
 
     @constructor(0xcaa2f60b, 'stars_payments_unique_star_gift')
     def struct_0xcaa2f60b(self):
-        return Struct(
-            'sname' / Computed('stars_payments_unique_star_gift'),
-            'signature' / Hex(Const(0xcaa2f60b, Int32ul)),
+        return (
             'gift' / self.star_gift_structures('gift'),
             'users' / self.vector(self.user_structures('users'), 'users'))
 
@@ -32617,17 +30641,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xd06e93a8, 'stars_get_star_gift_withdrawal_url')
     def struct_0xd06e93a8(self):
-        return Struct(
-            'sname' / Computed('stars_get_star_gift_withdrawal_url'),
-            'signature' / Hex(Const(0xd06e93a8, Int32ul)),
+        return (
             'stargift' / self.stars_input_saved_star_gift_structures('stargift'),
             'password' / self.input_check_password_srp_structures('password'))
 
     @constructor(0x5407e297, 'stats_broadcast_revenue_stats')
     def struct_0x5407e297(self):
-        return Struct(
-            'sname' / Computed('stats_broadcast_revenue_stats'),
-            'signature' / Hex(Const(0x5407e297, Int32ul)),
+        return (
             'top_hours_graph' / self.stats_graph_structures('top_hours_graph'),
             'revenue_graph' / self.stats_graph_structures('revenue_graph'),
             'balances' / self.broadcast_revenue_balances_structures('balances'),
@@ -32639,9 +30659,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x87158466, 'stats_broadcast_revenue_transactions')
     def struct_0x87158466(self):
-        return Struct(
-            'sname' / Computed('stats_broadcast_revenue_transactions'),
-            'signature' / Hex(Const(0x87158466, Int32ul)),
+        return (
             'count' / Int32ul,
             'transactions' / self.vector(self.stats_broadcast_revenue_transaction_structures('transactions'), 'transactions'))
 
@@ -32656,17 +30674,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x9df4faad, 'stats_get_broadcast_revenue_withdrawal_url')
     def struct_0x9df4faad(self):
-        return Struct(
-            'sname' / Computed('stats_get_broadcast_revenue_withdrawal_url'),
-            'signature' / Hex(Const(0x9df4faad, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'password' / self.input_check_password_srp_structures('password'))
 
     @constructor(0x70990b6d, 'stats_get_broadcast_revenue_transactions')
     def struct_0x70990b6d(self):
-        return Struct(
-            'sname' / Computed('stats_get_broadcast_revenue_transactions'),
-            'signature' / Hex(Const(0x70990b6d, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'offset' / Int32ul,
             'limit' / Int32ul)
@@ -32686,17 +30700,13 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0xb2028afb, 'stories_increment_story_views')
     def struct_0xb2028afb(self):
-        return Struct(
-            'sname' / Computed('stories_increment_story_views'),
-            'signature' / Hex(Const(0xb2028afb, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / self.vector(Int32ul, 'id'))
 
     @constructor(0xe87acbc0, 'stories_found_story')
     def struct_0xe87acbc0(self):
-        return Struct(
-            'sname' / Computed('stories_found_story'),
-            'signature' / Hex(Const(0xe87acbc0, Int32ul)),
+        return (
             'peer' / self.peer_structures('peer'),
             'story_item' / self.story_item_structures('story_item'))
 
@@ -32730,9 +30740,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x19d8eb45, 'stories_report')
     def struct_0x19d8eb45(self):
-        return Struct(
-            'sname' / Computed('stories_report'),
-            'signature' / Hex(Const(0x19d8eb45, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / self.vector(Int32ul, 'id'),
             'option' / TBytes,
@@ -32754,9 +30762,7 @@ class TLStruct:  # pylint: disable=C0103
 
     @constructor(0x0b297e9b, 'stories_toggle_pinned_to_top')
     def struct_0x0b297e9b(self):
-        return Struct(
-            'sname' / Computed('stories_toggle_pinned_to_top'),
-            'signature' / Hex(Const(0x0b297e9b, Int32ul)),
+        return (
             'peer' / self.input_peer_structures('peer'),
             'id' / self.vector(Int32ul, 'id'))
 

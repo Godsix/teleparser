@@ -15,6 +15,7 @@ ENV = Environment(loader=FileSystemLoader(TEMPLATE_DIR),
                   trim_blocks=True,
                   lstrip_blocks=True)
 STRUCT_TEMPLATE = ENV.get_template('struct.tmpl')
+SIMPLE_STRUCT_TEMPLATE = ENV.get_template('simple_struct.tmpl')
 STRUCTURES_TEMPLATE = ENV.get_template('structures.tmpl')
 MODEL_TEMPLATE = ENV.get_template('model.tmpl')
 STRUCT_CACHE = osp.join(DIR, 'structs')

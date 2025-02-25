@@ -1,8 +1,6 @@
     @constructor(0xc8d7493e, '{name}')
     def struct_0xc8d7493e(self):
-        return Struct(
-            'sname' / Computed('{name}'),
-            'signature' / Computed(Hex(Const(0xc8d7493e, Int32ul))),
+        return (
             'user_id' / Int32ul,
             'inviter_id' / Int32ul,
             'date' / TTimestamp)

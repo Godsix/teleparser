@@ -11,7 +11,6 @@ import logging
 from glob import iglob
 from enum import IntEnum
 from functools import lru_cache
-import autopep8
 from javalang.parse import parse
 from javalang.tree import (Node, 
                            CompilationUnit, ClassDeclaration,
@@ -27,11 +26,13 @@ from javalang.tree import (Node,
                            Cast, This, MemberReference, Literal)
 try:
     from .common import STRUCT_CACHE, HEADER
-    from .tools import get_struct_content, get_structures_content
+    from .tools import (get_struct_content, get_structures_content,
+                        get_simple_struct_content)
     from .utils import name_convert_to_snake, save_code, lazy_property
 except ImportError:
     from generater.common import STRUCT_CACHE, HEADER
-    from generater.tools import get_struct_content, get_structures_content
+    from generater.tools import (get_struct_content, get_structures_content,
+                                 get_simple_struct_content)
     from generater.utils import name_convert_to_snake, save_code, lazy_property
 
 
@@ -39,21 +40,21 @@ TYPE_INFO = {
     'writeInt32': 'Int32ul',
     'writeInt64': 'Int64ul',
     'writeBool': 'TBool',
-    'writeBytes': 'GreedyBytes',
-    'writeByte': 'Byte',
+    # 'writeBytes': 'GreedyBytes',
+    # 'writeByte': 'Byte',
     'writeString': 'TString',
     'writeByteArray': 'TBytes',
-    'writeFloat': 'Single',
+    # 'writeFloat': 'Single',
     'writeDouble': 'Double',
     'writeByteBuffer': 'TBytes',
     'readInt32': 'Int32ul',
     'readInt64': 'Int64ul',
     'readBool': 'TBool',
-    'readBytes': 'GreedyBytes',
-    'readByte': 'Byte',
+    # 'readBytes': 'GreedyBytes',
+    # 'readByte': 'Byte',
     'readString': 'TString',
     'readByteArray': 'TBytes',
-    'readFloat': 'Single',
+    # 'readFloat': 'Single',
     'readDouble': 'Double',
     'readByteBuffer': 'TBytes',
 }
@@ -1043,26 +1044,27 @@ class ClassParser(BaseParser):
                 for subitem in item.cases:
                     if len(subitem.case) == 0:
                         continue
-                    case_expr = subitem.case[0]
-                    error = None
-                    if self.is_literal(case_expr):
-                        cid_value = case_expr.value
-                        self.switch.append(f'0x{eval(cid_value):08x}')
-                    elif self.is_member_reference(case_expr):
-                        case_qualifier = case_expr.qualifier
-                        case_member = case_expr.member
-                        if case_member == 'constructor':
-                            case_fqn = self.object.get_fqn(case_qualifier)
-                            if (case_cid := self.get_cid(case_fqn)):
-                                self.switch.append(case_cid)
+                    for subitem in subitem.case:
+                        error = None
+                        if self.is_literal(subitem):
+                            cid_value = subitem.value
+                            self.switch.append(f'0x{eval(cid_value):08x}')  # pylint: disable=W0123
+                        elif self.is_member_reference(subitem):
+                            qualifier = subitem.qualifier
+                            member = subitem.member
+                            if member == 'constructor':
+                                fqn = self.object.get_fqn(qualifier)
+                                if (cid := self.get_cid(fqn)):
+                                    self.switch.append(cid)
+                                else:
+                                    error = f'Can not find class {qualifier} constructor'
                             else:
-                                error = f'Can not find cid of class {case_qualifier}'
+                                error = f'Case member is not constructor but {member}'
                         else:
-                            error = f'Case member is not constructor but {case_member}'
-                    else:
-                        error = f'case_expr is illigal type: {type(case_expr).__name__}'
-                    if error:
-                        raise TypeError(error)
+                            type_name = type(subitem).__name__
+                            error = f'case_expr is illigal type: {type_name}'
+                        if error:
+                            raise TypeError(error)
                 return True
             elif self.is_local_variable(item):
                 continue  # pylint: disable=E275
@@ -1073,7 +1075,8 @@ class ClassParser(BaseParser):
             elif self.is_statement_expression(item):
                 continue  # pylint: disable=E275
             else:
-                raise TypeError(f'Unknow type:{type(item).__name__}')
+                type_name = type(item).__name__
+                raise TypeError(f'Unknow type:{type_name}')
         # self.logger.error('class %s TLdeserialize contain not switch',
         #                   self.name)
         return False
@@ -1179,27 +1182,25 @@ class ClassParser(BaseParser):
         result = []
         if self.struct:
             if len(self.struct) == 2:
-                result.append(SIMP_STR.format_map({'cid': self.info['cid'],
-                                                   'sname': self.info['sname'],
-                                                   'content': ''}))
+                self.info['content'] = ''
+                result.append(SIMP_STR.format_map(self.info))
             elif len(self.struct) == 3 and not self.flags:
                 item = list(self.struct.items())[2]
-                content = f"'{item[0]}' / {item[1]}"
-                result.append(SIMP_STR.format_map({'cid': self.info['cid'],
-                                                   'sname': self.info['sname'],
-                                                   'content': content}))
-
+                self.info['content'] = f"'{item[0]}' / {item[1]}"
+                result.append(SIMP_STR.format_map(self.info))
+            elif not self.flags:
+                if 'sname' in self.struct:
+                    del self.struct['sname']
+                if 'signature' in self.struct:
+                    del self.struct['signature']
+                if self.struct:
+                    content = get_simple_struct_content(self.info)
+                    result.append(content)
+                else:
+                    self.info['content'] = ''
+                    result.append(SIMP_STR.format_map(self.info))
             else:
-                # if 'sname' in self.struct:
-                #     del self.struct['sname']
-                # if 'signature' in self.struct:
-                #     del self.struct['signature']
                 content = get_struct_content(self.info)
-                if len(self.flags) > 0:
-                    content = autopep8.fix_code(content,
-                                                options={'max_line_length': 512})
-                    if content.startswith('@'):
-                        content = '\n'.join(f'    {x}' if x else x for x in content.split('\n'))
                 result.append(content)
         if self.switch:
             result.append(get_structures_content(self.info))
@@ -1381,19 +1382,16 @@ class JavaParser(BaseParser):
         else:
             try:
                 ret = obj.generate()
-            except Exception as e:
+            except Exception as e:  # pylint: disable=W0718
                 self.logger.error('Generate class %s error: %s', fqn, e)
-                # if str(e).startswith('get_field_type'):
-                #     raise e
                 if self.strict:
                     raise e
-            finally:
-                if not ret:
-                    if obj.info.get('cid') and obj.info.get('sname'):
-                        if obj.info.get('todo'):
-                            ret = [TODO_STR.format_map(obj.info)]
-                        else:
-                            ret = [FAIL_STR.format_map(obj.info)]
+        if not ret:
+            if obj.info.get('cid') and obj.info.get('sname'):
+                if obj.info.get('todo'):
+                    ret = [TODO_STR.format_map(obj.info)]
+                else:
+                    ret = [FAIL_STR.format_map(obj.info)]
         return ret
 
     def parse_tlrpc(self):
@@ -1488,58 +1486,65 @@ class JavaParser(BaseParser):
 
     def merge_tlrpc(self, path, target, replace=False):
         parse_result = {}
-        for k in self.tlobj_info:
-            # print(f'Process {k}')
-            content = self.get_class_struct(k)
-            if not content:
-                print(f'{k} content is null.')
+        for key in self.tlobj_info:
+            # self.logger.info(f'Process %s', k)
+            result = self.get_class_struct(key)
+            if not result:
+                self.logger.info('content is null: %s', key)
                 continue
-            for item in content:
+            for item in result:
+                item = item.rstrip()
                 func_name = re.search(r'def (\w+)', item).group(1)
                 if func_name not in parse_result:
                     parse_result[func_name] = item
-                else:
-                    print(f'{func_name} has exist.')
-                    print(item, parse_result[func_name])
-        with open(path, encoding='utf-8') as f:
-            c = f.read()
-        for i in range(3):
-            c = c.replace('\r\n', '\n')
-        c = c.replace('\n', '\r\n')
-        cs = c.split('\r\n\r\n')
-        info = {}
-        for index, item in enumerate(cs):
+                elif not parse_result[func_name] == item:
+                    self.logger.warning('method has exist: %s\n'
+                                        '---origin: \n%s\n'
+                                        '+++new: \n%s\n, ',
+                                         func_name,
+                                         parse_result[func_name],
+                                         item)
+        with open(path, 'rb') as f:
+            content = f.read()
+        content = re.sub(b'\r*\n', b'\r\n', content).decode('utf-8')
+        if self.LAYER:
+            content = re.sub(r'LAYER = \d+',
+                             f'LAYER = {self.LAYER}',
+                             content, count=1)
+        origin_list = content.split('\r\n\r\n')
+        origin_info = {}
+        for index, item in enumerate(origin_list):
             try:
                 func_name = re.search(r'def (\w+)', item).group(1)
-                info[func_name] = index
-            except Exception:
+                origin_info[func_name] = index
+            except Exception:  # pylint: disable=W0718
                 func_name = None
         append_items = {}
         pattern = re.compile(r'LazyBound\(self.(\w+)\)')
         replaces = {}
 
-        for k, v in parse_result.items():
-            if k in info:
-                index = info[k]
-                if k.endswith('structures'):
-                    ol = pattern.findall(cs[index])
-                    ml = pattern.findall(v)
-                    if not tuple(ol) == tuple(ml):
+        for key, value in parse_result.items():
+            if key in origin_info:
+                index = origin_info[key]
+                origin_content = origin_list[index]
+                if key.endswith('_structures'):
+                    ol = pattern.findall(origin_content)
+                    ml = pattern.findall(value)
+                    if tuple(ol) != tuple(ml):
                         start = index - len(ol)
                         end = index
                         result = []
                         for i in ml:
-                            if i in info:
+                            if i in origin_info:
                                 if i in parse_result:
-                                    ov = PATTERN1.search(cs[info[i]]).group(2)
-                                    mv = PATTERN1.search(
-                                        parse_result[i]).group(2)
+                                    ov = PATTERN1.search(origin_list[origin_info[i]]).group(2)
+                                    mv = PATTERN1.search(parse_result[i]).group(2)
                                     if not ov == mv:
-                                        iv = rename_struct(cs[info[i]], mv)
+                                        iv = rename_struct(origin_list[origin_info[i]], mv)
                                     else:
-                                        iv = cs[info[i]]
+                                        iv = origin_list[origin_info[i]]
                                 else:
-                                    iv = cs[info[i]]
+                                    iv = origin_list[origin_info[i]]
                             else:
                                 iv = parse_result.get(i, 'None')
                                 if iv == 'None':
@@ -1548,38 +1553,38 @@ class JavaParser(BaseParser):
                                 del append_items[i]
                             result.append(iv)
                         replaces[(start, end)] = result
-                    cs[index] = v
+                    origin_list[index] = value
                 else:
                     if replace:
-                        cs[index] = v
+                        origin_list[index] = value
                     else:
                         try:
-                            ov = PATTERN1.search(cs[index]).group(2)
+                            ov = PATTERN1.search(origin_list[index]).group(2)
                         except Exception as e:
-                            print(cs[index])
+                            print(origin_list[index])
                             raise e
-                        mv = PATTERN1.search(v).group(2)
+                        mv = PATTERN1.search(value).group(2)
                         flag = False
                         if not ov == mv:
-                            cs[index] = rename_struct(cs[index], mv)
+                            origin_list[index] = rename_struct(origin_list[index], mv)
                             flag = True
-                        if not flag and 'TODO' in cs[index] and 'TODO' not in v:
-                            cs[index] = v
+                        if not flag and 'TODO' in origin_list[index] and 'TODO' not in value:
+                            origin_list[index] = value
                             flag = True
             else:
-                append_items[k] = None
+                append_items[key] = None
         cur = 0
         result_list = []
         # print(cs)
         for item in sorted(replaces):
             s, e = item
-            result_list.extend(cs[cur:s])
+            result_list.extend(origin_list[cur:s])
             result_list.extend(replaces[item])
             cur = e
         else:
-            result_list.extend(cs[cur:])
-        for k in append_items:
-            result_list.append(parse_result[k])
+            result_list.extend(origin_list[cur:])
+        for key in append_items:
+            result_list.append(parse_result[key])
         content_text = '\r\n\r\n'.join(result_list)
         save_code(target, content_text, pep8=False)
 
@@ -1634,14 +1639,45 @@ class JavaParser(BaseParser):
             f.write(''.join(result))
 
     @classmethod
+    def remove_sname(cls, path, target):
+        with open(path, encoding='utf-8') as f:
+            c = f.read()
+        start = 0
+        result = []
+        result_index = 0
+        for item in FUNCTION_PATTERN.finditer(c):
+            result.append(c[start:item.start()])
+            result_index += 1
+            func_name = item.group(1)
+            func_content = item.group(0)
+            if func_name.startswith('struct_'):
+                if "'flags'" in func_content or 'If' in func_content:
+                    result.append(func_content)
+                else:
+                    ret = re.sub("return Struct\(\n +'sname' / .+,\n +'signature' / .+",
+                                 "return (",
+                                 func_content, count=1)
+                    result.append(ret)
+            else:
+                result.append(func_content)
+            start = item.end()
+        else:
+            result.append(c[start:])
+        with open(target, 'w+', encoding='utf-8') as f:
+            f.write(''.join(result))
+
+    @classmethod
     def sort_file(cls, path, target):
         with open(path, encoding='utf-8') as f:
             c = f.read()
         func_map = {}
         start = 0
         result = []
+        def add_content(obj, content):
+            if not re.fullmatch('# ?[#\-]+', content.strip()):
+                obj.append(content)
         for item in FUNCTION_PATTERN.finditer(c):
-            result.append(c[start:item.start()])
+            add_content(result, c[start:item.start()])
             func_name = item.group(1)
             func_content = item.group(0)
             if (func_name.endswith('_structures') or
@@ -1651,7 +1687,7 @@ class JavaParser(BaseParser):
                 result.append(func_content)
             start = item.end()
         else:
-            result.append(c[start:])
+            add_content(result, c[start:])
             
         result.append('\n' + '#' * 79 + '\n')
         
@@ -1858,7 +1894,7 @@ def test():
             print('GDATA:', GDATA)
     else:
         # fqn = 'org.telegram.tgnet.TLRPC.TL_messagePeerReaction_layer144'
-        fqn = 'org.telegram.tgnet.TLRPC.Update'
+        fqn = 'org.telegram.tgnet.TLRPC.Message'
         content = parser.get_class_struct(fqn)
         if content:
             print(content[0])
@@ -1870,8 +1906,10 @@ def test2():
 
 
 def test3():
-    JavaParser.sort_file(r'E:\Project\Godsix\teleparser\datatype\telegram.py',
-                         r'E:\Project\Godsix\teleparser\datatype\telegram1.py')
+    # JavaParser.sort_file(r'E:\Project\Godsix\teleparser\datatype\telegram.py',
+    #                      r'E:\Project\Godsix\teleparser\datatype\telegram1.py')
+    JavaParser.remove_sname(r'E:\Project\Godsix\teleparser\datatype\telegram.py',
+                            r'E:\Project\Godsix\teleparser\datatype\telegram1.py')
     return
 
 
