@@ -5,6 +5,9 @@
 # Part of the project: tblob.py tdb.py logger.py
 #
 # Version History
+# - 20250306: added support for version 11.7.0
+# - 20240328: added support for version 10.9.1
+# - 20221201: added support for version 9.2.1
 # - 20200807: added support for version 6.3.0
 # - 20200803: changed sqlite3 opening to 'bytes', fixed tdb.py on ver 4.9.0
 # - 20200731: fixed wrong object ID for page_block_subtitle
@@ -48,42 +51,44 @@ from database import TelegramDB
 import logger
 import tdb2 as tdb
 
-VERSION = '20221201'
+VERSION = '20250306'
 
 # ------------------------------------------------------------------------------
 
 
-def process(infilename, outdirectory):
-    db = TelegramDB(infilename)
+def process(db_path, outdir):
+    db = TelegramDB(db_path)
 
-    teledb = tdb.TDB(outdirectory, db)
+    teledb = tdb.TDB(outdir, db)
     teledb.parse()
 
     teledb.save_parsed_tables()
     teledb.create_timeline()
 
-# ------------------------------------------------------------------------------
 
-
-if __name__ == '__main__':
-
-    if sys.version_info[:2] < (3, 6):
-        sys.exit('Python 3.6 or above version is required.')
-
+def main():
     parser = ArgumentParser(description=f'Telegram parser version {VERSION}')
-    parser.add_argument('infilename', help='input file cache4.db')
-    parser.add_argument('outdirectory', help='output directory, must exist')
+    parser.add_argument('database', help='input file cache4.db')
+    parser.add_argument('outdir', help='output directory, must exist')
     parser.add_argument('-v', '--verbose', action='count',
                         help='verbose level, -v to -vvv')
     args = parser.parse_args()
 
     logger.configure_logging(args.verbose)
 
-    if osp.exists(args.infilename):
-        if osp.isdir(args.outdirectory):
-            process(args.infilename, args.outdirectory)
+    if osp.exists(args.database):
+        if osp.isdir(args.outdir):
+            process(args.database, args.outdir)
         else:
             logger.error('Output directory [%s] does not exist!',
-                         args.outdirectory)
+                         args.outdir)
     else:
         logger.error('The provided input file does not exist!')
+
+# ------------------------------------------------------------------------------
+
+
+if __name__ == '__main__':
+    if sys.version_info[:2] < (3, 8):
+        sys.exit('Python 3.8 or above version is required.')
+    main()

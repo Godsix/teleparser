@@ -2,9 +2,9 @@
 """
 Created on Fri Dec  9 09:12:01 2022
 
-@author: 皓
+@author: C. David
 """
-# pylint: disable=protected-access,too-many-lines,too-many-public-methods
+# pylint: disable=protected-access,too-many-lines,too-many-public-methods,line-too-long
 from functools import wraps, lru_cache
 from construct import (Struct, Computed, Int32ul, Int64ul, Double, Hex,
                        FlagsEnum, Array, If, Peek,
@@ -17,6 +17,7 @@ from .common import TString, TBytes, TBool, TTimestamp
 INFO = {}
 
 STRUCT_CACHE = {}
+
 
 def constructor(cid, name, use_lru=False):
     INFO[cid] = name
@@ -46,16 +47,26 @@ def constructor(cid, name, use_lru=False):
     else:
         return lru_cache()
 
+
 structures = lru_cache()
 
 # -----------------------------------------------------------------------------
 
-class TLStruct:  # pylint: disable=C0103
+def raise_exception(text, *args):
+    string = text % args
+    raise ValueError(string)
+
+
+class TLStruct:
     LAYER = 198
 
-    def __init__(self):
+    def __init__(self, raise_error=True):
         setGlobalPrintFullStrings(True)
         setGlobalPrintPrivateEntries(False)
+        if raise_error:
+            self.exception = raise_exception
+        else:
+            self.exception = logger.exception
 
     def parse_blob(self, data):
         result = self.parse(data)
@@ -77,10 +88,12 @@ class TLStruct:  # pylint: disable=C0103
             count = int.from_bytes(data[:4], 'little')
             unparsed = data[4:]
             parsed_len = 4
+            unknown = count
         else:
             count = 256
             unparsed = data
             parsed_len = 0
+            unknown = None
         data_len = len(data)
         for _ in range(count):
             parser = self.get_parser(unparsed)
@@ -95,14 +108,15 @@ class TLStruct:  # pylint: disable=C0103
                 signature = int.from_bytes(unparsed[:4], 'little')
                 if signature in INFO:
                     name = INFO.get(signature)
-                    logger.error('Not all data parsed for object: %s [0x%08x], '
-                                'input: %d, parsed: %d, missed: %s',
-                                name, signature, data_len, parsed_len,
-                                data[parsed_len:])
+                    self.exception('Not all data parsed for object: %s [0x%08x], '
+                                   'input: %d, parsed: %d, missed: %s',
+                                   name, signature, data_len, parsed_len,
+                                   data[parsed_len:])
                 else:
-                    logger.error('unknown signature: 0x%08x,'
-                                 'data: %s',
-                                 signature, data)
+
+                    self.exception('unknown signature: 0x%08x,'
+                                   'data: %s',
+                                   unknown or signature, data)
         return result
 
     # ---------------------------- Common start -------------------------------
@@ -567,16 +581,18 @@ class TLStruct:  # pylint: disable=C0103
                                 has_terms_of_service=1),
             'terms_of_service' / If(this.flags.has_terms_of_service, self.struct_0x780a0310()))
 
-    @constructor(0x33fb7bb8, 'auth_authorization')
+    @constructor(0x33fb7bb8, 'auth_authorization_old')
     def struct_0x33fb7bb8(self):
         return Struct(
-            'sname' / Computed('auth_authorization'),
+            'sname' / Computed('auth_authorization_old'),
             'signature' / Hex(Const(0x33fb7bb8, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 is_setup_password_required=2,
-                                has_tmp_sessions=1),
+                                has_tmp_sessions=1,
+                                has_future_auth_token=4),
             'otherwise_relogin_days' / If(this.flags.is_setup_password_required, Int32ul),
             'tmp_sessions' / If(this.flags.has_tmp_sessions, Int32ul),
+            'future_auth_token' / If(this.flags.has_future_auth_token, TBytes),
             'user' / self.user_structures('user'))
 
     @constructor(0x2ea2c0d4, 'auth_authorization')
@@ -22702,7 +22718,7 @@ class TLStruct:  # pylint: disable=C0103
                                 has_duration=128,
                                 has_author=256,
                                 has_document=512,
-                                has_cached=1024,
+                                has_cached_page=1024,
                                 has_attributes=2048),
             'id' / Int64ul,
             'url' / TString,
@@ -22721,7 +22737,7 @@ class TLStruct:  # pylint: disable=C0103
             'author' / If(this.flags.has_author, TString),
             'document' / If(this.flags.has_document, self.document_structures('document')),
             'attributes' / If(this.flags.has_attributes, self.vector(self.document_structures('attributes'), 'attributes')),
-            'cached_page' / If(this.flags.cached, self.page_structures('cached_page')))
+            'cached_page' / If(this.flags.has_cached_page, self.page_structures('cached_page')))
 
     @constructor(0x5f07b4bc, 'web_page_layer104')
     def struct_0x5f07b4bc(self):
@@ -30780,4 +30796,3 @@ class TLStruct:  # pylint: disable=C0103
             'participant_id' / Int64ul,
             'g_b' / TBytes,
             'protocol' / self.phone_call_protocol_structures('protocol'))
-

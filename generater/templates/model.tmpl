@@ -40,7 +40,7 @@ class {{table['class_name']}}{% if table['parents'] %}({{ table['parents']|join(
     __tablename__ = "{{table['name']}}"
     {% if table['columns'] %}
     {% for column in table['columns'] %}
-    {{column['name']}} = Column({{column['type']}}{% if column['primary_key'] == 1 %}, primary_key = True{% endif %}{% if column['autoincrement'] != 'auto' %}, autoincrement = {{column['autoincrement']}}{% endif %}{% if column['nullable'] == False %}, nullable = False{% endif %})
+    {{column['name']}} = Column({{column['type']}}{% if column['primary_key'] == 1 %}, primary_key=True{% endif %}{% if column['autoincrement'] and column['autoincrement'] != 'auto' %}, autoincrement = {{column['autoincrement']}}{% endif %}{% if column['nullable'] == False %}, nullable = False{% endif %})
     {% endfor %}
     {% endif %}
 

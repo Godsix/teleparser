@@ -2,14 +2,14 @@
 """
 Created on Thu Feb 13 18:10:55 2025
 
-@author: 皓
+@author: C. David
 """
 import re
 import os.path as osp
 import pyperclip
 
 
-def main():
+def test():
     content = pyperclip.paste()
     FUNCTION_PATTERN = re.compile(r"^ +@constructor\((\w+), +'(\w+)'\)", re.M)
     if (m := FUNCTION_PATTERN.match(content)):
@@ -25,6 +25,10 @@ def main():
             print(f"剪切板内容已写入 {osp.basename(path)}")
     else:
         print(f'content not match:{content}')
+
+
+def main():
+    test()
 
 
 if __name__ == '__main__':

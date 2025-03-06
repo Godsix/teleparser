@@ -2,7 +2,7 @@
 """
 Created on Wed Sep  7 08:45:08 2022
 
-@author: 皓
+@author: C. David
 """
 import os.path as osp
 import builtins
@@ -16,6 +16,7 @@ ENV = Environment(loader=FileSystemLoader(TEMPLATE_DIR),
                   lstrip_blocks=True)
 STRUCT_TEMPLATE = ENV.get_template('struct.tmpl')
 SIMPLE_STRUCT_TEMPLATE = ENV.get_template('simple_struct.tmpl')
+TODO_STRUCT_TEMPLATE = ENV.get_template('todo_struct.tmpl')
 STRUCTURES_TEMPLATE = ENV.get_template('structures.tmpl')
 MODEL_TEMPLATE = ENV.get_template('model.tmpl')
 STRUCT_CACHE = osp.join(DIR, 'structs')

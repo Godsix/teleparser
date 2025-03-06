@@ -28,12 +28,13 @@
 '''Telegram sqlite3 DB parser.'''
 
 # pylint: disable=C0103,C0115,C0116,C0302,R0902,R0914,R0913
-
-import datetime
 import os
+from datetime import datetime, UTC
+from sqlalchemy import BLOB
 import logger
 from database import TelegramDB
-from datatype.utils import search_attribute
+from datatype import pythonic, get_obj_value, format_dict
+from tools.lazy import lazy_property, del_lazy_attr
 
 # ------------------------------------------------------------------------------
 
@@ -58,7 +59,7 @@ def escape_csv_string(instr):
 
 def to_date(epoch):
     if epoch:
-        return datetime.datetime.utcfromtimestamp(epoch).isoformat()
+        return datetime.fromtimestamp(epoch, UTC).isoformat()
     return ''
 
 # ------------------------------------------------------------------------------
@@ -80,46 +81,40 @@ class TDB():
         self._table_sent_files = {}
         self._table_users = {}
         self._table_user_settings = {}
+        self.separator = f"{'-' * 80}\n"
 
     def __parse_table_chats(self):
         entries = self._db.get_chats()
         for entry in entries:
             uid = entry.uid
-            assert uid
-            assert uid not in self._table_chats
             logger.info('parsing chats, entry uid: %s', uid)
             self._table_chats[uid] = TChat(entry)
 
     def __save_table_chats(self, outdir):
-        with open(os.path.join(outdir, 'table_chats.txt'), mode='w',
-                  encoding='utf-8') as fo:
-            separator = f"{'-' * 80}\n"
-            for uid, chat in self._table_chats.items():
-                fo.write(separator)
-                fo.write(f'uid: {uid} name: {chat.name}\n\n')
-                fo.write(f'{chat.blob}\n\n')
+        path = os.path.join(outdir, 'table_chats.txt')
+        with open(path, 'w+', encoding='utf-8') as f:
+            for _uid, chat in self._table_chats.items():
+                f.write(self.separator)
+                f.write(chat.dump('\n\n'))
 
     def __parse_table_contacts(self):
         entries = self._db.get_contacts()
         for entry in entries:
             uid = entry.uid
-            assert uid
-            assert uid not in self._table_contacts
             logger.info('parsing contacts, entry uid: %s', uid)
             self._table_contacts[uid] = entry.mutual
 
     def __save_table_contacts(self, outdir):
-        with open(os.path.join(outdir, 'table_contacts.txt'),
-                  mode='w', encoding='utf-8') as fo:
-            separator = f"{'-' * 80}\n"
+        path = os.path.join(outdir, 'table_contacts.txt')
+        with open(path, 'w+', encoding='utf-8') as f:
             for uid, mutual in self._table_contacts.items():
-                fo.write(separator)
-                fo.write(f'uid: {uid} mutual: {mutual}\n')
+                f.write(self.separator)
+                f.write(f'uid: {uid} mutual: {mutual}\n')
                 if uid in self._table_users:
                     user = self._table_users[uid]
-                    fo.write(f'From [users] -> {user.full_text_id}\n')
+                    f.write(f'From [users] -> {user.full_text_id}\n')
                 else:
-                    fo.write('User uid missing in [users]\n')
+                    f.write('User uid missing in [users]\n')
 
     def __parse_table_dialogs(self):
         entries = self._db.get_dialogs()
@@ -132,18 +127,11 @@ class TDB():
             self._table_dialogs[did] = dialog
 
     def __save_table_dialogs(self, outdir):
-        with open(os.path.join(outdir, 'table_dialogs.txt'),
-                  mode='w', encoding='utf-8') as fo:
-            separator = f"{'-' * 80}\n"
-            for did, dialog in self._table_dialogs.items():
-                fo.write(separator)
-                date_string = to_date(dialog.date)
-                fo.write(
-                    f'did: {did}, date: {dialog.date} [{date_string}]\n'
-                    f'unread_count: {dialog.unread_count}, last_mid: {dialog.last_mid}, inbox_max: {dialog.inbox_max}, '
-                    f'outbox_max: {dialog.outbox_max}, last_mid_i: {dialog.last_mid_i}\n'
-                    f'unread_count_i: {dialog.unread_count_i}, pts: {dialog.pts}, date_i: {dialog.date_i}, pinned: {dialog.pinned}, '
-                    f'flags: {dialog.flags}\n\n')
+        path = os.path.join(outdir, 'table_dialogs.txt')
+        with open(path, 'w+', encoding='utf-8') as f:
+            for _did, dialog in self._table_dialogs.items():
+                f.write(self.separator)
+                f.write(dialog.dump())
 
     def __parse_table_enc_chats(self):
         entries = self._db.get_enc_chats()
@@ -152,44 +140,16 @@ class TDB():
             assert uid
             assert uid not in self._table_enc_chats
             logger.info('parsing enc_chats, entry uid: %s', uid)
-            # [20200408] Check if we have a blob of bytes.
-            if isinstance(entry['data'], bytes):
-                blob = self._blob_parser.parse_blob(entry['data'])
-            else:
-                blob = None
-                logger.error('enc_chats uid:%s blob is not made by bytes, '
-                             'skipping it', uid)
-
-            admin_id = getattr(blob, 'admin_id', None)
-            if admin_id:
-                assert entry.admin_id == admin_id
-            participant_id = getattr(blob, 'participant_id', None)
-            if participant_id:
-                if not entry.user == entry.admin_id:
-                    assert entry.user == participant_id
-
             tec = TEchat(entry)
             self._table_enc_chats[uid] = tec
 
     def __save_table_enc_chats(self, outdir):
-        with open(os.path.join(outdir, 'table_enc_chats.txt'),
-                  mode='w', encoding='utf-8') as fo:
-            separator = f"{'-' * 80}\n"
+        path = os.path.join(outdir, 'table_enc_chats.txt')
+        with open(path, 'w+', encoding='utf-8') as f:
             for uid, tec in self._table_enc_chats.items():
                 assert uid == tec.uid
-                fo.write(separator)
-                fo.write(
-                    'uid: {} user: {} name: {}\n\ng: {}\nauthkey: {}\n'
-                    'ttl: {} layer: {} seq_in: {} seq_out: {} use_count: {}\n'
-                    'exchange_id: {} key_date: {} fprint: {}\n'
-                    'fauthkey: {}\nkhash: {}\nin_seq_no: {} admin_id: {} '
-                    'mtproto_seq: {}\n'.format(
-                        tec.uid, tec.user, tec.name, tec.g, tec.authkey,
-                        tec.ttl, tec.layer, tec.seq_in, tec.seq_out,
-                        tec.use_count, tec.exchange_id, tec.key_date,
-                        tec.fprint, tec.fauthkey, tec.khash, tec.in_seq_no,
-                        tec.admin_id, tec.mtproto_seq))
-                fo.write('\n{}\n\n'.format(tec.blob))
+                f.write(self.separator)
+                f.write(tec.dump())
 
     def __parse_table_media(self):
         entries = self._db.get_media()
@@ -201,23 +161,11 @@ class TDB():
             self._table_media[mid] = media
 
     def __save_table_media(self, outdir):
-        with open(os.path.join(outdir, 'table_media.txt'),
-                  mode='w', encoding='utf-8') as fo:
-            separator = f"{'-' * 80}\n"
+        path = os.path.join(outdir, 'table_media.txt')
+        with open(path, 'w+', encoding='utf-8') as f:
             for mid, media in self._table_media.items():
-                fo.write(separator)
-                date_string = to_date(media.date)
-                fo.write(
-                    'mid: {} uid: {} date: {} [{}] type: {}\n'.format(
-                        mid, media.uid, media.date, date_string,
-                        media.type))
-                if media.uid in self._table_users:
-                    fo.write(
-                        'From [users] -> {}\n\n'.format(
-                            self._table_users[media.uid].full_text_id))
-                else:
-                    fo.write('User uid missing in [users]\n\n')
-                fo.write('{}\n\n'.format(media.blob))
+                f.write(self.separator)
+                f.write(media.dump())
 
     def __parse_table_messages(self):
         entries = self._db.get_messages()
@@ -226,7 +174,6 @@ class TDB():
             assert mid
             # assert mid not in self._table_messages
             logger.info('parsing messages, entry mid: %s', mid)
-            replyblob = entry.replydata_blob
 
             message = TMessage(entry)
 
@@ -241,30 +188,11 @@ class TDB():
             self._table_messages[mid] = message
 
     def __save_table_messages(self, outdir):
-        with open(os.path.join(outdir, 'table_messages.txt'),
-                  mode='w', encoding='utf-8') as fo:
-            separator = f"{'-' * 80}\n"
+        path = os.path.join(outdir, 'table_messages.txt')
+        with open(path, 'w+', encoding='utf-8') as f:
             for mid, tmsg in self._table_messages.items():
-                fo.write(separator)
-                fo.write(
-                    'mid: {} uid: {} read_state: {} send_state: {} '
-                    'date: {} out: {} ttl: {} media: {} imp: {} '
-                    'mention: {}\n'.format(
-                        mid, tmsg.uid, tmsg.read_state, tmsg.send_state,
-                        tmsg.date, tmsg.out, tmsg.ttl, tmsg.media,
-                        tmsg.imp, tmsg.mention))
-                if tmsg.uid in self._table_users:
-                    fo.write(
-                        'From [users] -> {}\n\n'.format(
-                            self._table_users[tmsg.uid].full_text_id))
-                else:
-                    fo.write('User uid missing in [users]\n\n')
-                fo.write('{}\n'.format(tmsg.blob))
-                if tmsg.blob_reply:
-                    fo.write(
-                        '\n----- IS REPLY  TO ---\n\n{}\n'.format(
-                            tmsg.blob_reply))
-                fo.write('\n')
+                f.write(self.separator)
+                f.write(tmsg.dump())
 
     def __parse_table_sent_files(self):
         entries = self._db.get_sent_files()
@@ -278,14 +206,12 @@ class TDB():
             self._table_sent_files[uid] = sentfile
 
     def __save_table_sent_files(self, outdir):
-        with open(os.path.join(outdir, 'table_sent_files.txt'),
-                  mode='w', encoding='utf-8') as fo:
-            separator = f"{'-' * 80}\n"
+        path = os.path.join(outdir, 'table_sent_files.txt')
+        with open(path, 'w+', encoding='utf-8') as f:
             for uid, sentfile in self._table_sent_files.items():
                 assert uid == sentfile.uid
-                fo.write(separator)
-                fo.write(f'uid: {uid} type: {sentfile.type} parent: {sentfile.parent}\n\n')
-                fo.write(f'{sentfile.blob}\n\n')
+                f.write(self.separator)
+                f.write(sentfile.dump())
 
     def __parse_table_users(self):
         entries = self._db.get_users()
@@ -305,21 +231,18 @@ class TDB():
         assert user_self_set
 
     def __save_table_users(self, outdir):
-        with open(os.path.join(outdir, 'table_users.txt'),
-                  mode='w', encoding='utf-8') as fo:
-            separator = f"{'-' * 80}\n"
+        path = os.path.join(outdir, 'table_users.txt')
+        with open(path, 'w+', encoding='utf-8') as f:
             for uid, user in self._table_users.items():
                 assert uid == user.uid
-                fo.write(separator)
+                f.write(self.separator)
                 # It seems status is the last update timestamp of the status,
                 # but only if the number is greater than 0.
                 if user.status > 0:
                     status = to_date(user.status)
                 else:
                     status = user.status
-                fo.write(f'uid: {user.uid} name: {user.name} status: {status}\n')
-                fo.write(f'{user.full_text_id}\n\n')
-                fo.write(f'{user.blob}\n\n')
+                f.write(user.dump())
 
     def __parse_table_user_settings(self):
         entries = self._db.get_user_settings()
@@ -332,18 +255,16 @@ class TDB():
             self._table_user_settings[uid] = tus
 
     def __save_table_user_settings(self, outdir):
-        with open(os.path.join(outdir, 'table_user_settings.txt'),
-                  mode='w', encoding='utf-8') as fo:
-            separator = f"{'-' * 80}\n"
-            for uid, tus in self._table_user_settings.items():
-                fo.write(separator)
-                fo.write(f'uid: {uid} pinned: {tus.pinned}\n')
-                if uid in self._table_users:
-                    tid = self._table_users[uid].full_text_id
-                    fo.write(f'From [users] -> {tid}\n\n')
-                else:
-                    fo.write('User uid missing in [users]\n\n')
-                fo.write(f'{tus.blob}\n\n')
+        path = os.path.join(outdir, 'table_user_settings.txt')
+        with open(path, 'w+', encoding='utf-8') as f:
+            for _uid, tus in self._table_user_settings.items():
+                f.write(self.separator)
+                # if uid in self._table_users:
+                #     tid = self._table_users[uid].full_text_id
+                #     f.write(f'From [users] -> {tid}\n\n')
+                # else:
+                #     f.write('User uid missing in [users]\n\n')
+                f.write(tus.dump())
 
     def parse(self):
         # TODO check new 9.2.0 tables
@@ -639,196 +560,222 @@ class TDB():
                 elif user.blob.flags.is_contact:
                     ui_dict['contact'] = 'true'
             if ui_dict:
-                row.content += ' {}'.format(TRow.dict_to_string(ui_dict))
+                row.content += f' {TRow.dict_to_string(ui_dict)}'
 
             if user.photo_info:
                 row.media = user.photo_info
             yield row
 
     def create_timeline(self):
-        with open(os.path.join(self._outdirectory, 'timeline.csv'),
-                  mode='w', encoding='utf-8') as fo:
-            fo.write('{}\n'.format(self._separator.join(TRow.fieldsnames())))
-
-            for row in self.__chats_to_timeline():
-                fo.write('{}\n'.format(row.to_row_string(self._separator)))
-
-            for row in self.__dialogs_to_timeline():
-                fo.write('{}\n'.format(row.to_row_string(self._separator)))
-
-            for row in self.__enc_chats_to_timeline():
-                fo.write('{}\n'.format(row.to_row_string(self._separator)))
-
-            for row in self.__users_to_timeline():
-                fo.write('{}\n'.format(row.to_row_string(self._separator)))
-
-            for row in self.__messages_to_timeline():
-                fo.write('{}\n'.format(row.to_row_string(self._separator)))
+        path = os.path.join(self._outdirectory, 'timeline.csv')
+        with open(path, 'w+', encoding='utf-8') as f:
+            line = self._separator.join(TRow.FIELDS)
+            f.write(f'{line}\n')
+            f.writelines(
+                [f'{x.to_row_string(self._separator)}\n' for x in self.__chats_to_timeline()])
+            f.writelines(
+                [f'{x.to_row_string(self._separator)}\n' for x in self.__dialogs_to_timeline()])
+            f.writelines(
+                [f'{x.to_row_string(self._separator)}\n' for x in self.__enc_chats_to_timeline()])
+            f.writelines(
+                [f'{x.to_row_string(self._separator)}\n' for x in self.__users_to_timeline()])
+            f.writelines(
+                [f'{x.to_row_string(self._separator)}\n' for x in self.__messages_to_timeline()])
 
 # ------------------------------------------------------------------------------
 
 
 class TBase:
+    BLOB_COLUMN = 'data'
 
-    def __init__(self, model):
-        self.model = model
+    def __init__(self, entry):
+        self.entry = entry
 
-
-class TUIDModel(TBase):
+    def __getattr__(self, name):
+        if not name.startswith('_') and hasattr(self.entry, name):
+            attr_name = f"_lazy_{name}"
+            if not hasattr(self, attr_name):
+                if (ret := getattr(self.entry, name)) is None:
+                    return ret
+                setattr(self, attr_name, ret)
+            return getattr(self, attr_name)
+        cls_name = type(self.object).__name__
+        raise AttributeError(f"'{cls_name}' object has no attribute '{name}'")
 
     @property
+    def entry(self):
+        return self._entry
+
+    @entry.setter
+    def entry(self, value):
+        del_lazy_attr(self)
+        self._entry = value
+
+    @lazy_property
     def blob(self):
-        return self.model.blob
+        blob = getattr(self.entry, f'{self.BLOB_COLUMN}_blob')
+        return pythonic(blob)
 
-    @property
-    def uid(self):
-        return self.model.uid
+    @lazy_property
+    def vkeys(self):
+        cols = self.entry.__table__.columns
+        vkeys = (k for k, v in cols.items() if not isinstance(v.type, BLOB))
+        return vkeys
+
+    def get_vdata(self, attr):
+        value = getattr(self, attr)
+        if attr == 'date':
+            return f'{attr}: {value} [{to_date(value)}]'
+        else:
+            return f'{attr}: {value}'
+
+    @lazy_property
+    def vdata_list(self):
+        return [self.get_vdata(x) for x in self.vkeys]
+
+    @lazy_property
+    def vdata(self):
+        return ' '.join(self.vdata_list())
+
+    @lazy_property
+    def bdata(self):
+        return format_dict(self.blob)
+
+    def dump(self, newline='\n'):
+        return f'{self.vdata}{newline}{self.bdata}{newline}'
 
 
-class TRow():
+class TRow:
+    FIELDS = ('timestamp', 'source', 'id', 'type', 'from', 'from_id', 'to',
+              'to_id', 'dialog', 'dialog_type', 'content', 'media', 'extra')
 
-    # def __init__(self):
-    #     self._timestamp = ''
-    #     self._source = ''
-    #     self._id = ''
-    #     self._type = ''
-    #     self._from_who = ''
-    #     self._from_id = ''
-    #     self._to_who = ''
-    #     self._to_id = ''
-    #     self._dialog = ''
-    #     self._dialog_type = ''
-    #     self._content = ''
-    #     self._media = ''
-    #     self._extra = {}
+    def __init__(self):
+        self._timestamp = ''
+        self._source = ''
+        self._id = ''
+        self._type = ''
+        self._from_who = ''
+        self._from_id = ''
+        self._to_who = ''
+        self._to_id = ''
+        self._dialog = ''
+        self._dialog_type = ''
+        self._content = ''
+        self._media = ''
+        self._extra = {}
 
-    def fieldsnames():
-        # pylint: disable=E0211,R0201
-        return ('timestamp', 'source', 'id', 'type',
-                'from', 'from_id', 'to', 'to_id',
-                'dialog', 'dialog_type',
-                'content', 'media', 'extra')
-
-    def dict_to_string(dict_in):
-        # pylint: disable=E0213,E1101
-        return ' '.join("{}:{}".format(k, v) for (k, v) in dict_in.items())
+    @classmethod
+    def dict_to_string(cls, obj: dict):
+        return ' '.join(f"{k}:{v}" for k, v in obj.items())
 
     def to_row_string(self, separator):
         # pylint: disable=W1308
-        return '{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}'.format(
-            self._timestamp, separator,
-            self._source, separator,
-            self._id, separator,
-            self._type, separator,
-            self._from_who, separator,
-            self._from_id, separator,
-            self._to_who, separator,
-            self._to_id, separator,
-            self._dialog, separator,
-            self._dialog_type, separator,
-            escape_csv_string(self._content), separator,
-            self._media, separator,
-            escape_csv_string(TRow.dict_to_string(self._extra)))
+        data = [self._timestamp, self._source, self._id, self._type,
+                self._from_who, self._from_id, self._to_who, self._to_id,
+                self._dialog, self._dialog_type,
+                escape_csv_string(self._content), self._media,
+                escape_csv_string(TRow.dict_to_string(self._extra))]
+        return str(separator).join(str(x) for x in data)
 
     @property
     def timestamp(self):
-        return self.model.timestamp
+        return self._timestamp
 
     @timestamp.setter
     def timestamp(self, value):
-        self.model.timestamp = value
+        self._timestamp = value
 
     @property
     def source(self):
-        return self.model.source
+        return self._source
 
     @source.setter
     def source(self, value):
-        self.model.source = value
+        self._source = value
 
     @property
     def id(self):
-        return self.model.id
+        return self._id
 
     @id.setter
     def id(self, value):
-        self.model.id = value
+        self._id = value
 
     @property
     def type(self):
-        return self.model.type
+        return self._type
 
     @type.setter
     def type(self, value):
-        self.model.type = value
+        self._type = value
 
     @property
     def from_who(self):
-        return self.model.from_who
+        return self._from_who
 
     @from_who.setter
     def from_who(self, value):
-        self.model.from_who = value
+        self._from_who = value
 
     @property
     def from_id(self):
-        return self.model.from_id
+        return self._from_id
 
     @from_id.setter
     def from_id(self, value):
-        self.model.from_id = value
+        self._from_id = value
 
     @property
     def to_who(self):
-        return self.model.to_who
+        return self._to_who
 
     @to_who.setter
     def to_who(self, value):
-        self.model.to_who = value
+        self._to_who = value
 
     @property
     def to_id(self):
-        return self.model.to_id
+        return self._to_id
 
     @to_id.setter
     def to_id(self, value):
-        self.model.to_id = value
+        self._to_id = value
 
     @property
     def dialog(self):
-        return self.model.dialog
+        return self._dialog
 
     @dialog.setter
     def dialog(self, value):
-        self.model.dialog = value
+        self._dialog = value
 
     @property
     def dialog_type(self):
-        return self.model.dialog_type
+        return self._dialog_type
 
     @dialog_type.setter
     def dialog_type(self, value):
-        self.model.dialog_type = value
+        self._dialog_type = value
 
     @property
     def content(self):
-        return self.model.content
+        return self._content
 
     @content.setter
     def content(self, value):
-        self.model.content = value
+        self._content = value
 
     @property
     def media(self):
-        return self.model.media
+        return self._media
 
     @media.setter
     def media(self, value):
-        self.model.media = value
+        self._media = value
 
     @property
     def extra(self):
-        return self.model.extra
+        return self._extra
 
     @extra.setter
     def extra(self, value):
@@ -837,208 +784,119 @@ class TRow():
 # ------------------------------------------------------------------------------
 
 
-class TChat(TUIDModel):
+class TChat(TBase):
+    __slots__ = ['uid', 'name', 'data']
 
-    @property
-    def name(self):
-        return self.model.name
-
-    @property
+    @lazy_property
     def dict_id(self):
         dictid = {}
-        dictid['title'] = search_attribute(self.blob, 'title.string')
-        has_username = search_attribute(self.blob, 'flags.has_username')
-        if has_username:
-            dictid['username'] = search_attribute(self.blob, 'username.string')
+        dictid['title'] = get_obj_value(self.blob, 'title')
+        if get_obj_value(self.blob, 'flags.has_username'):
+            dictid['username'] = get_obj_value(self.blob, 'username')
         return dictid
 
-    @property
+    @lazy_property
     def chat_type(self):
         ct = ''
-        if not hasattr(self.blob, 'flags'):
+        if not get_obj_value(self.blob, 'flags'):
             return ct
-        left = search_attribute(self.blob, 'flags.left')
-        has_username = search_attribute(self.blob, 'flags.has_username')
-        broadcast = search_attribute(self.blob, 'flags.broadcast')
-        megagroup = search_attribute(self.blob, 'flags.megagroup')
-        if broadcast:
-            assert not megagroup
+        is_broadcast = get_obj_value(self.blob, 'flags.is_broadcast')
+        is_megagroup = get_obj_value(self.blob, 'flags.is_megagroup')
+        if is_broadcast:
+            assert not is_megagroup
             ct = '1-N'
-        elif megagroup:
-            assert not broadcast
+        elif is_megagroup:
+            assert not is_broadcast
             ct = 'N-N'
         else:
             ct = '?-?'
-        if has_username:
+        if get_obj_value(self.blob, 'flags.has_username'):
             ct += ' pub'
         else:
             ct += ' prv'
-        if left:
+        if get_obj_value(self.blob, 'flags.is_left'):
             ct += ' left'
         return ct
 
-    @property
+    @lazy_property
     def shortest_id(self):
         sid = ''
-        has_username = search_attribute(self.blob, 'flags.has_username')
-        if has_username:
-            if self.blob.username.string:
-                sid = '{}'.format(self.blob.username.string)
-        elif self.blob.title.string:
-            sid = '{}'.format(self.blob.title.string)
+        if (sid := get_obj_value(self.blob, 'username', '')):
+            pass
+        elif (sid := get_obj_value(self.blob, 'title', '')):
+            pass
         else:
             sid = self.uid
         return sid
 
-    @property
+    @lazy_property
     def creation_date(self):
-        return search_attribute(self.blob, 'date.epoch')
+        return get_obj_value(self.blob, 'date')
 
-    @property
+    @lazy_property
     def photo_info(self):
-        ph_info = ''
-        blob = self.blob
-        photo = getattr(blob, 'photo', None)
-        if photo:
-            ph_blob = blob.photo.photo
-            ph_info = '{}'.format(ph_blob.sname)
-            ps_blob = getattr(ph_blob, 'photo_small', None)
-            if ps_blob:
-                ps_blob = ph_blob.photo_small.photo_small
-                psf = '{}_{}.jpg'.format(ps_blob.volume_id, ps_blob.local_id)
-                ph_info += ' small: {}'.format(psf)
-            pb_blob = getattr(ph_blob, 'photo_big', None)
-            if pb_blob:
-                pb_blob = ph_blob.photo_big.photo_big
-                pbf = '{}_{}.jpg'.format(pb_blob.volume_id, pb_blob.local_id)
-                ph_info += ' big: {}'.format(pbf)
-        return ph_info
+        info = []
+        if (photo := get_obj_value(self.blob, 'photo')):
+            info.append(get_obj_value(photo, 'sname'))
+            if (photo_small := get_obj_value(photo, 'photo_small')):
+                info.append('small:')
+                volume_id = get_obj_value(photo_small, 'volume_id')
+                local_id = get_obj_value(photo_small, 'local_id')
+                info.append(f'{volume_id}_{local_id}.jpg')
+            if (photo_big := get_obj_value(photo, 'photo_big')):
+                info.append('big:')
+                volume_id = get_obj_value(photo_big, 'volume_id')
+                local_id = get_obj_value(photo_big, 'local_id')
+                info.append(f'{volume_id}_{local_id}.jpg')
+        return ' '.join(info)
 
 # ------------------------------------------------------------------------------
 
 
 class TDialog(TBase):
+    __slots__ = ['did', 'date', 'unread_count', 'last_mid', 'inbox_max',
+                 'outbox_max', 'last_mid_i', 'unread_count_i', 'pts', 'date_i',
+                 'pinned', 'flags', 'folder_id', 'data', 'unread_reactions',
+                 'last_mid_group', 'ttl_period']
 
-    @property
-    def did(self):
-        return self.model.did
+    @lazy_property
+    def vdata(self):
+        newline = '\n'
+        result = []
+        vdata = self.vdata_list
+        result.append(f'{", ".join(vdata[:(e := 2)])}{newline}')
+        for _ in range(9):
+            data = vdata[(s := e):(e := s + 5)]
+            if not data:
+                break
+            result.append(f'{" ".join(data)}{newline}')
+        result.append(newline)
+        return ''.join(result)
 
-    @property
-    def date(self):
-        return self.model.date
+    @lazy_property
+    def bdata(self):
+        return ''
 
-    @property
-    def unread_count(self):
-        return self.model.unread_count
+    def dump(self, newline='\n'):
+        return f'{self.vdata}{newline}{self.bdata}{newline}'
 
-    @property
-    def last_mid(self):
-        return self.model.last_mid
-
-    @property
-    def inbox_max(self):
-        return self.model.inbox_max
-
-    @property
-    def outbox_max(self):
-        return self.model.outbox_max
-
-    @property
-    def last_mid_i(self):
-        return self.model.last_mid_i
-
-    @property
-    def unread_count_i(self):
-        return self.model.unread_count_i
-
-    @property
-    def pts(self):
-        return self.model.pts
-
-    @property
-    def date_i(self):
-        return self.model.date_i
-
-    @property
-    def pinned(self):
-        return self.model.pinned
-
-    @property
-    def flags(self):
-        return self.model.flags
 
 # ------------------------------------------------------------------------------
 
 
-class TEchat(TUIDModel):
+class TEchat(TBase):
+    __slots__ = ['uid', 'user', 'name', 'data', 'g', 'authkey', 'ttl', 'layer',
+                 'seq_in', 'seq_out', 'use_count', 'exchange_id', 'key_date',
+                 'fprint', 'fauthkey', 'khash', 'in_seq_no', 'admin_id',
+                 'mtproto_seq']
 
-    @property
-    def user(self):
-        return self.model.user
-
-    @property
-    def name(self):
-        return self.model.name
-
-    @property
-    def g(self):
-        return self.model.g
-
-    @property
-    def authkey(self):
-        return self.model.authkey
-
-    @property
-    def ttl(self):
-        return self.model.ttl
-
-    @property
-    def layer(self):
-        return self.model.layer
-
-    @property
-    def seq_in(self):
-        return self.model.seq_in
-
-    @property
-    def seq_out(self):
-        return self.model.seq_out
-
-    @property
-    def use_count(self):
-        return self.model.use_count
-
-    @property
-    def exchange_id(self):
-        return self.model.exchange_id
-
-    @property
-    def key_date(self):
-        return self.model.key_date
-
-    @property
-    def fprint(self):
-        return self.model.fprint
-
-    @property
-    def fauthkey(self):
-        return self.model.fauthkey
-
-    @property
-    def khash(self):
-        return self.model.khash
-
-    @property
-    def in_seq_no(self):
-        return self.model.in_seq_no
-
-    @property
-    def admin_id(self):
-        return self.model.admin_id
-
-    @property
-    def mtproto_seq(self):
-        return self.model.mtproto_seq
+    def __init__(self, entry):
+        super().__init__(entry)
+        if (admin_id := get_obj_value(self.blob, 'admin_id')):
+            assert self.admin_id == admin_id
+        if (participant_id := get_obj_value(self.blob, 'participant_id')):
+            if not self.user == self.admin_id:
+                assert self.user == participant_id
 
     @property
     def dict_id(self):
@@ -1048,138 +906,82 @@ class TEchat(TUIDModel):
 
     @property
     def shortest_id(self):
-        if self.name:
-            return self.name
-        return self.uid
+        return self.name or self.uid
 
     @property
     def creation_date(self):
-        date = getattr(self.blob, 'date', None)
-        if date:
-            epoch = getattr(date, 'epoch', None)
-            return epoch
-        return None
+        return get_obj_value(self.blob, 'date')
 
     @property
     def participant_id(self):
         # Normally the db user entry is equal to blob participant_id, but there
         # are cases where user=admin_id=admin_id_blob
-        participant_id = getattr(self.blob, 'participant_id', None)
-        if participant_id:
-            return int(participant_id)
+        if participant_id := get_obj_value(self.blob, 'participant_id'):
+            return participant_id
         if self.admin_id != self.user:
-            return int(self.user)
+            return self.user
         logger.warning('encrypted chat %s has not a valid participant_id!',
                        self.uid)
         return None
 
+    @lazy_property
+    def vdata(self):
+        newline = '\n'
+        result = []
+        vdata = self.vdata_list
+        result.append(f'{", ".join(vdata[:(e := 3)])}{newline}')
+        for _ in range(9):
+            data = vdata[(s := e):(e := s + 5)]
+            if not data:
+                break
+            result.append(f'{" ".join(data)}{newline}')
+        result.append(newline)
+        return ''.join(result)
+
+    def dump(self, newline='\n'):
+        return f'{self.vdata}{newline}{self.bdata}{newline}'
 
 # ------------------------------------------------------------------------------
 
+
 class TMedia(TBase):
+    __slots__ = ['mid', 'uid', 'date', 'type', 'data']
 
-    @property
-    def blob(self):
-        return self.model.blob
-
-    @property
-    def mid(self):
-        return self.model.mid
-
-    @property
-    def uid(self):
-        return self.model.uid
-
-    @property
-    def date(self):
-        return self.model.date
-
-    @property
-    def type(self):
-        return self.model.type
 
 # ------------------------------------------------------------------------------
 
 
 class TMessage(TBase):
+    __slots__ = ['mid', 'uid', 'read_state', 'send_state', 'date', 'data',
+                 'out', 'ttl', 'media', 'replydata', 'imp', 'mention',
+                 'forwards', 'replies_data', 'thread_reply_id', 'is_channel',
+                 'reply_to_message_id', 'custom_params', 'group_id',
+                 'reply_to_story_id']
 
-    @property
-    def blob(self):
-        return self.model.blob
-
-    @blob.setter
-    def blob(self, value):
-        self.model.blob = value
-
-    @property
-    def blob_reply(self):
-        return self.model.replydata_blob
-
-    @blob_reply.setter
-    def blob_reply(self, value):
-        self.model.replydata_blob = value
-
-    @property
-    def mid(self):
-        return self.model.mid
-
-    @property
-    def uid(self):
-        return self.model.uid
-
-    @property
-    def read_state(self):
-        return self.model.read_state
-
-    @property
-    def send_state(self):
-        return self.model.send_state
-
-    @property
-    def date(self):
-        return self.model.date
-
-    @property
-    def out(self):
-        return self.model.out
-
-    @property
-    def ttl(self):
-        return self.model.ttl
-
-    @property
-    def media(self):
-        return self.model.media
-
-    @property
-    def imp(self):
-        return self.model.imp
-
-    @property
-    def mention(self):
-        return self.model.mention
+    @lazy_property
+    def reply_blob(self):
+        blob = getattr(self.entry, 'replydata_blob')
+        return pythonic(blob)
 
     @property
     def to_id_and_type(self):
-        to_id_c = self.blob.to_id.to_id
-        if to_id_c.sname == 'peer_channel':
-            return (to_id_c.channel_id, TYPE_MSG_TO_CHANNEL)
-        if to_id_c.sname == 'peer_user':
-            return (to_id_c.user_id, TYPE_MSG_TO_USER)
+        to_id = get_obj_value(self.blob, 'to_id')
+        sname = get_obj_value(to_id, 'sname')
+        if sname == 'peer_channel':
+            return (get_obj_value(to_id, 'channel_id'), TYPE_MSG_TO_CHANNEL)
+        if sname == 'peer_user':
+            return (get_obj_value(to_id, 'user_id'), TYPE_MSG_TO_USER)
         return (None, None)
 
     @property
     def message_content(self):
-        msg = getattr(self.blob, 'message', None)
-        if msg:
-            return escape_csv_string(msg.string)
+        if (message := get_obj_value(self.blob, 'message')):
+            return escape_csv_string(message)
         return ''
 
     @property
     def message_date_from_blob(self):
-        if hasattr(self.blob, 'date'):
-            return getattr(self.blob.date, 'epoch', None)
-        return None
+        return get_obj_value(self.blob, 'date')
 
     @property
     def dialog_and_sequence(self):
@@ -1206,167 +1008,113 @@ class TMessage(TBase):
 
     @property
     def action_string_and_dict(self):
-        action = getattr(self.blob, 'action', None)
-        if action:
-            action_copy = action.action
-            del action_copy['_io']
-            del action_copy['signature']
-            return action_copy.sname, action_copy
+        if (action := get_obj_value(self.blob, 'action')):
+            return get_obj_value(action, 'sname'), action
         return None, None
+
+    @lazy_property
+    def breply(self):
+        return format_dict(self.reply_blob)
+
+    def dump(self, newline='\n'):
+        if self.reply_blob:
+            return (f'{self.vdata}{newline}'
+                    f'{self.bdata}{newline}'
+                    f'----- IS REPLY  TO ---{newline}'
+                    f'{self.breply}{newline}')
+        return f'{self.vdata}{newline}{self.bdata}{newline}'
 
 # ------------------------------------------------------------------------------
 
 
 class TSentFile(TBase):
+    __slots__ = ['uid', 'type', 'data', 'parent']
 
-    @property
-    def blob(self):
-        return self.model.blob
-
-    @property
-    def uid(self):
-        return self.model.uid
-
-    @property
-    def ttype(self):
-        return self.model.type
-
-    @property
-    def parent(self):
-        return self.model.parent
-
-# ------------------------------------------------------------------------------
-
-
-class TUserSettings(TBase):
-
-    @property
-    def uid(self):
-        return self.model.uid
-
-    @property
-    def blob(self):
-        return self.model.info_blob
-
-    @property
-    def pinned(self):
-        return self.model.pinned
 
 # ------------------------------------------------------------------------------
 
 
 class TUser(TBase):
+    __slots__ = ['uid', 'name', 'status', 'data']
 
     def __init__(self, model):
         super().__init__(model)
-        assert self.uid == self.blob.id
-
-    @property
-    def uid(self):
-        return self.model.uid
-
-    @property
-    def name(self):
-        return self.model.name
-
-    @property
-    def status(self):
-        return self.model.status
-
-    @property
-    def blob(self):
-        return self.model.blob
+        assert self.uid == get_obj_value(self.blob, 'id')
 
     # The following are useful fiels extracted from the blob.
 
-    @property
+    @lazy_property
     def first_name(self):
-        if self.model.blob.flags.has_first_name:
-            return self.model.blob.first_name.string
-        return ''
+        return get_obj_value(self.blob, 'first_name', '')
 
-    @property
+    @lazy_property
     def last_name(self):
-        if self.model.blob.flags.has_last_name:
-            return self.model.blob.last_name.string
-        return ''
+        return get_obj_value(self.blob, 'last_name', '')
 
-    @property
+    @lazy_property
     def username(self):
-        if self.model.blob.flags.has_username:
-            return self.model.blob.username.string
-        return ''
+        return get_obj_value(self.blob, 'username', '')
 
-    @property
+    @lazy_property
     def phone(self):
-        if self.model.blob.flags.has_phone:
-            return self.model.blob.phone.string
-        return ''
+        return get_obj_value(self.blob, 'phone', '')
 
-    @property
+    @lazy_property
     def full_text_id(self):
-        return 'uid: {} nick: {} fullname: {} {} phone: {}'.format(
-            self.uid, self.username, self.first_name, self.last_name,
-            self.phone)
+        return (f'uid: {self.uid} nick: {self.username} '
+                f'fullname: {self.first_name} {self.last_name} '
+                f'phone: {self.phone}')
 
-    @property
+    @lazy_property
     def dict_id(self):
-        dictid = {}
-        if self.username:
-            dictid['username'] = self.username
-        if self.first_name:
-            dictid['firstname'] = self.first_name
-        if self.last_name:
-            dictid['lastname'] = self.last_name
-        if self.phone:
-            dictid['phone'] = self.phone
-        return dictid
+        keys = ['username', 'first_name', 'last_name', 'phone']
+        return {x: y for x in keys if (y := getattr(self, x))}
 
-    @property
+    @lazy_property
     def shortest_id(self):
         if self.username:
-            sis = '{}'.format(self.username)
+            sis = self.username
         elif self.first_name or self.last_name:
             if self.first_name and self.last_name:
-                sis = '{} {}'.format(self.first_name, self.last_name)
+                sis = f'{self.first_name} {self.last_name}'
             elif self.first_name:
-                sis = '{}'.format(self.first_name)
+                sis = self.first_name
             else:
-                sis = '{}'.format(self.last_name)
+                sis = self.last_name
         else:
             sis = self.uid
 
         if self.is_self:
-            return '{} (owner)'.format(sis)
+            return f'{sis} (owner)'
         return sis
 
-    @property
+    @lazy_property
     def photo_info(self):
-        ph_info = ''
-        blob = self.model.blob
-        photo = getattr(blob, 'photo', None)
-        if photo:
-            ph_blob = blob.photo.photo
-            ph_info = '{}'.format(ph_blob.sname)
-            ps_blob = getattr(ph_blob, 'photo_small', None)
-            if ps_blob:
-                ps_blob = ph_blob.photo_small.photo_small
-                psf = '{}_{}.jpg'.format(ps_blob.volume_id, ps_blob.local_id)
-                ph_info += ' small: {}'.format(psf)
-            pb_blob = getattr(ph_blob, 'photo_big', None)
-            if pb_blob:
-                pb_blob = ph_blob.photo_big.photo_big
-                pbf = '{}_{}.jpg'.format(pb_blob.volume_id, pb_blob.local_id)
-                ph_info += ' big: {}'.format(pbf)
-        return ph_info
+        info = []
+        if (photo := get_obj_value(self.blob, 'photo')):
+            info.append(get_obj_value(photo, 'sname'))
+            if (photo_small := get_obj_value(photo, 'photo_small')):
+                info.append('small:')
+                volume_id = get_obj_value(photo_small, 'volume_id')
+                local_id = get_obj_value(photo_small, 'local_id')
+                info.append(f'{volume_id}_{local_id}.jpg')
+            if (photo_big := get_obj_value(photo, 'photo_big')):
+                info.append('big:')
+                volume_id = get_obj_value(photo_big, 'volume_id')
+                local_id = get_obj_value(photo_big, 'local_id')
+                info.append(f'{volume_id}_{local_id}.jpg')
+        return ' '.join(info)
 
-    @property
+    @lazy_property
     def is_self(self):
-        flags = getattr(self.blob, 'flags', None)
-        if flags:
-            user_self = getattr(flags, 'is_self', None)
-            if user_self:
-                return flags.is_self
-        return False
+        return get_obj_value(self.blob, 'flags.is_self', False)
+
+# ------------------------------------------------------------------------------
+
+
+class TUserSettings(TBase):
+    __slots__ = ['uid', 'info', 'pinned']
+    BLOB_COLUMN = 'info'
+
 
 # ------------------------------------------------------------------------------

@@ -2,19 +2,22 @@
 """
 Created on Wed Sep  7 08:55:54 2022
 
-@author: 皓
+@author: C. David
 """
 import os.path as osp
 import re
 import json
-from glob import iglob
+import getpass
 import importlib
-from functools import partial, lru_cache
+from glob import iglob
+from datetime import datetime
 from inspect import getsource
-from functools import cmp_to_key
+from functools import partial, cmp_to_key
 from types import MethodType, FunctionType
 from zipfile import ZipFile, ZIP_DEFLATED
 import autopep8
+from .common import (STRUCT_TEMPLATE, MODEL_TEMPLATE, STRUCTURES_TEMPLATE,
+                     SIMPLE_STRUCT_TEMPLATE, TODO_STRUCT_TEMPLATE)
 
 try:
     import yaml
@@ -27,7 +30,7 @@ except ModuleNotFoundError:
 
 
 def load_data(path):
-    filename, ext = osp.splitext(path)
+    _, ext = osp.splitext(path)
     if ext in {'.yaml', '.yml'}:
         if yaml is None:
             raise ModuleNotFoundError("No module named 'yaml'")
@@ -41,7 +44,7 @@ def load_data(path):
 
 
 def dump_data(data, path):
-    filename, ext = osp.splitext(path)
+    _, ext = osp.splitext(path)
     if ext in {'.yaml', '.yml'}:
         if yaml is None:
             raise ModuleNotFoundError("No module named 'yaml'")
@@ -56,13 +59,68 @@ def dump_data(data, path):
 
 def save_code(path, content, pep8=False, options=None, encoding=None,
               apply_config=False, **kwargs):
+    if pep8:
+        content = autopep8.fix_code(content,
+                                    options,
+                                    encoding,
+                                    apply_config)
+    else:
+        content = content
     with open(path, 'w+', encoding='utf-8', newline='\n') as f:
-        if pep8:
-            content = autopep8.fix_code(content, options, encoding,
-                                        apply_config)
-        else:
-            content = content
         f.write(content)
+
+
+def get_struct_content(data):
+    if isinstance(data, (str, bytes)) and osp.isfile(data):
+        data = load_data(data)
+    return STRUCT_TEMPLATE.render(data)
+
+
+def get_simple_struct_content(data):
+    if isinstance(data, (str, bytes)) and osp.isfile(data):
+        data = load_data(data)
+    return SIMPLE_STRUCT_TEMPLATE.render(data)
+
+
+def get_todo_struct_content(data):
+    if isinstance(data, (str, bytes)) and osp.isfile(data):
+        data = load_data(data)
+    return TODO_STRUCT_TEMPLATE.render(data)
+
+
+def generate_struct_code(path, data, **kwargs):
+    data.setdefault('localtime', datetime.now().strftime('%c'))
+    data.setdefault('username', getpass.getuser())
+    content = get_struct_content(data)
+    save_code(path, content, **kwargs)
+
+
+def get_structures_content(data):
+    if isinstance(data, (str, bytes)) and osp.isfile(data):
+        data = load_data(data)
+    return STRUCTURES_TEMPLATE.render(data)
+
+
+def generate_structures_code(path, data, **kwargs):
+    data.setdefault('localtime', datetime.now().strftime('%c'))
+    data.setdefault('username', getpass.getuser())
+    content = get_structures_content(data)
+    save_code(path, content, **kwargs)
+
+
+def get_model_content(data):
+    if isinstance(data, (str, bytes)) and osp.isfile(data):
+        data = load_data(data)
+    return MODEL_TEMPLATE.render(data)
+
+
+def generate_model_code(path, data, **kwargs):
+    data.setdefault('localtime', datetime.now().strftime('%c'))
+    data.setdefault('username', getpass.getuser())
+    content = get_model_content(data)
+    save_code(path, content, **kwargs)
+
+# ---------------------------- Common end ---------------------------------
 
 
 def get_lineno(method_or_func):
@@ -211,45 +269,6 @@ def process_doxygen(c_in):
     return result.strip()
 
 
-def sub_snake(match):
-    ret = [x for x in match.groups() if x]
-    return '{}_{}'.format(ret[0], ret[1])
-
-
-SNAKE = re.compile(
-    '([A-Z])([A-Z](?=[a-z]))|([a-z])([A-Z](?=[A-Z]))|([a-z])([A-Z](?=[a-z]))')
-
-
-# def name_convert_to_snake(name: str) -> str:
-#     """驼峰转下划线"""
-#     if '_' not in name:
-#         name = SNAKE.sub(sub_snake, name)
-#     else:
-#         raise ValueError(f'{name}字符中包含下划线，无法转换')
-#     return name.lower()
-
-@lru_cache(maxsize=1024)
-def name_convert_to_snake(name: str) -> str:
-    """驼峰转下划线"""
-    if any(x.isupper() for x in name):
-        name = SNAKE.sub(sub_snake, name)
-        return name.lower()
-    else:
-        return name
-
-
-def name_convert_to_camel(name: str) -> str:
-    """下划线转驼峰(小驼峰)"""
-    ret = re.sub(r'_([a-z])', lambda x: x.group(1).upper(), name)
-    return f'{ret[0].lower()}{ret[1:]}'
-
-
-def name_convert_to_pascal(name: str) -> str:
-    """下划线转驼峰(大驼峰)"""
-    ret = re.sub(r'_([a-z])', lambda x: x.group(1).upper(), name)
-    return f'{ret[0].upper()}{ret[1:]}'
-
-
 def find_import(mod_path, *patterns, index=1):
     result = []
     for path in iglob(osp.join(mod_path, '*.py')):
@@ -261,25 +280,3 @@ def find_import(mod_path, *patterns, index=1):
             name = osp.splitext(osp.basename(path))[0]
             result.append(f'from .{name} import {", ".join(objects)}')
     return '\n'.join(result)
-
-def lazy_property(func):
-    attr_name = "_lazy_{}".format(func.__name__)
-
-    @property
-    def _lazy_property(self):
-        if not hasattr(self, attr_name):
-            ret = func(self)
-            if ret is None:
-                return ret
-            setattr(self, attr_name, ret)
-        return getattr(self, attr_name)
-
-    @_lazy_property.setter
-    def _lazy_property(self, value):
-        setattr(self, attr_name, value)
-
-    @_lazy_property.deleter
-    def _lazy_property(self):
-        delattr(self, attr_name)
-
-    return _lazy_property

@@ -2,7 +2,7 @@
 """
 Created on Wed Dec  7 08:47:59 2022
 
-@author: 皓
+@author: C. David
 """
 import os
 import os.path as osp
@@ -12,11 +12,10 @@ from glob import iglob
 from enum import IntEnum
 from functools import lru_cache
 from javalang.parse import parse
-from javalang.tree import (Node, 
-                           CompilationUnit, ClassDeclaration,
+from javalang.tree import (Node, ClassDeclaration,
                            FieldDeclaration, FormalParameter,
                            MethodDeclaration, BlockStatement,
-                           Statement, IfStatement, ForStatement,
+                           IfStatement, ForStatement,
                            ReturnStatement, SwitchStatement,
                            StatementExpression, TryStatement,
                            LocalVariableDeclaration,
@@ -24,16 +23,19 @@ from javalang.tree import (Node,
                            BasicType, ReferenceType, ClassCreator,
                            ForControl, BinaryOperation, TernaryExpression,
                            Cast, This, MemberReference, Literal)
+from tools import name_convert_to_snake, lazy_property
 try:
     from .common import STRUCT_CACHE, HEADER
-    from .tools import (get_struct_content, get_structures_content,
-                        get_simple_struct_content)
-    from .utils import name_convert_to_snake, save_code, lazy_property
+    from .utils import (save_code, get_struct_content,
+                        get_structures_content,
+                        get_simple_struct_content,
+                        get_todo_struct_content)
 except ImportError:
     from generater.common import STRUCT_CACHE, HEADER
-    from generater.tools import (get_struct_content, get_structures_content,
-                                 get_simple_struct_content)
-    from generater.utils import name_convert_to_snake, save_code, lazy_property
+    from generater.utils import (save_code, get_struct_content,
+                                 get_structures_content,
+                                 get_simple_struct_content,
+                                 get_todo_struct_content)
 
 
 TYPE_INFO = {
@@ -71,27 +73,8 @@ VECTOR_TYPE_INFO = {
 }
 
 
-
-
-
 PATTERN1 = re.compile(r"@constructor\((\w+), '(\w+)'(.*)\)")
 PATTERN2 = re.compile(r"'sname'\s*/\s*Computed\(\s*'(\w+)'\s*\)")
-
-
-FAIL_STR = '''    @constructor({cid}, '{sname}')
-    def struct_{cid}(self):
-        # TODO
-        return Struct(
-            'sname' / Computed('{sname}'),
-            'signature' / Hex(Const({cid}, Int32ul)))'''
-
-
-TODO_STR = '''    @constructor({cid}, '{sname}')
-    def struct_{cid}(self):
-        # TODO: {todo}
-        return Struct(
-            'sname' / Computed('{sname}'),
-            'signature' / Hex(Const({cid}, Int32ul)))'''
 
 
 SIMP_STR = '''    @constructor({cid}, '{sname}')
@@ -99,7 +82,7 @@ SIMP_STR = '''    @constructor({cid}, '{sname}')
         return [{content}]'''
 
 
-FUNCTION_PATTERN = re.compile(r"^ +@.+\n +def (\w+)\(.+\)(?s:.+?)\n\n", re.M)
+FUNC_PATTERN = re.compile(r"(?m:^) +@.+\n +def (\w+)\(.+\)(?s:.+?)(?=\n\n|$)")
 
 
 GDATA = {}
@@ -128,7 +111,8 @@ class UserWrapper:
     def __getattr__(self, name):
         if hasattr(self.object, name):
             return getattr(self.object, name)
-        raise AttributeError(f"'ClassParser' object has no attribute '{name}'")
+        cls_name = type(self.object).__name__
+        raise AttributeError(f"'{cls_name}' object has no attribute '{name}'")
 
 class UserCompilationUnit(UserWrapper):
     def __init__(self, path, encoding: str = "utf-8"):
@@ -171,7 +155,8 @@ class UserClassDeclaration(UserWrapper):
             self.c_unit = outer.c_unit
             self.outer = outer
         else:
-            raise TypeError("'outer' must be a UserCompilationUnit or UserClassDeclaration")
+            error = "'outer' must be a UserWrapper"
+            raise TypeError(error)
         self.imports = {}
         self.outer_imports = {}
         for item in self.c_unit.imports:
@@ -458,7 +443,7 @@ class ClassParser(BaseParser):
         self.struct[name] = value
 
     def parse(self):
-        self.logger.debug('Parse class %s', self.name)
+        # self.logger.debug('Parse class %s', self.name)
         has_struct = False
         has_switch = False
         if self.cid:
@@ -633,7 +618,8 @@ class ClassParser(BaseParser):
                             arg1_member = stype_member
                         stype = self.parse_class_type(sname, arg1_member)
                         if not stype:
-                            raise ValueError(f'Parse java type error: {arg1_member}')
+                            error = f'Parse java type error: {arg1_member}'
+                            raise ValueError(error)
                     elif member == 'deserializeInt':
                         stype = 'Int32ul'
                     elif member == 'deserializeLong':
@@ -686,14 +672,14 @@ class ClassParser(BaseParser):
         condition = statement.condition
         operandl = condition.operandl
         if self.is_binary_operation(operandl):
-            condition_member = operandl.operandl.member
-            condition_value = operandl.operandr.value
+            cond_member = operandl.operandl.member
+            cond_value = operandl.operandr.value
             then_statements = statement.then_statement.statements
             result_list = self.parse_blocks_r(then_statements)
-            c_m = condition_member
+            c_m = cond_member
             for item in result_list:
                 sname, dtype = item
-                flag = self.add_flag_value(c_m, sname, condition_value, prefix='has')
+                flag = self.add_flag_value(c_m, sname, cond_value, prefix='has')
                 struct_type = f'If(this.{flag[0]}.{flag[3]}, {dtype})'
                 result.append((sname, struct_type))
             return result
@@ -717,7 +703,8 @@ class ClassParser(BaseParser):
             return Tag.VECTOR_CONTENT
 
     def is_line_w_1(self, line: Node):
-        if self.is_statement_expression(line) and self.is_method_invocation(line.expression):
+        if (self.is_statement_expression(line) and
+            self.is_method_invocation(line.expression)):
             return {'object': line.expression}
         return False
 
@@ -874,7 +861,8 @@ class ClassParser(BaseParser):
         return Tag.FLAGS_TAG
 
     def is_line_w_4(self, line: Node):
-        if self.is_statement_expression(line) and self.is_assignment(line.expression):
+        if (self.is_statement_expression(line) and
+            self.is_assignment(line.expression)):
             return {'object': line.expression}
         return False
 
@@ -932,7 +920,8 @@ class ClassParser(BaseParser):
         result = []
         for item in info['result']:
             sname, dtype = item
-            flag = self.add_flag_value(info['name'], sname, info['value'], prefix='has')
+            flag = self.add_flag_value(info['name'], sname,
+                                       info['value'], prefix='has')
             stype = f'If(this.{flag[0]}.{flag[3]}, {dtype})'
             result.append((sname, stype))
         return result
@@ -979,7 +968,7 @@ class ClassParser(BaseParser):
     def parse_line_w_7(self, info: dict):
         statement = info['object']
         condition = statement.condition
-        operandl = condition.operandl
+        # operandl = condition.operandl
         operandr = condition.operandr
         if self.is_literal(operandr) and operandr.value == 'null':
             return self.parse_block(statement.then_statement)
@@ -1036,36 +1025,39 @@ class ClassParser(BaseParser):
                 result.extend(res)
         return result
 
+    def parse_line_switch(self, line: SwitchStatement):
+        switch_member = line.expression.member
+        assert switch_member == 'constructor', 'Switch not constructor'
+        for subitem in line.cases:
+            if not subitem.case:
+                continue
+            for subitem in subitem.case:
+                error = None
+                if self.is_literal(subitem):
+                    cid_value = subitem.value
+                    self.switch.append(f'0x{eval(cid_value):08x}')  # pylint: disable=W0123
+                elif self.is_member_reference(subitem):
+                    qualifier = subitem.qualifier
+                    member = subitem.member
+                    if member == 'constructor':
+                        fqn = self.object.get_fqn(qualifier)
+                        if (cid := self.get_cid(fqn)):
+                            self.switch.append(cid)
+                        else:
+                            error = f'Can not find class {qualifier} constructor'
+                    else:
+                        error = f'Case member is not constructor but {member}'
+                else:
+                    type_name = type(subitem).__name__
+                    error = f'case_expr is illigal type: {type_name}'
+                if error:
+                    raise TypeError(error)
+        return True
+
     def parse_blocks_d(self, blocks):
         for item in blocks:
             if self.is_switch_statement(item):
-                switch_member = item.expression.member
-                assert switch_member == 'constructor', 'Switch not constructor'
-                for subitem in item.cases:
-                    if len(subitem.case) == 0:
-                        continue
-                    for subitem in subitem.case:
-                        error = None
-                        if self.is_literal(subitem):
-                            cid_value = subitem.value
-                            self.switch.append(f'0x{eval(cid_value):08x}')  # pylint: disable=W0123
-                        elif self.is_member_reference(subitem):
-                            qualifier = subitem.qualifier
-                            member = subitem.member
-                            if member == 'constructor':
-                                fqn = self.object.get_fqn(qualifier)
-                                if (cid := self.get_cid(fqn)):
-                                    self.switch.append(cid)
-                                else:
-                                    error = f'Can not find class {qualifier} constructor'
-                            else:
-                                error = f'Case member is not constructor but {member}'
-                        else:
-                            type_name = type(subitem).__name__
-                            error = f'case_expr is illigal type: {type_name}'
-                        if error:
-                            raise TypeError(error)
-                return True
+                return self.parse_line_switch(item)
             elif self.is_local_variable(item):
                 continue  # pylint: disable=E275
             elif self.is_return_statement(item):
@@ -1130,7 +1122,7 @@ class ClassParser(BaseParser):
         self.fields_context.clear()
         self.flags.clear()
         for k, v in self.flags_info.items():
-            fn, _, _, mn, val = v 
+            fn, _, _, mn, val = v
             flag = self.flags.setdefault(fn, {})
             flag[mn] = val
         for item in result:
@@ -1160,7 +1152,6 @@ class ClassParser(BaseParser):
         elif self.is_try_statement(obj):
             body = obj.block
         else:
-            # raise TypeError(f'Unknown type: {type(obj).__name__}: {obj}')
             body = [obj]
         if self.current_method == MethodType.WRITE:
             result = self.parse_blocks_w(body)
@@ -1209,6 +1200,8 @@ class ClassParser(BaseParser):
 
 class JavaParser(BaseParser):
     LOG = 'JavaParser'
+    ROOT = 'org.telegram.tgnet.TLRPC'
+    TLOBJ = 'org.telegram.tgnet.TLObject'
 
     def __init__(self, directory, cached=None, level=logging.INFO, strict=False):
         super().__init__(level)
@@ -1224,7 +1217,7 @@ class JavaParser(BaseParser):
                 basename = osp.basename(path)
                 with open(path, encoding='utf-8') as f:
                     c = f.read()
-                self.cache[eval(basename)] = c
+                self.cache[eval(basename)] = c  # pylint: disable=W0123
 
     @property
     def directory(self):
@@ -1232,32 +1225,33 @@ class JavaParser(BaseParser):
 
     @directory.setter
     def directory(self, value):
-        path = osp.join(value, 'TLRPC.java')
-        assert osp.isfile(path), f"Not found TLRPC file in {value}"
+        relpath = self.ROOT.replace('.', os.sep)
+        root_path = osp.join(value, f'{relpath}.java')
+        assert osp.isfile(root_path), f"Not found TLRPC file in {value}"
         self.java_info = {}  # <path, UserCompilationUnit>
         self.class_info = {}  # <fqn, UserClassDeclaration>
         self.tlobj_info = {}  # <fqn, UserClassDeclaration>
         self.cid_info = {}
         self.structure_info = {} # <fqn, dict>
         self.LAYER = None  # pylint: disable=C0103
-        self.logger.debug("Parsing %s", osp.basename(path))
-        tree = UserCompilationUnit(path)
+        self.logger.debug("Parsing %s", osp.basename(root_path))
+        tree = UserCompilationUnit(root_path)
         package = tree.package.name  # 获取包名
-        self.java_info[path] = tree
+        self.java_info[root_path] = tree
         # 获取包名下的其他文件
         regex = re.compile(f'^{package}\.(.+)$', re.M)
         for item in tree.imports:
             java_path = item.path
-            if not (m := regex.fullmatch(java_path)):
-                continue
-            relpath = m.group(1).replace('.', os.sep)
-            item_path = osp.join(value, f'{relpath}.java')
-            if not osp.isfile(item_path):
-                self.logger.warning("Not found %s", item_path)
-                continue
-            self.logger.debug("Parsing %s", osp.basename(item_path))
-            tree = UserCompilationUnit(item_path)
-            self.java_info[item_path] = tree
+            if (regex.fullmatch(java_path) or
+                java_path.startswith('org.telegram.ui')):
+                relpath = java_path.replace('.', os.sep)
+                item_path = osp.join(value, f'{relpath}.java')
+                if not osp.isfile(item_path):
+                    self.logger.warning("Not found %s", item_path)
+                    continue
+                self.logger.debug("Parsing %s", osp.basename(item_path))
+                tree = UserCompilationUnit(item_path)
+                self.java_info[item_path] = tree
 
         # 获取包名下的所有大类
         for k, v in self.java_info.items():
@@ -1274,24 +1268,25 @@ class JavaParser(BaseParser):
 
         for k, v in self.class_info.items():
             classes = v.class_list
+            if not (class_count := len(classes)):
+                continue
             for item in classes:
                 obj = UserClassDeclaration(item, v)
                 inner_class_info[obj.fqn] = obj
-            self.logger.debug("Parsing %s from %s", len(classes), k)
-        
+            self.logger.debug("Parsing %s from %s", class_count, k)
+
         self.class_info.update(inner_class_info)
 
-        for k, v in inner_class_info.items():
+        for k, v in self.class_info.items():
             parents = self.get_extends_list(k)
             if not parents:
-                self.logger.error('%s extends is None', k)
+                # self.logger.error('%s extends is None', k)
                 continue
-            else:
-                if 'org.telegram.tgnet.TLObject' not in parents:
-                    self.logger.error('%s is not subclass of TLObject: %s',
-                                      k,
-                                      parents)
-                    continue
+            if parents[-1] != self.TLOBJ:
+                self.logger.error('%s is not subclass of TLObject: %s',
+                                    k,
+                                    parents)
+                continue
             self.tlobj_info[k] = v
 
         for k, v in self.tlobj_info.items():
@@ -1388,41 +1383,34 @@ class JavaParser(BaseParser):
                     raise e
         if not ret:
             if obj.info.get('cid') and obj.info.get('sname'):
-                if obj.info.get('todo'):
-                    ret = [TODO_STR.format_map(obj.info)]
-                else:
-                    ret = [FAIL_STR.format_map(obj.info)]
+                ret = [get_todo_struct_content(obj.info)]
+            else:
+                self.logger.error('Generate TODO class %s error', fqn)
         return ret
+    
+    def get_parse_result(self):
+        result = {}
+        for key in self.tlobj_info:
+            # self.logger.info(f'Process %s', k)
+            ret = self.get_class_struct(key)
+            if not ret:
+                self.logger.info('content is null: %s', key)
+                continue
+            for item in ret:
+                item = item.rstrip()
+                func_name = re.search(r'def (\w+)', item).group(1)
+                if func_name not in result:
+                    result[func_name] = item
+                elif not result[func_name] == item:
+                    self.logger.warning('method has exist: %s\n'
+                                        '---origin: \n%s\n'
+                                        '+++new: \n%s\n, ',
+                                         func_name,
+                                         result[func_name],
+                                         item)
+        return result
 
-    def parse_tlrpc(self):
-        result = []
-        parse_result = {}
-        for k in self.tlobj_info:
-            content = self.get_class_struct(k)
-            if content is None:
-                print(f'{k} content is null.')
-                continue  # pylint: disable=E275
-            func_name = re.search(r'def (\w+)', content).group(1)
-            if func_name not in parse_result:
-                parse_result[func_name] = content
-            else:
-                print(f'{func_name} has exist.')
-                print(content, parse_result[func_name])
-        with open(r'datatype/telegram.py', 'r', encoding='utf-8') as f:
-            c = f.read()
-        for i in range(3):
-            c = c.replace('\r\n', '\n')
-        c = c.replace('\n', '\r\n')
-        func_names = re.findall(r'def (\w+)', c)
-        for item in func_names:
-            if item in parse_result:
-                result.append(parse_result[item])
-            else:
-                print(f'{item} not in parse result')
-        result_text = '\r\n\r\n'.join(result)
-        save_code('1.py', result_text, pep8=True)
-
-    def generate_tlrpc(self, target):
+    def generate(self, target):
         '''
         TL_inputStorePaymentGiftPremium case 0x44618a7d 0x616f7fe8
 
@@ -1431,37 +1419,26 @@ class JavaParser(BaseParser):
         None.
 
         '''
-        parse_result = {}
-        for k in self.tlobj_info:
-            content = self.get_class_struct(k)
-            if content is None:
-                print(f'{k} content is null.')
-                continue  # pylint: disable=E275
-            func_name = re.search(r'def (\w+)', content).group(1)
-            if func_name not in parse_result:
-                parse_result[func_name] = content
-            else:
-                print(f'{func_name} has exist.')
-                print(content, parse_result[func_name])
-        structures_func_names = [x for x in parse_result if 'structures' in x]
-        structures_func_names = list(sorted(structures_func_names))
+        result = self.get_parse_result()
+        structures_names = sorted([x for x in result if x.endswith('_structures')])
         sorted_names = []
         sorted_contents = []
-        for item in structures_func_names:
+        regex = re.compile(r'self\.(struct_0x\w{8})')
+        for item in structures_names:
             item_content_list = []
-            item_struct = parse_result[item]
-            subitems = re.findall(r'self\.(struct_0x\w{8})', item_struct)
-            for subitem in subitems:
-                sorted_names.append(subitem)
-                if subitem in parse_result:
-                    item_content_list.append(parse_result[subitem])
+            item_content = result[item]
+            for subitem in regex.finditer(item_content):
+                name = subitem.group(1)
+                sorted_names.append(name)
+                if name in result:
+                    item_content_list.append(result[name])
                 else:
-                    text = f'    def {subitem}(self):\n        #TODO\n'
+                    text = f'    def {name}(self):\n        #TODO\n        pass'
                     item_content_list.append(text)
-            item_content_list.append(item_struct)
+            item_content_list.append(item_content)
             sorted_names.append(item)
             sorted_contents.append(item_content_list)
-            print(item, len(item_content_list))
+            self.logger.info('Group %s count %d', item, len(item_content_list))
         sorted_contents_len = sum(len(x) for x in sorted_contents)
         assert (len(sorted_names) == sorted_contents_len)
         sorted_all_contents = []
@@ -1472,38 +1449,24 @@ class JavaParser(BaseParser):
             sorted_all_contents.append(split_line)
         with open(HEADER, 'r', encoding='utf-8') as f:
             header_text = f.read()
+        if self.LAYER:
+            header_text = re.sub(r'LAYER = \d+',
+                                f'LAYER = {self.LAYER}',
+                                header_text, count=1)
         sorted_text = '\r\n\r\n'.join(sorted_all_contents)
         sorted_name_info = dict.fromkeys(sorted_names)
-        left_names = [x for x in parse_result if x not in sorted_name_info]
-        # assert (len(left_names) == (len(parse_result) - len(sorted_names)))
-        left_text = '\r\n\r\n'.join(parse_result[x] for x in left_names)
+        left_names = [x for x in result if x not in sorted_name_info]
+        # assert (len(left_names) == (len(result) - len(sorted_names)))
+        left_text = '\r\n\r\n'.join(result[x] for x in left_names)
         result_text = ''
         result_text += header_text
         result_text += sorted_text
+        result_text += '\r\n'
         result_text += left_text
-        save_code(target, result_text, pep8=True,
-                  options={'max_line_length': 119})
+        save_code(target, result_text)
 
-    def merge_tlrpc(self, path, target, replace=False):
-        parse_result = {}
-        for key in self.tlobj_info:
-            # self.logger.info(f'Process %s', k)
-            result = self.get_class_struct(key)
-            if not result:
-                self.logger.info('content is null: %s', key)
-                continue
-            for item in result:
-                item = item.rstrip()
-                func_name = re.search(r'def (\w+)', item).group(1)
-                if func_name not in parse_result:
-                    parse_result[func_name] = item
-                elif not parse_result[func_name] == item:
-                    self.logger.warning('method has exist: %s\n'
-                                        '---origin: \n%s\n'
-                                        '+++new: \n%s\n, ',
-                                         func_name,
-                                         parse_result[func_name],
-                                         item)
+    def merge(self, path, target, replace=False):
+        parse_result = self.get_parse_result()
         with open(path, 'rb') as f:
             content = f.read()
         content = re.sub(b'\r*\n', b'\r\n', content).decode('utf-8')
@@ -1586,26 +1549,7 @@ class JavaParser(BaseParser):
         for key in append_items:
             result_list.append(parse_result[key])
         content_text = '\r\n\r\n'.join(result_list)
-        save_code(target, content_text, pep8=False)
-
-    @classmethod
-    def collect_dup(cls, path, left, right):
-        with open(path, encoding='utf-8') as f:
-            c = f.read()
-        func_map = {}
-        a_list = []
-        b_list = []
-        for item in FUNCTION_PATTERN.finditer(c):
-            func_name = item.group(1)
-            if func_name not in func_map:
-                func_map[func_name] = item.group(0)
-            else:
-                a_list.append(func_map[func_name])
-                b_list.append(item.group(0))
-        with open(left, 'w+', encoding='utf-8') as f:
-            f.write(''.join(a_list))
-        with open(right, 'w+', encoding='utf-8') as f:
-            f.write(''.join(b_list))
+        save_code(target, content_text)
 
     @classmethod
     def remove_duplicate(cls, path, target, all_same=True):
@@ -1616,7 +1560,7 @@ class JavaParser(BaseParser):
         start = 0
         result = []
         result_index = 0
-        for item in FUNCTION_PATTERN.finditer(c):
+        for item in FUNC_PATTERN.finditer(c):
             result.append(c[start:item.start()])
             result_index += 1
             func_name = item.group(1)
@@ -1629,7 +1573,6 @@ class JavaParser(BaseParser):
             else:
                 if all_same:
                     if not func_map[func_name] == func_content:
-                        # result.append(func_content)
                         print(f'Replace {func_name}')
                         result[func_index_map[func_name]] = func_content
             start = item.end()
@@ -1645,7 +1588,7 @@ class JavaParser(BaseParser):
         start = 0
         result = []
         result_index = 0
-        for item in FUNCTION_PATTERN.finditer(c):
+        for item in FUNC_PATTERN.finditer(c):
             result.append(c[start:item.start()])
             result_index += 1
             func_name = item.group(1)
@@ -1676,19 +1619,19 @@ class JavaParser(BaseParser):
         def add_content(obj, content):
             if not re.fullmatch('# ?[#\-]+', content.strip()):
                 obj.append(content)
-        for item in FUNCTION_PATTERN.finditer(c):
+        for item in FUNC_PATTERN.finditer(c):
             add_content(result, c[start:item.start()])
             func_name = item.group(1)
             func_content = item.group(0)
             if (func_name.endswith('_structures') or
-                re.fullmatch('struct_0x\w{8}', func_name)):
+                func_name.startswith('struct_')):
                 func_map[func_name] = func_content
             else:
                 result.append(func_content)
             start = item.end()
         else:
             add_content(result, c[start:])
-            
+
         result.append('\n' + '#' * 79 + '\n')
         
         structures_func_names = [x for x in func_map if x.endswith('_structures')]
@@ -1723,73 +1666,14 @@ class JavaParser(BaseParser):
             f.write(''.join(result))
 
     @classmethod
-    def format_pycode(cls, path, limit=120):
-        with open(path, encoding='utf-8') as f:
-            lines = f.readlines()
-        new_lines = []
-        for line in lines:
-            if len(line) > limit:
-                m = re.search(r'If\([^,]+,', line)
-                if m:
-                    end = m.end()
-                    line1 = f'{line[:end]}\n'
-                    line2 = f'{" " * (m.start() + 3)}{line[end:].lstrip()}'
-                    # print(line)
-                    # print(line1)
-                    # print(line2)
-                    # break
-                    new_lines.append(line1)
-                    new_lines.append(line2)
-                else:
-                    new_lines.append(line)
-            else:
-                new_lines.append(line)
-        content = ''.join(new_lines)
-        import autopep8
-        content = autopep8.fix_code(content, options={'max_line_length': 119})
-        with open(path, 'w+', encoding='utf-8', newline='\n') as f:
-            f.write(content)
-
-    @classmethod
-    def format_pycode2(cls, path, target, limit=120):
-        with open(path, encoding='utf-8') as f:
-            lines = f.readlines()
-        new_lines = []
-        flag = False
-        for line in lines:
-            line_strip = line.rstrip()
-            if line_strip.endswith(')') or line_strip.endswith('),'):
-                if flag:
-                    new_combine_line = f'{
-                        new_lines[-1].rstrip()} {line.lstrip()}'
-                    if len(new_combine_line) <= limit and new_combine_line.count('/') < 2:
-                        new_lines[-1] = new_combine_line
-                        # print(new_combine_line)
-                        continue
-                flag = False
-            elif line_strip.endswith(','):
-                if 'FlagsEnum' not in line_strip and line_strip.count('(') > line_strip.count(')') and not line.lstrip().startswith('#'):
-                    flag = True
-                else:
-                    flag = False
-            else:
-                flag = False
-            new_lines.append(line)
-        content = ''.join(new_lines)
-        import autopep8
-        content = autopep8.fix_code(content, options={'max_line_length': 119})
-        with open(target, 'w+', encoding='utf-8', newline='\n') as f:
-            f.write(content)
-
-    @classmethod
-    def sort_func(cls, path, target):
+    def sort(cls, path, target):
         parse_result = {}
         with open(path, encoding='utf-8') as f:
             c = f.read()
         parse_result = {}
         left = []
         start = 0
-        for item in FUNCTION_PATTERN.finditer(c):
+        for item in FUNC_PATTERN.finditer(c):
             left.append(c[start:item.start()])
             start = item.start()
             func_name = item.group(1)
@@ -1842,54 +1726,21 @@ class JavaParser(BaseParser):
         result_text += header_text
         result_text += sorted_text
         result_text += left_text
-        save_code(target, result_text, pep8=True,
-                  options={'max_line_length': 512})
-
-    @classmethod
-    def format_cid(cls, value):
-        if isinstance(value, str):
-            return f'0x{int(value, 16):08x}'
-        else:
-            return f'0x{value:08x}'
-
-    @classmethod
-    def remove_dup_func(cls, path, target, javafile):
-        with open(javafile, encoding='utf-8') as f:
-            c = f.read()
-        cid_list = re.findall(r'constructor *= *(0x[\da-f]+);', c, re.I)
-        cid_func = [f'struct_{cls.format_cid(x)}' for x in cid_list]
-        cid_set = set(cid_func)
-        with open(path, encoding='utf-8') as f:
-            c = f.read()
-        func_map = {}
-        start = 0
-        with open(target, 'w+', encoding='utf-8') as f:
-            for item in FUNCTION_PATTERN.finditer(c):
-                f.write(c[start:item.start()])
-                start = item.start()
-                func_name = item.group(1)
-                if func_name.startswith('struct_'):
-                    if func_name in cid_set:
-                        func_map[func_name] = item.group(0)
-                        f.write(item.group(0))
-                        start = item.end()
-                    else:
-                        start = item.end()
-                else:
-                    f.write(item.group(0))
-                    start = item.end()
-            else:
-                f.write(c[start:])
+        save_code(target, result_text)
 
 def test():
-    git_path = r'E:\Project\Godsix\teleparser\utils\Telegram'
-    path = osp.join(git_path, r"TMessagesProj\src\main\java\org\telegram\tgnet")
-    parser = JavaParser(path, level=logging.INFO, strict=True)
+    path = r'E:\Project\Godsix\teleparser\repo\Telegram\TMessagesProj\src\main\java'
+    origin = r'E:\Project\Godsix\teleparser\datatype\telegram.py'
+    target = r'E:\Project\Godsix\teleparser\new.py'
     debug = False
     # debug = True
+    level = logging.DEBUG if debug else logging.INFO
+    level = logging.DEBUG
+    parser = JavaParser(path, level=level, strict=True)
+
     if not debug:
-        parser.merge_tlrpc(r'E:\Project\Godsix\teleparser\datatype\telegram.py',
-                           r'E:\Project\Godsix\teleparser\new.py', True)
+        parser.merge(origin, target, True)
+        # parser.generate(target)
         if GDATA:
             print('GDATA:', GDATA)
     else:
@@ -1900,23 +1751,17 @@ def test():
             print(content[0])
 
 def test2():
-    JavaParser.remove_duplicate(r'E:\Project\Godsix\teleparser\datatype\telegram.py',
-                            r'E:\Project\Godsix\teleparser\datatype\telegram1.py')
-    return
-
-
-def test3():
-    # JavaParser.sort_file(r'E:\Project\Godsix\teleparser\datatype\telegram.py',
-    #                      r'E:\Project\Godsix\teleparser\datatype\telegram1.py')
-    JavaParser.remove_sname(r'E:\Project\Godsix\teleparser\datatype\telegram.py',
-                            r'E:\Project\Godsix\teleparser\datatype\telegram1.py')
+    origin = r'E:\Project\Godsix\teleparser\datatype\telegram.py'
+    target = r'E:\Project\Godsix\teleparser\datatype\telegram1.py'
+    JavaParser.remove_duplicate(origin, target)
+    # JavaParser.sort_file(origin, target)
+    # JavaParser.remove_sname(origin, target)
     return
 
 
 def main():
     test()
     # test2()
-    # test3()
 
 
 # ------------------------------------------------------------------------------

@@ -2,18 +2,17 @@
 """
 Created on Fri Dec  9 09:12:01 2022
 
-@author: 皓
+@author: C. David
 """
-# pylint: disable=protected-access,too-many-lines,too-many-public-methods
+# pylint: disable=protected-access,too-many-lines,too-many-public-methods,line-too-long
 from functools import wraps, lru_cache
 from construct import (Struct, Computed, Int32ul, Int64ul, Double, Hex,
-                       FlagsEnum, GreedyBytes, Array, IfThenElse, If, Peek,
+                       FlagsEnum, Array, If, Peek,
                        Const, LazyBound, Switch, this,
                        setGlobalPrintFullStrings, setGlobalPrintPrivateEntries)
 import logger
 from .common import TString, TBytes, TBool, TTimestamp
 # -----------------------------------------------------------------------------
-
 
 INFO = {}
 
@@ -53,39 +52,72 @@ structures = lru_cache()
 
 # -----------------------------------------------------------------------------
 
+def raise_exception(text, *args):
+    string = text % args
+    raise ValueError(string)
 
-class TLStruct:  # pylint: disable=C0103
-    LAYER = 176
 
-    def __init__(self):
+class TLStruct:
+    LAYER = 198
+
+    def __init__(self, raise_error=True):
         setGlobalPrintFullStrings(True)
         setGlobalPrintPrivateEntries(False)
+        if raise_error:
+            self.exception = raise_exception
+        else:
+            self.exception = logger.exception
 
     def parse_blob(self, data):
-        pblob = None
-        signature = int.from_bytes(data[:4], 'little')
-        struct_name = f'struct_0x{signature:08x}'
-        if hasattr(self, struct_name):
-            blob_parser = getattr(self, struct_name)
-            name = INFO.get(signature)
-            if blob_parser:
-                pblob = blob_parser().parse(data)
-                data_len = len(data)
-                object_len = pblob._io.tell()
-                if data_len != object_len:
-                    logger.error('Not all data parsed for object: %s [0x%x], '
-                                 'input: %d, parsed: %d, missed: %s',
-                                 name, signature, data_len, object_len,
-                                 data[object_len:])
-                    # raise ValueError('Not all data parsed for object')
+        result = self.parse(data)
+        if not result:
+            return None
+        elif len(result) == 1:
+            return result[0]
         else:
-            try:
-                pblob_parser = self.struct_list()
-                pblob = pblob_parser.parse(data)
-            except Exception:
-                print(f'unknown signature: 0x{signature:08x}')
-                # raise ValueError('unknown signature')
-        return pblob
+            return result
+
+    def get_parser(self, data):
+        signature = int.from_bytes(data[:4], 'little')
+        return getattr(self, f'struct_0x{signature:08x}', None)
+
+    def parse(self, data):
+        result = []
+        parser = self.get_parser(data)
+        if parser is None:
+            count = int.from_bytes(data[:4], 'little')
+            unparsed = data[4:]
+            parsed_len = 4
+            unknown = count
+        else:
+            count = 256
+            unparsed = data
+            parsed_len = 0
+            unknown = None
+        data_len = len(data)
+        for _ in range(count):
+            parser = self.get_parser(unparsed)
+            if parser:
+                ret = parser().parse(unparsed)
+                result.append(ret)
+                parsed_len += ret._io.tell()
+                if data_len == parsed_len:
+                    break
+                unparsed = data[parsed_len:]
+            else:
+                signature = int.from_bytes(unparsed[:4], 'little')
+                if signature in INFO:
+                    name = INFO.get(signature)
+                    self.exception('Not all data parsed for object: %s [0x%08x], '
+                                   'input: %d, parsed: %d, missed: %s',
+                                   name, signature, data_len, parsed_len,
+                                   data[parsed_len:])
+                else:
+
+                    self.exception('unknown signature: 0x%08x,'
+                                   'data: %s',
+                                   unknown or signature, data)
+        return result
 
     # ---------------------------- Common start -------------------------------
 
@@ -97,20 +129,5 @@ class TLStruct:  # pylint: disable=C0103
             'count' / Int32ul,
             'content' / Array(this.count, datatype))
 
-    @structures
-    def struct_list(self):
-        # pylint: disable=C0301
-        tag_map = {
-            0xc077ec01: LazyBound(self.struct_0xc077ec01),
-            0x40d13c0e: LazyBound(self.struct_0x40d13c0e),
-            0xfb197a65: LazyBound(self.struct_0xfb197a65),
-            0x2b085862: LazyBound(self.struct_0x2b085862),
-        }
-        return Struct(
-            'sname' / Computed('list'),
-            'count' / Int32ul,
-            'content' / Array(this.count, Struct(
-                                                '_signature' / Peek(Int32ul),
-                                                'item' / Switch(this._signature, tag_map))))
-
     # ---------------------------- Common end ---------------------------------
+

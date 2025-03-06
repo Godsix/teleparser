@@ -2,12 +2,13 @@
 """
 Created on Mon Dec 12 08:51:24 2022
 
-@author: 皓
+@author: C. David
 """
 import re
 import os.path as osp
 from sqlalchemy import func
 from database import TelegramDB
+from datatype import get_obj_value
 # import datatype.common
 import binascii
 import mimetypes
@@ -36,29 +37,7 @@ from glob import glob
 PATH = r'cache4.db'
 
 
-def search_attribute(obj, keys):
-    key, *lefts = keys.split('.', maxsplit=1)
-    if isinstance(obj, dict):
-        if hasattr(obj, key):
-            node = getattr(obj, key)
-        else:
-            return None
-        if lefts:
-            return search_attribute(node, lefts[0])
-        else:
-            return node
-    elif isinstance(obj, list):
-        for item in obj:
-            if hasattr(item, key):
-                node = getattr(item, key)
-                if lefts:
-                    ret = search_attribute(node, lefts[0])
-                    if ret is not None:
-                        return ret
-                else:
-                    return node
-        else:
-            return None
+
 
 
 def get_extension(mime, filename):
@@ -87,7 +66,7 @@ def test1():
             dc_id = document.dc_id
             id_ = document.id
             attributes = document.attributes
-            filename = search_attribute(attributes.content,
+            filename = get_obj_value(attributes.content,
                                         'attributes.file_name.string')
             ext = get_extension(mime_type, filename)
             fname = f'{dc_id}_{id_}*'

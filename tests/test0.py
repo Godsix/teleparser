@@ -2,7 +2,7 @@
 """
 Created on Thu Dec  1 15:49:16 2022
 
-@author: 皓
+@author: C. David
 """
 
 # from generater import SQLiteDataBase, save_code
@@ -30,48 +30,13 @@ from database.models import (AnimatedEmoji, AttachMenuBots, BotInfoV2,
                              UnreadPushMessages, UserContactsV7, UserPhonesV7,
                              UserPhotos, UserSettings, Users, UsersData,
                              Wallpapers2, WebRecentV3, WebpagePendingV2)
-
+from tools.utils import print_run_time
 PATH = r'../cache4.db'
 
 
 # x=binascii.unhexlify(hex(x)[2:])
 
 # EmojiKeywordsV2
-
-def print_run_time(fmt='{name} spend time: {time:.3f} s.', logger=print):
-    from functools import wraps
-    import time
-    if isinstance(fmt, str):
-        def decorator(func):
-            name = getattr(func, '__name__', repr(func))
-            param = {'name': name}
-
-            @wraps(func)
-            def wrapper(*args, **kwargs):
-                start = time.time()
-                ret = func(*args, **kwargs)
-                end = time.time()
-                _ = param.setdefault('time', end - start)
-                logger(fmt.format_map(param))
-                return ret
-            return wrapper
-        return decorator
-    elif callable(fmt):
-        default_fmt = '{name} spend time: {time:.3f} s.'
-        name = getattr(fmt, '__name__', repr(fmt))
-        param = {'name': name}
-
-        @wraps(fmt)
-        def wrapper(*args, **kwargs):
-            start = time.time()
-            ret = fmt(*args, **kwargs)
-            end = time.time()
-            _ = param.setdefault('time', end - start)
-            logger(default_fmt.format_map(param))
-            return ret
-        return wrapper
-    raise TypeError(
-        'Expected first argument to be an string, or a callable.')
 
 @print_run_time
 def test1():

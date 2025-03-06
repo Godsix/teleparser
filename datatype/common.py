@@ -2,7 +2,7 @@
 """
 Created on Tue Dec  6 00:45:38 2022
 
-@author: 皓
+@author: C. David
 """
 from datetime import datetime, UTC
 from construct import (Struct, Computed, Int32ul, Hex, Byte, Bytes,
@@ -43,7 +43,7 @@ def parse_varint(ctx):
 
 
 TString = Struct(
-    '_sname' / Computed('string'),
+    'sname' / Computed('string'),
     '_check' / Peek(Byte),
     '_pl' / IfThenElse(this._check >= 254, Int32ul, Byte),  # pylint: disable=W0212
     'len' / Computed(parse_varint),
@@ -55,7 +55,7 @@ TString = Struct(
 
 
 TBytes = Struct(
-    '_sname' / Computed('bytes'),
+    'sname' / Computed('bytes'),
     '_check' / Peek(Byte),
     '_pl' / IfThenElse(this._check >= 254, Int32ul, Byte),  # pylint: disable=W0212
     'len' / Computed(parse_varint),
@@ -72,6 +72,6 @@ TBool = Struct(
 # This is not struct define by Telegram, but it's useful to get human readable
 # timestamps.
 TTimestamp = Struct(
-    '_sname' / Computed('timestamp'),
+    'sname' / Computed('timestamp'),
     'epoch' / Int32ul,
     'date' / Computed(parse_timestamp))

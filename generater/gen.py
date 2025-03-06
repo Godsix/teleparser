@@ -2,47 +2,21 @@
 """
 Created on Wed Sep  7 08:42:28 2022
 
-@author: 皓
+@author: C. David
 """
-import os.path as osp
-from sqlalchemy import create_engine, inspect
+from database import BaseDB
+from tools.utils import name_convert_to_pascal
 try:
-    from sqlalchemy.orm import declarative_base, DeclarativeMeta
+    from .utils import is_builtin_module, get_model_content
 except ImportError:
-    # SQLAlchemy <= 1.3
-    from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
-
-from sqlalchemy.orm import sessionmaker, scoped_session
-try:
-    from .utils import is_builtin_module, name_convert_to_pascal
-    from .tools import get_model_content
-except ImportError:
-    from generater.utils import is_builtin_module, name_convert_to_pascal
-    from generater.tools import get_model_content
+    from generater.utils import is_builtin_module, get_model_content
 
 
-
-
-Model = declarative_base(name='Model', metaclass=DeclarativeMeta)
-
-
-class SQLiteDataBase:
+class SQLiteDataBase(BaseDB):
     def __init__(self, path):
-        self.path = path
+        super().__init__(path)
         self.data = {}
-
-    @property
-    def path(self):
-        return self._path
-
-    @path.setter
-    def path(self, value):
-        assert osp.isfile(value), f'No such file: {value}'
-        realpath = osp.realpath(value)
-        self.db_uri = f'sqlite:///{realpath}'
-        self.engine = create_engine(self.db_uri)
-        self.session = scoped_session(sessionmaker(bind=self.engine))
-        self.inspect = inspect(self.engine)
+        self.import_info = self.data.setdefault('import', {})
 
     def import_object(self, module: str, *objects):
         if not module:
@@ -87,3 +61,20 @@ class SQLiteDataBase:
                 self.import_object('sqlalchemy', str(subitem.get('type')))
             tables.append(item)
         return get_model_content(self.data)
+
+
+def test(path):
+    import os.path as osp
+    helper = SQLiteDataBase(osp.join(path, 'cache4.db'))
+    with open('models-1.py', mode='w+', encoding='utf-8') as f:
+        f.write(helper.generate(parent=['BaseModel']))
+
+
+def main():
+    path = r'E:\Project\Godsix\teleparser\version_2'
+    test(path)
+
+
+# ------------------------------------------------------------------------------
+if __name__ == '__main__':
+    main()
