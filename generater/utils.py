@@ -30,6 +30,7 @@ except ModuleNotFoundError:
 
 
 def load_data(path):
+    '''Load a file to dict by its extension.'''
     _, ext = osp.splitext(path)
     if ext in {'.yaml', '.yml'}:
         if yaml is None:
@@ -44,6 +45,7 @@ def load_data(path):
 
 
 def dump_data(data, path):
+    '''Save a dict to file by its extension.'''
     _, ext = osp.splitext(path)
     if ext in {'.yaml', '.yml'}:
         if yaml is None:
@@ -59,6 +61,7 @@ def dump_data(data, path):
 
 def save_code(path, content, pep8=False, options=None, encoding=None,
               apply_config=False, **kwargs):
+    '''Save the python source code into a file.'''
     if pep8:
         content = autopep8.fix_code(content,
                                     options,
@@ -124,6 +127,7 @@ def generate_model_code(path, data, **kwargs):
 
 
 def get_lineno(method_or_func):
+    '''Get line number of function/method'''
     code = None
     # get decorator wrapped content
     if hasattr(method_or_func, '__wrapped__'):

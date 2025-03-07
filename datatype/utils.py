@@ -8,6 +8,13 @@ import json
 from construct import Container, ListContainer
 
 
+MIME_TYPE = {
+    "video/mp4": ".mp4",
+    "video/x-matroska": ".mkv",
+    "audio/ogg": ".ogg"
+}
+
+
 def get_obj_value(obj, key, default=None):
     '''Get value from an object using dot notation'''
     if not obj:
@@ -15,7 +22,7 @@ def get_obj_value(obj, key, default=None):
     key_list = key.split('.')
     cur = obj
     for item in key_list:
-        if item in cur:
+        if cur and item in cur:
             cur = cur[item]
         else:
             return default
@@ -27,16 +34,15 @@ def pythonic(obj, key=None):
     if isinstance(obj, Container):
         sname = obj.get('sname')
         if sname == 'vector':
-            return [pythonic(x, key) for x in obj['content']]
-        if sname in ('string', 'bytes', 'boolean'):
+            return pythonic(obj['content'], key)
+        if sname in {'string', 'bytes', 'boolean'}:
             return obj['value']
         if sname == 'timestamp':
             return obj['epoch']
+        if key in obj:
+            return pythonic(obj[key])
         else:
-            if key in obj:
-                return pythonic(obj[key])
-            else:
-                return {x: pythonic(obj[x], x) for x in obj if not x.startswith('_')}
+            return {x: pythonic(obj[x], x) for x in obj if not x.startswith('_')}
     elif isinstance(obj, ListContainer):
         return [pythonic(x, key) for x in obj]
     else:

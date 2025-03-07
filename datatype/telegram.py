@@ -63,10 +63,19 @@ class TLStruct:
     def __init__(self, raise_error=True):
         setGlobalPrintFullStrings(True)
         setGlobalPrintPrivateEntries(False)
-        if raise_error:
+        self.raise_error = raise_error
+    
+    @property
+    def raise_error(self):
+        return self._raise_error
+    
+    @raise_error.setter
+    def raise_error(self, value):
+        if value:
             self.exception = raise_exception
         else:
             self.exception = logger.exception
+        self._raise_error = value
 
     def parse_blob(self, data):
         result = self.parse(data)

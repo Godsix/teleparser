@@ -296,29 +296,29 @@ class TDB():
             row.id = uid
             row.dialog = chat.shortest_id
             row.dialog_type = chat.chat_type
-            row.content = '{} {}'.format(
-                chat.blob.sname, TRow.dict_to_string(chat.dict_id))
-
+            sname = get_obj_value(chat.blob, 'sname', '')
+            svalue = TRow.dict_to_string(chat.dict_id)
+            row.content = f'{sname} {svalue}'
             if chat.creation_date:
                 row.timestamp = to_date(chat.creation_date)
                 row.type = TYPE_CHAT_CREATION_DATE
             else:
-                row.type = chat.blob.sname
+                row.type = sname
 
-            flags = getattr(chat.blob, 'flags', None)
-            if flags:
+            if (flags := get_obj_value(chat.blob, 'flags')):
                 df = {}
-                if getattr(flags, 'creator', None):
+                if get_obj_value(flags, 'is_creator'):
                     df['creator'] = 'true'
-                if getattr(flags, 'left', None):
+                if get_obj_value(flags, 'is_left'):
                     df['left'] = 'true'
-                if getattr(flags, 'broadcast', None):
+                if get_obj_value(flags, 'is_broadcast'):
                     df['broadcast'] = 'true'
-                if getattr(flags, 'megagroup', None):
+                if get_obj_value(flags, 'is_megagroup'):
                     df['megagroup'] = 'true'
-                if getattr(flags, 'has_participants_count', None):
-                    df['members'] = chat.blob.participants_count
-                row.content += ' {}'.format(TRow.dict_to_string(df))
+                if get_obj_value(flags, 'has_participants_count'):
+                    df['members'] = get_obj_value(
+                        chat.blob, 'participants_count')
+                row.content += f' {TRow.dict_to_string(df)}'
 
             if chat.photo_info:
                 row.media = chat.photo_info
@@ -380,10 +380,10 @@ class TDB():
             row.to_who = participant_id_short
             row.to_id = echat.participant_id
 
-            echat_sname = getattr(echat.blob, 'sname', '')
-            row.content = '{} {}'.format(
-                echat_sname, TRow.dict_to_string(echat.dict_id))
+            sname = get_obj_value(echat.blob, 'sname', '')
+            svalue = TRow.dict_to_string(echat.dict_id)
 
+            row.content = f'{sname} {svalue}'
             if echat.creation_date:
                 row.timestamp = to_date(echat.creation_date)
                 row.type = TYPE_CHAT_CREATION_DATE
@@ -397,64 +397,58 @@ class TDB():
     def __message_media(self, mid, msg):
         # pylint: disable=R0201
         assert mid
-        media = getattr(msg.blob, 'media', None)
-        if not media:
+        if not (media := get_obj_value(msg.blob, 'media')):
             return None
-        media = media.media
-
-        document = getattr(media, 'document', None)
-        photo = getattr(media, 'photo', None)
-        webpage = getattr(media, 'webpage', None)
         media_field = None
-        if document:
-            assert media.flags.has_document
-            document = document.document
+        if (document := get_obj_value(media, 'document')):
+            result = []
+            result.append('document')
+            info = {'id': get_obj_value(document, 'id'),
+                    'date': to_date(get_obj_value(document, 'date')),
+                    'mime': get_obj_value(document, 'mime_type'),
+                    'size': get_obj_value(document, 'size'),
+                    }
+            result.append(' '.join(f'{k}:{v}' for k, v in info.items()))
 
-            ret_str = 'document id:{} date:{} mime:{} size:{}'.format(
-                document.id, to_date(document.date.epoch),
-                document.mime_type.string, document.size)
+            for entry in get_obj_value(document, 'attributes', []):
+                if get_obj_value(entry, 'sname') == 'document_attribute_filename':
+                    file_name = get_obj_value(entry, 'file_name')
+                    result.append(f'file_name:{file_name}')
+            media_field = ' '.join(result)
+        elif (photo := get_obj_value(media, 'photo')):
+            result = []
+            result.append('photo')
+            info = {'id': get_obj_value(photo, 'id'),
+                    'date': to_date(get_obj_value(photo, 'date')),
+                    }
+            result.append(' '.join(f'{k}:{v}' for k, v in info.items()))
 
-            for entry in document.document_attributes_array:
-                if entry.document.sname == 'document_attribute_filename':
-                    file_name = entry.document.file_name.string
-                    ret_str += ' file_name:{}'.format(file_name)
-            media_field = ret_str
+            if (sizes := get_obj_value(document, 'sizes')):
+                for entry in sizes:
+                    if not (location := get_obj_value(entry, 'location')):
+                        continue
+                    w = get_obj_value(location, 'w')
+                    h = get_obj_value(location, 'h')
+                    size = get_obj_value(location, 'size')
+                    volume_id = get_obj_value(location, 'volume_id')
+                    local_id = get_obj_value(location, 'local_id')
+                    result.append(f'{w}x{h}({size} bytes):{volume_id}_{local_id}.jpg')
+            media_field = ' '.join(result)
+        elif (webpage := get_obj_value(media, 'webpage')):
+            result = []
+            result.append('webpage')
+            info = {'id': get_obj_value(webpage, 'id'),
+                    'url': get_obj_value(webpage, 'url', ''),
+                    }
+            result.append(' '.join(f'{k}:{v}' for k, v in info.items()))
+            if (title := get_obj_value(webpage, 'title')):
+                result.append(f'title:{title}')
 
-        elif photo:
-            assert media.flags.has_photo
-            photo = photo.photo
-
-            ret_str = 'photo id:{} date:{}'.format(
-                photo.id, to_date(photo.date.epoch))
-
-            for entry in photo.photo_size_array:
-                ps = entry.photo_size
-                file_location = getattr(ps, 'file_location', None)
-                if file_location:
-                    fl = file_location.file_location
-                    ret_str += ' {}x{}({} bytes):{}_{}.jpg'.format(
-                        ps.w, ps.h, ps.size, fl.volume_id, fl.local_id)
-            media_field = ret_str
-
-        elif webpage:
-            webpage = webpage.webpage
-            url_string = ''
-            url = getattr(webpage, 'url', None)
-            if url:
-                url_string = url.string
-            ret_str = 'webpage id:{} url:{}'.format(
-                webpage.id, url_string)
-            title = getattr(webpage, 'title', None)
-            if title:
-                ret_str += ' title:{}'.format(webpage.title.string)
-            description = getattr(webpage, 'description', None)
-            if description:
-                ret_str += ' description:{}'.format(webpage.description.string)
-            media_field = ret_str
-
+            if (description := get_obj_value(webpage, 'description')):
+                result.append(f'description:{description}')
+            media_field = ' '.join(result)
         else:
-            media_field = media.sname
-
+            media_field = get_obj_value(media, 'sname')
         return media_field
 
     def __messages_to_timeline(self):
@@ -464,13 +458,13 @@ class TDB():
             row.source = 'messages'
             row.id = mid
 
-            if msg.blob.from_id:
-                row.from_id = msg.blob.from_id
-                if msg.blob.from_id in self._table_users:
-                    user = self._table_users[msg.blob.from_id]
+            if (from_id := get_obj_value(msg.blob, 'from_id.user_id')):
+                row.from_id = from_id
+                if from_id in self._table_users:
+                    user = self._table_users[from_id]
                     row.from_who = user.shortest_id
                 else:
-                    row.from_who = msg.blob.from_id
+                    row.from_who = from_id
 
             dialog, msg_seq = msg.dialog_and_sequence
             row.extra.update({'dialog': dialog, 'sequence': msg_seq})
@@ -500,7 +494,7 @@ class TDB():
                 logger.error('message %s, unmanaged to_id!', msg.mid)
                 row.to_who = to_who
 
-            row.type = msg.blob.sname
+            row.type = get_obj_value(msg.blob, 'sname')
             action, action_dict = msg.action_string_and_dict
             if action:
                 assert not msg.message_content
@@ -509,27 +503,21 @@ class TDB():
             else:
                 row.content = msg.message_content.strip('"\'')
 
-            if msg.blob_reply:
-                replied_msg = msg
-                replied_msg.blob = msg.blob_reply
-                replied_msg.blob_reply = None
-                row.content += ' [IS REPLY TO MSG ID {} {}]\n{}'.format(
-                    replied_msg.blob.id,
-                    to_date(replied_msg.message_date_from_blob),
-                    replied_msg.message_content.strip('"\''))
+            if msg.reply_blob:
+                reply_id = get_obj_value(msg.reply_blob, 'id')
+                reply_date = to_date(get_obj_value(msg.reply_blob, 'date'))
+                reply_content = get_obj_value(msg.reply_blob, 'message', '').strip('"\'')
+                row.content += f' [IS REPLY TO MSG ID {reply_id} {reply_date}]\n{reply_content}'
 
-            fwd_from = getattr(msg.blob, 'fwd_from', None)
-            if fwd_from:
-                fwd_from = fwd_from.fwd_from
-                row.content += ' [FORWARDED OF MSG BY {} {}]'.format(
-                    fwd_from.from_id, to_date(fwd_from.date.epoch))
+            if (fwd_from := get_obj_value(msg.blob, 'fwd_from')):
+                fwd_from_id = get_obj_value(fwd_from, 'from_id')
+                fwd_from_date = to_date(get_obj_value(fwd_from, 'date'))
+                row.content += f' [FORWARDED OF MSG BY {fwd_from_id} {fwd_from_date}]'
 
-            views = getattr(msg.blob, 'views', None)
-            if views:
+            if (views := get_obj_value(msg.blob, 'views')):
                 row.extra.update({'views': views})
 
-            media = self.__message_media(mid, msg)
-            if media:
+            if (media := self.__message_media(mid, msg)):
                 row.media = escape_csv_string(media)
 
             row.timestamp = to_date(msg.message_date_from_blob)
@@ -547,17 +535,16 @@ class TDB():
                 row.type = TYPE_USER_STATUS_UPDATE
                 row.timestamp = to_date(user.status)
 
-            row.content = '{}'.format(TRow.dict_to_string(user.dict_id))
+            row.content = TRow.dict_to_string(user.dict_id)
             ui_dict = {}
-            flags = getattr(user.blob, 'flags', None)
-            if flags:
-                if flags.has_status:
-                    ui_dict['status'] = user.blob.status.status.sname
-                if user.blob.flags.is_bot:
+            if (flags := get_obj_value(user.blob, 'flags')):
+                if get_obj_value(flags, 'has_status'):
+                    ui_dict['status'] = get_obj_value(user.blob, 'status.sname')
+                if get_obj_value(flags, 'is_bot'):
                     ui_dict['bot'] = 'true'
-                if user.blob.flags.is_mutual_contact:
+                if get_obj_value(flags, 'is_mutual_contact'):
                     ui_dict['mutual_contact'] = 'true'
-                elif user.blob.flags.is_contact:
+                elif get_obj_value(flags, 'is_contact'):
                     ui_dict['contact'] = 'true'
             if ui_dict:
                 row.content += f' {TRow.dict_to_string(ui_dict)}'
@@ -599,7 +586,7 @@ class TBase:
                     return ret
                 setattr(self, attr_name, ret)
             return getattr(self, attr_name)
-        cls_name = type(self.object).__name__
+        cls_name = type(self.entry).__name__
         raise AttributeError(f"'{cls_name}' object has no attribute '{name}'")
 
     @property
@@ -635,7 +622,7 @@ class TBase:
 
     @lazy_property
     def vdata(self):
-        return ' '.join(self.vdata_list())
+        return ' '.join(self.vdata_list)
 
     @lazy_property
     def bdata(self):
@@ -965,7 +952,7 @@ class TMessage(TBase):
 
     @property
     def to_id_and_type(self):
-        to_id = get_obj_value(self.blob, 'to_id')
+        to_id = get_obj_value(self.blob, 'peer_id')
         sname = get_obj_value(to_id, 'sname')
         if sname == 'peer_channel':
             return (get_obj_value(to_id, 'channel_id'), TYPE_MSG_TO_CHANNEL)

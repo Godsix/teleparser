@@ -67,6 +67,7 @@ def process(db_path, outdir):
 
 
 def main():
+
     parser = ArgumentParser(description=f'Telegram parser version {VERSION}')
     parser.add_argument('database', help='input file cache4.db')
     parser.add_argument('outdir', help='output directory, must exist')
@@ -76,14 +77,23 @@ def main():
 
     logger.configure_logging(args.verbose)
 
-    if osp.exists(args.database):
-        if osp.isdir(args.outdir):
-            process(args.database, args.outdir)
-        else:
-            logger.error('Output directory [%s] does not exist!',
-                         args.outdir)
+    if osp.isdir(args.database):
+        database = osp.join(args.database, 'cache4.db')
+        if not osp.isfile(database):
+            logger.error('The provided input dir does not contain cache4.db: %s',
+                         args.database)
+            return
     else:
-        logger.error('The provided input file does not exist!')
+        database = args.database
+        if not osp.exists(database):
+            logger.error('The provided input file does not exist: %s',
+                         args.database)
+            return
+    if osp.isdir(args.outdir):
+        process(database, args.outdir)
+    else:
+        logger.error('Output directory [%s] does not exist!',
+                     args.outdir)
 
 # ------------------------------------------------------------------------------
 

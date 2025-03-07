@@ -11,6 +11,7 @@ import logger
 
 
 def decode_string(ctx):
+    '''Decodes UTF-8 encoded strings.'''
     value = ctx._value  # pylint: disable=W0212
     try:
         result = value.decode('utf-8')
@@ -21,6 +22,7 @@ def decode_string(ctx):
 
 
 def parse_boolean(ctx):
+    '''Parse boolean values'''
     value = ctx._value  # pylint: disable=W0212
     if value == 0x997275b5:
         return True
@@ -32,11 +34,13 @@ def parse_boolean(ctx):
 
 
 def parse_timestamp(ctx):
+    '''Convert an integer timestamp into ISO format'''
     epoch = ctx.epoch
     return datetime.fromtimestamp(epoch, UTC).isoformat()
 
 
 def parse_varint(ctx):
+    '''Parse a varint from the context object.'''
     check = ctx._check  # pylint: disable=W0212
     pl = ctx._pl  # pylint: disable=W0212
     return pl >> 8 if check >= 254 else pl

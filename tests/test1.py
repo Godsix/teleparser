@@ -10,38 +10,30 @@ import json
 import pickle
 import shutil
 import os.path as osp
-from database import TelegramDB
-from datatype import pythonic, get_obj_value
-from tqdm import tqdm
-import time
 from glob import iglob
-from sqlalchemy import BLOB
 from tqdm import tqdm
+import logger
+from database import TelegramDB
+from datatype import pythonic, get_obj_value, MIME_TYPE
+from tools import sanitize_filename
+
+
+def logger_print(text, *args):
+    arg = text, *args
+    print(*arg, flush=True)
+
+
+log_print = logger_print
 
 
 def get_tables_count(path):
     db_path = osp.join(path, 'cache4.db')
     db = TelegramDB(db_path)
-    # tables = db.tables()
-    # for item in tables:
-    #     print(item, [x['name'] for x in db.inspect.get_columns(item)])
-
-    model_class = db.get_table_model('chats')
-    query = db.session.query(model_class)
-    chats_list = query.all()
-    print(chats_list)
-
-
-def get_int32ul(data):
-    d = int.from_bytes(data[:4], 'little')
-    print(f'0x{d:08x}')
-
-
-MIME_TYPE = {
-    "video/mp4": ".mp4",
-    "video/x-matroska": ".mkv",
-    "audio/ogg": ".ogg"
-}
+    tables = db.tables()
+    for item in tables:
+        print(item,
+              db.table_count(item),
+              [x['name'] for x in db.inspect.get_columns(item)])
 
 
 def get_document_name(document):
@@ -85,75 +77,94 @@ def load_pickle_obj(path):
         return {}
 
 
-INVALIDC = re.compile(r'[<>:"/\\\|\?\*]')
-RESERVED = {'CON', 'PRN', 'AUX', 'NUL', 'COM1', 'COM2', 'LPT1', 'LPT2'}
-
-
-def sanitize_filename(filename):
-    if filename.upper() in RESERVED:
-        # 检查并替换保留的名字
-        filename = f"{filename}_file"
-    else:
-        # 替换非法字符
-        filename = INVALIDC.sub('_', filename)
-    return filename
-
-
-def check_parser(test_file):
-    test_path = osp.realpath(test_file)
-    db = TelegramDB(test_path)
+def check_parser(path, table_name=None):
+    db_path = osp.join(path, 'cache4.db')
+    db = TelegramDB(db_path)
     tables = db.tables()
-    for table_name in tables:
-        # if not 'user_settings' == table_name:
+    for table in tables:
+        # if table_name and table_name != table:
         #     continue
-        # print(table_name, '-----------------------', flush=True)
-        # continue
-        model = db.get_table_model(table_name)
-        query = db.session.query(model)
-        result = query.count()
-        # if result < 1000:
-        #     continue
-        # print(table_name, len(result))
-        print(f'{table_name}\t{result}', flush=True)
-        continue
-        columns = db.get_blob_columns(table_name)
-        if len(result) == 0:
+        if table_name and table_name > table:
             continue
-        for rowid, item in tqdm(enumerate(result), desc="Processing items", ncols=100):
-            for col in columns:
+        model = db.get_table_model(table)
+        query = db.session.query(model)
+        data_count = query.count()
+        if data_count == 0:
+            continue
+        # log_print(f'{table}\t{data_count}')
+        result = query.all()
+        columns = db.get_blob_columns(table)
+        for rowid, row in tqdm(enumerate(result),
+                               desc=f"Processing {table}",
+                               unit="item"):
+            for column in columns:
                 try:
-                    d = getattr(item, f'{col}_blob')
+                    _ = getattr(row, f'{column}_blob')
                 except Exception as e:
-                    print(table_name, rowid, col, e,
-                          getattr(item, col), flush=True)
+                    data = getattr(row, column)
+                    log_print(table, rowid, column, e, data)
                     raise e
-                c = d
 
 
-# def check_parser(test_file):
-#     test_path = osp.realpath(test_file)
-#     db = TelegramDB(test_path)
+# def check_parser(path, table_name=None):
+#     db_path = osp.join(path, 'cache4.db')
+#     db = TelegramDB(db_path)
 #     tables = db.tables()
-#     for table_name in tables:
-#         print(table_name, '-----------------------', flush=True)
-#         model = db.get_table_model(table_name)
-#         query = db.session.query(model)
-#         item = query.first()
-#         if item is None:
+#     for table in tables:
+#         if table_name and table_name != table:
 #             continue
-#         columns = db.get_blob_columns(table_name)
-#         for col in columns:
-#             if not getattr(item, col):
-#                 continue
-#             try:
-#                 d = getattr(item, f'{col}_blob')
-#             except Exception as e:
-#                 print(table_name, col, e, getattr(item, col), flush=True)
-#                 # raise e
-#             if not d:
-#                 print(table_name, col, getattr(item, col))
-#                 return
-#             # print(table_name, col)
+#         model = db.get_table_model(table)
+#         query = db.session.query(model)
+#         data_count = query.count()
+#         if data_count == 0:
+#             continue
+#         # log_print(f'{table}\t{data_count}')
+#         result = query.all()
+#         data = [y for x in result if (y:=x.pbytes)]
+#         for item in tqdm(data,
+#                          desc=f"Processing {table}",
+#                          unit="item"):
+#             print(item)
+
+def get_data(path, table, n, col):
+    db_path = osp.join(path, 'cache4.db')
+    db = TelegramDB(db_path)
+    model = db.get_table_model(table)
+    query = db.session.query(model)
+    if not (row := query.offset(n-1).limit(1).first()):
+        return
+    data = getattr(row, f'{col}_blob')
+    return data
+
+
+def get_all(path, table):
+    db_path = osp.join(path, 'cache4.db')
+    db = TelegramDB(db_path)
+    model = db.get_table_model(table)
+    query = db.session.query(model)
+    return query.all()
+
+
+def get_user(path, uid):
+    db_path = osp.join(path, 'cache4.db')
+    db = TelegramDB(db_path)
+    model = db.get_table_model('users')
+    query = db.session.query(model).filter(model.uid == uid)
+    ret = query.first()
+    if ret:
+        print(ret.data_blob)
+    return ret
+
+
+def get_channel(path, uid):
+    db_path = osp.join(path, 'cache4.db')
+    db = TelegramDB(db_path)
+    model = db.get_table_model('chats')
+    query = db.session.query(model).filter(model.uid == uid)
+    ret = query.first()
+    if ret:
+        print(ret.name, ret.data_blob)
+    return ret
 
 
 def mod_parser(test_file):
@@ -168,126 +179,6 @@ def mod_parser(test_file):
     item = query.offset(n-1).limit(1).first()
     data = item.data
     print(item, item.data_blob)
-    return
-    get_int32ul(data)
-    parser = TLStruct()
-    # parser_1 = parser.struct_0x9c477dd8()
-    # print(parser_1.subcons)
-    ret = parser.parse_blob(data)
-    print(ret)
-
-
-def get_data(path, table, n, col):
-    path = osp.realpath(path)
-    db = TelegramDB(path)
-    model = db.get_table_model(table)
-    query = db.session.query(model)
-    item = query.offset(n-1).limit(1).first()
-    if not item:
-        return
-    data = getattr(item, f'{col}_blob')
-    return data
-
-
-def get_all(path, table):
-    path = osp.realpath(path)
-    db = TelegramDB(path)
-    model = db.get_table_model(table)
-    query = db.session.query(model)
-    return query.all()
-
-
-def get_user(path, uid):
-    path = osp.realpath(path)
-    db = TelegramDB(path)
-    model = db.get_table_model('users')
-    query = db.session.query(model).filter(model.uid == uid)
-    ret = query.first()
-    if ret:
-        print(ret.data_blob)
-    return ret
-
-
-def get_channel(path, uid):
-    path = osp.realpath(path)
-    db = TelegramDB(path)
-    model = db.get_table_model('chats')
-    query = db.session.query(model).filter(model.uid == uid)
-    ret = query.first()
-    if ret:
-        print(ret.name, ret.data_blob)
-    return ret
-
-
-# def mod_parser(test_file):
-#     from datatype import TLStruct
-#     test_path = osp.realpath(test_file)
-#     db = TelegramDB(test_path)
-#     model = db.get_table_model('chats')
-#     query = db.session.query(model).filter(model.uid == 1341981019)
-#     # result = query.all()
-#     # item = result[0]
-#     # n = 1
-#     # item = query.offset(n-1).limit(1).first()
-#     # data = item.data
-#     item = query.first()
-#     print(item, item.data_blob)
-#     return
-#     get_int32ul(data)
-#     parser = TLStruct()
-#     # parser_1 = parser.struct_0x9c477dd8()
-#     # print(parser_1.subcons)
-#     ret = parser.parse_blob(data)
-#     print(ret)
-
-
-def test():
-    # files = []
-    # data = glob(osp.join(r"K:\Software\files\Telegram\Telegram Video", '*'))
-    # for item in tqdm(data, desc="Processing", unit="item"):
-    #     if osp.getsize(item) == 3027560:
-    #         files.append(item)
-    # print(files)
-    infilename = 'cache4.db'
-    test_file = infilename
-    check_parser(infilename)
-    # mod_parser(infilename)
-    return
-    db_path = osp.realpath(infilename)
-    db = TelegramDB(db_path)
-    media_list = db.get_media()
-
-    model = db.get_table_model('downloading_documents')
-    query = db.session.query(model)
-    result = query.all()
-
-    for i, item in enumerate(result):
-        try:
-            print(item.blob.media.media.document.document)
-        except Exception as e:
-            print(i, item.data)
-            raise e
-
-    return
-
-    info = {}
-    print(len(media_list))
-    for item in media_list:
-        if not item.blob.media:
-            continue
-        try:
-            media = item.blob.media.media
-            # document = media.document.document
-            if media.sname not in info:
-                info[media.sname] = None
-        except Exception:
-            print(dict(item.blob))
-            break
-
-    print(list(info))
-    # path = r'K:\\Software\\files\\Telegram\\Telegram Video\\5_4994589014360064591.mp4'
-    # with open(path, 'rb') as f:
-    #     print(f.read(29))
 
 
 # {'media.document.id': None,
@@ -309,7 +200,7 @@ def get_media_info(obj):
         if get_obj_value(reply_to, 'flags.has_reply_media', False):
             media = get_obj_value(reply_to, 'reply_media')
             media_list.append(media)
-    
+
     for media in media_list:
         if get_obj_value(media, 'flags.has_document', False):
             document = get_obj_value(media, 'document')
@@ -330,14 +221,12 @@ def get_media_info(obj):
                 photos = get_obj_value(webpage, 'cached_page.photos', [])
                 photo_list.extend(photos)
 
-
-
     if get_obj_value(obj, 'flags.has_entities', False):
         entities = get_obj_value(obj, 'entities')
         for entity in entities:
             if (document_id := get_obj_value(entity, 'document_id')):
                 result.append(document_id)
-    
+
     for item in document_list:
         try:
             document_id = item['id']
@@ -376,7 +265,8 @@ def get_media_info(obj):
     if has_document:
         document = get_obj_value(media, 'document')
         document_list.append(document)
-    has_cached_page = get_obj_value(media, 'webpage.flags.has_cached_page', False)
+    has_cached_page = get_obj_value(
+        media, 'webpage.flags.has_cached_page', False)
     if has_cached_page:
         page = get_obj_value(media, 'webpage.cached_page', False)
         document_list.extend(get_obj_value(page, 'documents', []))
@@ -404,6 +294,7 @@ def get_media_info(obj):
 def get_media_info2(obj):
     obj = pythonic(obj)
     return re.findall(r"'file_name': (\d{16,20})", str(obj))
+
 
 def test2():
     path = 'cache4.db'
@@ -446,7 +337,8 @@ def test4():
     dc_info_path = 'dc_info.json'
     ch_info_path = 'ch_info.json'
     print('Get file list')
-    filelist = [x for x in os.listdir(file_path) if re.fullmatch(r'\d_\d+', osp.splitext(x)[0])]
+    filelist = [x for x in os.listdir(file_path) if re.fullmatch(
+        r'\d_\d+', osp.splitext(x)[0])]
     file_info = {}
     for item in filelist:
         fname, ext = osp.splitext(item)
@@ -527,8 +419,6 @@ def test4():
                 print(v)
 
 
-
-
 def test5():
     path = 'cache4.db'
     dc_info_path = 'media_info.json'
@@ -556,13 +446,11 @@ def test5():
     # dump_obj(dc_info_path, dc_info)
 
 
-
-
 def get_telegram_video(path):
     result = {}
     for item in os.listdir(path):
         fname, ext = osp.splitext(item)
-        
+
         if (m := re.fullmatch(r'\-(\d+)_(\d+)', fname)):
             doc_id, dc_id = m.groups()
             if doc_id not in result:
@@ -582,20 +470,21 @@ def get_telegram_video(path):
 # Telegram Audio {dc_id}_{id}
 # Telegram Images -{id}_{id}
 
+
 def test6(path):
     file_path = r'K:\Software\files\Telegram\Telegram Video'
     # file_path = r'K:\Software\files\Telegram\Telegram Documents'
     # file_path = r'K:\Software\files\Telegram\Telegram Images'
     # file_path = r'K:\Software\files\Telegram\Telegram Stories'
     # file_path = r'K:\Software\files\Telegram\Telegram Audio'
-    
+
     db_path = osp.join(path, 'cache4.db')
     media_info_path = osp.join(path, 'media_info.pickle')
     message_info_path = osp.join(path, 'message_info.pickle')
     ch_info_path = osp.join(path, 'channel_info.json')
     print('Get file list')
     file_info = get_telegram_video(file_path)
-    
+
     db = TelegramDB(db_path)
 
     print('Get media info')
@@ -650,9 +539,9 @@ def test6(path):
                 info[uid] = None
 
     finfo = {k: list(v) for k, v in finfo.items()}
-    
+
     dir_info = {}
-    
+
     for k, v in finfo.items():
         if not v:
             continue
@@ -683,10 +572,6 @@ def test6(path):
         shutil.move(src, dst)
 
 
-
-
-
-                
 def test7(path):
     db_path = osp.join(path, 'cache4.db')
     db = TelegramDB(db_path)
@@ -706,8 +591,6 @@ def test7(path):
         if result:
             for item in result:
                 print(item)
-        
-        
 
     print('Get message info')
     message_info = {}
@@ -723,6 +606,7 @@ def test7(path):
         if result:
             for item in result:
                 print(item)
+
 
 def parse_path(obj, path=None, result=None):
     if path is None:
@@ -750,11 +634,92 @@ def parse_path(obj, path=None, result=None):
     return result
 
 
+def parse_path2(obj, path=None, result=None):
+    if path is None:
+        p = ''
+    elif isinstance(obj, dict):
+        p = f'{path}.'
+    elif isinstance(obj, list):
+        p = path
+    else:
+        return
+    if result is None:
+        result = {}
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if isinstance(v, (dict, list)):
+                parse_path2(v, f'{p}{k}', result)
+            elif k == 'file_name':
+                result[f'{p}{k}'] = v
+    elif isinstance(obj, list):
+        for i, item in enumerate(obj):
+            if isinstance(item, (dict, list)):
+                parse_path2(item, f'{p}[{i}]', result)
+    return result
+
+
 def pprint(obj):
     print(json.dumps(obj, ensure_ascii=False, indent=4, default=str))
 
 
 def test8(path):
+
+
+    path_list = [
+        r"E:\Project\Godsix\teleparser\version_1",
+        # r"E:\Project\Godsix\teleparser\version_2"
+    ]
+    media_class = None
+    messages_class = None
+    media_info_list = []
+    message_info_list = []
+    index = 3
+    for path in path_list:
+        db_path = osp.join(path, 'cache4.db')
+        db = TelegramDB(db_path)
+        media_info_path = osp.join(path, f'media_info{index}.pickle')
+        media_info = load_pickle_obj(media_info_path)
+        if not media_info:
+            print('Get media info')
+            media_class = db.get_table_model('media')
+            query = db.session.query(media_class)
+            media_list = query.all()
+            for item in tqdm(media_list, desc="Processing", unit="item"):
+                data = item.data_blob
+                obj = pythonic(data)
+                ret = parse_path2(obj)
+                if ret:
+                    media_info[(item.mid, item.uid, item.type)] = ret
+            dump_pickle_obj(media_info_path, media_info)
+        media_info_list.append(media_info)
+
+        message_info_path = osp.join(path, f'message_info{index}.pickle')
+        message_info = load_pickle_obj(message_info_path)
+        if not message_info:
+            print('Get message info')
+            messages_class = db.get_table_model('messages')
+            query = db.session.query(messages_class)
+            messages_list = query.all()
+
+            for item in tqdm(messages_list, desc="Processing", unit="item"):
+                data = item.data_blob
+                obj = pythonic(data)
+                ret = parse_path2(obj)
+                if ret:
+                    message_info[(item.mid, item.uid)] = ret
+            dump_pickle_obj(message_info_path, message_info)
+        message_info_list.append(message_info)
+        
+        
+    find_key_info = {}
+    
+    for item in media_info_list + message_info_list:
+        for k, v in item.items():
+            print(k, v)
+    
+    return
+
+
     # file_path = r'K:\Software\files\Telegram'
     # file_path = r'K:\Software\files\Telegram\Telegram Video'
     # file_path = r'K:\Software\files\Telegram\Telegram Documents'
@@ -782,51 +747,9 @@ def test8(path):
         id_info = {int(k): v for k, v in id_info.items()}
         dump_pickle_obj(id_info_path, id_info)
 
-    path_list = [
-        r"E:\Project\Godsix\teleparser\version_1",
-        r"E:\Project\Godsix\teleparser\version_2"
-                 ]
-    media_class = None
-    messages_class = None
-    media_info_list = []
-    message_info_list = []
-    for path in path_list:
-        db_path = osp.join(path, 'cache4.db')
-        db = TelegramDB(db_path)
-        media_info_path = osp.join(path, 'media_info2.pickle')
-        media_info = load_pickle_obj(media_info_path)
-        if not media_info:
-            print('Get media info')
-            media_class = db.get_table_model('media')
-            query = db.session.query(media_class)
-            media_list = query.all()
-            for item in tqdm(media_list, desc="Processing", unit="item"):
-                data = item.data_blob
-                obj = pythonic(data)
-                ret = parse_path(obj)
-                media_info[(item.mid, item.uid, item.type)] = ret
-            dump_pickle_obj(media_info_path, media_info)
-        media_info_list.append(media_info)
-
-        message_info_path = osp.join(path, 'message_info2.pickle')
-        message_info = load_pickle_obj(message_info_path)
-        if not message_info:
-            print('Get message info')
-            messages_class = db.get_table_model('messages')
-            query = db.session.query(messages_class)
-            messages_list = query.all()
-        
-            for item in tqdm(messages_list, desc="Processing", unit="item"):
-                data = item.data_blob
-                obj = pythonic(data)
-                ret = parse_path(obj)
-                message_info[(item.mid, item.uid)] = ret
-            dump_pickle_obj(message_info_path, message_info)
-        message_info_list.append(message_info)
-
     find_id_info = {}
     find_key_info = {}
-    
+
     db_path = osp.join(path, 'cache4.db')
     db = TelegramDB(db_path)
     media_class = db.get_table_model('media')
@@ -837,14 +760,15 @@ def test8(path):
     # for item in animated_emojis:
     #     if item.document_id in id_info:
     #         print(id_info[item.document_id])
-    
+
     # return
 
     for item in media_info_list + message_info_list:
         for k, v in item.items():
             for subitem in set(v.values()):
                 if subitem in id_info:
-                    text = [key for key, value in v.items() if value == subitem]
+                    text = [key for key, value in v.items() if value ==
+                            subitem]
                     if any(x.startswith('media.webpage.cached_page.blocks') for x in text):
                         print(text)
             # for subk, subv in v.items():
@@ -867,13 +791,11 @@ def test8(path):
     pprint(find_key_info)
 
 
-
-
-
 def main(path=None):
     path = r"E:\Project\Godsix\teleparser\version_2"
-    # test8(path)
-    get_tables_count(path)
+    test8(path)
+    # check_parser(path, 'params')
+    # get_tables_count(path)
 
 
 if __name__ == '__main__':

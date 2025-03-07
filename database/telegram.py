@@ -5,10 +5,13 @@ Created on Thu Dec  1 15:43:28 2022
 """
 import re
 from functools import lru_cache
-from sqlalchemy import Table, Column, BLOB
+from sqlalchemy import Table, Column, BLOB, inspect
+from datatype import TLStruct
 from tools.utils import name_convert_to_pascal
 from .base import BaseDB
-from .models import TModel, get_parser
+
+
+PARSER = TLStruct()
 
 
 def get_column_param(**kwargs):
@@ -17,16 +20,47 @@ def get_column_param(**kwargs):
     return kwargs
 
 
+def get_parser(name):
+    def wrapper(self):
+        if (data := getattr(self, name, None)) is None:
+            return None
+        return PARSER.parse_blob(data)
+    return wrapper
+
+
+class TModel:  # pylint: disable=R0903
+    '''A base class to represent an Telegram Data object'''
+
+    def __repr__(self) -> str:
+        state = inspect(self)
+        if state.transient:
+            pk = f"(transient {id(self)})"
+        elif state.pending:
+            pk = f"(pending {id(self)})"
+        else:
+            pk = ", ".join(str(x) for x in state.identity)
+        return f"<{type(self).__name__} {pk}>"
+
+
 class TelegramDB(BaseDB):
-    LRU = ('get_blob_columns', 'get_table_model')
+    LRU = ('get_columns', 'get_blob_columns', 'get_table_model')
+    UNPARSE = {'messages_v2': {'custom_params'},
+               'params': {'pbytes'},
+               'stickers_featured': {'unread'}}
+
+    @lru_cache()
+    def get_columns(self, table_name: str):
+        '''Get all columns from a given table'''
+        return self.inspect.get_columns(table_name)
 
     @lru_cache()
     def get_blob_columns(self, table_name: str):
         '''Get all blob columns from a given table'''
-        columns = self.inspect.get_columns(table_name)
+        columns = self.get_columns(table_name)
         result = {x['name']: x for x in columns if isinstance(x['type'], BLOB)}
-        if 'unread' in result:
-            del result['unread']
+        if (unparse := self.UNPARSE.get(table_name)):
+            for key in unparse:
+                del result[key]
         return result
 
     @lru_cache()
@@ -38,14 +72,10 @@ class TelegramDB(BaseDB):
             return None
         class_name = name_convert_to_pascal(table_name)
         bases = tuple([TModel])
-        attrs = {}
-        schemas = []
-        columns = self.inspect.get_columns(table_name)
-        for column in columns:
-            name = column['name']
-            schemas.append(Column(**get_column_param(**column)))
-            if isinstance(column['type'], BLOB) and name != 'unread':
-                attrs[f'{name}_blob'] = property(get_parser(name))
+        blob_columns = self.get_blob_columns(table_name)
+        attrs = {f'{x}_blob': property(get_parser(x)) for x in blob_columns}
+        columns = self.get_columns(table_name)
+        schemas = [Column(**get_column_param(**x)) for x in columns]
         if all(x['primary_key'] == 0 for x in columns):
             schemas[0].primary_key = True
         metaclass = type(class_name, bases, attrs)

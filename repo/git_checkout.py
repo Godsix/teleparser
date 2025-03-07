@@ -15,14 +15,16 @@ from glob import iglob, glob
 URL = 'https://github.com/DrKLO/Telegram.git'
 
 
-def git_checkout(url, path):
+def git_clone(url, path):
     ret = call(['git', 'clone', url], cwd=path)
     assert ret == 0
     return ret
 
 
 def git_pull(path):
-    return call(['git', 'pull'], cwd=path)
+    ret = call(['git', 'pull'], cwd=path)
+    assert ret == 0
+    return ret
 
 
 def git_remote(path):
@@ -62,8 +64,7 @@ def git_checkout_file(path, outdir=None):
     for commit_hash, commit_info in log_info.items():
         s_commit = commit_hash[:8]
         version = commit_info['version']
-        find_files = glob(osp.join(outdir,
-                                   f'{fname}-{version}-*-{s_commit}{ext}'))
+        find_files = glob(osp.join(outdir, f'{fname}-{version}-*-{s_commit}{ext}'))
         if find_files:
             continue  # pylint: disable=E275
         ret = call(['git', 'checkout', commit_hash, basename], cwd=dirname)
@@ -114,15 +115,15 @@ def update_telegram(path=None):
     telegram_path = osp.join(path, 'Telegram')
     if not osp.exists(telegram_path):
         print('Git clone', URL)
-        git_checkout(URL, path)
+        git_clone(URL, path)
     else:
         url = git_remote(telegram_path)
         print('Git fetch', url)
         git_pull(telegram_path)
-    TLRPC_path = osp.join(telegram_path,
+    tlrpc_path = osp.join(telegram_path,
                           'TMessagesProj',
                           r'src\main\java\org\telegram\tgnet\TLRPC.java')
-    git_checkout_file(TLRPC_path, 'files')
+    git_checkout_file(tlrpc_path, 'files')
 
 
 def check_layer_range(path, index=None):
@@ -138,4 +139,4 @@ def main(path=None):
 
 
 if __name__ == '__main__':
-    main()
+    main(r'E:\Project\Godsix')
