@@ -58,7 +58,7 @@ def raise_exception(text, *args):
 
 
 class TLStruct:
-    LAYER = 198
+    LAYER = 200
 
     def __init__(self, raise_error=True):
         setGlobalPrintFullStrings(True)
@@ -2149,42 +2149,6 @@ class TLStruct:
             'available_reactions' / If(this.flags.has_available_reactions, self.chat_reactions_structures('available_reactions')),
             'reactions_limit' / If(this.flags.has_reactions_limit, Int32ul))
 
-    @constructor(0xc9d31138, 'chat_full_layer177')
-    def struct_0xc9d31138(self):
-        return Struct(
-            'sname' / Computed('chat_full_layer177'),
-            'signature' / Hex(Const(0xc9d31138, Int32ul)),
-            'flags' / FlagsEnum(Int32ul,
-                                is_can_set_username=128,
-                                has_scheduled=256,
-                                has_chat_photo=4,
-                                has_exported_invite=8192,
-                                has_bot_info=8,
-                                has_pinned_msg_id=64,
-                                has_folder_id=2048,
-                                has_call=4096,
-                                has_ttl_period=16384,
-                                has_groupcall_default_join_as=32768,
-                                has_theme_emoticon=65536,
-                                has_requests_pending=131072,
-                                has_available_reactions=262144),
-            'id' / Int64ul,
-            'about' / TString,
-            'participants' / self.chat_participants_structures('participants'),
-            'chat_photo' / If(this.flags.has_chat_photo, self.photo_structures('chat_photo')),
-            'notify_settings' / self.peer_notify_settings_structures('notify_settings'),
-            'exported_invite' / If(this.flags.has_exported_invite, self.exported_chat_invite_structures('exported_invite')),
-            'bot_info' / If(this.flags.has_bot_info, self.vector(self.bot_info_structures('bot_info'), 'bot_info')),
-            'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
-            'folder_id' / If(this.flags.has_folder_id, Int32ul),
-            'call' / If(this.flags.has_call, self.struct_0xd8aa840f()),
-            'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
-            'groupcall_default_join_as' / If(this.flags.has_groupcall_default_join_as, self.peer_structures('groupcall_default_join_as')),
-            'theme_emoticon' / If(this.flags.has_theme_emoticon, TString),
-            'requests_pending' / If(this.flags.has_requests_pending, Int32ul),
-            'recent_requesters' / If(this.flags.has_requests_pending, self.vector(Int64ul, 'recent_requesters')),
-            'available_reactions' / If(this.flags.has_available_reactions, self.chat_reactions_structures('available_reactions')))
-
     @constructor(0x52d6806b, 'channel_full')
     def struct_0x52d6806b(self):
         return Struct(
@@ -2235,6 +2199,7 @@ class TLStruct:
                                  is_can_view_stars_revenue=32768,
                                  is_paid_reactions_available=65536,
                                  is_stargifts_available=524288,
+                                 is_paid_messages_available=1048576,
                                  has_reactions_limit=8192,
                                  has_stories=16,
                                  has_wallpaper=128,
@@ -2482,6 +2447,42 @@ class TLStruct:
             'boosts_applied' / If(this.flags2.has_boosts_applied, Int32ul),
             'boosts_unrestrict' / If(this.flags2.has_boosts_unrestrict, Int32ul),
             'emojiset' / If(this.flags2.has_emojiset, self.sticker_set_structures('emojiset')))
+
+    @constructor(0xc9d31138, 'chat_full_layer177')
+    def struct_0xc9d31138(self):
+        return Struct(
+            'sname' / Computed('chat_full_layer177'),
+            'signature' / Hex(Const(0xc9d31138, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_can_set_username=128,
+                                has_scheduled=256,
+                                has_chat_photo=4,
+                                has_exported_invite=8192,
+                                has_bot_info=8,
+                                has_pinned_msg_id=64,
+                                has_folder_id=2048,
+                                has_call=4096,
+                                has_ttl_period=16384,
+                                has_groupcall_default_join_as=32768,
+                                has_theme_emoticon=65536,
+                                has_requests_pending=131072,
+                                has_available_reactions=262144),
+            'id' / Int64ul,
+            'about' / TString,
+            'participants' / self.chat_participants_structures('participants'),
+            'chat_photo' / If(this.flags.has_chat_photo, self.photo_structures('chat_photo')),
+            'notify_settings' / self.peer_notify_settings_structures('notify_settings'),
+            'exported_invite' / If(this.flags.has_exported_invite, self.exported_chat_invite_structures('exported_invite')),
+            'bot_info' / If(this.flags.has_bot_info, self.vector(self.bot_info_structures('bot_info'), 'bot_info')),
+            'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
+            'folder_id' / If(this.flags.has_folder_id, Int32ul),
+            'call' / If(this.flags.has_call, self.struct_0xd8aa840f()),
+            'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
+            'groupcall_default_join_as' / If(this.flags.has_groupcall_default_join_as, self.peer_structures('groupcall_default_join_as')),
+            'theme_emoticon' / If(this.flags.has_theme_emoticon, TString),
+            'requests_pending' / If(this.flags.has_requests_pending, Int32ul),
+            'recent_requesters' / If(this.flags.has_requests_pending, self.vector(Int64ul, 'recent_requesters')),
+            'available_reactions' / If(this.flags.has_available_reactions, self.chat_reactions_structures('available_reactions')))
 
     @constructor(0x44c054a7, 'channel_full_layer177')
     def struct_0x44c054a7(self):
@@ -4401,10 +4402,10 @@ class TLStruct:
     def chat_full_structures(self, name):
         tag_map = {
             0x2633421b: LazyBound(self.struct_0x2633421b),
-            0xc9d31138: LazyBound(self.struct_0xc9d31138),
             0x52d6806b: LazyBound(self.struct_0x52d6806b),
             0x9ff3b858: LazyBound(self.struct_0x9ff3b858),
             0xbbab348d: LazyBound(self.struct_0xbbab348d),
+            0xc9d31138: LazyBound(self.struct_0xc9d31138),
             0x44c054a7: LazyBound(self.struct_0x44c054a7),
             0x680b773c: LazyBound(self.struct_0x680b773c),
             0x723027bd: LazyBound(self.struct_0x723027bd),
@@ -4850,10 +4851,77 @@ class TLStruct:
             'default_banned_rights' / If(this.flags.has_default_banned_rights, self.struct_0x9f120418()),
             'participants_count' / If(this.flags.has_participants_count, Int32ul))
 
-    @constructor(0xe00998b7, 'channel')
-    def struct_0xe00998b7(self):
+    @constructor(0x7482147e, 'channel')
+    def struct_0x7482147e(self):
         return Struct(
             'sname' / Computed('channel'),
+            'signature' / Hex(Const(0x7482147e, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_creator=1,
+                                is_left=4,
+                                is_broadcast=32,
+                                is_verified=128,
+                                is_megagroup=256,
+                                is_restricted=512,
+                                is_signatures=2048,
+                                is_min=4096,
+                                is_scam=524288,
+                                has_link=1048576,
+                                has_geo=2097152,
+                                is_slowmode_enabled=4194304,
+                                is_call_active=8388608,
+                                is_call_not_empty=16777216,
+                                is_fake=33554432,
+                                is_gigagroup=67108864,
+                                is_noforwards=134217728,
+                                is_join_to_send=268435456,
+                                is_join_request=536870912,
+                                is_forum=1073741824,
+                                has_access_hash=8192,
+                                has_username=64,
+                                has_admin_rights=16384,
+                                has_banned_rights=32768,
+                                has_default_banned_rights=262144,
+                                has_participants_count=131072),
+            'flags2' / FlagsEnum(Int32ul,
+                                 is_stories_hidden=2,
+                                 is_stories_hidden_min=4,
+                                 is_stories_unavailable=8,
+                                 is_signature_profiles=4096,
+                                 has_usernames=1,
+                                 has_stories_max_id=16,
+                                 has_color=128,
+                                 has_profile_color=256,
+                                 has_emoji_status=512,
+                                 has_level=1024,
+                                 has_subscription_until_date=2048,
+                                 has_bot_verification_icon=8192,
+                                 has_send_paid_messages_stars=16384),
+            'id' / Int64ul,
+            'access_hash' / If(this.flags.has_access_hash, Int64ul),
+            'title' / TString,
+            'username' / If(this.flags.has_username, TString),
+            'photo' / self.chat_photo_structures('photo'),
+            'date' / TTimestamp,
+            'restriction_reason' / If(this.flags.is_restricted, self.vector(self.restriction_reason_structures('restriction_reason'), 'restriction_reason')),
+            'admin_rights' / If(this.flags.has_admin_rights, self.struct_0x5fb224d5()),
+            'banned_rights' / If(this.flags.has_banned_rights, self.struct_0x9f120418()),
+            'default_banned_rights' / If(this.flags.has_default_banned_rights, self.struct_0x9f120418()),
+            'participants_count' / If(this.flags.has_participants_count, Int32ul),
+            'usernames' / If(this.flags2.has_usernames, self.vector(self.struct_0xb4073647(), 'usernames')),
+            'stories_max_id' / If(this.flags2.has_stories_max_id, Int32ul),
+            'color' / If(this.flags2.has_color, self.struct_0xb54b5acf()),
+            'profile_color' / If(this.flags2.has_profile_color, self.struct_0xb54b5acf()),
+            'emoji_status' / If(this.flags2.has_emoji_status, self.emoji_status_structures('emoji_status')),
+            'level' / If(this.flags2.has_level, Int32ul),
+            'subscription_until_date' / If(this.flags2.has_subscription_until_date, TTimestamp),
+            'bot_verification_icon' / If(this.flags2.has_bot_verification_icon, Int64ul),
+            'send_paid_messages_stars' / If(this.flags2.has_send_paid_messages_stars, Int64ul))
+
+    @constructor(0xe00998b7, 'channel_layer199')
+    def struct_0xe00998b7(self):
+        return Struct(
+            'sname' / Computed('channel_layer199'),
             'signature' / Hex(Const(0xe00998b7, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 is_creator=1,
@@ -5842,6 +5910,7 @@ class TLStruct:
             0x9ba2d800: LazyBound(self.struct_0x9ba2d800),
             0x07328bdb: LazyBound(self.struct_0x07328bdb),
             0x4df30834: LazyBound(self.struct_0x4df30834),
+            0x7482147e: LazyBound(self.struct_0x7482147e),
             0xe00998b7: LazyBound(self.struct_0xe00998b7),
             0x46aeac06: LazyBound(self.struct_0x46aeac06),
             0xfe4478bd: LazyBound(self.struct_0xfe4478bd),
@@ -8587,6 +8656,17 @@ class TLStruct:
             'stargift' / self.stars_input_saved_star_gift_structures('stargift'),
             'to_id' / self.input_peer_structures('to_id'))
 
+    @constructor(0xdabab2ef, 'input_invoice_premium_gift_stars')
+    def struct_0xdabab2ef(self):
+        return Struct(
+            'sname' / Computed('input_invoice_premium_gift_stars'),
+            'signature' / Hex(Const(0xdabab2ef, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_message=1),
+            'user_id' / self.input_user_structures('user_id'),
+            'months' / Int32ul,
+            'message' / If(this.flags.has_message, self.struct_0x751f3146()))
+
     @structures
     def input_invoice_structures(self, name):
         tag_map = {
@@ -8597,7 +8677,8 @@ class TLStruct:
             0x34e793f1: LazyBound(self.struct_0x34e793f1),
             0xe8625e92: LazyBound(self.struct_0xe8625e92),
             0x4d818d5d: LazyBound(self.struct_0x4d818d5d),
-            0x4a5f5bd9: LazyBound(self.struct_0x4a5f5bd9)
+            0x4a5f5bd9: LazyBound(self.struct_0x4a5f5bd9),
+            0xdabab2ef: LazyBound(self.struct_0xdabab2ef)
         }
         return Struct(
             '_signature' / Peek(Int32ul),
@@ -9042,6 +9123,10 @@ class TLStruct:
     def struct_0xe1732341(self):
         return []
 
+    @constructor(0xbdc597b4, 'input_privacy_key_no_paid_messages')
+    def struct_0xbdc597b4(self):
+        return []
+
     @structures
     def input_privacy_key_structures(self, name):
         tag_map = {
@@ -9056,7 +9141,8 @@ class TLStruct:
             0xdb9e70d2: LazyBound(self.struct_0xdb9e70d2),
             0x3823cc40: LazyBound(self.struct_0x3823cc40),
             0xd65a11cc: LazyBound(self.struct_0xd65a11cc),
-            0xe1732341: LazyBound(self.struct_0xe1732341)
+            0xe1732341: LazyBound(self.struct_0xe1732341),
+            0xbdc597b4: LazyBound(self.struct_0xbdc597b4)
         }
         return Struct(
             '_signature' / Peek(Int32ul),
@@ -10035,15 +10121,16 @@ class TLStruct:
             'signature' / Hex(Const(0x56d03994, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 is_via_giveaway=1,
-                                is_unclaimed=4,
+                                is_unclaimed=32,
                                 has_boost_peer=2,
+                                has_currency=4,
                                 has_crypto_currency=8,
                                 has_message=16),
             'boost_peer' / If(this.flags.has_boost_peer, self.peer_structures('boost_peer')),
             'months' / Int32ul,
             'slug' / TString,
-            'currency' / If(this.flags.is_unclaimed, TString),
-            'amount' / If(this.flags.is_unclaimed, Int64ul),
+            'currency' / If(this.flags.has_currency, TString),
+            'amount' / If(this.flags.has_currency, Int64ul),
             'crypto_currency' / If(this.flags.has_crypto_currency, TString),
             'crypto_amount' / If(this.flags.has_crypto_currency, Int64ul),
             'message' / If(this.flags.has_message, self.struct_0x751f3146()))
@@ -10522,6 +10609,10 @@ class TLStruct:
             'peer' / If(this.flags.has_peer, self.peer_structures('peer')),
             'saved_id' / If(this.flags.has_peer, Int64ul))
 
+    @constructor(0x5cd2501f, 'message_action_paid_message')
+    def struct_0x5cd2501f(self):
+        return ['stars' / Int64ul]
+
     @structures
     def message_action_structures(self, name):
         tag_map = {
@@ -10604,7 +10695,8 @@ class TLStruct:
             0x08557637: LazyBound(self.struct_0x08557637),
             0x9bb3ef44: LazyBound(self.struct_0x9bb3ef44),
             0x26077b99: LazyBound(self.struct_0x26077b99),
-            0xacdfcb81: LazyBound(self.struct_0xacdfcb81)
+            0xacdfcb81: LazyBound(self.struct_0xacdfcb81),
+            0x5cd2501f: LazyBound(self.struct_0x5cd2501f)
         }
         return Struct(
             '_signature' / Peek(Int32ul),
@@ -12620,10 +12712,83 @@ class TLStruct:
             'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
             'attach_path' / TString)
 
-    @constructor(0x96fdbbe9, 'message')
-    def struct_0x96fdbbe9(self):
+    @constructor(0xeabcdd4d, 'message')
+    def struct_0xeabcdd4d(self):
         return Struct(
             'sname' / Computed('message'),
+            'signature' / Hex(Const(0xeabcdd4d, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_out=2,
+                                is_mentioned=16,
+                                is_media_unread=32,
+                                is_silent=8192,
+                                is_post=16384,
+                                is_from_scheduled=262144,
+                                is_legacy=524288,
+                                is_edit_hide=2097152,
+                                is_pinned=16777216,
+                                is_noforwards=67108864,
+                                is_invert_media=134217728,
+                                has_from_id=256,
+                                has_from_boosts_applied=536870912,
+                                has_saved_peer_id=268435456,
+                                has_fwd_from=4,
+                                has_via_bot_id=2048,
+                                has_reply_to=8,
+                                has_media=512,
+                                has_reply_markup=64,
+                                has_entities=128,
+                                has_views=1024,
+                                has_replies=8388608,
+                                has_edit_date=32768,
+                                has_post_author=65536,
+                                has_grouped_id=131072,
+                                has_reactions=1048576,
+                                has_restriction_reason=4194304,
+                                has_ttl_period=33554432,
+                                has_quick_reply_shortcut_id=1073741824),
+            'flags2' / FlagsEnum(Int32ul,
+                                 is_offline=2,
+                                 is_video_processing_pending=16,
+                                 has_via_business_bot_id=1,
+                                 has_effect=4,
+                                 has_factcheck=8,
+                                 has_report_delivery_until_date=32,
+                                 has_paid_message_stars=64),
+            'id' / Int32ul,
+            'from_id' / If(this.flags.has_from_id, self.peer_structures('from_id')),
+            'from_boosts_applied' / If(this.flags.has_from_boosts_applied, Int32ul),
+            'peer_id' / self.peer_structures('peer_id'),
+            'saved_peer_id' / If(this.flags.has_saved_peer_id, self.peer_structures('saved_peer_id')),
+            'fwd_from' / If(this.flags.has_fwd_from, self.message_fwd_header_structures('fwd_from')),
+            'via_bot_id' / If(this.flags.has_via_bot_id, Int64ul),
+            'via_business_bot_id' / If(this.flags2.has_via_business_bot_id, Int64ul),
+            'reply_to' / If(this.flags.has_reply_to, self.message_reply_header_structures('reply_to')),
+            'date' / TTimestamp,
+            'message' / TString,
+            'media' / If(this.flags.has_media, self.message_media_structures('media')),
+            'reply_markup' / If(this.flags.has_reply_markup, self.reply_markup_structures('reply_markup')),
+            'entities' / If(this.flags.has_entities, self.vector(self.message_entity_structures('entities'), 'entities')),
+            'views' / If(this.flags.has_views, Int32ul),
+            'forwards' / If(this.flags.has_views, Int32ul),
+            'replies' / If(this.flags.has_replies, self.message_replies_structures('replies')),
+            'edit_date' / If(this.flags.has_edit_date, TTimestamp),
+            'post_author' / If(this.flags.has_post_author, TString),
+            'grouped_id' / If(this.flags.has_grouped_id, Int64ul),
+            'reactions' / If(this.flags.has_reactions, self.message_reactions_structures('reactions')),
+            'restriction_reason' / If(this.flags.has_restriction_reason, self.vector(self.restriction_reason_structures('restriction_reason'), 'restriction_reason')),
+            'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
+            'quick_reply_shortcut_id' / If(this.flags.has_quick_reply_shortcut_id, Int32ul),
+            'effect' / If(this.flags2.has_effect, Int64ul),
+            'factcheck' / If(this.flags2.has_factcheck, self.struct_0xb89bfccf()),
+            'report_delivery_until_date' / If(this.flags2.has_report_delivery_until_date, TTimestamp),
+            'paid_message_stars' / If(this.flags2.has_paid_message_stars, Int64ul),
+            'attach_path' / TString)
+
+    @constructor(0x96fdbbe9, 'message_layer199')
+    def struct_0x96fdbbe9(self):
+        return Struct(
+            'sname' / Computed('message_layer199'),
             'signature' / Hex(Const(0x96fdbbe9, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 is_out=2,
@@ -13333,6 +13498,7 @@ class TLStruct:
             0x58ae39c9: LazyBound(self.struct_0x58ae39c9),
             0xbce383d2: LazyBound(self.struct_0xbce383d2),
             0x85d6cbe2: LazyBound(self.struct_0x85d6cbe2),
+            0xeabcdd4d: LazyBound(self.struct_0xeabcdd4d),
             0x96fdbbe9: LazyBound(self.struct_0x96fdbbe9),
             0x94345242: LazyBound(self.struct_0x94345242),
             0xbde09c2e: LazyBound(self.struct_0xbde09c2e),
@@ -15009,10 +15175,108 @@ class TLStruct:
 
     # -------------------------------------------------------------------------
 
-    @constructor(0xacd66c5e, 'peer_settings')
-    def struct_0xacd66c5e(self):
+    @constructor(0xf47741f7, 'peer_settings')
+    def struct_0xf47741f7(self):
         return Struct(
             'sname' / Computed('peer_settings'),
+            'signature' / Hex(Const(0xf47741f7, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_report_spam=1,
+                                is_add_contact=2,
+                                is_block_contact=4,
+                                is_share_contact=8,
+                                is_need_contacts_exception=16,
+                                is_report_geo=32,
+                                is_autoarchived=128,
+                                is_invite_members=256,
+                                is_request_chat_broadcast=1024,
+                                is_business_bot_paused=2048,
+                                is_business_bot_can_reply=4096,
+                                has_geo_distance=64,
+                                has_request_chat_title=512,
+                                has_business_bot_id=8192,
+                                has_charge_paid_message_stars=16384,
+                                has_registration_month=32768,
+                                has_phone_country=65536,
+                                has_name_change_date=131072,
+                                has_photo_change_date=262144),
+            'geo_distance' / If(this.flags.has_geo_distance, Int32ul),
+            'request_chat_title' / If(this.flags.has_request_chat_title, TString),
+            'request_chat_date' / If(this.flags.has_request_chat_title, TTimestamp),
+            'business_bot_id' / If(this.flags.has_business_bot_id, Int64ul),
+            'business_bot_manage_url' / If(this.flags.has_business_bot_id, TString),
+            'charge_paid_message_stars' / If(this.flags.has_charge_paid_message_stars, Int64ul),
+            'registration_month' / If(this.flags.has_registration_month, TString),
+            'phone_country' / If(this.flags.has_phone_country, TString),
+            'name_change_date' / If(this.flags.has_name_change_date, TTimestamp),
+            'photo_change_date' / If(this.flags.has_photo_change_date, TTimestamp))
+
+    @constructor(0x0d8c39ec, 'peer_settings_layer199_3')
+    def struct_0x0d8c39ec(self):
+        return Struct(
+            'sname' / Computed('peer_settings_layer199_3'),
+            'signature' / Hex(Const(0x0d8c39ec, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_report_spam=1,
+                                is_add_contact=2,
+                                is_block_contact=4,
+                                is_share_contact=8,
+                                is_need_contacts_exception=16,
+                                is_report_geo=32,
+                                is_autoarchived=128,
+                                is_invite_members=256,
+                                is_request_chat_broadcast=1024,
+                                is_business_bot_paused=2048,
+                                is_business_bot_can_reply=4096,
+                                has_geo_distance=64,
+                                has_request_chat_title=512,
+                                has_business_bot_id=8192,
+                                has_charge_paid_message_stars=16384,
+                                has_registration_month=32768,
+                                has_phone_country=65536,
+                                has_restriction_reason=131072),
+            'geo_distance' / If(this.flags.has_geo_distance, Int32ul),
+            'request_chat_title' / If(this.flags.has_request_chat_title, TString),
+            'request_chat_date' / If(this.flags.has_request_chat_title, TTimestamp),
+            'business_bot_id' / If(this.flags.has_business_bot_id, Int64ul),
+            'business_bot_manage_url' / If(this.flags.has_business_bot_id, TString),
+            'charge_paid_message_stars' / If(this.flags.has_charge_paid_message_stars, Int64ul),
+            'registration_month' / If(this.flags.has_registration_month, TString),
+            'phone_country' / If(this.flags.has_phone_country, TString),
+            'restriction_reason' / If(this.flags.has_restriction_reason, TString))
+
+    @constructor(0xa8639d72, 'peer_settings_layer199_2')
+    def struct_0xa8639d72(self):
+        return Struct(
+            'sname' / Computed('peer_settings_layer199_2'),
+            'signature' / Hex(Const(0xa8639d72, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_report_spam=1,
+                                is_add_contact=2,
+                                is_block_contact=4,
+                                is_share_contact=8,
+                                is_need_contacts_exception=16,
+                                is_report_geo=32,
+                                is_autoarchived=128,
+                                is_invite_members=256,
+                                is_request_chat_broadcast=1024,
+                                is_business_bot_paused=2048,
+                                is_business_bot_can_reply=4096,
+                                has_geo_distance=64,
+                                has_request_chat_title=512,
+                                has_business_bot_id=8192,
+                                has_charge_paid_message_stars=16384),
+            'geo_distance' / If(this.flags.has_geo_distance, Int32ul),
+            'request_chat_title' / If(this.flags.has_request_chat_title, TString),
+            'request_chat_date' / If(this.flags.has_request_chat_title, TTimestamp),
+            'business_bot_id' / If(this.flags.has_business_bot_id, Int64ul),
+            'business_bot_manage_url' / If(this.flags.has_business_bot_id, TString),
+            'charge_paid_message_stars' / If(this.flags.has_charge_paid_message_stars, Int64ul))
+
+    @constructor(0xacd66c5e, 'peer_settings_layer199')
+    def struct_0xacd66c5e(self):
+        return Struct(
+            'sname' / Computed('peer_settings_layer199'),
             'signature' / Hex(Const(0xacd66c5e, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 is_report_spam=1,
@@ -15077,6 +15341,9 @@ class TLStruct:
     @structures
     def peer_settings_structures(self, name):
         tag_map = {
+            0xf47741f7: LazyBound(self.struct_0xf47741f7),
+            0x0d8c39ec: LazyBound(self.struct_0x0d8c39ec),
+            0xa8639d72: LazyBound(self.struct_0xa8639d72),
             0xacd66c5e: LazyBound(self.struct_0xacd66c5e),
             0xa518110d: LazyBound(self.struct_0xa518110d),
             0x733f2961: LazyBound(self.struct_0x733f2961)
@@ -15947,6 +16214,10 @@ class TLStruct:
     def struct_0x2ca4fdf8(self):
         return []
 
+    @constructor(0x17d348d2, 'privacy_key_no_paid_messages')
+    def struct_0x17d348d2(self):
+        return []
+
     @structures
     def privacy_key_structures(self, name):
         tag_map = {
@@ -15961,7 +16232,8 @@ class TLStruct:
             0xd19ae46d: LazyBound(self.struct_0xd19ae46d),
             0x96151fed: LazyBound(self.struct_0x96151fed),
             0x2000a518: LazyBound(self.struct_0x2000a518),
-            0x2ca4fdf8: LazyBound(self.struct_0x2ca4fdf8)
+            0x2ca4fdf8: LazyBound(self.struct_0x2ca4fdf8),
+            0x17d348d2: LazyBound(self.struct_0x17d348d2)
         }
         return Struct(
             '_signature' / Peek(Int32ul),
@@ -16940,10 +17212,32 @@ class TLStruct:
             'last_sale_date' / If(this.flags.is_sold_out, TTimestamp),
             'upgrade_stars' / If(this.flags.is_can_upgrade, Int64ul))
 
-    @constructor(0xf2fe7e4a, 'star_gift_unique')
-    def struct_0xf2fe7e4a(self):
+    @constructor(0x5c62d151, 'star_gift_unique')
+    def struct_0x5c62d151(self):
         return Struct(
             'sname' / Computed('star_gift_unique'),
+            'signature' / Hex(Const(0x5c62d151, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_owner_id=1,
+                                has_owner_name=2,
+                                has_owner_address=4,
+                                has_gift_address=8),
+            'id' / Int64ul,
+            'title' / TString,
+            'slug' / TString,
+            'num' / Int32ul,
+            'owner_id' / If(this.flags.has_owner_id, self.peer_structures('owner_id')),
+            'owner_name' / If(this.flags.has_owner_name, TString),
+            'owner_address' / If(this.flags.has_owner_address, TString),
+            'attributes' / self.vector(self.star_gift_attribute_structures('attributes'), 'attributes'),
+            'availability_issued' / Int32ul,
+            'availability_total' / Int32ul,
+            'gift_address' / If(this.flags.has_gift_address, TString))
+
+    @constructor(0xf2fe7e4a, 'star_gift_unique_layer198')
+    def struct_0xf2fe7e4a(self):
+        return Struct(
+            'sname' / Computed('star_gift_unique_layer198'),
             'signature' / Hex(Const(0xf2fe7e4a, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 has_owner_id=1,
@@ -17025,6 +17319,7 @@ class TLStruct:
     def star_gift_structures(self, name):
         tag_map = {
             0x02cc73c8: LazyBound(self.struct_0x02cc73c8),
+            0x5c62d151: LazyBound(self.struct_0x5c62d151),
             0xf2fe7e4a: LazyBound(self.struct_0xf2fe7e4a),
             0x3482f322: LazyBound(self.struct_0x3482f322),
             0x6a1407cd: LazyBound(self.struct_0x6a1407cd),
@@ -17457,10 +17752,10 @@ class TLStruct:
             'stargift' / If(this.flags.has_stargift, self.star_gift_structures('stargift')),
             'floodskip_number' / If(this.flags.is_floodskip, Int32ul))
 
-    @constructor(0x64dfc926, 'stars_transaction')
+    @constructor(0x64dfc926, 'stars_transaction_layer199')
     def struct_0x64dfc926(self):
         return Struct(
-            'sname' / Computed('stars_transaction'),
+            'sname' / Computed('stars_transaction_layer199'),
             'signature' / Hex(Const(0x64dfc926, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 is_refund=8,
@@ -17471,6 +17766,7 @@ class TLStruct:
                                 is_subscription=4096,
                                 is_floodskip=32768,
                                 is_stargift_upgrade=262144,
+                                is_paid_message=524288,
                                 has_title=1,
                                 has_description=2,
                                 has_photo=4,
@@ -17501,6 +17797,101 @@ class TLStruct:
             'starref_peer' / If(this.flags.has_starref_peer, self.peer_structures('starref_peer')),
             'starref_amount' / If(this.flags.has_starref_peer, self.struct_0xbbb6b4a3()))
 
+    @constructor(0xecd50924, 'stars_transaction_layer199_2')
+    def struct_0xecd50924(self):
+        return Struct(
+            'sname' / Computed('stars_transaction_layer199_2'),
+            'signature' / Hex(Const(0xecd50924, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_refund=8,
+                                is_pending=16,
+                                is_failed=64,
+                                is_gift=1024,
+                                is_reaction=2048,
+                                is_subscription=4096,
+                                is_floodskip=32768,
+                                is_stargift_upgrade=262144,
+                                is_paid_message=524288,
+                                is_premium_gift=1048576,
+                                has_title=1,
+                                has_description=2,
+                                has_photo=4,
+                                has_transaction_date=32,
+                                has_bot_payload=128,
+                                has_msg_id=256,
+                                has_extended_media=512,
+                                has_giveaway_post_id=8192,
+                                has_stargift=16384,
+                                has_starref_commission_permille=65536,
+                                has_starref_peer=131072),
+            'stars' / self.struct_0xbbb6b4a3(),
+            'date' / TTimestamp,
+            'peer' / self.stars_transaction_peer_structures('peer'),
+            'title' / If(this.flags.has_title, TString),
+            'description' / If(this.flags.has_description, TString),
+            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
+            'transaction_date' / If(this.flags.has_transaction_date, TTimestamp),
+            'transaction_url' / If(this.flags.has_transaction_date, TString),
+            'bot_payload' / If(this.flags.has_bot_payload, TBytes),
+            'msg_id' / If(this.flags.has_msg_id, Int32ul),
+            'extended_media' / If(this.flags.has_extended_media, self.vector(self.message_media_structures('extended_media'), 'extended_media')),
+            'subscription_period' / If(this.flags.is_subscription, Int32ul),
+            'giveaway_post_id' / If(this.flags.has_giveaway_post_id, Int32ul),
+            'stargift' / If(this.flags.has_stargift, self.star_gift_structures('stargift')),
+            'floodskip_number' / If(this.flags.is_floodskip, Int32ul),
+            'starref_commission_permille' / If(this.flags.has_starref_commission_permille, Int32ul),
+            'starref_peer' / If(this.flags.has_starref_peer, self.peer_structures('starref_peer')),
+            'starref_amount' / If(this.flags.has_starref_peer, self.struct_0xbbb6b4a3()),
+            'paid_messages' / If(this.flags.is_paid_message, Int32ul))
+
+    @constructor(0xa39fd94a, 'stars_transaction')
+    def struct_0xa39fd94a(self):
+        return Struct(
+            'sname' / Computed('stars_transaction'),
+            'signature' / Hex(Const(0xa39fd94a, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_refund=8,
+                                is_pending=16,
+                                is_failed=64,
+                                is_gift=1024,
+                                is_reaction=2048,
+                                is_subscription=4096,
+                                is_floodskip=32768,
+                                is_stargift_upgrade=262144,
+                                is_paid_message=524288,
+                                is_premium_gift=1048576,
+                                has_title=1,
+                                has_description=2,
+                                has_photo=4,
+                                has_transaction_date=32,
+                                has_bot_payload=128,
+                                has_msg_id=256,
+                                has_extended_media=512,
+                                has_giveaway_post_id=8192,
+                                has_stargift=16384,
+                                has_starref_commission_permille=65536,
+                                has_starref_peer=131072),
+            'stars' / self.struct_0xbbb6b4a3(),
+            'date' / TTimestamp,
+            'peer' / self.stars_transaction_peer_structures('peer'),
+            'title' / If(this.flags.has_title, TString),
+            'description' / If(this.flags.has_description, TString),
+            'photo' / If(this.flags.has_photo, self.web_document_structures('photo')),
+            'transaction_date' / If(this.flags.has_transaction_date, TTimestamp),
+            'transaction_url' / If(this.flags.has_transaction_date, TString),
+            'bot_payload' / If(this.flags.has_bot_payload, TBytes),
+            'msg_id' / If(this.flags.has_msg_id, Int32ul),
+            'extended_media' / If(this.flags.has_extended_media, self.vector(self.message_media_structures('extended_media'), 'extended_media')),
+            'subscription_period' / If(this.flags.is_subscription, Int32ul),
+            'giveaway_post_id' / If(this.flags.has_giveaway_post_id, Int32ul),
+            'stargift' / If(this.flags.has_stargift, self.star_gift_structures('stargift')),
+            'floodskip_number' / If(this.flags.is_floodskip, Int32ul),
+            'starref_commission_permille' / If(this.flags.has_starref_commission_permille, Int32ul),
+            'starref_peer' / If(this.flags.has_starref_peer, self.peer_structures('starref_peer')),
+            'starref_amount' / If(this.flags.has_starref_peer, self.struct_0xbbb6b4a3()),
+            'paid_messages' / If(this.flags.is_paid_message, Int32ul),
+            'premium_gift_months' / If(this.flags.is_premium_gift, Int32ul))
+
     @structures
     def stars_transaction_structures(self, name):
         tag_map = {
@@ -17511,7 +17902,9 @@ class TLStruct:
             0xee7522d5: LazyBound(self.struct_0xee7522d5),
             0x0a9ee4c2: LazyBound(self.struct_0x0a9ee4c2),
             0x35d4f276: LazyBound(self.struct_0x35d4f276),
-            0x64dfc926: LazyBound(self.struct_0x64dfc926)
+            0x64dfc926: LazyBound(self.struct_0x64dfc926),
+            0xecd50924: LazyBound(self.struct_0xecd50924),
+            0xa39fd94a: LazyBound(self.struct_0xa39fd94a)
         }
         return Struct(
             '_signature' / Peek(Int32ul),
@@ -19658,9 +20051,9 @@ class TLStruct:
             'payload' / TString,
             'qts' / Int32ul)
 
-    @constructor(0x51ca7aec, 'update_paid_reaction_privacy')
-    def struct_0x51ca7aec(self):
-        return ['is_private' / TBool]
+    @constructor(0x8b725fce, 'update_paid_reaction_privacy')
+    def struct_0x8b725fce(self):
+        return ['privacy' / self.stars_paid_reaction_privacy_structures('privacy')]
 
     @constructor(0xa8ae3eb1, 'update_bot_subscription_expire')
     def struct_0xa8ae3eb1(self):
@@ -19793,7 +20186,7 @@ class TLStruct:
             0x4e80a379: LazyBound(self.struct_0x4e80a379),
             0xa584b019: LazyBound(self.struct_0xa584b019),
             0x283bd312: LazyBound(self.struct_0x283bd312),
-            0x51ca7aec: LazyBound(self.struct_0x51ca7aec),
+            0x8b725fce: LazyBound(self.struct_0x8b725fce),
             0xa8ae3eb1: LazyBound(self.struct_0xa8ae3eb1)
         }
         return Struct(
@@ -20097,10 +20490,170 @@ class TLStruct:
 
     # -------------------------------------------------------------------------
 
-    @constructor(0x4d975bbc, 'user_full')
-    def struct_0x4d975bbc(self):
+    @constructor(0xd2234ea0, 'user_full')
+    def struct_0xd2234ea0(self):
         return Struct(
             'sname' / Computed('user_full'),
+            'signature' / Hex(Const(0xd2234ea0, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_blocked=1,
+                                is_phone_calls_available=16,
+                                is_phone_calls_private=32,
+                                is_can_pin_message=128,
+                                has_scheduled=4096,
+                                is_video_calls_available=8192,
+                                is_voice_messages_forbidden=1048576,
+                                is_translations_disabled=8388608,
+                                is_stories_pinned_available=67108864,
+                                is_blocked_my_stories_from=134217728,
+                                is_wallpaper_overridden=268435456,
+                                is_contact_require_premium=536870912,
+                                is_read_dates_private=1073741824,
+                                has_about=2,
+                                has_personal_photo=2097152,
+                                has_profile_photo=4,
+                                has_fallback_photo=4194304,
+                                has_bot_info=8,
+                                has_pinned_msg_id=64,
+                                has_folder_id=2048,
+                                has_ttl_period=16384,
+                                has_theme_emoticon=32768,
+                                has_private_forward_name=65536,
+                                has_bot_group_admin_rights=131072,
+                                has_bot_broadcast_admin_rights=262144,
+                                has_wallpaper=16777216,
+                                has_stories=33554432),
+            'flags2' / FlagsEnum(Int32ul,
+                                 is_sponsored_enabled=128,
+                                 is_can_view_revenue=512,
+                                 is_bot_can_manage_emoji_status=1024,
+                                 has_business_work_hours=1,
+                                 has_business_location=2,
+                                 has_business_greeting_message=4,
+                                 has_business_away_message=8,
+                                 has_business_intro=16,
+                                 has_birthday=32,
+                                 has_personal_channel_id=64,
+                                 has_stargifts_count=256,
+                                 has_starref_program=2048,
+                                 has_bot_verification=4096,
+                                 has_send_paid_messages_stars=16384),
+            'id' / Int64ul,
+            'about' / If(this.flags.has_about, TString),
+            'settings' / self.peer_settings_structures('settings'),
+            'personal_photo' / If(this.flags.has_personal_photo, self.photo_structures('personal_photo')),
+            'profile_photo' / If(this.flags.has_profile_photo, self.photo_structures('profile_photo')),
+            'fallback_photo' / If(this.flags.has_fallback_photo, self.photo_structures('fallback_photo')),
+            'notify_settings' / self.peer_notify_settings_structures('notify_settings'),
+            'bot_info' / If(this.flags.has_bot_info, self.bot_info_structures('bot_info')),
+            'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
+            'common_chats_count' / Int32ul,
+            'folder_id' / If(this.flags.has_folder_id, Int32ul),
+            'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
+            'theme_emoticon' / If(this.flags.has_theme_emoticon, TString),
+            'private_forward_name' / If(this.flags.has_private_forward_name, TString),
+            'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
+            'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
+            'wallpaper' / If(this.flags.has_wallpaper, self.wall_paper_structures('wallpaper')),
+            'stories' / If(this.flags.has_stories, self.stories_peer_stories_structures('stories')),
+            'business_work_hours' / If(this.flags2.has_business_work_hours, self.struct_0x8c92b098()),
+            'business_location' / If(this.flags2.has_business_location, self.struct_0xac5c1af7()),
+            'business_greeting_message' / If(this.flags2.has_business_greeting_message, self.struct_0xe519abab()),
+            'business_away_message' / If(this.flags2.has_business_away_message, self.struct_0xef156a5c()),
+            'business_intro' / If(this.flags2.has_business_intro, self.struct_0x5a0a066d()),
+            'birthday' / If(this.flags2.has_birthday, self.struct_0x6c8e1e06()),
+            'personal_channel_id' / If(this.flags2.has_personal_channel_id, Int64ul),
+            'personal_channel_message' / If(this.flags2.has_personal_channel_id, Int32ul),
+            'stargifts_count' / If(this.flags2.has_stargifts_count, Int32ul),
+            'starref_program' / If(this.flags2.has_starref_program, self.struct_0xdd0c66f2()),
+            'bot_verification' / If(this.flags2.has_bot_verification, self.struct_0xf93cd45c()),
+            'send_paid_messages_stars' / If(this.flags2.has_send_paid_messages_stars, Int64ul))
+
+    @constructor(0x8555f3c2, 'user_full_layer199_2')
+    def struct_0x8555f3c2(self):
+        return Struct(
+            'sname' / Computed('user_full_layer199_2'),
+            'signature' / Hex(Const(0x8555f3c2, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_blocked=1,
+                                is_phone_calls_available=16,
+                                is_phone_calls_private=32,
+                                is_can_pin_message=128,
+                                has_scheduled=4096,
+                                is_video_calls_available=8192,
+                                is_voice_messages_forbidden=1048576,
+                                is_translations_disabled=8388608,
+                                is_stories_pinned_available=67108864,
+                                is_blocked_my_stories_from=134217728,
+                                is_wallpaper_overridden=268435456,
+                                is_contact_require_premium=536870912,
+                                is_read_dates_private=1073741824,
+                                has_about=2,
+                                has_personal_photo=2097152,
+                                has_profile_photo=4,
+                                has_fallback_photo=4194304,
+                                has_bot_info=8,
+                                has_pinned_msg_id=64,
+                                has_folder_id=2048,
+                                has_ttl_period=16384,
+                                has_theme_emoticon=32768,
+                                has_private_forward_name=65536,
+                                has_bot_group_admin_rights=131072,
+                                has_bot_broadcast_admin_rights=262144,
+                                has_premium_gifts=524288,
+                                has_wallpaper=16777216,
+                                has_stories=33554432),
+            'flags2' / FlagsEnum(Int32ul,
+                                 is_sponsored_enabled=128,
+                                 is_can_view_revenue=512,
+                                 is_bot_can_manage_emoji_status=1024,
+                                 has_business_work_hours=1,
+                                 has_business_location=2,
+                                 has_business_greeting_message=4,
+                                 has_business_away_message=8,
+                                 has_business_intro=16,
+                                 has_birthday=32,
+                                 has_personal_channel_id=64,
+                                 has_stargifts_count=256,
+                                 has_starref_program=2048,
+                                 has_bot_verification=4096,
+                                 has_send_paid_messages_stars=16384),
+            'id' / Int64ul,
+            'about' / If(this.flags.has_about, TString),
+            'settings' / self.peer_settings_structures('settings'),
+            'personal_photo' / If(this.flags.has_personal_photo, self.photo_structures('personal_photo')),
+            'profile_photo' / If(this.flags.has_profile_photo, self.photo_structures('profile_photo')),
+            'fallback_photo' / If(this.flags.has_fallback_photo, self.photo_structures('fallback_photo')),
+            'notify_settings' / self.peer_notify_settings_structures('notify_settings'),
+            'bot_info' / If(this.flags.has_bot_info, self.bot_info_structures('bot_info')),
+            'pinned_msg_id' / If(this.flags.has_pinned_msg_id, Int32ul),
+            'common_chats_count' / Int32ul,
+            'folder_id' / If(this.flags.has_folder_id, Int32ul),
+            'ttl_period' / If(this.flags.has_ttl_period, Int32ul),
+            'theme_emoticon' / If(this.flags.has_theme_emoticon, TString),
+            'private_forward_name' / If(this.flags.has_private_forward_name, TString),
+            'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
+            'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
+            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.premium_gift_option_structures('premium_gifts'), 'premium_gifts')),
+            'wallpaper' / If(this.flags.has_wallpaper, self.wall_paper_structures('wallpaper')),
+            'stories' / If(this.flags.has_stories, self.stories_peer_stories_structures('stories')),
+            'business_work_hours' / If(this.flags2.has_business_work_hours, self.struct_0x8c92b098()),
+            'business_location' / If(this.flags2.has_business_location, self.struct_0xac5c1af7()),
+            'business_greeting_message' / If(this.flags2.has_business_greeting_message, self.struct_0xe519abab()),
+            'business_away_message' / If(this.flags2.has_business_away_message, self.struct_0xef156a5c()),
+            'business_intro' / If(this.flags2.has_business_intro, self.struct_0x5a0a066d()),
+            'birthday' / If(this.flags2.has_birthday, self.struct_0x6c8e1e06()),
+            'personal_channel_id' / If(this.flags2.has_personal_channel_id, Int64ul),
+            'personal_channel_message' / If(this.flags2.has_personal_channel_id, Int32ul),
+            'stargifts_count' / If(this.flags2.has_stargifts_count, Int32ul),
+            'starref_program' / If(this.flags2.has_starref_program, self.struct_0xdd0c66f2()),
+            'bot_verification' / If(this.flags2.has_bot_verification, self.struct_0xf93cd45c()),
+            'send_paid_messages_stars' / If(this.flags2.has_send_paid_messages_stars, Int64ul))
+
+    @constructor(0x4d975bbc, 'user_full_layer199')
+    def struct_0x4d975bbc(self):
+        return Struct(
+            'sname' / Computed('user_full_layer199'),
             'signature' / Hex(Const(0x4d975bbc, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 is_blocked=1,
@@ -20161,7 +20714,7 @@ class TLStruct:
             'private_forward_name' / If(this.flags.has_private_forward_name, TString),
             'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
             'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
-            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.struct_0x74c34319(), 'premium_gifts')),
+            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.premium_gift_option_structures('premium_gifts'), 'premium_gifts')),
             'wallpaper' / If(this.flags.has_wallpaper, self.wall_paper_structures('wallpaper')),
             'stories' / If(this.flags.has_stories, self.stories_peer_stories_structures('stories')),
             'business_work_hours' / If(this.flags2.has_business_work_hours, self.struct_0x8c92b098()),
@@ -20239,7 +20792,7 @@ class TLStruct:
             'private_forward_name' / If(this.flags.has_private_forward_name, TString),
             'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
             'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
-            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.struct_0x74c34319(), 'premium_gifts')),
+            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.premium_gift_option_structures('premium_gifts'), 'premium_gifts')),
             'wallpaper' / If(this.flags.has_wallpaper, self.wall_paper_structures('wallpaper')),
             'stories' / If(this.flags.has_stories, self.stories_peer_stories_structures('stories')),
             'business_work_hours' / If(this.flags2.has_business_work_hours, self.struct_0x8c92b098()),
@@ -20315,7 +20868,7 @@ class TLStruct:
             'private_forward_name' / If(this.flags.has_private_forward_name, TString),
             'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
             'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
-            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.struct_0x74c34319(), 'premium_gifts')),
+            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.premium_gift_option_structures('premium_gifts'), 'premium_gifts')),
             'wallpaper' / If(this.flags.has_wallpaper, self.wall_paper_structures('wallpaper')),
             'stories' / If(this.flags.has_stories, self.stories_peer_stories_structures('stories')),
             'business_work_hours' / If(this.flags2.has_business_work_hours, self.struct_0x8c92b098()),
@@ -20387,7 +20940,7 @@ class TLStruct:
             'private_forward_name' / If(this.flags.has_private_forward_name, TString),
             'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
             'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
-            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.struct_0x74c34319(), 'premium_gifts')),
+            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.premium_gift_option_structures('premium_gifts'), 'premium_gifts')),
             'wallpaper' / If(this.flags.has_wallpaper, self.wall_paper_structures('wallpaper')),
             'stories' / If(this.flags.has_stories, self.stories_peer_stories_structures('stories')),
             'business_work_hours' / If(this.flags2.has_business_work_hours, self.struct_0x8c92b098()),
@@ -20456,7 +21009,7 @@ class TLStruct:
             'private_forward_name' / If(this.flags.has_private_forward_name, TString),
             'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
             'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
-            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.struct_0x74c34319(), 'premium_gifts')),
+            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.premium_gift_option_structures('premium_gifts'), 'premium_gifts')),
             'wallpaper' / If(this.flags.has_wallpaper, self.wall_paper_structures('wallpaper')),
             'stories' / If(this.flags.has_stories, self.stories_peer_stories_structures('stories')),
             'business_work_hours' / If(this.flags2.has_business_work_hours, self.struct_0x8c92b098()),
@@ -20522,7 +21075,7 @@ class TLStruct:
             'private_forward_name' / If(this.flags.has_private_forward_name, TString),
             'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
             'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
-            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.struct_0x74c34319(), 'premium_gifts')),
+            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.premium_gift_option_structures('premium_gifts'), 'premium_gifts')),
             'wallpaper' / If(this.flags.has_wallpaper, self.wall_paper_structures('wallpaper')),
             'stories' / If(this.flags.has_stories, self.stories_peer_stories_structures('stories')),
             'business_work_hours' / If(this.flags2.has_business_work_hours, self.struct_0x8c92b098()),
@@ -20586,7 +21139,7 @@ class TLStruct:
             'private_forward_name' / If(this.flags.has_private_forward_name, TString),
             'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
             'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
-            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.struct_0x74c34319(), 'premium_gifts')),
+            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.premium_gift_option_structures('premium_gifts'), 'premium_gifts')),
             'wallpaper' / If(this.flags.has_wallpaper, self.wall_paper_structures('wallpaper')),
             'stories' / If(this.flags.has_stories, self.stories_peer_stories_structures('stories')),
             'business_work_hours' / If(this.flags2.has_business_work_hours, self.struct_0x8c92b098()),
@@ -20644,7 +21197,7 @@ class TLStruct:
             'private_forward_name' / If(this.flags.has_private_forward_name, TString),
             'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
             'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
-            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.struct_0x74c34319(), 'premium_gifts')),
+            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.premium_gift_option_structures('premium_gifts'), 'premium_gifts')),
             'wallpaper' / If(this.flags.has_wallpaper, self.wall_paper_structures('wallpaper')),
             'stories' / If(this.flags.has_stories, self.stories_peer_stories_structures('stories')))
 
@@ -20695,7 +21248,7 @@ class TLStruct:
             'private_forward_name' / If(this.flags.has_private_forward_name, TString),
             'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
             'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
-            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.struct_0x74c34319(), 'premium_gifts')),
+            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.premium_gift_option_structures('premium_gifts'), 'premium_gifts')),
             'wallpaper' / If(this.flags.has_wallpaper, self.wall_paper_structures('wallpaper')),
             'stories' / If(this.flags.has_stories, self.stories_peer_stories_structures('stories')))
 
@@ -20743,7 +21296,7 @@ class TLStruct:
             'private_forward_name' / If(this.flags.has_private_forward_name, TString),
             'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
             'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
-            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.struct_0x74c34319(), 'premium_gifts')),
+            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.premium_gift_option_structures('premium_gifts'), 'premium_gifts')),
             'wallpaper' / If(this.flags.has_wallpaper, self.wall_paper_structures('wallpaper')))
 
     @constructor(0xf8d32aed, 'user_full_layer156')
@@ -20789,7 +21342,7 @@ class TLStruct:
             'private_forward_name' / If(this.flags.has_private_forward_name, TString),
             'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
             'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
-            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.struct_0x74c34319(), 'premium_gifts')))
+            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.premium_gift_option_structures('premium_gifts'), 'premium_gifts')))
 
     @constructor(0xec6d41e3, 'user_full_layer150_rev2')
     def struct_0xec6d41e3(self):
@@ -20831,7 +21384,7 @@ class TLStruct:
             'private_forward_name' / If(this.flags.has_private_forward_name, TString),
             'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
             'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
-            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.struct_0x74c34319(), 'premium_gifts')))
+            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.premium_gift_option_structures('premium_gifts'), 'premium_gifts')))
 
     @constructor(0xc4b1fc3f, 'user_full_layer150')
     def struct_0xc4b1fc3f(self):
@@ -20871,7 +21424,7 @@ class TLStruct:
             'private_forward_name' / If(this.flags.has_private_forward_name, TString),
             'bot_group_admin_rights' / If(this.flags.has_bot_group_admin_rights, self.struct_0x5fb224d5()),
             'bot_broadcast_admin_rights' / If(this.flags.has_bot_broadcast_admin_rights, self.struct_0x5fb224d5()),
-            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.struct_0x74c34319(), 'premium_gifts')))
+            'premium_gifts' / If(this.flags.has_premium_gifts, self.vector(self.premium_gift_option_structures('premium_gifts'), 'premium_gifts')))
 
     @constructor(0x8c72ea81, 'user_full_layer143')
     def struct_0x8c72ea81(self):
@@ -21080,6 +21633,8 @@ class TLStruct:
     @structures
     def user_full_structures(self, name):
         tag_map = {
+            0xd2234ea0: LazyBound(self.struct_0xd2234ea0),
+            0x8555f3c2: LazyBound(self.struct_0x8555f3c2),
             0x4d975bbc: LazyBound(self.struct_0x4d975bbc),
             0x979d2376: LazyBound(self.struct_0x979d2376),
             0x1f58e369: LazyBound(self.struct_0x1f58e369),
@@ -21260,10 +21815,80 @@ class TLStruct:
 
     # -------------------------------------------------------------------------
 
-    @constructor(0x4b46c37e, 'user')
-    def struct_0x4b46c37e(self):
+    @constructor(0x020b1422, 'user')
+    def struct_0x020b1422(self):
         return Struct(
             'sname' / Computed('user'),
+            'signature' / Hex(Const(0x020b1422, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_username=8,
+                                is_self=1024,
+                                is_contact=2048,
+                                is_mutual_contact=4096,
+                                is_deleted=8192,
+                                is_bot=16384,
+                                is_bot_chat_history=32768,
+                                is_bot_nochats=65536,
+                                is_verified=131072,
+                                is_restricted=262144,
+                                is_min=1048576,
+                                is_bot_inline_geo=2097152,
+                                is_support=8388608,
+                                is_scam=16777216,
+                                is_apply_min_photo=33554432,
+                                is_fake=67108864,
+                                is_bot_attach_menu=134217728,
+                                is_premium=268435456,
+                                is_attach_menu_enabled=536870912,
+                                has_access_hash=1,
+                                has_first_name=2,
+                                has_last_name=4,
+                                has_phone=16,
+                                has_photo=32,
+                                has_status=64,
+                                has_bot_inline_placeholder=524288,
+                                has_lang_code=4194304,
+                                has_emoji_status=1073741824),
+            'flags2' / FlagsEnum(Int32ul,
+                                 is_bot_can_edit=2,
+                                 is_close_friend=4,
+                                 is_stories_hidden=8,
+                                 is_stories_unavailable=16,
+                                 is_contact_require_premium=1024,
+                                 is_bot_business=2048,
+                                 is_bot_has_main_app=8192,
+                                 has_usernames=1,
+                                 has_stories_max_id=32,
+                                 has_color=256,
+                                 has_profile_color=512,
+                                 has_bot_active_users=4096,
+                                 has_bot_verification_icon=16384,
+                                 has_send_paid_messages_stars=32768),
+            'id' / Int64ul,
+            'access_hash' / If(this.flags.has_access_hash, Int64ul),
+            'first_name' / If(this.flags.has_first_name, TString),
+            'last_name' / If(this.flags.has_last_name, TString),
+            'username' / If(this.flags.has_username, TString),
+            'phone' / If(this.flags.has_phone, TString),
+            'photo' / If(this.flags.has_photo, self.user_profile_photo_structures('photo')),
+            'status' / If(this.flags.has_status, self.user_status_structures('status')),
+            'bot_info_version' / If(this.flags.is_bot, Int32ul),
+            'restriction_reason' / If(this.flags.is_restricted, self.vector(self.restriction_reason_structures('restriction_reason'), 'restriction_reason')),
+            'bot_inline_placeholder' / If(this.flags.has_bot_inline_placeholder, TString),
+            'lang_code' / If(this.flags.has_lang_code, TString),
+            'emoji_status' / If(this.flags.has_emoji_status, self.emoji_status_structures('emoji_status')),
+            'usernames' / If(this.flags2.has_usernames, self.vector(self.struct_0xb4073647(), 'usernames')),
+            'stories_max_id' / If(this.flags2.has_stories_max_id, Int32ul),
+            'color' / If(this.flags2.has_color, self.struct_0xb54b5acf()),
+            'profile_color' / If(this.flags2.has_profile_color, self.struct_0xb54b5acf()),
+            'bot_active_users' / If(this.flags2.has_bot_active_users, Int32ul),
+            'bot_verification_icon' / If(this.flags2.has_bot_verification_icon, Int64ul),
+            'send_paid_messages_stars' / If(this.flags2.has_send_paid_messages_stars, Int64ul))
+
+    @constructor(0x4b46c37e, 'user_layer199')
+    def struct_0x4b46c37e(self):
+        return Struct(
+            'sname' / Computed('user_layer199'),
             'signature' / Hex(Const(0x4b46c37e, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 has_username=8,
@@ -22203,6 +22828,7 @@ class TLStruct:
     @structures
     def user_structures(self, name):
         tag_map = {
+            0x020b1422: LazyBound(self.struct_0x020b1422),
             0x4b46c37e: LazyBound(self.struct_0x4b46c37e),
             0x59476956: LazyBound(self.struct_0x59476956),
             0x685f5e21: LazyBound(self.struct_0x685f5e21),
@@ -22680,6 +23306,8 @@ class TLStruct:
             'sname' / Computed('web_page'),
             'signature' / Hex(Const(0xe89c45b2, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
+                                has_large_media=8192,
+                                is_video_cover_photo=16384,
                                 has_type=1,
                                 has_site_name=2,
                                 has_title=4,
@@ -23032,10 +23660,10 @@ class TLStruct:
             'version' / Int32ul,
             'keywords' / self.vector(self.emoji_keyword_structures('keywords'), 'keywords'))
 
-    @constructor(0x74c34319, 'premium_gift_option')
+    @constructor(0x74c34319, 'premium_gift_option_layer199')
     def struct_0x74c34319(self):
         return Struct(
-            'sname' / Computed('premium_gift_option'),
+            'sname' / Computed('premium_gift_option_layer199'),
             'signature' / Hex(Const(0x74c34319, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 has_store_product=1),
@@ -25624,7 +26252,7 @@ class TLStruct:
 
     @constructor(0x1edaaac2, 'account_set_global_privacy_settings')
     def struct_0x1edaaac2(self):
-        return ['settings' / self.struct_0x734c4ccb()]
+        return ['settings' / self.struct_0xc9d8df1c()]
 
     @constructor(0xfa8cc6f5, 'account_report_profile_photo')
     def struct_0xfa8cc6f5(self):
@@ -26023,10 +26651,10 @@ class TLStruct:
             'query' / TString,
             'offset' / TString)
 
-    @constructor(0x3ebee86a, 'messages_send_inline_bot_result')
+    @constructor(0x3ebee86a, 'messages_send_inline_bot_result_layer199')
     def struct_0x3ebee86a(self):
         return Struct(
-            'sname' / Computed('messages_send_inline_bot_result'),
+            'sname' / Computed('messages_send_inline_bot_result_layer199'),
             'signature' / Hex(Const(0x3ebee86a, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 is_silent=32,
@@ -29289,10 +29917,10 @@ class TLStruct:
             'play_integrity_token' / If(this.flags.has_play_integrity_token, TString),
             'ios_push_secret' / If(this.flags.has_ios_push_secret, TString))
 
-    @constructor(0x983f9745, 'messages_send_message')
+    @constructor(0x983f9745, 'messages_send_message_layer199')
     def struct_0x983f9745(self):
         return Struct(
-            'sname' / Computed('messages_send_message'),
+            'sname' / Computed('messages_send_message_layer199'),
             'signature' / Hex(Const(0x983f9745, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 is_no_webpage=2,
@@ -29320,10 +29948,10 @@ class TLStruct:
             'quick_reply_shortcut' / If(this.flags.has_quick_reply_shortcut, self.input_quick_reply_shortcut_structures('quick_reply_shortcut')),
             'effect' / If(this.flags.has_effect, Int64ul))
 
-    @constructor(0x7852834e, 'messages_send_media')
+    @constructor(0x7852834e, 'messages_send_media_layer199')
     def struct_0x7852834e(self):
         return Struct(
-            'sname' / Computed('messages_send_media'),
+            'sname' / Computed('messages_send_media_layer199'),
             'signature' / Hex(Const(0x7852834e, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 is_silent=32,
@@ -29351,10 +29979,10 @@ class TLStruct:
             'quick_reply_shortcut' / If(this.flags.has_quick_reply_shortcut, self.input_quick_reply_shortcut_structures('quick_reply_shortcut')),
             'effect' / If(this.flags.has_effect, Int64ul))
 
-    @constructor(0x6d74da08, 'messages_forward_messages')
+    @constructor(0x6d74da08, 'messages_forward_messages_layer199')
     def struct_0x6d74da08(self):
         return Struct(
-            'sname' / Computed('messages_forward_messages'),
+            'sname' / Computed('messages_forward_messages_layer199'),
             'signature' / Hex(Const(0x6d74da08, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 is_silent=32,
@@ -29450,10 +30078,10 @@ class TLStruct:
             'media' / If(this.flags.has_media, self.input_media_structures('media')),
             'effect' / If(this.flags.has_effect, Int64ul))
 
-    @constructor(0x37b74355, 'messages_send_multi_media')
+    @constructor(0x37b74355, 'messages_send_multi_media_layer199')
     def struct_0x37b74355(self):
         return Struct(
-            'sname' / Computed('messages_send_multi_media'),
+            'sname' / Computed('messages_send_multi_media_layer199'),
             'signature' / Hex(Const(0x37b74355, Int32ul)),
             'flags' / FlagsEnum(Int32ul,
                                 is_silent=32,
@@ -30405,7 +31033,7 @@ class TLStruct:
     @constructor(0xdfc909ab, 'phone_create_conference_call')
     def struct_0xdfc909ab(self):
         return (
-            'peer' / self.struct_0xd8aa840f(),
+            'peer' / self.struct_0x1e36fded(),
             'key_fingerprint' / Int64ul)
 
     @constructor(0xc4563590, 'stars_get_star_gifts')
@@ -30617,6 +31245,7 @@ class TLStruct:
                                 is_unsaved=32,
                                 is_refunded=512,
                                 is_can_upgrade=1024,
+                                is_pinned_to_top=4096,
                                 has_from_id=2,
                                 has_message=4,
                                 has_msg_id=8,
@@ -30805,3 +31434,303 @@ class TLStruct:
             'participant_id' / Int64ul,
             'g_b' / TBytes,
             'protocol' / self.phone_call_protocol_structures('protocol'))
+
+    @constructor(0x79c059f7, 'premium_gift_option')
+    def struct_0x79c059f7(self):
+        return Struct(
+            'sname' / Computed('premium_gift_option'),
+            'signature' / Hex(Const(0x79c059f7, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_bot_url=2,
+                                has_store_product=1),
+            'months' / Int32ul,
+            'currency' / TString,
+            'amount' / Int64ul,
+            'bot_url' / If(this.flags.has_bot_url, TString),
+            'store_product' / If(this.flags.has_store_product, TString))
+
+    @structures
+    def premium_gift_option_structures(self, name):
+        tag_map = {
+            0x79c059f7: LazyBound(self.struct_0x79c059f7),
+            0x74c34319: LazyBound(self.struct_0x74c34319)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    @constructor(0xc9d8df1c, 'global_privacy_settings')
+    def struct_0xc9d8df1c(self):
+        return Struct(
+            'sname' / Computed('global_privacy_settings'),
+            'signature' / Hex(Const(0xc9d8df1c, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_archive_and_mute_new_noncontact_peers=1,
+                                is_keep_archived_unmuted=2,
+                                is_keep_archived_folders=4,
+                                is_hide_read_marks=8,
+                                is_new_noncontact_peers_require_premium=16,
+                                has_noncontact_peers_paid_stars=32),
+            'noncontact_peers_paid_stars' / If(this.flags.has_noncontact_peers_paid_stars, Int64ul))
+
+    @constructor(0xfbf2340a, 'messages_send_message')
+    def struct_0xfbf2340a(self):
+        return Struct(
+            'sname' / Computed('messages_send_message'),
+            'signature' / Hex(Const(0xfbf2340a, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_no_webpage=2,
+                                is_silent=32,
+                                is_background=64,
+                                is_clear_draft=128,
+                                is_noforwards=16384,
+                                is_update_stickersets_order=32768,
+                                is_invert_media=65536,
+                                has_reply_to=1,
+                                has_reply_markup=4,
+                                has_entities=8,
+                                has_schedule_date=1024,
+                                has_send_as=8192,
+                                has_quick_reply_shortcut=131072,
+                                has_effect=262144,
+                                has_allow_paid_stars=2097152),
+            'peer' / self.input_peer_structures('peer'),
+            'reply_to' / If(this.flags.has_reply_to, self.input_reply_to_structures('reply_to')),
+            'message' / TString,
+            'random_id' / Int64ul,
+            'reply_markup' / If(this.flags.has_reply_markup, self.reply_markup_structures('reply_markup')),
+            'entities' / If(this.flags.has_entities, self.vector(self.message_entity_structures('entities'), 'entities')),
+            'schedule_date' / If(this.flags.has_schedule_date, TTimestamp),
+            'send_as' / If(this.flags.has_send_as, self.input_peer_structures('send_as')),
+            'quick_reply_shortcut' / If(this.flags.has_quick_reply_shortcut, self.input_quick_reply_shortcut_structures('quick_reply_shortcut')),
+            'effect' / If(this.flags.has_effect, Int64ul),
+            'allow_paid_stars' / If(this.flags.has_allow_paid_stars, Int64ul))
+
+    @constructor(0xa550cd78, 'messages_send_media')
+    def struct_0xa550cd78(self):
+        return Struct(
+            'sname' / Computed('messages_send_media'),
+            'signature' / Hex(Const(0xa550cd78, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_silent=32,
+                                is_background=64,
+                                is_clear_draft=128,
+                                is_noforwards=16384,
+                                is_update_stickersets_order=32768,
+                                is_invert_media=65536,
+                                has_reply_to=1,
+                                has_reply_markup=4,
+                                has_entities=8,
+                                has_schedule_date=1024,
+                                has_send_as=8192,
+                                has_quick_reply_shortcut=131072,
+                                has_effect=262144,
+                                has_allow_paid_stars=2097152),
+            'peer' / self.input_peer_structures('peer'),
+            'reply_to' / If(this.flags.has_reply_to, self.input_reply_to_structures('reply_to')),
+            'media' / self.input_media_structures('media'),
+            'message' / TString,
+            'random_id' / Int64ul,
+            'reply_markup' / If(this.flags.has_reply_markup, self.reply_markup_structures('reply_markup')),
+            'entities' / If(this.flags.has_entities, self.vector(self.message_entity_structures('entities'), 'entities')),
+            'schedule_date' / If(this.flags.has_schedule_date, TTimestamp),
+            'send_as' / If(this.flags.has_send_as, self.input_peer_structures('send_as')),
+            'quick_reply_shortcut' / If(this.flags.has_quick_reply_shortcut, self.input_quick_reply_shortcut_structures('quick_reply_shortcut')),
+            'effect' / If(this.flags.has_effect, Int64ul),
+            'allow_paid_stars' / If(this.flags.has_allow_paid_stars, Int64ul))
+
+    @constructor(0xbb9fa475, 'messages_forward_messages')
+    def struct_0xbb9fa475(self):
+        return Struct(
+            'sname' / Computed('messages_forward_messages'),
+            'signature' / Hex(Const(0xbb9fa475, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_silent=32,
+                                is_background=64,
+                                is_with_my_score=256,
+                                is_drop_author=2048,
+                                is_drop_media_captions=4096,
+                                is_noforwards=16384,
+                                has_top_msg_id=512,
+                                has_schedule_date=1024,
+                                has_send_as=8192,
+                                has_quick_reply_shortcut=131072,
+                                has_video_timestamp=1048576,
+                                has_allow_paid_stars=2097152),
+            'from_peer' / self.input_peer_structures('from_peer'),
+            'id' / self.vector(Int32ul, 'id'),
+            'random_id' / self.vector(Int64ul, 'random_id'),
+            'to_peer' / self.input_peer_structures('to_peer'),
+            'top_msg_id' / If(this.flags.has_top_msg_id, Int32ul),
+            'schedule_date' / If(this.flags.has_schedule_date, TTimestamp),
+            'send_as' / If(this.flags.has_send_as, self.input_peer_structures('send_as')),
+            'quick_reply_shortcut' / If(this.flags.has_quick_reply_shortcut, self.input_quick_reply_shortcut_structures('quick_reply_shortcut')),
+            'video_timestamp' / If(this.flags.has_video_timestamp, Int32ul),
+            'allow_paid_stars' / If(this.flags.has_allow_paid_stars, Int64ul))
+
+    @constructor(0xc0cf7646, 'messages_send_inline_bot_result')
+    def struct_0xc0cf7646(self):
+        return Struct(
+            'sname' / Computed('messages_send_inline_bot_result'),
+            'signature' / Hex(Const(0xc0cf7646, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_silent=32,
+                                is_background=64,
+                                is_clear_draft=128,
+                                is_hide_via=2048,
+                                has_reply_to=1,
+                                has_schedule_date=1024,
+                                has_send_as=8192,
+                                has_quick_reply_shortcut=131072,
+                                has_allow_paid_stars=2097152),
+            'peer' / self.input_peer_structures('peer'),
+            'reply_to' / If(this.flags.has_reply_to, self.input_reply_to_structures('reply_to')),
+            'random_id' / Int64ul,
+            'query_id' / Int64ul,
+            'id' / TString,
+            'schedule_date' / If(this.flags.has_schedule_date, TTimestamp),
+            'send_as' / If(this.flags.has_send_as, self.input_peer_structures('send_as')),
+            'quick_reply_shortcut' / If(this.flags.has_quick_reply_shortcut, self.input_quick_reply_shortcut_structures('quick_reply_shortcut')),
+            'allow_paid_stars' / If(this.flags.has_allow_paid_stars, Int64ul))
+
+    @constructor(0x1bf89d74, 'messages_send_multi_media')
+    def struct_0x1bf89d74(self):
+        return Struct(
+            'sname' / Computed('messages_send_multi_media'),
+            'signature' / Hex(Const(0x1bf89d74, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_silent=32,
+                                is_background=64,
+                                is_clear_draft=128,
+                                is_noforwards=16384,
+                                is_update_stickersets_order=32768,
+                                is_invert_media=65536,
+                                has_reply_to=1,
+                                has_schedule_date=1024,
+                                has_send_as=8192,
+                                has_quick_reply_shortcut=131072,
+                                has_effect=262144,
+                                has_allow_paid_stars=2097152),
+            'peer' / self.input_peer_structures('peer'),
+            'reply_to' / If(this.flags.has_reply_to, self.input_reply_to_structures('reply_to')),
+            'multi_media' / self.vector(self.struct_0x1cc6e91f(), 'multi_media'),
+            'schedule_date' / If(this.flags.has_schedule_date, TTimestamp),
+            'send_as' / If(this.flags.has_send_as, self.input_peer_structures('send_as')),
+            'quick_reply_shortcut' / If(this.flags.has_quick_reply_shortcut, self.input_quick_reply_shortcut_structures('quick_reply_shortcut')),
+            'effect' / If(this.flags.has_effect, Int64ul),
+            'allow_paid_stars' / If(this.flags.has_allow_paid_stars, Int64ul))
+
+    @constructor(0x58bbcb50, 'messages_send_paid_reaction')
+    def struct_0x58bbcb50(self):
+        return Struct(
+            'sname' / Computed('messages_send_paid_reaction'),
+            'signature' / Hex(Const(0x58bbcb50, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                has_privacy=1),
+            'peer' / self.input_peer_structures('peer'),
+            'msg_id' / Int32ul,
+            'count' / Int32ul,
+            'random_id' / Int64ul,
+            'privacy' / If(this.flags.has_privacy, self.stars_paid_reaction_privacy_structures('privacy')))
+
+    @constructor(0x435885b5, 'messages_toggle_paid_reaction_privacy')
+    def struct_0x435885b5(self):
+        return (
+            'peer' / self.input_peer_structures('peer'),
+            'msg_id' / Int32ul,
+            'privacy' / self.stars_paid_reaction_privacy_structures('privacy'))
+
+    @constructor(0x1e109708, 'account_paid_messages_revenue')
+    def struct_0x1e109708(self):
+        return ['stars_amount' / Int64ul]
+
+    @constructor(0x6f688aa7, 'account_add_no_paid_messages_exception')
+    def struct_0x6f688aa7(self):
+        return Struct(
+            'sname' / Computed('account_add_no_paid_messages_exception'),
+            'signature' / Hex(Const(0x6f688aa7, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_refund_charged=1),
+            'user_id' / self.input_user_structures('user_id'))
+
+    @constructor(0xf1266f38, 'account_get_paid_messages_revenue')
+    def struct_0xf1266f38(self):
+        return ['user_id' / self.input_user_structures('user_id')]
+
+    @structures
+    def account_requirement_to_contact_structures(self, name):
+        tag_map = {
+            0x050a9839: LazyBound(self.struct_0x050a9839),
+            0xe581e4e9: LazyBound(self.struct_0xe581e4e9),
+            0xb4f67e93: LazyBound(self.struct_0xb4f67e93)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    @constructor(0x050a9839, 'account_requirement_to_contact_empty')
+    def struct_0x050a9839(self):
+        return []
+
+    @constructor(0xe581e4e9, 'account_requirement_to_contact_premium')
+    def struct_0xe581e4e9(self):
+        return []
+
+    @constructor(0xb4f67e93, 'account_requirement_to_contact_paid_messages')
+    def struct_0xb4f67e93(self):
+        return ['stars_amount' / Int64ul]
+
+    @constructor(0xd89a83a3, 'account_get_requirements_to_contact')
+    def struct_0xd89a83a3(self):
+        return ['id' / self.vector(self.input_user_structures('id'), 'id')]
+
+    @constructor(0xd61e1df3, 'phone_join_group_call')
+    def struct_0xd61e1df3(self):
+        return Struct(
+            'sname' / Computed('phone_join_group_call'),
+            'signature' / Hex(Const(0xd61e1df3, Int32ul)),
+            'flags' / FlagsEnum(Int32ul,
+                                is_muted=1,
+                                is_video_stopped=4,
+                                has_invite_hash=2,
+                                has_key_fingerprint=8),
+            'call' / self.struct_0xd8aa840f(),
+            'join_as' / self.input_peer_structures('join_as'),
+            'invite_hash' / If(this.flags.has_invite_hash, TString),
+            'key_fingerprint' / If(this.flags.has_key_fingerprint, Int64ul),
+            'params' / self.struct_0x7d748d04())
+
+    @structures
+    def stars_paid_reaction_privacy_structures(self, name):
+        tag_map = {
+            0x206ad49e: LazyBound(self.struct_0x206ad49e),
+            0x1f0c1ad9: LazyBound(self.struct_0x1f0c1ad9),
+            0xdc6cfcf0: LazyBound(self.struct_0xdc6cfcf0)
+        }
+        return Struct(
+            '_signature' / Peek(Int32ul),
+            name / Switch(this._signature, tag_map))
+
+    @constructor(0x206ad49e, 'stars_paid_reaction_privacy_default')
+    def struct_0x206ad49e(self):
+        return []
+
+    @constructor(0x1f0c1ad9, 'stars_paid_reaction_privacy_anonymous')
+    def struct_0x1f0c1ad9(self):
+        return []
+
+    @constructor(0xdc6cfcf0, 'stars_paid_reaction_privacy_peer')
+    def struct_0xdc6cfcf0(self):
+        return ['peer' / self.input_peer_structures('peer')]
+
+    @constructor(0xfc84653f, 'stars_update_paid_messages_price')
+    def struct_0xfc84653f(self):
+        return (
+            'channel' / self.input_channel_structures('channel'),
+            'send_paid_messages_stars' / Int64ul)
+
+    @constructor(0x1513e7b0, 'stars_toggle_star_gifts_pinned_to_top')
+    def struct_0x1513e7b0(self):
+        return (
+            'peer' / self.input_peer_structures('peer'),
+            'stargift' / self.vector(self.stars_input_saved_star_gift_structures('stargift'), 'stargift'))

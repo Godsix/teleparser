@@ -1729,7 +1729,7 @@ class JavaParser(BaseParser):
         save_code(target, result_text)
 
 def test():
-    path = r'E:\Project\Godsix\teleparser\repo\Telegram\TMessagesProj\src\main\java'
+    path = r'E:\Project\Godsix\Telegram\TMessagesProj\src\main\java'
     origin = r'E:\Project\Godsix\teleparser\datatype\telegram.py'
     target = r'E:\Project\Godsix\teleparser\new.py'
     debug = False
